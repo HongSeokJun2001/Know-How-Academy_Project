@@ -96,7 +96,7 @@
 <body>
     <br>
     <a href="/know-how"><img id="img_area" 
-            src="resources/image/Gemini_Generated_Image_dpy22tdpy22tdpy2.png"
+            src="/know-how/resources/image/Gemini_Generated_Image_dpy22tdpy22tdpy2.png"
             alt="로고" align="center" /></a>
 
     <br><br>
