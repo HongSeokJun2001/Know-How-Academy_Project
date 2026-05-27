@@ -95,28 +95,30 @@
 </head>
 <body>
     <br>
-    <a href="/khowhow"><img id="img_area" src="Gemini_Generated_Image_dpy22tdpy22tdpy2.png" alt="" align="center" /></a>
+    <a href="/know-how"><img id="img_area" 
+            src="resources/image/Gemini_Generated_Image_dpy22tdpy22tdpy2.png"
+            alt="로고" align="center" /></a>
 
     <br><br>
 
     <div class="nav-area" align="center">
-        <div class="menu"><a href="/khowhow/introduce">교육원 소개</a></div>
+        <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
         <div class="menu">    
             <a href="#">상담</a>
             <ul>
-                <li><a href="/khowhow/reservation/list">예약리스트</a></li>
-                <li><a href="/knowhow/counselor/list">상담목록</a></li>
+                <li><a href="/know-how/reservation/list">예약리스트</a></li>
+                <li><a href="/know-how/counselor/list">상담목록</a></li>
             </ul>
         </div>
         <div class="menu">
             <a href="#">커뮤니티</a>
             <ul>
-                <li><a href="/knowhow/notice/list">공지사항</a></li>
-                <li><a href="/khowhow/board/list">일반게시판</a></li>
-                <li><a href="/knowhow/studentboard/list">수강생게시판</a></li>
+                <li><a href="/know-how/notice/list">공지사항</a></li>
+                <li><a href="/know-how/board/list">일반게시판</a></li>
+                <li><a href="/know-how/studentboard/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/khowhow/mypage">마이페이지</a></div>
+        <div class="menu"><a href="/khow-how/mypage">마이페이지</a></div>
     </div>
 
 </body>
