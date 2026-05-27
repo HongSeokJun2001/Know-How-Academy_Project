@@ -89,6 +89,19 @@
 		    <version>1.1.1</version>
 		    <scope>compile</scope>
 		</dependency>
+		<!--
+			JSTL 을 사용하기 위한 라이브러리들 추가
+			- jakarta.servlet.jsp.jstl-api
+			- jakarta.servlet.jsp.jstl	
+		-->
+		<dependency>
+		    <groupId>jakarta.servlet.jsp.jstl</groupId>
+		    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.web</groupId>
+		    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
