@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<jsp:include page="common/menubar.jsp"/>
+	<h1>잘 뜨나?</h1>
 </body>
 </html>
