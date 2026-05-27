@@ -14,7 +14,5 @@
 	<!-- 
 		* typeAliases 영역
 	 -->
-	 <typeAliases>
-	 	
-	 </typeAliases>
+	 
 </configuration>
