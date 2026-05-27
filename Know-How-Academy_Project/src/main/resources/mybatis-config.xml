@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 
+		* settings 영역
+		  - 마이바티스가 구동될 때 필요한 설정값들을 적어주는 부분
+	 -->
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+	
+	<!-- 
+		* typeAliases 영역
+	 -->
+	 
+</configuration>
