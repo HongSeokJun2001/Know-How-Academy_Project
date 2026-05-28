@@ -5,6 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+    
+</style>
 </head>
 <body>
 	<jsp:include page="common/menubar.jsp"/>
