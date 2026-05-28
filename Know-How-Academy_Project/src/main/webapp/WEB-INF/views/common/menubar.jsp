@@ -118,7 +118,7 @@
                 <li><a href="/know-how/community/student/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/khow-how/mypage">마이페이지</a></div>
+        <div class="menu"><a href="/know-how/member/myPage">마이페이지</a></div>
     </div>
 
 </body>
