@@ -94,6 +94,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+
+    <%-- 1회성 alert 공통 기능 --%>
+	<c:if test="${ not empty sessionScope.alertMsg }">
+		<script>
+			
+			let alertMsg = "${ sessionScope.alertMsg }";
+			
+			// alert(alertMsg);
+			alertify.alert(alertMsg, function(){ alertify.success('Ok'); });
+			
+		</script>
+		<c:remove var="alertMsg" scope="session" />
+	</c:if>
+	
     <br>
     <a href="/know-how"><img id="img_area" 
             src="/know-how/resources/image/Gemini_Generated_Image_dpy22tdpy22tdpy2.png"
