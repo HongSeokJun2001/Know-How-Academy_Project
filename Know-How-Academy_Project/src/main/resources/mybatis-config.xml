@@ -12,5 +12,6 @@
 		<typeAlias type="com.kh.know_how.board.model.vo.Board" alias="board" />
 	</typeAliases>
 	
+	
 	 
 </configuration>

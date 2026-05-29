@@ -11,7 +11,7 @@
     </head>
 
     <body>
-        <jsp:include page="../common/menubar.jsp" />
+       
 
         <div class="outer">
             일반게시판

@@ -1,1 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="boardMapper">
+  	
+  	<!-- 
+  		DB의 BOARD 테이블과 자바의 Board를 서로 매칭
+  		 -->
+  	<resultMap id="boardResultSet" type="board">
+  	<id column="POST_NO" property="postNo"/>
+  	<result column="WRITER_NO" property="writerNo"/>
+  	<result column="POST_TYPE" property="postType"/>
+  	<result column="CATEGORY" property="category"/>
+  	<result column="TITLE" property="title" />
+  	<result column="CONTENT" property="content"/>
+  	<result column="CREATED_AT" property="createdAt"/>
+  	<result column="UPDATED_AT" property="updatedAt"/>
+  	<result column="STATUS" property="status"/>
+  	<result column="VIEW_COUNT" property="viewCount"/> 
+  	<result column="USER_NAME" property="userName"/> 	  	
+  	</resultMap>
+  	
+<!-- resultSet을 활용해 페이징처리(10)적용, 게시글 목록을 조회쿼리문 -->
+ <select id="selectBoardList" parameterType="hashmap"
+  			resultMap="boardResultSet">
+SELECT 
+    B.POST_NO,<!-- 게시글번호 -->
+    B.CATEGORY, <!-- 카테고리 -->
+    B.TITLE, <!-- 제목 -->
+    M.USER_NAME, <!-- 작성자명 -->
+    B.VIEW_COUNT, <!-- 조회수 -->
+    B.CREATED_AT <!-- 작성일 -->
+FROM BOARD_POST B <!-- 약칭 -->
+JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
+<!-- 연관된 데이터 B와 (약칭)M과 조인하여 작성자명(USER_NAME) 가져오기  -->
+ WHERE B.STATUS = 'Y'<!-- Y=노출/N 숨김처리 --> 
+AND B.POST_TYPE = 'A'
+ORDER BY B.POST_NO DESC <!-- 오름차순?이엿나 -->		
+  	</select>
+  	
+<!-- 게시글 총갯수 쿼리문 -->  	
+<select id="selectListCount" resultType="_int">
+SELECT COUNT(*)
+FROM BOARD_POST
+WHERE POST_TYPE = 'A'
+AND STATUS = 'Y'
+</select>
+  	
+  
+  </mapper>

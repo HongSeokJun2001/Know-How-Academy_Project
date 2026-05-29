@@ -2,6 +2,17 @@ package com.kh.know_how.board.model.vo;
 
 import java.sql.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@ToString
 public class Board {
 
 	//필드부
@@ -13,11 +24,11 @@ public class Board {
 	private String category;//	CATEGORY	VARCHAR2(30 BYTE)
 	private String title;//	TITLE	VARCHAR2(200 BYTE)
 	private String content;//	CONTENT	CLOB
-	private Date createAt;//	CREATED_AT	DATE
-	private Date updateAt;//	UPDATED_AT	DATE
+	private Date createdAt;//	CREATED_AT	DATE
+	private Date updatedAt;//	UPDATED_AT	DATE
 	private String status;//	STATUS	VARCHAR2(1 BYTE)
 	private int viewCount;//	VIEW_COUNT	NUMBER
-		
+	private String userName;	
 
 	
 	
