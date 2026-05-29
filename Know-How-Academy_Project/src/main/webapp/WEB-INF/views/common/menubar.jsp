@@ -58,6 +58,15 @@
             display: inline-block
         }
         #img_area{
+	    .mypage-outer {
+		width : 800px;
+		border : 1px dotted black;
+		margin : auto;
+		margin-top : 50px;
+		margin-bottom : 50px;
+	    }
+        img{
+            width: 300px;
             display: block;
         }
         
@@ -92,6 +101,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+	
     <br>
     <header>
         <a href="/know-how" id="logo_link">
@@ -117,7 +127,7 @@
                 <li><a href="/know-how/community/student/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/know-how/mypage">마이페이지</a></div>
+        <div class="menu"><a href="/know-how/member/myPage">마이페이지</a></div>
     </div>
 
 <script>
