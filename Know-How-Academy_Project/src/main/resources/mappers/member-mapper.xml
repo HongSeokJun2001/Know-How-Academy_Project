@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+
+	 <resultMap id="memberResultSet" type="member">
+	     <id column="USER_NO" property="userNo" />
+	     <result column="USER_ID" property="userId" />
+	     <result column="USER_PWD" property="userPwd"/>
+	     <result column="USER_NAME" property="userName"/>
+	     <result column="PHONE" property="phone"/>
+	     <result column="EMAIL" property="email"/>
+	     <result column="ADDRESS" property="address"/>
+	     <result column="ROLE_CODE" property="roleCode"/>
+	     <result column="STATUS" property="status"/>
+	     <result column="CREATED_AT" property="createdAt"/>
+	     <result column="UPDATED_AT" property="updatedAt"/>
+	     <result column="CLASS_NO" property="classNo"/>
+	 </resultMap>
+	 
+	 <!--  로그인용 쿼리문 -->
+	 <select id="loginMember" parameterType="member" 
+								  resultMap="memberResultSet">
+			<!-- 암호화 작업 전 : 아이디, 비밀번호가 모두 일치해야 조회 -->
+			SELECT * 
+			  FROM MEMBER
+			 WHERE USER_ID = #{userId}
+			   AND USER_PWD = #{userPwd}
+			   AND STATUS = 'ACTIVE'
+	 </select>
+	 
+	 <!-- 회원가입용 쿼리문 -->
+	<insert id="insertMember" parameterType="member">
+		INSERT INTO MEMBER(USER_NO
+		                 , USER_ID
+		                 , USER_PWD
+		                 , USER_NAME
+		                 , PHONE
+		                 , EMAIL
+		                 , ADDRESS)
+		            VALUES(SEQ_UNO.NEXTVAL
+		                 , #{userId}
+		                 , #{userPwd}
+		                 , #{userName}
+		                 , #{phone}
+		                 , #{email}
+		                 , #{address})
+	</insert>		   
+		

@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SecurityConfig<SecurityFilterChain> {
-
+    
+	/*
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		
@@ -19,4 +20,5 @@ public class SecurityConfig<SecurityFilterChain> {
 				   .csrf(csrf -> csrf.disable())
 				   .build();
 	}
+	*/
 }
