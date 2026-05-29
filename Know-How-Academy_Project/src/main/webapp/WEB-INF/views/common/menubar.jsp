@@ -57,6 +57,13 @@
             margin : auto;
             margin-top : 50px;
 	    }
+	    .mypage-outer {
+		width : 800px;
+		border : 1px dotted black;
+		margin : auto;
+		margin-top : 50px;
+		margin-bottom : 50px;
+	    }
         img{
             width: 300px;
             display: block;
@@ -94,6 +101,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+	
     <br>
     <a href="/know-how"><img id="img_area" 
             src="/know-how/resources/image/Gemini_Generated_Image_dpy22tdpy22tdpy2.png"
@@ -118,7 +126,7 @@
                 <li><a href="/know-how/community/student/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/khow-how/mypage">마이페이지</a></div>
+        <div class="menu"><a href="/know-how/member/myPage">마이페이지</a></div>
     </div>
 
 </body>
