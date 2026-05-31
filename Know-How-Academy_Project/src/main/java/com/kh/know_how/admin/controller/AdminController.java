@@ -31,11 +31,11 @@ public class AdminController {
         return "admin/adminLayout";
     }
     
-    @GetMapping("alarm/count")
+    @GetMapping("adminLayout")
     public String selectAlarmCount(Model model) {
     	// 서비스 -> request
-    	int count = as.selectAlarmCount();
-    	return "";
+    	int result = as.selectAlarmCount();
+    	return "admin/adminLayout";
     }
     
     

@@ -149,19 +149,85 @@
         box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
     }
 
-    /* 알림 카드 */
-    .alarm-card {
-        padding: 15px;
+    .approval-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 28px 32px;
+
+        background: #FFFFFF;
+        border: 1px solid #DDD8FF;
+        border-radius: 16px;
+
+        box-shadow: 0 4px 14px rgba(66, 51, 199, 0.06);
     }
 
-    .alarm-icon {
-        width: 25px;
-        height: 25px;
-        vertical-align: middle;
+    .approval-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .approval-icon {
+        font-size: 32px;
+        color: #4233C7;
+    }
+
+    .approval-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #2C2A38;
+        margin-bottom: 8px;
+    }
+
+    .approval-desc {
+        font-size: 15px;
+        color: #6F6D80;
+    }
+
+    .approval-count {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+    }
+
+    .approval-count strong {
+        font-size: 42px;
+        color: #4233C7;
+    }
+
+    .approval-count span {
+        font-size: 18px;
+        font-weight: 700;
+        color: #4233C7;
+    }
+
+    .primary-btn {
+        height: 46px;
+        padding: 0 22px;
+
+        border: 1px solid #DDD8FF;
+        border-radius: 10px;
+
+        background: #FFFFFF;
+        color: #4233C7;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    .primary-btn:hover {
+        background: #F3F1FF;
     }
 </style>
 </head>
 <body>
+    <!-- 
+        http://localhost:8002/know-how/admin/
+    -->
 
     <div id="fake-header">
         <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
@@ -170,8 +236,9 @@
         KNOW-HOW ACADEMY &thinsp; 관리자 페이지
     </div>
 
+    <!-- 메뉴바+알림+페이지를 감싸는 div -->
     <div id="main-container">
-        
+        <!-- 메뉴바 -->
         <div id="sidebar">
             <div class="menu-item" data-path="/admin/index" onclick="go('/admin/index')">메인페이지</div>
             <div class="menu-item" data-path="/admin/counselor/enroll" onclick="go('/admin/counselor/enroll')">
@@ -204,20 +271,35 @@
                 공지사항 관리
             </div>
         </div>
-        <!-- 
-            http://localhost:8002/know-how/admin/alarm/count
-        -->
-        <form action="/know-how/admin/alarm/count" method="get">
-            <div id="content-area">
-                <div class="dashboard-card alarm-card">
-                    <img src="${pageContext.request.contextPath}/resources/image/종.png" alt="알림표시" class="alarm-icon">
-                </div>
 
-                <br><br>
+        <div id="content-area">
+            <div class="dashboard-card">
+                <section class="approval-banner">
+                    <div class="approval-left">
+                        <div class="approval-icon">🔔</div>
+                        <div>
+                            <div class="approval-title">신규 가입 승인 대기</div>
+                            <div class="approval-desc">승인 대기 중인 신규 가입 신청이 1건 있습니다.</div>
+                        </div>
+                    </div>
 
-                <jsp:include page="${page}.jsp" />
+                    <div class="approval-count">
+                        <div>
+                            <strong>1</strong>
+                            <span>건</span>
+                        </div>
+
+                        <button type="button" class="primary-btn" onclick="go('/admin/student/enroll')">
+                            바로 확인하기
+                        </button>
+                    </div>
+                </section>
             </div>
-        </form>
+
+            <br><br>
+
+            <jsp:include page="${page}.jsp" />
+        </div>
     </div>
     
 <script>

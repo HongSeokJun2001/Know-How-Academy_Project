@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.kh.know_how.admin.model.service.AdminService;
 import com.kh.know_how.common.intercepter.LoginIntercepter;
 
 @Configuration
@@ -20,5 +21,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		
 		// 계정별 유무 직급체크후 접속할 url 판단
 		// ....
+	}
+	
+	public void adminInterceptors() {
+		AdminService as; as.selectAlarmCount();
 	}
 }

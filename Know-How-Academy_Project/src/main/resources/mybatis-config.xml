@@ -16,6 +16,7 @@
 	 -->
 	 <typeAliases>
 	 	<typeAlias type="com.kh.know_how.board.model.vo.Board" alias="board" />
+	 	<typeAlias type="com.kh.know_how.member.model.vo.Member" alias="member" />
 	 </typeAliases>
 	 
 </configuration>

@@ -8,7 +8,7 @@ public class AdminDao {
 
 	public int selectAlarmCount(SqlSessionTemplate sqlSession) {
 		
-		return sqlSession.selectOne("");
+		return sqlSession.selectOne("adminMapper.selectAlarmCount");
 	}
 
 	

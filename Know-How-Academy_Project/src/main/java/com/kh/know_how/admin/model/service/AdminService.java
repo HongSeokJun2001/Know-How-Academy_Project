@@ -13,6 +13,7 @@ public class AdminService {
 	//필드부
 	@Autowired
 	AdminDao ad;
+	@Autowired
 	SqlSessionTemplate sqlSession;
 	
 	//메소드부
