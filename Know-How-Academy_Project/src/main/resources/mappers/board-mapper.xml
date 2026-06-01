@@ -7,7 +7,10 @@
 	<resultMap type="board" id="boardResultSet">
 		<id column="POST_NO" property="postNo" />
 		<result column="TITLE" property="title" />
+		<result column="CONTENT" property="content" />
+		<result column="CREATED_AT" property="createdAt" />
 		<result column="VIEW_COUNT" property="viewCount" />
+		<result column="TITLEIMG" property="titleImg"/>
 	</resultMap>
 	
 	<!-- 메인페이지 공지사항 목록 조회용 쿼리문 -->
@@ -30,5 +33,27 @@
 				) A
 			)
 		WHERE RNUM &lt;= 8
+	</select>
+	
+	<!-- 학원 소식의 총 갯수를 구하는 쿼리문 -->
+	<select id="selectNewsListCount" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = 'NEWS'
+		   AND STATUS = 'Y'
+	</select>
+	<!-- 학원 소식 목록 조회용 쿼리문 -->
+	<select id="selectNewsList" parameterType="hashmap" resultMap="boardResultSet">
+		SELECT POST_NO
+			 , TITLE
+			 , VIEW_COUNT
+			 , FILE_PATH || SAVE_NAME AS "TITLEIMG"
+			 , B.CREATED_AT
+		  FROM BOARD_POST B
+		  JOIN FILE_ATTACHMENT ON (POST_NO = TARGET_NO)
+		 WHERE POST_TYPE = 'NEWS'
+		   AND B.STATUS = 'Y'
+		   AND FILE_LEVEL = 1
+		 ORDER BY POST_NO DESC
 	</select>
 </mapper>
