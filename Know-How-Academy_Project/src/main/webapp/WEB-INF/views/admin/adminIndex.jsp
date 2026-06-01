@@ -1,95 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <style>
     .admin-main {
         display: flex;
         flex-direction: column;
         gap: 28px;
-    }
-
-    .approval-banner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        padding: 28px 32px;
-
-        background: #FFFFFF;
-        border: 1px solid #DDD8FF;
-        border-radius: 16px;
-
-        box-shadow: 0 4px 14px rgba(66, 51, 199, 0.06);
-    }
-
-    .approval-left {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .approval-icon {
-        width: 64px;
-        height: 64px;
-
-        border-radius: 50%;
-        background: #F3F1FF;
-        color: #4233C7;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        font-size: 28px;
-    }
-
-    .approval-title {
-        font-size: 22px;
-        font-weight: 800;
-        color: #2C2A38;
-        margin-bottom: 8px;
-    }
-
-    .approval-desc {
-        font-size: 15px;
-        color: #6F6D80;
-    }
-
-    .approval-count {
-        display: flex;
-        align-items: center;
-        gap: 28px;
-    }
-
-    .approval-count strong {
-        font-size: 42px;
-        color: #4233C7;
-    }
-
-    .approval-count span {
-        font-size: 18px;
-        font-weight: 700;
-        color: #4233C7;
-    }
-
-    .primary-btn {
-        height: 46px;
-        padding: 0 22px;
-
-        border: 1px solid #DDD8FF;
-        border-radius: 10px;
-
-        background: #FFFFFF;
-        color: #4233C7;
-
-        font-size: 15px;
-        font-weight: 700;
-
-        cursor: pointer;
-    }
-
-    .primary-btn:hover {
-        background: #F3F1FF;
     }
 
     .work-section {
@@ -301,12 +217,8 @@
                 <div class="section-title-wrap">
                     <span class="section-icon">👥</span>
                     <h3 class="section-title">상담 신청 대기 목록</h3>
-                    <span class="count-badge">4건</span>
+                    <span class="count-badge">${count}건</span>
                 </div>
-
-                <a href="javascript:void(0);" class="more-link" onclick="go('/admin/counsel')">
-                    전체 보기 &gt;
-                </a>
             </div>
 
             <table class="admin-table">
@@ -317,46 +229,36 @@
                         <th>상담 종류</th>
                         <th>클래스</th>
                         <th>상담사</th>
-                        <th>경과일</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td class="text-danger">3일전</td>
-                        <td>진달래</td>
-                        <td><span class="type-badge type-job">취업상담</span></td>
-                        <td>H반</td>
-                        <td>김사람</td>
-                        <td class="text-danger">3일</td>
-                    </tr>
+                    <c:forEach var="w" items="${requestScope.waitingList}">
+                        <tr>
+                            <c:choose>
+                                <c:when test="${w.elapsedDays gt 3}">
+                                    <td class="text-danger">${w.createdAt}</td>
+                                </c:when>
+                                <c:otherwise>
+                                    <td>${w.createdAt}</td>
+                                </c:otherwise>
+                            </c:choose>
+                            <td>${w.studentName}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${w.categoryName eq '취업'}">
+                                        <span class="type-badge type-job">${w.categoryName}</span>
+                                    </c:when>
 
-                    <tr>
-                        <td>3시간전</td>
-                        <td>홍길동</td>
-                        <td><span class="type-badge type-enter">입학상담</span></td>
-                        <td>G반</td>
-                        <td>이사람</td>
-                        <td>0일</td>
-                    </tr>
-
-                    <tr>
-                        <td>3시간전</td>
-                        <td>김춘자</td>
-                        <td><span class="type-badge type-enter">입학상담</span></td>
-                        <td>V반</td>
-                        <td>정사람</td>
-                        <td>0일</td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-success">NEW</td>
-                        <td>지피티</td>
-                        <td><span class="type-badge type-enter">입학상담</span></td>
-                        <td>G반</td>
-                        <td>이사람</td>
-                        <td>0일</td>
-                    </tr>
+                                    <c:otherwise>
+                                        <span class="type-badge type-green">${w.categoryName}</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${w.className}</td>
+                            <td>${w.counselorName}</td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>
@@ -370,10 +272,6 @@
                     <h3 class="section-title">금일 상담 일정</h3>
                     <span class="count-badge">1건</span>
                 </div>
-
-                <a href="javascript:void(0);" class="more-link" onclick="go('/admin/schedule')">
-                    전체 일정 보기 &gt;
-                </a>
             </div>
 
             <table class="admin-table">
@@ -383,18 +281,30 @@
                         <th>상담 종류</th>
                         <th>이름</th>
                         <th>상담사</th>
-                        <th>장소</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>11:00</td>
-                        <td><span class="type-badge type-green">입학상담</span></td>
-                        <td>일론머스크</td>
-                        <td>김사람</td>
-                        <td>상담실 1</td>
-                    </tr>
+                    <c:forEach var="t" items="${requestScope.reservationList}">
+                        <tr>
+                            <td>${t.reservationTime}</td>
+                                <c:choose>
+                                    <c:when test="${t.categoryName eq '취업'}">
+                                        <td>
+                                            <span class="type-badge type-job">${t.categoryName}상담</span>
+                                        </td>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <td>
+                                            <span class="type-badge type-green">${t.categoryName}상담</span>
+                                        </td>
+                                    </c:otherwise>
+                                </c:choose>
+                            <td>${t.studentName}</td>
+                            <td>${t.counselorName}</td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>

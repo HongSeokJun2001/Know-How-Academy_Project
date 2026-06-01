@@ -149,6 +149,7 @@
         box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
     }
 
+
     .approval-banner {
         display: flex;
         align-items: center;
@@ -170,8 +171,18 @@
     }
 
     .approval-icon {
-        font-size: 32px;
+        width: 64px;
+        height: 64px;
+
+        border-radius: 50%;
+        background: #F3F1FF;
         color: #4233C7;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 28px;
     }
 
     .approval-title {
@@ -203,7 +214,7 @@
         color: #4233C7;
     }
 
-    .primary-btn {
+        .primary-btn {
         height: 46px;
         padding: 0 22px;
 
@@ -222,6 +233,7 @@
     .primary-btn:hover {
         background: #F3F1FF;
     }
+
 </style>
 </head>
 <body>
