@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.common.model.vo.PageInfo;
 
 @Service
 public class BoardService {
@@ -21,6 +22,15 @@ public class BoardService {
 	public ArrayList<Board> mainPageNoticeList() {
 		
 		return boardDao.mainPageNoticeList(sqlSession);
+	}
+
+	public int selectNewsListCount() {
+		return boardDao.selectNewsListCount(sqlSession);
+	}
+
+	public ArrayList<Board> selectNewsList(PageInfo pi) {
+		
+		return boardDao.selectNewsList(sqlSession, pi);
 	}
 
 
