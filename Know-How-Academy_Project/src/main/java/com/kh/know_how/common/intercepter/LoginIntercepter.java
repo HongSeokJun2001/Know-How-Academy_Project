@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 @Component
 public class LoginIntercepter implements HandlerInterceptor {
     
-	/*
+    /*
 	// 1. preHandle 메소드 (선처리용)
 	@Override
 	public boolean preHandle (HttpServletRequest request, HttpServletResponse response, 
@@ -27,14 +27,14 @@ public class LoginIntercepter implements HandlerInterceptor {
 			if(loginUser != null) {
 				// > 로그인이 된 상황
 					
-			return true; // 로그인된 사용자만 접속 가능하도록 true
+			   return true; // 로그인된 사용자만 접속 가능하도록 true
 					
 			} else {
 				// > 로그인이 안된 상황
 					
 				session.setAttribute("alertMsg", "로그인 후 이용 가능한 서비스입니다.");
 					
-				response.sendRedirect("/know-how/myPage");
+				response.sendRedirect("/know-how");
 					
 				return false; // 로그인하지 않은 사용자는 요청 접속 차단 
 			}

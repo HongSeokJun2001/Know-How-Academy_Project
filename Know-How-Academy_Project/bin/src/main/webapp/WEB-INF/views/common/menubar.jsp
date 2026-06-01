@@ -27,12 +27,7 @@
             width: 100%;
             z-index: 1;
         }
-        .menu>a:hover+ul {
-            display : block;
-        }
-        .menu>ul:hover {
-            display : block;
-        }
+
         .menu a {
             text-decoration : none;
             color : white;
@@ -52,15 +47,27 @@
             font-size : 18px;
         }
         .outer {
-            width : 1000px;
-            border : 1px dotted lightgray;
+            width : 1500px;
             margin : auto;
             margin-top : 50px;
+	    }
+        header {
+            text-align: center;
+        }
+        #logo_link {
+            display: inline-block
+        }
+        #img_area{
+	    .mypage-outer {
+		width : 800px;
+		border : 1px dotted black;
+		margin : auto;
+		margin-top : 50px;
+		margin-bottom : 50px;
 	    }
         img{
             width: 300px;
             display: block;
-            margin: auto;
         }
         
     </style>
@@ -94,30 +101,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+	
     <br>
-    <a href="/khowhow"><img id="img_area" src="Gemini_Generated_Image_dpy22tdpy22tdpy2.png" alt="" align="center" /></a>
-
-    <br><br>
+    <header>
+        <a href="/know-how" id="logo_link">
+            <img id="img_area" src="/know-how/resources/image/logo.png" alt="로고"/>
+        </a>
+    </header>
+    <br>
 
     <div class="nav-area" align="center">
-        <div class="menu"><a href="/khowhow/introduce">교육원 소개</a></div>
+        <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
         <div class="menu">    
             <a href="#">상담</a>
             <ul>
-                <li><a href="/khowhow/reservation/list">예약리스트</a></li>
-                <li><a href="/knowhow/counselor/list">상담목록</a></li>
+                <li><a href="/know-how/reservation/list">예약리스트</a></li>
+                <li><a href="/know-how/counselor/list">상담목록</a></li>
             </ul>
         </div>
         <div class="menu">
             <a href="#">커뮤니티</a>
             <ul>
-                <li><a href="/knowhow/notice/list">공지사항</a></li>
-                <li><a href="/khowhow/board/list">일반게시판</a></li>
-                <li><a href="/knowhow/studentboard/list">수강생게시판</a></li>
+                <li><a href="/know-how/community/notice/list">공지사항</a></li>
+                <li><a href="/know-how/community/board/list">일반게시판</a></li>
+                <li><a href="/know-how/community/student/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/khowhow/mypage">마이페이지</a></div>
+        <div class="menu"><a href="/know-how/member/myPage">마이페이지</a></div>
     </div>
 
+<script>
+		$(document).ready(function() {
+			// .menu 영역에 마우스를 올리거나 뗐을 때 동작
+			$('.menu').hover(
+				function() {
+					// 마우스를 올렸을 때: 자식요소인 ul을 부드럽게 내림
+					$(this).children('ul').stop().slideDown(250);
+				},
+				function() {
+					// 마우스를 뗐을 때: 자식요소인 ul을 부드럽게 올림
+					$(this).children('ul').stop().slideUp(250);
+				}
+			);
+		});
+	</script>
 </body>
 </html>
