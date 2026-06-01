@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+	
+	<resultMap type="board" id="boardResultSet">
+		<id column="POST_NO" property="postNo" />
+		<result column="TITLE" property="title" />
+		<result column="VIEW_COUNT" property="viewCount" />
+	</resultMap>
+	
+	<!-- 메인페이지 공지사항 목록 조회용 쿼리문 -->
+	<select id="mainPageNoticeList" resultMap="boardResultSet">
+		SELECT TITLE
+			 , VIEW_COUNT
+			 , POST_NO
+		  FROM
+			(
+			SELECT ROWNUM RNUM, A.*
+			  FROM
+				( 
+				SELECT POST_NO
+					 , TITLE
+					 , VIEW_COUNT
+				  FROM BOARD_POST
+				 WHERE POST_TYPE = 'NOTICE'
+				   AND STATUS = 'Y'
+				 ORDER BY POST_NO DESC
+				) A
+			)
+		WHERE RNUM &lt;= 8
+	</select>
+</mapper>
