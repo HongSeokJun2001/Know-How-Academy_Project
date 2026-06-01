@@ -11,6 +11,6 @@
 		 WHERE STATUS='PENDING'
 	</select>
 	
-	
-	
 </mapper>
+	
+	
