@@ -31,7 +31,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		registry.addInterceptor(adminInterceptor)
         .addPathPatterns("/admin/**")
         .excludePathPatterns(
-                "/admin/loginForm",
+                "/admin/loginForm",  //*** 로그인관련페이지 생성되면 주소 확인 후 수정하기(-)
                 "/admin/login",
                 "/admin/logout",
                 "/resources/**",
