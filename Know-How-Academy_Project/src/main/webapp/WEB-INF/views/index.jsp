@@ -33,6 +33,8 @@
 		border: 1px solid black;
 		border-radius: 5px;
 		padding : 20px 15px;
+		position: relative;
+		padding-bottom: 70px;
 	}
 	
 	#content_1 a {
@@ -59,6 +61,13 @@
 	#thumbnail {
 		display: inline-block;
 		margin: 15px;
+	}
+	
+	.paging-area {
+		position: absolute;
+		bottom: 7px;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 	
 </style>
@@ -106,6 +115,16 @@
 							2026/05/31
 						</p>
 					</div>
+					<div class="paging-area">
+						<ul class="pagination justify-content-center">
+							<li class="page-item">
+								<a class="page-link" href="#">&lt;</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">&gt;</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -116,6 +135,7 @@
 				url : "/know-how/community/notice/mplist",
 				type : "get",
 				success : function(result) {
+					console.log(result);
 					if(result.length > 0){
 						let resultStr = "";
 						
