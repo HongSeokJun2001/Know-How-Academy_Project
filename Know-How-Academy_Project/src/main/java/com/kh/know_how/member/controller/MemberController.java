@@ -6,10 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.member.model.service.MemberService;
 import com.kh.know_how.member.model.vo.Member;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
@@ -24,16 +26,41 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 
-	@GetMapping("/myPage")
-	public String myPage() {
+	@GetMapping("myPage")
+	public ModelAndView myPage(ModelAndView mv) {
 		
-	return "member/myPage";
+	mv.setViewName("member/myPage");
+		
+	return mv;
 	}
-
+	
 	@PostMapping("login")
-	public String loginMember(Member m, Model model, 
+	public String loginMember(Member m, Model model, String saveId, 
 			                  HttpSession session, HttpServletResponse response) {
+	
+		// 아이디 저장 기능 
+		// 2. 아이디 저장 여부에 따른 쿠키 생성
+			if((saveId != null) && (saveId.equals("y"))) {
+				// > 아이디를 저장하고 싶은 경우
 		
+				Cookie cookie = new Cookie("saveId", m.getUserId());
+				cookie.setMaxAge(1 * 24 * 60 * 60); // 1일 (초단위)
+				cookie.setPath("/know_how/"); // 이 쿠키를 우리 웹사이트 내부에서만 이용 가능하게끔
+				
+				
+				response.addCookie(cookie);
+				
+			} else {
+				// > 아이디를 저장하지 않을 경우
+				//   아이디값을 갖고 있던 "쿠키" 를 삭제
+				
+				Cookie cookie = new Cookie("saveId", m.getUserId());
+				cookie.setMaxAge(0);
+				cookie.setPath("/know_how/");
+				
+				response.addCookie(cookie);
+			}
+			
 		// Service 요청 후 결과받기
 		Member loginUser = memberService.loginMember(m);
 						
@@ -52,9 +79,9 @@ public class MemberController {
 		session.setAttribute("loginUser", loginUser);
 			
 		// > menubar.jsp 에서 공통코드
-		session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+		session.setAttribute("alertMsg", "로그인이 되었습니다.");
 					
-		return "redirect:/"; 
+		return "member/myPage"; 
 		}		
 					
 	}
@@ -64,9 +91,9 @@ public class MemberController {
 		
 		session.removeAttribute("loginUser");
 		
-		session.setAttribute("alertMsg", "성공적으로 로그아웃이 되었습니다.");
+		session.setAttribute("alertMsg", "로그아웃이 되었습니다.");
 		
-		return "redirect:/";
+		return "common/menubar";
 	}
 	
 	@GetMapping("enrollForm") // 회원가입페이지로 이동
@@ -87,13 +114,13 @@ public class MemberController {
 		return "member/searchPasswordForm";
 	}
 	
-	@GetMapping("myInformationSelectForm") // 내정보 찾기 페이지로 이동
+	@PostMapping("myInformationSelectForm") // 내정보 찾기 페이지로 이동
 	public String myInformationSelectForm() {
 		
 		return "member/myInformationSelectForm";
 	}
 	
-	@GetMapping("myInformationChangeForm") // 내정보 수정 페이지로 이동
+	@PostMapping("myInformationChangeForm") // 내정보 수정 페이지로 이동
 	public String myInformationChangeForm() {
 		
 		return "member/myInformationChangeForm";
