@@ -141,9 +141,9 @@
 			// 학원 소식 썸네일 클릭시 상세조회 화면 출력
 			$(document).on("click", ".thumbnail", function() {
 				
-				let bno = $(this).children().eq(0).val();
+				let pno = $(this).children().eq(0).val();
 				
-				location.href = "/know-how/community/board/news/detail/" + bno;
+				location.href = "/know-how/community/board/news/detail/" + pno;
 			});
 		});
 		function getNewsList(page) {
