@@ -245,29 +245,30 @@
                 onclick="go('/admin/index')">
                 메인페이지
             </div>
+
             <div class="menu-item" data-path="/admin/counselor/enroll" 
                 onclick="go('/admin/counselor/enroll')">
                 상담사 등록
             </div>
-
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 메뉴항목 수정(-)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 관리페이지
             </div>
-
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="menu-item" data-path="/admin/student"
                  onclick="go('/admin/student')">
                 학원생 관리
             </div>
-
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  상담사 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="menu-item" data-path="/admin/counselor"
                  onclick="go('/admin/counselor')">
                 상담사 관리
             </div>
-
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  메뉴항목 수정 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 설정
             </div>
-
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  공지사항 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="menu-item" data-path="/admin/notice"
                  onclick="go('/admin/notice')">
                 공지사항 관리
@@ -289,7 +290,7 @@
                             <strong>${requestScope.alarmCount}</strong>
                             <span>건</span>
                         </div>
-
+   <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 신규등록 페이지와 연결 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
                         <button type="button" class="primary-btn" onclick="go('/admin/student/enroll')">
                             바로 확인하기
                         </button>
