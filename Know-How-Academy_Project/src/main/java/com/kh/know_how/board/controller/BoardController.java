@@ -1,6 +1,7 @@
 package com.kh.know_how.board.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,10 @@ public class BoardController {
 		int pageLimit; //페이지 하단에 보여질 페이징바 갯수(예 1~10의 버튼)
 		int boardLimit; //한페이지에 보여질 게시글 갯수
 		
+		int maxPage; //가장 몇번페이지가 몇 번 페이지이 == 총 페이지 수
+		int startPage; // 페이징바 시작수
+		int endPage; // 페이징바 끝수
+		
 		listCount = boardService.selectListCount();
 		
 		pageLimit = 10;
@@ -49,9 +54,10 @@ public class BoardController {
 											boardLimit);	
 		
 		ArrayList<Board> list = boardService.selectBoardList(pi);
-		//System.out.println("조회된 리스트 개수: " + list.size());
-		//System.out.println("리스트 내용: " + list);
-		System.out.println("조회된 게시글 수: " + list.size());
+		//System.out.println("조회된 리스트 개수 : " + list.size());
+		//System.out.println("리스트 내용 : " + list);
+		//System.out.println("조회된 게시글 수 : " + list.size());
+		
 		mv.addObject("list",list);
 		//다량의 게시글의 정보가 담긴 거
 		
@@ -65,7 +71,21 @@ public class BoardController {
 		
 		return mv;
 	}
-	
+	@GetMapping("/search")
+	public ModelAndView searchBoardList(String condition1, String condition2, String keyword,
+										@RequestParam(value="cpage", defaultValue="1")int currentPage,
+										ModelAndView mv) {
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("condition1", condition1);
+		map.put("condition2", condition2);
+		map.put("keyword", keyword);
+		
+		int searchCount = boardService.selectSearchCount(map);
+		
+		return mv;
+		
+	}
 	
 	
 }

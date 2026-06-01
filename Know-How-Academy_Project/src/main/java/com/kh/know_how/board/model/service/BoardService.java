@@ -1,6 +1,7 @@
 package com.kh.know_how.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,21 @@ public class BoardService {
 		//dao로 보내줄 sql과 pi 발사
 		return boardDao.selectBoardList(sqlSession, pi);
 	}
+	/**
+	 * 게시글 전체 갯수
+	 * @return
+	 */
 	public int selectListCount() {
 		
 		return boardDao.selectListCount(sqlSession);
 	}
-
+	/**
+	 * 검색된 게시글 총 갯수
+	 * @param map
+	 * @return
+	 */
+	public int selectSearchCount(HashMap<String, String> map) {
+		
+		return boardDao.selectSearchCount(sqlSession, map);
+	}
 }

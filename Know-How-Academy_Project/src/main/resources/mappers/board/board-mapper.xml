@@ -47,6 +47,31 @@ FROM BOARD_POST
 WHERE POST_TYPE = 'A'
 AND STATUS = 'Y'
 </select>
+
+<!-- 검색결과의 갯수를 세오는 쿼리문 -->
+<select id="selectSearchCount" parameterType="hashmap" resultType="_int">
+SELECT COUNT(*)
+FROM BOARD_POST B
+JOIN MEMBER M ON (B.WRITER = M.USER_NO)
+WHERE BOARD_POST = 'A'
+AND B.STATUS = 'Y'
+<if test="condition1 == 'writer'">
+AND M.USER_NAME LIKE '%' || #{keyword} || '%'
+</if>
+<if test="condition1 == 'title'">
+AND B.TITLE LIKE '%' || #{keyword} || '%'
+</if>
+<if test="condition1 == 'content'">
+AND B.CONTNET LIKE '%' || #{keyword} || '%'
+</if>
+<if test="condition2 == 'admission'">
+AND B.CATEGORY = '입학상담'
+</if>
+<if test="condition2 == 'employment'">
+AND B.CATEGORY = '취업상담'
+</if>
+</select>
+								
   	
   
   </mapper>

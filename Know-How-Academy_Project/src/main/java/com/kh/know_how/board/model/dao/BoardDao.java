@@ -1,6 +1,7 @@
 package com.kh.know_how.board.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -37,9 +38,19 @@ public class BoardDao {
 				//	페이징 정보 == 몇번 페이지 요청시 해당 페이지에만 들어오는 게시글의 정보가 담긴 RowBounds)
 		//(ArrayList) == sql의 selectList메서드를 메서드에서 정해진 반환타입에 변환해준다.		
 	}
-	
+	/**
+	 * 게시글 전체 갯수 
+	 * @param sqlSession
+	 * @return
+	 */
 	public int selectListCount(SqlSessionTemplate sqlSession) {
 		
 		return sqlSession.selectOne("boardMapper.selectListCount");
+	}
+	public int selectSearchCount(SqlSessionTemplate sqlSession,
+								 HashMap<String, String> map) {
+		
+		return sqlSession.selectOne("boardMapper.selectSearchCount",map);
+		
 	}
 }
