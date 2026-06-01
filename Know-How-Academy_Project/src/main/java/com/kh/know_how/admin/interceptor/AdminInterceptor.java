@@ -6,8 +6,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.admin.model.service.AdminService;
-// Member 클래스가 있는 올바른 패키지 경로를 임포트해줘야 해 (예시)
-// import com.kh.know_how.member.model.vo.Member; 
 import com.kh.know_how.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +21,8 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 	// [메소드부]
 	
-	// 1. 전처리: 관리자 전용 페이지 접근 권한 체크
+	/*  ------------------------------로그인 전처리 --> 로그인페이지 생성되면 되살리기(-)
+	// 1. 전처리: 관리자 권한 체크
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
@@ -47,16 +46,17 @@ public class AdminInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        return true; // 관리자라면 무사 통과!
+        return true; // 관리자라면 통과
     }
     
-    
+    ----------------------------------------------------------------------------- */
+	
     // 2. 후처리: 알람
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 		
-		// 화면을 보여주는 정상적인 요청(Model과 View가 존재하고 리다이렉트가 아닐 때)만 실행
+		// Model과 View가 존재하고 리다이렉트가 아닐 때만 실행
 		if (modelAndView != null && modelAndView.getViewName() != null && !modelAndView.getViewName().startsWith("redirect:")) {
             
 			// 1. DB로부터 알림 숫자를 조회

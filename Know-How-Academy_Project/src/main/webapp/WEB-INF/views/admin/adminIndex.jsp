@@ -292,30 +292,6 @@
 
 <div class="admin-main">
 
-    <!-- 신규 가입 승인 배너 -->
-    <section class="approval-banner">
-        <div class="approval-left">
-            <div class="approval-icon">🔔</div>
-
-            <div>
-                <div class="approval-title">신규 가입 승인 대기</div>
-                <div class="approval-desc">승인 대기 중인 신규 가입 신청이 1건 있습니다.</div>
-            </div>
-        </div>
-
-        <div class="approval-count">
-            <div>
-                <strong>1</strong>
-                <span>건</span>
-            </div>
-
-            <button type="button" class="primary-btn" onclick="go('/admin/student/enroll')">
-                바로 확인하기
-            </button>
-        </div>
-    </section>
-
-
     <!-- 업무 영역 -->
     <section class="work-section">
 

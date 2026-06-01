@@ -236,12 +236,17 @@
         KNOW-HOW ACADEMY &thinsp; 관리자 페이지
     </div>
 
-    <!-- 메뉴바+알림+페이지를 감싸는 div -->
+    <!-- 메뉴바+알림+페이지를 감싸는 div 
+                    페이지 링크 수정(-)  -->
     <div id="main-container">
         <!-- 메뉴바 -->
         <div id="sidebar">
-            <div class="menu-item" data-path="/admin/index" onclick="go('/admin/index')">메인페이지</div>
-            <div class="menu-item" data-path="/admin/counselor/enroll" onclick="go('/admin/counselor/enroll')">
+            <div class="menu-item" data-path="/admin/index" 
+                onclick="go('/admin/index')">
+                메인페이지
+            </div>
+            <div class="menu-item" data-path="/admin/counselor/enroll" 
+                onclick="go('/admin/counselor/enroll')">
                 상담사 등록
             </div>
 
@@ -249,14 +254,12 @@
                 관리페이지
             </div>
 
-            <div class="menu-item"
-                 data-path="/admin/student"
+            <div class="menu-item" data-path="/admin/student"
                  onclick="go('/admin/student')">
                 학원생 관리
             </div>
 
-            <div class="menu-item"
-                 data-path="/admin/counselor"
+            <div class="menu-item" data-path="/admin/counselor"
                  onclick="go('/admin/counselor')">
                 상담사 관리
             </div>
@@ -265,8 +268,7 @@
                 설정
             </div>
 
-            <div class="menu-item"
-                 data-path="/admin/notice"
+            <div class="menu-item" data-path="/admin/notice"
                  onclick="go('/admin/notice')">
                 공지사항 관리
             </div>
@@ -279,13 +281,12 @@
                         <div class="approval-icon">🔔</div>
                         <div>
                             <div class="approval-title">신규 가입 승인 대기</div>
-                            <div class="approval-desc">승인 대기 중인 신규 가입 신청이 1건 있습니다.</div>
                         </div>
                     </div>
 
                     <div class="approval-count">
                         <div>
-                            <strong>1</strong>
+                            <strong>${requestScope.alarmCount}</strong>
                             <span>건</span>
                         </div>
 
