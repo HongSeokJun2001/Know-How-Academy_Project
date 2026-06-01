@@ -23,7 +23,9 @@ public class Reservation {
 	private String inquiryContent;		//	  INQUIRY_CONTENT CLOB NOT NULL,
 	private String reservationStatus;	//	  RESERVATION_STATUS VARCHAR2(20) DEFAULT 'RESERVED' CONSTRAINT CK_RESERVATION_STATUS CHECK(RESERVATION_STATUS IN ('APPLIED', 'CANCELED', 'RESERVED', 'COMPLETED')), 
 	private Date createdAt;				//	  CREATED_AT DATE DEFAULT SYSDATE NOT NULL,
-	private Date updateAt;				//	  UPDATED_AT DATE DEFAULT SYSDATE,
+	private Date updatedAt;				//	  UPDATED_AT DATE DEFAULT SYSDATE,
 	private int counselNo;				//	  COUNSEL_NO NUMBER NOT NULL,
 	
+	private String counselorName;
+	private String categoryName;
 }

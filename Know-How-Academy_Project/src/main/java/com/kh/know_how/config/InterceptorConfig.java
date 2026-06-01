@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.kh.know_how.common.intercepter.LoginIntercepter;
 
+/*
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
     
@@ -22,3 +23,4 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		// ....
 	}
 }
+*/

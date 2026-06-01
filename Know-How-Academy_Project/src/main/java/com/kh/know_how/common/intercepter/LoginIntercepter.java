@@ -9,10 +9,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+/*
 @Component
 public class LoginIntercepter implements HandlerInterceptor {
     
-	/*
+	
 	// 1. preHandle 메소드 (선처리용)
 	@Override
 	public boolean preHandle (HttpServletRequest request, HttpServletResponse response, 
@@ -40,5 +41,7 @@ public class LoginIntercepter implements HandlerInterceptor {
 			}
 				
 	}
-	*/
+	
+	
 }
+*/

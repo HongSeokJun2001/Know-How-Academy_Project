@@ -16,7 +16,6 @@
         <h2 align="center">예약리스트</h2>
         <br>
 
-        <!--에약리스트 기능 구현-->
         <table class="list-area table table-hover">
             <thead>
                 <tr>
@@ -28,27 +27,41 @@
                 </tr>
             </thead>
             <tbody>
-            	<c:choose>
-            		<c:when>
-            			<tr>
-            				<th colspan="5">
-            					조회된 게시글이 없습니다.
-            				</th>
-            			</tr>
-            		</c:when>
-            	</c:choose>
-            	<c:otherwise>
-            		<c:forEach var="reservation" items="${ requestScope.list }">
-            			<tr>
-            				<td>${ reservation.reservationNo }</td> <!-- 번호 -->
-            				<td>${ reservation.consultDate }</td> <!-- 상담일 -->
-            				<td>${ reservation.counselNo }</td> <!-- 상담사번호 -->
-            				<td>${ reservation.categoryNo }</td> <!-- 상담카테고리번호 -->
-            				<td>${ reservation.reservationStatus } <!-- 예약상태 -->
-            			</tr>
-            		</c:forEach>
-            	</c:otherwise>
-            </tbody>
+
+			    <c:choose>
+			
+			        <c:when test="${empty list}">
+			            <tr>
+			                <td colspan="5">조회된 예약이 없습니다.</td>
+			            </tr>
+			        </c:when>
+			
+			        <c:otherwise>
+			
+			            <c:forEach var="r" items="${list}">
+			                <tr>
+			                    <td>${r.reservationNo}</td>
+			                    <td>${r.consultDate}</td>
+			                    <td>${r.counselorName}</td>
+			                    <td>${r.categoryName}</td>
+			                    <td>
+			                        <c:choose>
+								        <c:when test="${r.reservationStatus eq 'APPLIED'}">상담신청</c:when>
+								        <c:when test="${r.reservationStatus eq 'CANCELED'}">신청취소</c:when>
+								        <c:when test="${r.reservationStatus eq 'RESERVED'}">예약됨 (상담수락)</c:when>
+								        <c:when test="${r.reservationStatus eq 'COMPLETED'}">상담완료</c:when>
+								        <c:otherwise>${r.reservationStatus}</c:otherwise>
+								    </c:choose>
+			                    </td>
+			                </tr>
+			            </c:forEach>
+			
+			        </c:otherwise>
+			
+			    </c:choose>
+
+			</tbody>
+
         </table>
 
     </div>
