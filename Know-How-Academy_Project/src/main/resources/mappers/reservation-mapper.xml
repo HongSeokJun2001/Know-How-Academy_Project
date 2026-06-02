@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="reservationMapper">
+ 
+ 	<resultMap id="reservationResultSet"
+           type="com.kh.know_how.reservation.model.vo.Reservation">
+
+	    <id column="RESERVATION_NO" property="reservationNo"/>
+	
+	    <result column="STUDENT_NO" property="studentNo"/>
+	    <result column="CATEGORY_NO" property="categoryNo"/>
+	    <result column="CONSULT_DATE" property="consultDate"/>
+	    <result column="INQUIRY_CONTENT" property="inquiryContent"/>
+	    <result column="RESERVATION_STATUS" property="reservationStatus"/>
+	    <result column="CREATED_AT" property="createdAt"/>
+	    <result column="UPDATED_AT" property="updatedAt"/>
+	    <result column="COUNSEL_NO" property="counselNo"/>
+	
+	    <result column="COUNSELOR_NAME" property="counselorName"/>
+	    <result column="CATEGORY_NAME" property="categoryName"/>
+
+	</resultMap>
+	
+	<!-- COUNSEL_CATEGORY resultMap -->
+	<resultMap id="categoryResultSet" type="category">
+		<id column="CATEGORY_NO" property="categoryNo"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
+	</resultMap>
+	
+	
+	<!-- 현재 로그인한 학생의 예약 건수 -->
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*) AS RESERVATION_COUNT
+		  FROM COUNSEL_RESERVATION CR
+		  JOIN STUDENT_DETAIL SD 
+		    ON CR.STUDENT_NO = SD.STUDENT_NO
+		  WHERE SD.USER_NO = #{userNo}
+	</select>
+	
+	<!-- 페이징처리가 적용된 게시글의 목록을 조회하는 쿼리문 -->
+	<select id="selectReservationList" resultMap="reservationResultSet">
+		SELECT
+		    CR.RESERVATION_NO,
+		    CR.STUDENT_NO,
+		    CR.CATEGORY_NO,
+		    CR.CONSULT_DATE,
+		    CR.INQUIRY_CONTENT,
+		    CR.RESERVATION_STATUS,
+		    CR.CREATED_AT,
+		    CR.UPDATED_AT,
+		    CR.COUNSEL_NO,
+		    M.USER_NAME AS COUNSELOR_NAME,
+		    CC.CATEGORY_NAME
+		FROM COUNSEL_RESERVATION CR
+		JOIN STUDENT_DETAIL SD ON CR.STUDENT_NO = SD.STUDENT_NO
+		JOIN COUNSELOR_PROFILE CP ON CR.COUNSEL_NO = CP.COUNSEL_NO
+		JOIN MEMBER M ON CP.USER_NO = M.USER_NO
+		JOIN COUNSEL_CATEGORY CC ON CR.CATEGORY_NO = CC.CATEGORY_NO
+		WHERE SD.USER_NO = #{userNo}
+		ORDER BY CR.RESERVATION_NO DESC
+	</select>
+	
+	<!-- 카테고리 전체 조회용 쿼리문 -->
+	<select id="selectCategoryList" resultMap="categoryResultSet">
+		SELECT *
+		  FROM COUNSEL_CATEGORY
+		  ORDER BY CATEGORY_NO ASC
+	</select>
+	
+ 
+ </mapper>
