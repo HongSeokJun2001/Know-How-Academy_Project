@@ -45,6 +45,11 @@ public class AdminService {
 		return ad.selectTodayReservationList(sqlSession);
 	}
 
+	public int todayReservatioCount() {
+		
+		return ad.todayReservatioCount(sqlSession);
+	}
+
 	
 	
 	
