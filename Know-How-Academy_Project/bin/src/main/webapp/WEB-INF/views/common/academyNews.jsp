@@ -16,12 +16,7 @@
 		text-align: center;
 		vertical-align: middle !important;
 	}
-	.detail-area>tr:first-child {
-		border-top : 1px solid black !important;
-	}
-	.detail-area>tr:last-child {
-		border-bottom : 1px solid black !important;
-	}
+
 </style>
 </head>
 <body>
