@@ -56,6 +56,7 @@ public class AdminController {
     	
     	return "admin/counselorList";
     } 
+
     
     @GetMapping("/counselorProfile")
     public String counselorProfile(Model model) {
@@ -63,8 +64,6 @@ public class AdminController {
     	
     	return "admin/counselorProfile";
     } 
-    
-
-    
+ 
     
 }//컨트롤러 끝
