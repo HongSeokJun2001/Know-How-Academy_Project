@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.kh.know_how.notice.model.service.NoticeService;
 
 @Controller
-@RequestMapping("community/notice")
+@RequestMapping("/notice")
 public class NoticeController {
 	
 	//@Autowired
@@ -21,6 +21,6 @@ public class NoticeController {
 	@GetMapping("/list")
 	public String selectNoticeList() {
 		
-		return "community/notice/noticeListView";
+		return "notice/noticeListView";
 	}
 }

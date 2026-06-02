@@ -16,7 +16,7 @@ import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.Pagination;
 
 @Controller
-@RequestMapping("/community/board")
+@RequestMapping("/board")
 public class BoardController {
 	
 	@Autowired
@@ -64,13 +64,22 @@ public class BoardController {
 		mv.addObject("pi",pi);
 		//페이징처리에 대한 정보와 페이징바 갯수 처리에 대한 정보가 담긴 거
 		
-		mv.setViewName("community/board/boardListView");
-		//WEB-INF/views/community/board/boardListView.jsp
+		mv.setViewName("board/boardListView");
+		//WEB-INF/views/board/boardListView.jsp
 		
 		
 		
 		return mv;
 	}
+	/**
+	 * 일반 게시글 검색리스트 조회
+	 * @param condition1 작성자/제목/내용
+	 * @param condition2 입학/취업
+	 * @param keyword 검색어
+	 * @param currentPage
+	 * @param mv
+	 * @return
+	 */
 	@GetMapping("/search")
 	public ModelAndView searchBoardList(String condition1, String condition2, String keyword,
 										@RequestParam(value="cpage", defaultValue="1")int currentPage,
@@ -83,9 +92,9 @@ public class BoardController {
 		
 		int searchCount = boardService.selectSearchCount(map);
 		
-		return mv;
-		
+		return mv;		
 	}
+	
 	
 	
 }
