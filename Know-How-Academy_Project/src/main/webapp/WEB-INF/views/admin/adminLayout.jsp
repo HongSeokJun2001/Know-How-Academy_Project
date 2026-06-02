@@ -258,22 +258,22 @@
                 메인페이지
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor/enroll" 
-                onclick="go('/admin/counselor/enroll')">
+            <div class="menu-item" data-path="/admin/counselorInvite" 
+                onclick="go('/admin/counselorInvite')">
                 상담사 등록
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 메뉴항목 수정(-)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 관리페이지
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
             <div class="menu-item" data-path="/admin/studentList"
                  onclick="go('/admin/studentList')">
                 학원생 관리
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor"
-                 onclick="go('/admin/counselor')">
+            <div class="menu-item" data-path="/admin/counselorList"
+                 onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  메뉴항목 수정 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->

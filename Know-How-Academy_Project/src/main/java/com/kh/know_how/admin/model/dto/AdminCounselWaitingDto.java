@@ -14,12 +14,12 @@ import lombok.ToString;
 @ToString
 public class AdminCounselWaitingDto {
 
-	private String createdAt;		//	CREATED_AT(상담신청일)	DATE
-	private String studentName;		//	USER_NAME(학생)	VARCHAR2(20 BYTE)
-	private String categoryName;	//	CATEGORY_NAME(상담종류)	VARCHAR2(50 BYTE)
-	private String className;		//	CLASS_NAME(클래스)	VARCHAR2(100 BYTE)
-	private String counselorName;	//	USER_NAME(상담사)	VARCHAR2(20 BYTE)
-	private int elapsedDays;		//	(경과일) int  --글씨색바꿀용도
-	
+	private String createdAt;		//	상담 신청일
+	private String studentName;		//	학생이름
+	private String categoryName;	//	상담종류
+	private String className;		//	클래스
+	private String counselorName;	//	상담사이름
+	private int elapsedDays;		//	경과일 (3일 이상은 빨간 글씨)
+	private int categoryNo;			//	카테고리번호
 	
 }

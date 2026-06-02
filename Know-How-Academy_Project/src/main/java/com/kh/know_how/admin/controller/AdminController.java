@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
+import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 import com.kh.know_how.admin.model.service.AdminService;
 
@@ -38,33 +39,41 @@ public class AdminController {
     	//금일 상담일정 목록 조회
     	ArrayList<TodayReservationDto> reservationList = as.selectTodayReservationList();
     	//금일 상담일정 목록 개수 조회
-    	int todayReservatioCount = as.todayReservatioCount();
-    	//통계 조회 (-)
+    	int todayReservatioCount = as.todayReservationCount();
+    	//통계 조회 - 월간 상담 현황 (당월/전월, 카테고리별)
+    	AdminDashboardStatsDto adsd = as.selectdashboardStats();;
+    	
     	
     	model.addAttribute("waitingList",waitingList);
     	model.addAttribute("CounselWaitingCount",CounselWaitingCount);
     	model.addAttribute("reservationList",reservationList);
     	model.addAttribute("todayReservatioCount",todayReservatioCount);
+    	model.addAttribute("AdminDashboardStatsDto",adsd);
         model.addAttribute("page", "adminIndex");
         return "admin/adminLayout";
     }
     
     
-    @GetMapping("/counselor")
+    @GetMapping("/counselorList")
     public String counselorList(Model model) {
     	
-    	
-    	return "admin/counselorList";
+    	model.addAttribute("page", "counselorList");
+    	return "admin/adminLayout";
     } 
     
     @GetMapping("/counselorProfile")
     public String counselorProfile(Model model) {
     	
-    	
-    	return "admin/counselorProfile";
+    	model.addAttribute("page", "counselorProfile");
+    	return "admin/adminLayout";
     } 
     
-
-    
+     
+    @GetMapping("/counselorInvite")
+    public String counselorInvite(Model model) {
+    	
+    	model.addAttribute("page", "counselorInvite");
+    	return "admin/adminLayout";
+    } 
     
 }//컨트롤러 끝

@@ -116,12 +116,12 @@
         font-weight: 800;
     }
 
-    .type-job {
+    .type-red {
         background: #FFECEF;
-        color: #F04452;
+        color: #F59E0B;
     }
 
-    .type-enter {
+    .type-blue {
         background: #EEF3FF;
         color: #2F5FE3;
     }
@@ -371,12 +371,18 @@
                             <td>${w.studentName}</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${w.categoryName eq '취업'}">
-                                        <span class="type-badge type-job">${w.categoryName}</span>
-                                    </c:when>
 
-                                    <c:otherwise>
+                                    <c:when test="${w.categoryNo eq 1}">
+                                        <span class="type-badge type-blue">${w.categoryName}</span>
+                                    </c:when>
+                                    <c:when test="${w.categoryNo eq 2}">
                                         <span class="type-badge type-green">${w.categoryName}</span>
+                                    </c:when>
+                                    <c:when test="${w.categoryNo eq 3}">
+                                        <span class="type-badge type-red">${w.categoryName}</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="type-badge">${w.categoryName}</span>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
@@ -414,15 +420,24 @@
                         <tr>
                             <td>${t.reservationTime}</td>
                                 <c:choose>
-                                    <c:when test="${t.categoryName eq '취업'}">
+                                    <c:when test="${t.categoryNo eq 1}">
                                         <td>
-                                            <span class="type-badge type-job">${t.categoryName}상담</span>
+                                            <span class="type-badge type-blue">${t.categoryName}상담</span>
                                         </td>
                                     </c:when>
-
-                                    <c:otherwise>
+                                    <c:when test="${t.categoryNo eq 2}">
                                         <td>
                                             <span class="type-badge type-green">${t.categoryName}상담</span>
+                                        </td>
+                                    </c:when>
+                                    <c:when test="${t.categoryNo eq 3}">
+                                        <td>
+                                            <span class="type-badge type-red">${t.categoryName}상담</span>
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td>
+                                            <span class="type-badge">${t.categoryName}상담</span>
                                         </td>
                                     </c:otherwise>
                                 </c:choose>
@@ -479,7 +494,10 @@
                         <span>입학상담</span>
                         <span class="up">+3건</span>
                     </div>
-
+                    <div class="info-row">
+                        <span>취업상담</span>
+                        <span class="down">-1건</span>
+                    </div>
                     <div class="info-row">
                         <span>취업상담</span>
                         <span class="down">-1건</span>
@@ -487,7 +505,7 @@
                 </div>
 
                 <div class="info-card rate-card">
-                    <div class="info-title">✅ 완료율</div>
+                    <div class="info-title">✅ 신청율</div>
                     <div class="info-row">
                         <span>입학상담</span>
                         <span>77%</span>
