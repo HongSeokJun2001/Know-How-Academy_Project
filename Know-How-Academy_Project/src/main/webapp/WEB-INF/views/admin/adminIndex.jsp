@@ -204,6 +204,131 @@
     .stat-sub strong {
         color: #4233C7;
     }
+
+    /* 그래프 css */
+    .chart-section {
+        width: 100%;
+    }
+
+    .chart-card {
+        min-height: 260px;
+    }
+
+    .bar-chart {
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+
+        margin-top: 28px;
+    }
+
+    .bar-row {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .bar-label {
+        font-size: 15px;
+        font-weight: 800;
+        color: #2C2A38;
+    }
+
+    .bar-track {
+        width: 100%;
+        height: 34px;
+
+        background: #F3F1FF;
+        border-radius: 999px;
+
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        padding-right: 14px;
+
+        border-radius: 999px;
+
+        font-size: 14px;
+        font-weight: 800;
+        color: #FFFFFF;
+
+        transition: width 0.3s ease;
+    }
+
+    .bar-fill.career {
+        background: #4233C7;
+    }
+
+    .bar-fill.job {
+        background: #F04452;
+    }
+
+    .bar-fill span {
+        white-space: nowrap;
+    }
+
+    .chart-summary{
+        margin-top:24px;
+
+        font-size:14px;
+        color:#6F6D80;
+    }
+
+    .chart-summary .up{
+        color:#12A150;
+    }
+
+    .chart-summary .down{
+        color:#F04452;
+    }
+
+    .bar-row {
+        cursor: pointer;
+    }
+
+    .chart-footer{
+        display:flex;
+        gap:12px;
+        margin-top:16px;
+    }
+
+    .info-card{
+        flex:1;
+        padding:12px;
+        border-radius:12px;
+        background:#F8F9FA;
+    }
+
+    .info-title{
+        font-size:14px;
+        font-weight:700;
+        margin-bottom:8px;
+    }
+
+    .info-row{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .up{
+        color:#12A150;
+        font-weight:700;
+    }
+
+    .down{
+        color:#E74C3C;
+        font-weight:700;
+    }
+
 </style>
 
 <div class="admin-main">
@@ -217,7 +342,7 @@
                 <div class="section-title-wrap">
                     <span class="section-icon">👥</span>
                     <h3 class="section-title">상담 신청 대기 목록</h3>
-                    <span class="count-badge">${count}건</span>
+                    <span class="count-badge">${CounselWaitingCount}건</span>
                 </div>
             </div>
 
@@ -270,7 +395,7 @@
                 <div class="section-title-wrap">
                     <span class="section-icon">📅</span>
                     <h3 class="section-title">금일 상담 일정</h3>
-                    <span class="count-badge">1건</span>
+                    <span class="count-badge">${todayReservatioCount}건</span>
                 </div>
             </div>
 
@@ -312,51 +437,73 @@
     </section>
 
 
-    <!-- 주요 통계 -->
+    <!-- 월간 통계  -->
     <section>
-        <div class="stats-title">주요 통계</div>
+        <div class="section-card chart-card">
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-label">전체 재원생</div>
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-icon">📊</span>
+                    <h3 class="section-title">월간 상담 유형별 신청 현황</h3>
                 </div>
-
-                <div class="stat-number">133<span>명</span></div>
-                <div class="stat-sub">전월 대비 <strong>▲ 7명</strong></div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div class="stat-icon">➕</div>
-                    <div class="stat-label">이번달 신규 등록</div>
+            <div class="bar-chart">
+
+                <div class="bar-row">
+                    <div class="bar-label">입학상담</div>
+                    <div class="bar-track">
+                        <div class="bar-fill career" style="width: 65%;">
+                            <span>13건</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="stat-number">18<span>명</span></div>
-                <div class="stat-sub">전월 대비 <strong>▲ 4명</strong></div>
+                <div class="bar-row">
+                    <div class="bar-label">취업상담</div>
+                    <div class="bar-track">
+                        <div class="bar-fill job" style="width: 35%;">
+                            <span>7건</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-label">금일 상담 건수</div>
+            <br><br>
+            <div class="chart-footer">
+
+                <div class="info-card trend-card">
+                    <div class="info-title">🔥 전월 대비</div>
+                    <div class="info-row">
+                        <span>입학상담</span>
+                        <span class="up">+3건</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span>취업상담</span>
+                        <span class="down">-1건</span>
+                    </div>
                 </div>
 
-                <div class="stat-number">13<span>건</span></div>
-                <div class="stat-sub">오전 5건 / 오후 8건</div>
-            </div>
+                <div class="info-card rate-card">
+                    <div class="info-title">✅ 완료율</div>
+                    <div class="info-row">
+                        <span>입학상담</span>
+                        <span>77%</span>
+                    </div>
 
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div class="stat-icon">⚠️</div>
-                    <div class="stat-label">미처리 상담 건수</div>
+                    <div class="info-row">
+                        <span>취업상담</span>
+                        <span>71%</span>
+                    </div>
                 </div>
 
-                <div class="stat-number">13<span>건</span></div>
-                <div class="stat-sub">최장 대기 <strong class="text-danger">3일</strong></div>
             </div>
         </div>
     </section>
 
 </div>
+
+
+

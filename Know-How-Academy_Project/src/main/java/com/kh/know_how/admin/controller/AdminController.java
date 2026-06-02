@@ -31,22 +31,40 @@ public class AdminController {
     @GetMapping("/index")
     public String adminIndex(Model model) {
     	
-    	//상담신청대기목록조회
+    	//상담신청 대기목록 조회
     	ArrayList<AdminCounselWaitingDto> waitingList = as.selectWaitingList();
-    	//상담신청대기목록갯수조회
-    	int count = as.selectCounselWaitingCount();
+    	//상담신청 대기목록 개수 조회
+    	int CounselWaitingCount = as.selectCounselWaitingCount();
     	//금일 상담일정 목록 조회
     	ArrayList<TodayReservationDto> reservationList = as.selectTodayReservationList();
+    	//금일 상담일정 목록 개수 조회
+    	int todayReservatioCount = as.todayReservatioCount();
+    	//통계 조회 (-)
     	
     	model.addAttribute("waitingList",waitingList);
-    	model.addAttribute("count",count);
+    	model.addAttribute("CounselWaitingCount",CounselWaitingCount);
     	model.addAttribute("reservationList",reservationList);
+    	model.addAttribute("todayReservatioCount",todayReservatioCount);
         model.addAttribute("page", "adminIndex");
         return "admin/adminLayout";
     }
     
     
+    @GetMapping("/counselor")
+    public String counselorList(Model model) {
+    	
+    	
+    	return "admin/counselorList";
+    } 
     
+    @GetMapping("/counselorProfile")
+    public String counselorProfile(Model model) {
+    	
+    	
+    	return "admin/counselorProfile";
+    } 
+    
+
     
     
 }//컨트롤러 끝
