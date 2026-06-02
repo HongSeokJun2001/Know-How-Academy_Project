@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
@@ -41,11 +42,30 @@ public class BoardService {
 	}
 	/**
 	 * 검색된 게시글 총 갯수
-	 * @param map
+	 * @param map 게시글 기본 정보
 	 * @return
 	 */
 	public int selectSearchCount(HashMap<String, String> map) {
 		
 		return boardDao.selectSearchCount(sqlSession, map);
+	}
+	/**
+	 * 게시글 조회
+	 * @param boardNo 
+	 * @return
+	 */
+	@Transactional
+	public int increaseCount(int boardNo) {
+		
+		return boardDao.increaseCount(sqlSession, boardNo);
+	}
+	/**
+	 * 
+	 * @param boardNo
+	 * @return
+	 */
+	public Board selectBoard(int boardNo) {
+		
+		return boardDao.selectBoard(sqlSession,  boardNo);
 	}
 }

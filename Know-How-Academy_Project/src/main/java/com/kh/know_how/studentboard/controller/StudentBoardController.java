@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.kh.know_how.studentboard.model.service.StudentService;
 
 @Controller
-@RequestMapping("/community/student")
+@RequestMapping("/student")
 public class StudentBoardController {
 
 	//@Autowired
@@ -21,6 +21,6 @@ public class StudentBoardController {
 	@GetMapping("/list")
 	public String selectStudentList() {
 		
-		return "community/student/studentListView";
+		return "student/studentListView";
 	}
 }

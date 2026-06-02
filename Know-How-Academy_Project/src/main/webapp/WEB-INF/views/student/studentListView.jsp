@@ -59,7 +59,7 @@
     </head>
 
     <body>
-        <jsp:include page="../../common/menubar.jsp" />
+        <jsp:include page="../common/menubar.jsp" />
 
         <div class="outer">
             <h2>수강게시판</h2>

@@ -11,7 +11,6 @@
 					text-align: center;
 					border: none !important;
 				}
-
 				#search-area {}
 
 				.table tbody {
@@ -157,6 +156,21 @@
 								</c:forEach>
 							</c:otherwise>
 						</c:choose>
+						<!--게시글 클릭시 게시글내부로 진입-->
+						<script>
+							$(function(){
+								$(".table>tbody>tr").click(function(){
+
+									
+
+									let bno = $(this).children().eq(0).text();
+									console.log(bno);
+									location.href="/know-how/board/detail/" + bno;
+								})
+							
+							})
+						</script>
+						
 					</tbody>
 				</table>
 				<!--@@@페이징바영역@@@-->

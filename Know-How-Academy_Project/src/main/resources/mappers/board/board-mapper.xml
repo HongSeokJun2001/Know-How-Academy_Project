@@ -71,7 +71,30 @@ AND B.CATEGORY = '입학상담'
 AND B.CATEGORY = '취업상담'
 </if>
 </select>
-								
+
+<!-- 일반 게시글 조회수증가용 쿼리문 -->
+<update id="increaseCount" parameterType="_int">
+UPDATE BOARD_POST
+SET VIEW_COUNT = VIEW_COUNT +1
+WHERE POST_NO = #{postNo}
+AND STATUS = 'Y'
+</update>
+
+<!--  일반게시글 상세조회용 쿼리문 -->
+<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
+SELECT B.POST_NO,
+       B.TITLE,
+       M.USER_NAME,
+       B.CREATED_AT,
+       B.CONTENT
+FROM BOARD_POST B
+JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
+WHERE POST_NO = #{postNo}
+AND B.STATUS = 'Y'	
+</select>
+
+
+	
   	
   
   </mapper>

@@ -5,7 +5,9 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -76,7 +78,7 @@ public class BoardController {
 	 * @param condition1 작성자/제목/내용
 	 * @param condition2 입학/취업
 	 * @param keyword 검색어
-	 * @param currentPage
+	 * @param currentPage 요청페이지
 	 * @param mv
 	 * @return
 	 */
@@ -94,7 +96,39 @@ public class BoardController {
 		
 		return mv;		
 	}
-	
+	/**
+	 * 
+	 * @param boardNo Board VO
+	 * @param model 
+	 * @return
+	 */
+	@GetMapping("detail/{boardNo}")	
+	public String selectBoard(@PathVariable int boardNo, Model model) {
+				
+		//System.out.println(boardNo);
+		//해당 게시글의 조회?
+		int result = boardService.increaseCount(boardNo);
+		
+		if(result>0) {
+			
+			//result > 0 이면 게시글 내부 DB 요청
+			Board b = boardService.selectBoard(boardNo);
+			
+			model.addAttribute("b", b);
+			//첨부파일작업시 재활성화
+//			model.addAttributes("at", at);
+			
+			//첨부파일작업시 재활성화
+			//Attachment at = boardService.selectAttachment(boardNo);
+			
+			return "board/boardDetailView";
+						
+		}else {
+			//result > 0 아닐 시 에러문구 표현
+		}
+			
+		return "common/errorPage";
+	}
 	
 	
 }
