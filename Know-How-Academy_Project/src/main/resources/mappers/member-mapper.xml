@@ -39,12 +39,41 @@
 		                 , PHONE
 		                 , EMAIL
 		                 , ADDRESS)
-		            VALUES(SEQ_UNO.NEXTVAL
+		            VALUES(SEQ_USER_NO.NEXTVAL
 		                 , #{userId}
 		                 , #{userPwd}
 		                 , #{userName}
 		                 , #{phone}
 		                 , #{email}
 		                 , #{address})
-	</insert>		   
+	</insert>
+	
+	<!-- 회원 정보 변경용 쿼리문 -->
+	<update id="updateMember" parameterType="member">
+		UPDATE MEMBER
+		   SET USER_NAME = #{userName}
+		     , USER_PWD = #{userPwd}
+		     , PHONE = #{phone}
+		     , EMAIL = #{email}
+		     , ADDRESS = #{address}
+		     , UPDATED_AT = SYSDATE
+		 WHERE USER_ID = #{userId}
+		   AND STATUS = 'ACTIVE'
+	</update>
+	
+	<!-- 회원 탈퇴용 쿼리문 -->
+	<update id="deleteMember" parameterType="string">
+		UPDATE MEMBER
+		   SET STATUS = 'INACTIVE'
+		     , UPDATED_AT = SYSDATE
+		 WHERE USER_ID = #{userId}
+		   AND STATUS = 'ACTIVE'
+	</update>
+	
+	<!-- 아이디 중복 체크용 쿼리문 -->
+	<select id="idcheck" parameterType="string" resultType="_int">
+	      SELECT COUNT(*)
+	        FROM MEMBER
+	       WHERE USER_ID = #{checkId}
+	</select>		   
 </mapper>
