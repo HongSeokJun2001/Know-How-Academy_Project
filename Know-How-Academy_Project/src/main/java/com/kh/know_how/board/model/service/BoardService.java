@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Service
@@ -31,6 +32,16 @@ public class BoardService {
 	public ArrayList<Board> selectNewsList(PageInfo pi) {
 		
 		return boardDao.selectNewsList(sqlSession, pi);
+	}
+
+	public Board selectNews(int postNo) {
+		
+		return boardDao.selectNews(sqlSession, postNo);
+	}
+
+	public ArrayList<FileAttachment> selectFileAttachmentList(int postNo) {
+		
+		return boardDao.selectFileAttachmentList(sqlSession, postNo);
 	}
 
 

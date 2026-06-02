@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adminMapper2">
+	
+	<!-- 1. 학생 수를 구하는 쿼리 -->
+	<select id="selectStudentListCount" resultType="_int">
+		SELECT COUNT(*)
+		  FROM STUDENT_DETAIL
+	</select>
+	
+	<!-- 2. 학생 리스트를 출력하는 쿼리 -->
+	<select id="selectStudentList" parameterType="hashmap" 
+			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+		SELECT SM.USER_NAME AS studentName
+		     , SM.PHONE AS phone
+		     , CM.USER_NAME AS counselorName
+		     , S.CREATED_AT AS createdAt
+		     , S.STUDENT_STATUS AS status
+		     , S.STUDENT_NO AS studentNo
+		  FROM STUDENT_DETAIL S
+		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
+		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		 ORDER BY STUDENT_NO DESC
+	</select>
+	
+	<!-- 3. 검색 결과의 갯수를 세오는 쿼리 -->
+	<select id="selectStudentSearchCount" parameterType="hashmap" resultType="_int">
+		SELECT COUNT(*)
+		  FROM STUDENT_DETAIL
+		  JOIN MEMBER USING(USER_NO)
+		 WHERE (USER_NAME LIKE '%' || #{keyword} || '%' 
+		    OR PHONE LIKE '%' || #{keyword} || '%')
+		    <if test="status == 'ACTIVE'">
+		    	AND STUDENT_STATUS = 'ATTENDING'
+		    </if> 
+		    <if test="status == 'REST'">
+		    	AND STUDENT_STATUS = 'ABSENT'
+		    </if>
+	</select>
+	
+	<!-- 4. 검색 결과의 학생 리스트를 출력하는 쿼리  -->
+	<select id="searchStudentList" parameterType="hashmap" 
+			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+		SELECT SM.USER_NAME AS studentName
+		     , SM.PHONE AS phone
+		     , CM.USER_NAME AS counselorName
+		     , S.CREATED_AT AS createdAt
+		     , S.STUDENT_STATUS AS status
+		     , SM.STUDENT_NO AS studentNo
+		  FROM STUDENT_DETAIL S
+		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
+		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  WHERE (SM.USER_NAME LIKE '%' || #{keyword} || '%' 
+		    OR SM.PHONE LIKE '%' || #{keyword} || '%')
+		    <if test="status == 'ACTIVE'">
+		    	AND STUDENT_STATUS = 'ATTENDING'
+		    </if> 
+		    <if test="status == 'REST'">
+		    	AND STUDENT_STATUS = 'ABSENT'
+		    </if>
+		  ORDER BY STUDENT_NO DESC
+	</select>
+	
+	<!-- 5. 학생 상세정보 조회하는 쿼리문 -->
+	<select id="selectStudent" parameterType="_int" 
+			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+		SELECT SM.USER_NAME AS 	studentName
+			 , SM.PHONE AS phone
+			 , SM.EMAIL AS email
+			 , SM.CREATED_AT AS createdAt
+			 , CLASS_NAME AS className
+			 , CM.USER_NAME AS counselorName
+			 , S.STUDENT_STATUS AS status
+			 , S.UPDATED_AT AS updatedAt
+			 , SMEMO.USER_MEMO AS studentMemo
+		  FROM STUDENT_DETAIL S
+		  JOIN MEMBER SM ON (S.USER_NO = SM.USER_NO)
+		  JOIN CLASS CL ON (SM.CLASS_NO = CL.CLASS_NO)
+		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  JOIN MEMBER_MEMO SMEMO ON (SM.USER_NO = SMEMO.USER_NO)
+		 WHERE S.STUDENT_NO = #{studentNo}
+	</select>
+</mapper>
+	
+	

@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Repository
@@ -28,5 +29,15 @@ public class BoardDao {
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
 		return (ArrayList)sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
+	}
+
+	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.selectOne("boardMapper.selectNews", postNo);
+	}
+	
+	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.selectFileAttachmentList", postNo);
 	}
 }

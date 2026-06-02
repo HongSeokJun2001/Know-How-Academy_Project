@@ -16,7 +16,10 @@ import lombok.ToString;
 public class Board {
 	private int postNo;
 	private String postType;
+	private String category;
 	private String title;
+	private String content;
+	private String postWriter;
 	private Date createdAt;
 	private int viewCount;
 	private String status;

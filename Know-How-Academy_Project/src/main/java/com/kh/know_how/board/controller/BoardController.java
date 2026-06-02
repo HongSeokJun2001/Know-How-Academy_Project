@@ -7,12 +7,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.board.model.service.BoardService;
 import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.Pagination;
 
@@ -54,11 +57,17 @@ public class BoardController {
 	 * 학원 소식 상세조회페이지
 	 * @return
 	 */
-	@GetMapping("news/detail/{boardNo}")
-	public String academyNews() {
+	@GetMapping("news/detail/{postNo}")
+	public ModelAndView academyNews(@PathVariable int postNo, ModelAndView mv) {
+		Board b = boardService.selectNews(postNo);
 		
-		return "common/academyNews";
+		ArrayList<FileAttachment> list = boardService.selectFileAttachmentList(postNo);
+
+		mv.addObject("b", b)
+		  .addObject("list", list)
+		  .setViewName("common/academyNews");
 		
+		return mv;
 	}
 	
 	
