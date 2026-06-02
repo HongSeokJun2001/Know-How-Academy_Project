@@ -267,11 +267,11 @@
                 관리페이지
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-            <div class="menu-item" data-path="/admin/student"
-                 onclick="go('/admin/student')">
+            <div class="menu-item" data-path="/admin/studentList"
+                 onclick="go('/admin/studentList')">
                 학원생 관리
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  상담사 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
             <div class="menu-item" data-path="/admin/counselor"
                  onclick="go('/admin/counselor')">
                 상담사 관리
@@ -315,6 +315,8 @@
             <jsp:include page="${page}.jsp" />
         </div>
     </div>
+   
+    
     
 <script>
 

@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="adminMapper">
 	
-	<!-- 신규가입자알람용쿼리 -->
+	<!-- 1. 신규가입자알람용쿼리 -->
 	<select id="selectAlarmCount" resultType="_int">
 		SELECT COUNT(*)
 		  FROM MEMBER
@@ -63,6 +63,19 @@
 		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
 		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
 		 ORDER BY C.CREATED_AT ASC
+ 	</select>
+ 	
+ 	<!-- 5. 금일 상담일정 목록 개수 조회 -->
+ 	<select id="todayReservatioCount" resultType="_int">
+ 		SELECT COUNT(*)
+		  FROM COUNSEL_RESERVATION C
+		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
+		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
+		 WHERE C.RESERVATION_STATUS = 'RESERVED'
+		   AND SD.STUDENT_STATUS = 'ATTENDING'
+		   AND CP.STATUS = 'ACTIVE'	
+		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
+		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
  	</select>
 </mapper>
 	

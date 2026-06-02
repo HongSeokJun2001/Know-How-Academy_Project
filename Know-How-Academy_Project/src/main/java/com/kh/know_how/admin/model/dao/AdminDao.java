@@ -31,6 +31,11 @@ public class AdminDao {
 		return (ArrayList)sqlSession.selectList("adminMapper.selectTodayReservationList");
 	}
 
+	public int todayReservatioCount(SqlSessionTemplate sqlSession) {
+		
+		return sqlSession.selectOne("adminMapper.todayReservatioCount");
+	}
+
 	
 	
 	
