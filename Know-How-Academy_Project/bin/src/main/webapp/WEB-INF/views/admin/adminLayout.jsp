@@ -149,6 +149,7 @@
         box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
     }
 
+
     .approval-banner {
         display: flex;
         align-items: center;
@@ -170,8 +171,18 @@
     }
 
     .approval-icon {
-        font-size: 32px;
+        width: 64px;
+        height: 64px;
+
+        border-radius: 50%;
+        background: #F3F1FF;
         color: #4233C7;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 28px;
     }
 
     .approval-title {
@@ -203,7 +214,7 @@
         color: #4233C7;
     }
 
-    .primary-btn {
+        .primary-btn {
         height: 46px;
         padding: 0 22px;
 
@@ -222,6 +233,7 @@
     .primary-btn:hover {
         background: #F3F1FF;
     }
+
 </style>
 </head>
 <body>
@@ -236,37 +248,40 @@
         KNOW-HOW ACADEMY &thinsp; 관리자 페이지
     </div>
 
-    <!-- 메뉴바+알림+페이지를 감싸는 div -->
+    <!-- 메뉴바+알림+페이지를 감싸는 div 
+                    페이지 링크 수정(-)  -->
     <div id="main-container">
         <!-- 메뉴바 -->
         <div id="sidebar">
-            <div class="menu-item" data-path="/admin/index" onclick="go('/admin/index')">메인페이지</div>
-            <div class="menu-item" data-path="/admin/counselor/enroll" onclick="go('/admin/counselor/enroll')">
-                상담사 등록
+            <div class="menu-item" data-path="/admin/index" 
+                onclick="go('/admin/index')">
+                메인페이지
             </div>
 
+            <div class="menu-item" data-path="/admin/counselor/enroll" 
+                onclick="go('/admin/counselor/enroll')">
+                상담사 등록
+            </div>
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 메뉴항목 수정(-)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 관리페이지
             </div>
-
-            <div class="menu-item"
-                 data-path="/admin/student"
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            <div class="menu-item" data-path="/admin/student"
                  onclick="go('/admin/student')">
                 학원생 관리
             </div>
-
-            <div class="menu-item"
-                 data-path="/admin/counselor"
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  상담사 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            <div class="menu-item" data-path="/admin/counselor"
                  onclick="go('/admin/counselor')">
                 상담사 관리
             </div>
-
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  메뉴항목 수정 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 설정
             </div>
-
-            <div class="menu-item"
-                 data-path="/admin/notice"
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  공지사항 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            <div class="menu-item" data-path="/admin/notice"
                  onclick="go('/admin/notice')">
                 공지사항 관리
             </div>
@@ -279,16 +294,15 @@
                         <div class="approval-icon">🔔</div>
                         <div>
                             <div class="approval-title">신규 가입 승인 대기</div>
-                            <div class="approval-desc">승인 대기 중인 신규 가입 신청이 1건 있습니다.</div>
                         </div>
                     </div>
 
                     <div class="approval-count">
                         <div>
-                            <strong>1</strong>
+                            <strong>${requestScope.alarmCount}</strong>
                             <span>건</span>
                         </div>
-
+   <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 신규등록 페이지와 연결 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
                         <button type="button" class="primary-btn" onclick="go('/admin/student/enroll')">
                             바로 확인하기
                         </button>

@@ -52,7 +52,8 @@
             margin-top : 50px;
 	    }
 	    .mypage-outer {
-	        width : 1000px;
+	        width : 1200px;
+            border : 1px dotted black;
             margin : auto;
             margin-top : 50px;
 	    }

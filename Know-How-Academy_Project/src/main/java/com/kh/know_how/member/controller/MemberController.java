@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.member.model.service.MemberService;
@@ -34,7 +35,7 @@ public class MemberController {
 	return mv;
 	}
 	
-	@PostMapping("login")
+	@PostMapping("myPage/login")
 	public String loginMember(Member m, Model model, String saveId, 
 			                  HttpSession session, HttpServletResponse response) {
 	
@@ -45,7 +46,7 @@ public class MemberController {
 		
 				Cookie cookie = new Cookie("saveId", m.getUserId());
 				cookie.setMaxAge(1 * 24 * 60 * 60); // 1일 (초단위)
-				cookie.setPath("/know_how/"); // 이 쿠키를 우리 웹사이트 내부에서만 이용 가능하게끔
+				cookie.setPath("/know-how/"); // 이 쿠키를 우리 웹사이트 내부에서만 이용 가능하게끔
 				
 				
 				response.addCookie(cookie);
@@ -56,7 +57,7 @@ public class MemberController {
 				
 				Cookie cookie = new Cookie("saveId", m.getUserId());
 				cookie.setMaxAge(0);
-				cookie.setPath("/know_how/");
+				cookie.setPath("/know-how/");
 				
 				response.addCookie(cookie);
 			}
@@ -86,48 +87,60 @@ public class MemberController {
 					
 	}
 	
-	@GetMapping("logout")
+	@GetMapping("myPage/logout")
 	public String logoutMember(HttpSession session) {
 		
 		session.removeAttribute("loginUser");
 		
 		session.setAttribute("alertMsg", "로그아웃이 되었습니다.");
 		
-		return "common/menubar";
+		return "redirect:/";
 	}
 	
-	@GetMapping("enrollForm") // 회원가입페이지로 이동
+	@GetMapping("myPage/enrollForm") // 회원가입페이지로 이동
 	public String enrollForm() {
 		
 		return "member/memberEnrollForm";
 	}
 	
-	@GetMapping("searchIdForm") // 내 아이디 찾기
+	@GetMapping("myPage/searchIdForm") // 내 아이디 찾기
 	public String searchIdForm() {
 		
 		return "member/searchIdForm";
 	}
 	
-	@GetMapping("searchPasswordForm") // 내 비밀번호 찾기
+	@GetMapping("myPage/searchPasswordForm") // 내 비밀번호 찾기
 	public String searchPasswordForm() {
 		
 		return "member/searchPasswordForm";
 	}
 	
-	@PostMapping("myInformationSelectForm") // 내정보 찾기 페이지로 이동
-	public String myInformationSelectForm() {
+	@GetMapping("myPage/myInformationSelectForm") // 내정보 조회 페이지로 이동
+	public ModelAndView myInformationSelectForm(ModelAndView mv) {
 		
-		return "member/myInformationSelectForm";
+		mv.setViewName("member/myInformationSelectForm");
+		
+		return mv;
 	}
 	
-	@PostMapping("myInformationChangeForm") // 내정보 수정 페이지로 이동
-	public String myInformationChangeForm() {
+	@GetMapping("myPage/myInformationChangeForm") // 내정보 수정 페이지로 이동
+	public ModelAndView myInformationChangeForm(ModelAndView mv) {
 		
-		return "member/myInformationChangeForm";
+		mv.setViewName("member/myInformationChangeForm");
+		
+		return mv;
+	}
+	
+	@GetMapping("myPage/memberDelectForm") // 회원탈퇴 페이지로 이동
+	public ModelAndView memberDelectForm(ModelAndView mv) {
+		
+		mv.setViewName("member/memberDelectForm");
+		
+		return mv;
 	}
 	
 	
-	@PostMapping("insert")
+	@PostMapping("myPage/insert")
 	public String insertMember(Member m, Model model, HttpSession session) {
 		
 		// 암호화 하기전
@@ -150,5 +163,77 @@ public class MemberController {
 		return "common/errorPage";
 		// > /WEB-INF/views/common/errorPage.jsp
 		}
+	}
+	
+	@PostMapping("myPage/update")
+	public ModelAndView updateMember(Member m, ModelAndView mv, HttpSession session) {
+		
+		int result = memberService.updateMember(m);
+		
+		// 응답페이지 처리
+		if(result > 0) {
+			// 회원 정보 변경에 성공했을 경우
+			
+			Member updateMem = memberService.loginMember(m);
+			
+			session.setAttribute("loginUser", updateMem);
+			
+			session.setAttribute("alertMsg","회원정보가 변경되었습니다.");
+			
+			mv.setViewName("redirect:/member/myInformationChangeForm");
+		
+		} else {
+			// 회원 정보 변경 실패했을 경우
+			
+			mv.addObject("errorMsg","회원정보 변경에 실패했습니다.");
+			
+			mv.setViewName("common/errorPage");
+		}
+		
+		return mv;
+		
+	}
+	
+	@PostMapping("myPage/delete")
+	public String deleteMember(String userPwd, HttpSession session, Model model) {
+		    // 암호화 하기 전  
+			
+		    Member loginUser = (Member)(session.getAttribute("loginUser"));
+		    
+			// 회원 탈퇴 서비스 요청 후 결과 받기
+			int result = memberService.deleteMember(loginUser.getUserId());
+			
+			// 탈퇴 처리 결과에 따른 응답 페이지 지정
+			if(result > 0) { 
+				// > 탈퇴 성공
+				
+				// 로그아웃 처리 후 일회성 알림 문구를 담고 메인페이지로 url 재요청
+				session.removeAttribute("loginUser");
+				
+				session.setAttribute("alertMsg", "성공적으로 회원 탈퇴 처리 되었습니다. 그동안 이용해 주셔서 감사합니다.");
+				
+				return "redirect:/";
+				
+			} else {
+				// > 탈퇴 실패
+				
+				// 에러문구를 담아서 에러페이지로 포워딩
+				model.addAttribute("errorMsg", "회원 탈퇴에 실패했습니다.");
+				
+				return "common/errorPage";
+			}
+		
+	}
+	
+	//-------------------------------------------------------
+	@ResponseBody
+	@GetMapping("myPage/idCheck")
+	public String ajaxIdCheck(String checkId) {
+		
+		// Service로 넘기면서 요청 후 결과 받기
+		int count = memberService.idCheck(checkId);
+		
+		
+		return (count > 0) ? "NNNNN" : "NNNNY";
 	}
 }

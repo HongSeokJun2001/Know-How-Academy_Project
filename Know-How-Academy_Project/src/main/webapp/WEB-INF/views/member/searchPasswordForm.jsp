@@ -24,7 +24,8 @@
 <body>
 <jsp:include page="../common/menubar.jsp"/>
 
-    <form id="searchPassword-form" action="/know-how/member/myPage/searchPassword" method="post"> 
+   <div class="outer">
+    <form id="searchPassword-form"> 
 		            
                <br><br>
                
@@ -103,7 +104,7 @@
 			function enrollPage() {
 				
 				// 회원가입페이지로 이동
-				location.href = "/know-how/member/enrollForm";
+				location.href = "/know-how/member/myPage/enrollForm";
 				// GET 방식
 			}
 		</script>
@@ -121,9 +122,10 @@
 			function searchIdPage() {
 				
 				// 아이디찾기페이지로 이동
-				location.href = "/know-how/member/searchIdForm";
+				location.href = "/know-how/member/myPage/searchIdForm";
 				// GET 방식
 			}
 		</script>
+	 </div>	
 </body>
 </html>

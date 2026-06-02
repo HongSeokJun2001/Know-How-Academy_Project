@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-/*
+
 @Component
 public class LoginIntercepter implements HandlerInterceptor {
     
@@ -43,4 +43,4 @@ public class LoginIntercepter implements HandlerInterceptor {
 	
 	
 }
-*/
+

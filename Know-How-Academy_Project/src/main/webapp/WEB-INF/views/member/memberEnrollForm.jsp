@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>회원가입 페이지</title>
 <style>
     #enroll-form table {
 		margin : auto;
@@ -29,20 +29,11 @@
 
 		<!-- 
 			* 회원가입 기능 구현
-			- 아이디 ~ 주소까지 입력 후 회원가입 버튼 클릭 시
+			http://localhost:8006/know-how/member/myPage/insert 로 요청 (POST 방식으로)
 			
-			http://localhost:8006/myweb/member/insert 로 요청 (POST 방식으로)
-			
-			- 단, 회원가입 버튼 클릭 시 곧바로 요청이 들어가면 안됨!!
-			  validate 함수를 거쳐가야함!! (사용자가 입력한 값들이 유효한지 정규표현식 등으로 검사)
+			- 회원가입 클릭 시 validate 함수를 거쳐감. (사용자가 입력한 값들이 유효한지 정규표현식 등으로 검사)
 		-->
-		<form id="enroll-form" action="/myweb/member/insert" method="post">
-
-			<!--
-				* 회원가입 시 입력받아야 하는 것들
-				- 아이디, 비번, 이름, 전화번호, 이메일, 주소
-				- 아이디, 비번, 이름은 "필수입력사항"
-			-->
+		<form id="enroll-form" action="/know-how/member/myPage/insert" method="post">
 
 			<table>
 				<tr>
@@ -134,7 +125,7 @@
 			let $userId = $("#enroll-form input[name=userId]");
 		
 			$.ajax({
-				url : "/know-how/member/idCheck",
+				url : "/know-how/member/myPage/idCheck",
 				type : "get",
 				data : { checkId : $userId.val() },
 				success : function(result) {

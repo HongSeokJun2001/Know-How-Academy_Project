@@ -51,6 +51,11 @@
             margin : auto;
             margin-top : 50px;
 	    }
+	    .mypage-outer {
+	        width : 1000px;
+            margin : auto;
+            margin-top : 50px;
+	    }
         header {
             text-align: center;
         }
