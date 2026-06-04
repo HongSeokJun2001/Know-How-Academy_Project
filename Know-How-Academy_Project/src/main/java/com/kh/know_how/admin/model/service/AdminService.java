@@ -51,11 +51,8 @@ public class AdminService {
 		return ad.todayReservationCount(sqlSession);
 	}
 
-	public AdminDashboardStatsDto selectdashboardStats() {
-		
-		//int 타입 currHiredCount, prevHiredCount, currEnrollCount, prevEnrollCount
-		AdminDashboardStatsDto adbs = ad.selectdashboardStats(sqlSession);
-		
+	public ArrayList<AdminDashboardStatsDto> selectdashboardStats() {
+	
 		// double 타입, % 계산 CheckList : 
 		// 1. 분모가 0일 경우 어떻게 처리합니까?  
 		// 2. 분모와 분자를 제대로 지정했습니까? (헷갈릴 경우 따로 변수를 선언한 뒤 사용하세요)
@@ -66,34 +63,6 @@ public class AdminService {
 		// 7. 0% 미만(음수)이거나 100% 이상의 초과 값이 나와도 정상입니까?
 		
 		// + 하드코딩 같으면 DB에서 가져온다
-		
-		int currHiredCount = adbs.getCurrHiredCount();   // 진학상담건수
-		int currEnrollCount = adbs.getCurrEnrollCount();  // 입학상담건수
-		
-		int currTotalCount = adbs.getCurrHiredCount() + adbs.getCurrEnrollCount();  // 이번달 전체 상담신청 건수
-		
-		
-		
-		int enrollRate;
-		int hiredRate;
-		
-		
-		/*
-		AdminDashboardStatsDto dto = dao.selectMonthlyStats();
-
-		int total = dto.getCurrEnrollCount()
-		          + dto.getCurrHiredCount();
-		
-		dto.setEnrollRate(
-		    total == 0 ? 0 :
-		    dto.getCurrEnrollCount() * 100.0 / total
-		);
-		
-		dto.setHiredRate(
-		    total == 0 ? 0 :
-		    dto.getCurrHiredCount() * 100.0 / total
-		); 
-		 */
 		
 		return ad.selectdashboardStats(sqlSession);
 	}

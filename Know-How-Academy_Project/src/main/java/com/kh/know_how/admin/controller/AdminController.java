@@ -41,14 +41,14 @@ public class AdminController {
     	//금일 상담일정 목록 개수 조회
     	int todayReservatioCount = as.todayReservationCount();
     	//통계 조회 - 월간 상담 현황 (당월/전월, 카테고리별)
-    	AdminDashboardStatsDto adsd = as.selectdashboardStats();;
+    	ArrayList<AdminDashboardStatsDto> dashboard = as.selectdashboardStats();;
     	
     	
     	model.addAttribute("waitingList",waitingList);
     	model.addAttribute("CounselWaitingCount",CounselWaitingCount);
     	model.addAttribute("reservationList",reservationList);
     	model.addAttribute("todayReservatioCount",todayReservatioCount);
-    	model.addAttribute("AdminDashboardStatsDto",adsd);
+    	model.addAttribute("dashboard",dashboard);
         model.addAttribute("page", "adminIndex");
         return "admin/adminLayout";
     }

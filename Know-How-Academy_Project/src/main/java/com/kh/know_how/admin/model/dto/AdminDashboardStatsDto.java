@@ -13,11 +13,10 @@ import lombok.ToString;
 @ToString
 public class AdminDashboardStatsDto {
 	
-	private int currHiredCount;		//이번달 입학상담 신청횟수
-	private int prevHiredCount;		//저번달 입학상담 신청횟수
-	private int currEnrollCount;	//이번달 취업상담 신청횟수
-	private int prevEnrollCount;	//저번달 취업상담 신청횟수
-	
-	private double enrollRate;   // 이번달 신청상담수 대비 입학상담 비율
-	private double hiredRate;    // 이번달 신청상담수 대비 취업상담 비율
+		private int categoryNo;				// 상담 카테고리 번호
+	    private String categoryName;		// 상담 카테고리 이름
+	    private int currCount;				// 이번달 상담 신청 건수
+	    private int prevCount;				// 지난달 상담 신청 건수
+	    private double rate;				// 카테고리별 상담 신청률
+
 }

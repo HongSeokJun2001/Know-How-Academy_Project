@@ -106,6 +106,7 @@
         font-weight: 800;
     }
 
+    /* 상담 카테고리별 버튼색 지정 */
     .type-badge {
         display: inline-block;
 
@@ -116,19 +117,19 @@
         font-weight: 800;
     }
 
-    .type-red {
-        background: #FFECEF;
-        color: #F59E0B;
-    }
-
-    .type-blue {
+    .category-1 {
         background: #EEF3FF;
         color: #2F5FE3;
     }
 
-    .type-green {
+    .category-2 {
         background: #E9F8EF;
         color: #12A150;
+    }
+
+    .category-3 {
+        background: #FFF4E5;
+        color: #F59E0B;
     }
 
     .stats-title {
@@ -263,12 +264,16 @@
         transition: width 0.3s ease;
     }
 
-    .bar-fill.career {
+    .bar-fill.category-1 {
         background: #4233C7;
     }
 
-    .bar-fill.job {
-        background: #F04452;
+    .bar-fill.category-2 {
+        background: #12A150;
+    }
+
+    .bar-fill.category-3 {
+        background: #F59E0B;
     }
 
     .bar-fill span {
@@ -360,31 +365,14 @@
                 <tbody>
                     <c:forEach var="w" items="${requestScope.waitingList}">
                         <tr>
-                            <c:choose>
-                                <c:when test="${w.elapsedDays gt 3}">
-                                    <td class="text-danger">${w.createdAt}</td>
-                                </c:when>
-                                <c:otherwise>
-                                    <td>${w.createdAt}</td>
-                                </c:otherwise>
-                            </c:choose>
+                            <td class="${w.elapsedDays gt 3 ? 'text-danger' : ''}">
+                                ${w.createdAt}
+                            </td>
                             <td>${w.studentName}</td>
                             <td>
-                                <c:choose>
-
-                                    <c:when test="${w.categoryNo eq 1}">
-                                        <span class="type-badge type-blue">${w.categoryName}</span>
-                                    </c:when>
-                                    <c:when test="${w.categoryNo eq 2}">
-                                        <span class="type-badge type-green">${w.categoryName}</span>
-                                    </c:when>
-                                    <c:when test="${w.categoryNo eq 3}">
-                                        <span class="type-badge type-red">${w.categoryName}</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="type-badge">${w.categoryName}</span>
-                                    </c:otherwise>
-                                </c:choose>
+                                <span class="type-badge category-${w.categoryNo}">
+                                    ${w.categoryName}상담
+                                </span>
                             </td>
                             <td>${w.className}</td>
                             <td>${w.counselorName}</td>
@@ -419,28 +407,11 @@
                     <c:forEach var="t" items="${requestScope.reservationList}">
                         <tr>
                             <td>${t.reservationTime}</td>
-                                <c:choose>
-                                    <c:when test="${t.categoryNo eq 1}">
-                                        <td>
-                                            <span class="type-badge type-blue">${t.categoryName}상담</span>
-                                        </td>
-                                    </c:when>
-                                    <c:when test="${t.categoryNo eq 2}">
-                                        <td>
-                                            <span class="type-badge type-green">${t.categoryName}상담</span>
-                                        </td>
-                                    </c:when>
-                                    <c:when test="${t.categoryNo eq 3}">
-                                        <td>
-                                            <span class="type-badge type-red">${t.categoryName}상담</span>
-                                        </td>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <td>
-                                            <span class="type-badge">${t.categoryName}상담</span>
-                                        </td>
-                                    </c:otherwise>
-                                </c:choose>
+                            <td>
+                                <span class="type-badge category-${t.categoryNo}">
+                                    ${t.categoryName}상담
+                                </span>
+                            </td>
                             <td>${t.studentName}</td>
                             <td>${t.counselorName}</td>
                         </tr>
@@ -462,27 +433,18 @@
                     <h3 class="section-title">월간 상담 유형별 신청 현황</h3>
                 </div>
             </div>
-
+            
             <div class="bar-chart">
-
-                <div class="bar-row">
-                    <div class="bar-label">입학상담</div>
-                    <div class="bar-track">
-                        <div class="bar-fill career" style="width: 65%;">
-                            <span>13건</span>
+                <c:forEach var="d" items="${requestScope.dashboard}">
+                    <div class="bar-row">
+                        <div class="bar-label">${d.categoryName}상담</div>
+                        <div class="bar-track">
+                            <div class="bar-fill category-${d.categoryNo}" style="width: ${d.rate}%;">
+                                <span>${d.currCount}건</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="bar-row">
-                    <div class="bar-label">취업상담</div>
-                    <div class="bar-track">
-                        <div class="bar-fill job" style="width: 35%;">
-                            <span>7건</span>
-                        </div>
-                    </div>
-                </div>
-
+                </c:forEach>
             </div>
 
             <br><br>
@@ -490,33 +452,33 @@
 
                 <div class="info-card trend-card">
                     <div class="info-title">🔥 전월 대비</div>
-                    <div class="info-row">
-                        <span>입학상담</span>
-                        <span class="up">+3건</span>
-                    </div>
-                    <div class="info-row">
-                        <span>취업상담</span>
-                        <span class="down">-1건</span>
-                    </div>
-                    <div class="info-row">
-                        <span>취업상담</span>
-                        <span class="down">-1건</span>
-                    </div>
+                    <c:forEach var="d" items="${requestScope.dashboard}">
+                        <c:choose>
+                            <c:when test="${d.currCount - d.prevCount gt 0 }">
+                                <div class="info-row">
+                                    <span>${d.categoryName}상담</span>
+                                    <span class="up">+${d.currCount}건</span>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="info-row">
+                                    <span>${d.categoryName}상담</span>
+                                    <span class="down">-${d.currCount}건</span>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
                 </div>
 
                 <div class="info-card rate-card">
                     <div class="info-title">✅ 신청율</div>
-                    <div class="info-row">
-                        <span>입학상담</span>
-                        <span>77%</span>
-                    </div>
-
-                    <div class="info-row">
-                        <span>취업상담</span>
-                        <span>71%</span>
-                    </div>
+                    <c:forEach var="d" items="${requestScope.dashboard}">
+                        <div class="info-row">
+                            <span>${d.categoryName}상담</span>
+                            <span>${d.rate}%</span>
+                        </div>
+                    </c:forEach>
                 </div>
-
             </div>
         </div>
     </section>

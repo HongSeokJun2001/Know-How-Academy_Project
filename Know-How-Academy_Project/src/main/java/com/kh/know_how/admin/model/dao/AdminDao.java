@@ -37,9 +37,9 @@ public class AdminDao {
 		return sqlSession.selectOne("adminMapper.todayReservationCount");
 	}
 
-	public AdminDashboardStatsDto selectdashboardStats(SqlSessionTemplate sqlSession) {
+	public ArrayList<AdminDashboardStatsDto>  selectdashboardStats(SqlSessionTemplate sqlSession) {
 		
-		return (AdminDashboardStatsDto)sqlSession.selectList("adminMapper.selectdashboardStats");
+		return (ArrayList)sqlSession.selectList("adminMapper.selectdashboardStats");
 	}
 
 	

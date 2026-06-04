@@ -95,25 +95,34 @@
 		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
  	</select>
  	
- 	<!-- 6. 이번달/지난달 카테고리별 상담 통계 조회 쿼리 -->
+ 	<!-- 6. 관리자 대시보드 쿼리, 합계 101% 막기(-)  -->
  	<select id="selectdashboardStats" 
  			resultType="com.kh.know_how.admin.model.dto.AdminDashboardStatsDto">
-		SELECT COUNT(CASE WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM')
-		                   AND CC.CATEGORY_NAME = '취업' THEN 1 END) 	AS currHiredCount
-		                   
-		     , COUNT(CASE WHEN C.CREATED_AT &gt;= TRUNC(ADD_MONTHS(SYSDATE, -1), 'MM')
-		                   AND C.CREATED_AT &lt;  TRUNC(SYSDATE, 'MM')
-		                   AND CC.CATEGORY_NAME = '취업' THEN 1 END) 	AS prevHiredCount
-		                   
-		     , COUNT(CASE WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM')
-		                   AND CC.CATEGORY_NAME = '입학' THEN 1 END) 	AS currEnrollCount
-		                   
-		     , COUNT(CASE WHEN C.CREATED_AT &gt;= TRUNC(ADD_MONTHS(SYSDATE, -1), 'MM')
-		                   AND C.CREATED_AT &lt;  TRUNC(SYSDATE, 'MM')
-		                   AND CC.CATEGORY_NAME = '입학' THEN 1 END) 	AS prevEnrollCount
-		                   
+		SELECT C.CATEGORY_NO    AS categoryNo
+		     , CC.CATEGORY_NAME AS categoryName
+		     
+		     , COUNT(CASE 
+		               WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM')
+		               THEN 1 
+		             END) AS currCount
+		             
+		     , COUNT(CASE 
+		               WHEN C.CREATED_AT &gt;= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+		                AND C.CREATED_AT &lt;  TRUNC(SYSDATE, 'MM')
+		               THEN 1 
+		             END) AS prevCount
+		             
+		     , ROUND(
+		           COUNT(CASE  WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM') THEN 1 END)
+		                / NULLIF( SUM(
+		                   COUNT(CASE WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM')THEN 1 END)
+		                              ) OVER(), 0
+		                 )* 100 , 1)  AS rate
+		
 		  FROM COUNSEL_RESERVATION  C
-		  JOIN COUNSEL_CATEGORY     CC ON C.CATEGORY_NO = CC.CATEGORY_NO
+		  JOIN COUNSEL_CATEGORY     CC      ON C.CATEGORY_NO = CC.CATEGORY_NO
+		 GROUP BY C.CATEGORY_NO, CC.CATEGORY_NAME
+		 ORDER BY C.CATEGORY_NO
 	 </select>
 	 
 	 
