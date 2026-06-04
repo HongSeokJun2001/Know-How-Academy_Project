@@ -6,8 +6,10 @@ import java.util.HashMap;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.know_how.admin.model.dao.AdminDao2;
+import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.common.model.vo.PageInfo;
 
@@ -45,6 +47,29 @@ public class AdminService2 {
 	public StudentDto selectStudentList(int studentNo) {
 		
 		return ad2.selectStudent(sqlSession, studentNo);
+	}
+	
+	@Transactional
+	public int insertStudentMemo(MemoDto m) {
+		
+		return ad2.insertStudentMemo(sqlSession, m);
+	}
+
+	public ArrayList<MemoDto> selectStudentMemo(int userNo) {
+		
+		return ad2.selectStudentMemo(sqlSession, userNo);
+	}
+
+	@Transactional
+	public int deleteStudentMemo(int memoNo) {
+		
+		return ad2.deleteStudentNo(sqlSession, memoNo);
+	}
+
+	@Transactional
+	public int updateStudentStatus(StudentDto s) {
+	
+		return ad2.updateStudentStatus(sqlSession, s);
 	}
 	
 	

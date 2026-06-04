@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.common.model.vo.PageInfo;
 
@@ -47,6 +48,26 @@ public class AdminDao2 {
 	public StudentDto selectStudent(SqlSessionTemplate sqlSession, int studentNo) {
 		
 		return sqlSession.selectOne("adminMapper2.selectStudent", studentNo);
+	}
+
+	public int insertStudentMemo(SqlSessionTemplate sqlSession, MemoDto m) {
+		
+		return sqlSession.insert("adminMapper2.insertStudentMemo", m);
+	}
+
+	public ArrayList<MemoDto> selectStudentMemo(SqlSessionTemplate sqlSession, int userNo) {
+		
+		return (ArrayList)sqlSession.selectList("adminMapper2.selectStudentMemo", userNo);
+	}
+
+	public int deleteStudentNo(SqlSessionTemplate sqlSession, int memoNo) {
+		
+		return sqlSession.delete("adminMapper2.deleteStudentMemo", memoNo);
+	}
+
+	public int updateStudentStatus(SqlSessionTemplate sqlSession, StudentDto s) {
+		
+		return sqlSession.update("adminMapper2.updateStudentStatus", s);
 	}
 
 	
