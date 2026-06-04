@@ -4,7 +4,7 @@
 <style>
 .student-section {
     width: 100%;
-    padding: 40px 52px 80px;
+    padding: 0px 40px 80px;
     box-sizing: border-box;
 }
 
@@ -430,7 +430,7 @@
 										</c:choose>
 									</td>
 									<td>
-										<button type="button" class="btn-outline small">상세보기</button>
+										<button type="button" class="btn-outline small" onclick="studentDetail(${ s.studentNo })">상세보기</button>
 										<input type="hidden" value="${ s.studentNo }">
 									</td>
 								</tr>
@@ -441,16 +441,11 @@
 			</table>
 			
 			<script>
-				$(function() {
-					$(".student-table>tbody>tr button").click(function() {
+				function studentDetail(sno) {
 					
-						let sno = $(this).siblings().val();
+					location.href = "/know-how/admin/studentDetails/" + sno;
 						
-						location.href = "/know-how/admin/studentDetails/" + sno;
-						
-					});
-						
-				});
+				}
 			</script>	
 
 			<!-- 페이징 -->

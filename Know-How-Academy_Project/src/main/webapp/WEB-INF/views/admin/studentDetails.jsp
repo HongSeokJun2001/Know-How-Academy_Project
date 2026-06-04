@@ -9,7 +9,7 @@
 <style>
 .counselor-detail-section {
     width: 100%;
-    padding: 40px 52px 80px;
+    padding: 0px 40px 80px;
     box-sizing: border-box;
 }
 
@@ -315,6 +315,7 @@
     align-items: center;
 }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- 상담사 상세조회 콘텐츠 시작 -->
@@ -327,7 +328,7 @@
                 <p>상담사의 기본 정보와 담당 클래스, 상태를 확인합니다.</p>
             </div>
 
-            <button type="button" class="btn-outline">목록으로</button>
+            <button type="button" class="btn-outline" onclick="location.assign('/know-how/admin/studentList') ">목록으로</button>
         </div>
 
         <!-- 상단 프로필 요약 카드 -->
@@ -342,10 +343,18 @@
                     <h3>${ requestScope.s.studentName }</h3>
                 </div>
             </div>
-
-            <div class="profile-right">
-                <button type="button" class="btn-danger">휴학 처리</button>
-            </div>
+			<c:choose>
+					<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
+			            <div class="profile-right">
+			                <button type="button" class="btn-danger" onclick="rest('${ requestScope.s.status }');">휴학 처리</button>
+			            </div>
+			        </c:when>
+			        <c:otherwise>
+			        	<div class="profile-right">
+			                <button type="button" class="btn-danger" onclick="rest('${ requestScope.s.status }');">휴학 취소</button>
+			            </div>
+			        </c:otherwise>
+			</c:choose>
         </div>
 
         <!-- 정보 카드 2단 -->
@@ -395,18 +404,18 @@
                 </div>
                 
 				<c:choose>
-				<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
-	                <div class="info-row">
-	                    <span class="info-label">현재 상태</span>
-	                    <span class="status-badge active">재학</span>
-	                </div>
-                </c:when>
-                <c:otherwise>
-	                <div class="info-row">
-	                    <span class="info-label">현재 상태</span>
-	                    <span class="status-badge active">휴학</span>
-	                </div>
-                </c:otherwise>
+					<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
+		                <div class="info-row">
+		                    <span class="info-label">현재 상태</span>
+		                    <span class="status-badge active">재학</span>
+		                </div>
+	                </c:when>
+	                <c:otherwise>
+		                <div class="info-row">
+		                    <span class="info-label">현재 상태</span>
+		                    <span class="status-badge leave">휴학</span>
+		                </div>
+	                </c:otherwise>
 				</c:choose>
 				
                 <div class="info-row">
@@ -424,32 +433,139 @@
                     <p>특이사항, 휴원 이력 등 내부 관리용 메모를 기록합니다.</p>
                 </div>
             </div>
-
+			
             <div class="memo-list">
-                <div class="memo-item">
-                    <div class="memo-text">2023.07 등록</div>
-                    <button type="button" class="memo-delete-btn">×</button>
-                </div>
-
-                <div class="memo-item">
-                    <div class="memo-text">2024.01 수학경시대회 수상</div>
-                    <button type="button" class="memo-delete-btn">×</button>
-                </div>
             </div>
 
             <div class="memo-input-area">
                 <input type="text"
                     class="memo-input"
                     placeholder="메모를 입력하세요.">
-                <button type="button" class="btn-primary small">등록</button>
+                <button type="button" class="btn-primary small" onclick="insertMemo();">등록</button>
             </div>
         </div>
 
-        <!-- 하단 버튼 -->
-        <div class="detail-bottom-actions">
-            <button type="button" class="btn-outline">목록으로</button>
-        </div>
+		<script>
+			$(function() {
+				selectMemoList();
+			});
+			function selectMemoList() {
+				
+				$.ajax({
+					url : "/know-how/admin/student/mlist",
+					type : "get",
+					data : {
+						userNo : ${ requestScope.s.userNo }
+					},
+					success : function(result) {
+						
+						let resultStr = "";
+						
+						for(let i in result) {
+							
+							resultStr += "<div class='memo-item'>"
+									   + 	"<div class='memo-text'>" + result[i].userMemo + "</div>"
+									   + 	"<button type='button' class='memo-delete-btn' onclick='deleteMemo("+ result[i].memoNo +");'>×</button>"
+									   + "</div>";
+						}
+						$(".memo-list").html(resultStr);
+					}
+				});
+			}
+			function insertMemo() {
+				
+				let userMemo = $(".memo-input").val();
 
+				$.ajax({
+					url : "/know-how/admin/student/minsert",
+					type : "post",
+					data : {
+						userNo : ${ requestScope.s.userNo },
+						userMemo : userMemo
+					},
+					success : function(result) {
+						
+						if(result == "success") {
+							
+							selectMemoList();
+							
+							$(".memo-input").val("");
+							
+						} else {
+							
+							alert("메모 작성에 실패했습니다.");
+							
+							$(".memo-input").val("");
+						}
+					},
+					error : function(xhr) {
+					
+						console.log("메모 작성용 ajax 통신 실패!");
+					}
+						
+				});
+			}
+			function deleteMemo(memoNo) {
+				
+				$.ajax({
+					url : "/know-how/admin/student/mdelete",
+					type : "post",
+					data : {
+						memoNo : memoNo
+					},
+					success : function(result) {
+						
+						if(result == "success") {
+							
+							selectMemoList();
+							
+						} else {
+							
+							alert("메모 삭제에 실패했습니다.");
+							
+						}
+					},
+					error : function() {
+					
+						console.log("메모 삭제용 ajax 통신 실패!");
+					}
+						
+				});	
+	
+			}
+			function rest(status) {
+				if(status == 'ABSENT') {
+					status = 'ATTENDING';
+				} else {
+					status = 'ABSENT';
+				} 
+				$.ajax({
+					url : "/know-how/admin/student/rest",
+					type : "post",
+					data : {
+						studentNo : ${ requestScope.s.studentNo }, 
+						status : status
+					},
+					success : function(result) {
+						
+						if(result == "success") {
+							
+							location.reload();
+							
+						} else {
+							
+							alert("상태 변경에 실패했습니다.");
+							
+						}
+					},
+					error : function() {
+					
+						console.log("상태 변경용 ajax 통신 실패!");
+					}
+				});
+			}
+			
+		</script>
     </section>
     <!-- 학생 상세조회 콘텐츠 끝 -->
 </body>
