@@ -6,20 +6,25 @@
 	
 	<!-- 1. 신규가입자알람용쿼리 -->
 	<select id="selectAlarmCount" resultType="_int">
+	
 		SELECT COUNT(*)
 		  FROM MEMBER
 		 WHERE STATUS='PENDING'
+		 
 	</select>
 	
 	<!-- 2. 상담신청 대기 목록 쿼리 -->
 	<select id="selectWaitingList" 
 			resultType="com.kh.know_how.admin.model.dto.AdminCounselWaitingDto">
+			
 		SELECT TO_CHAR(C.CREATED_AT, 'MM-DD') 	AS createdAt
 		     , SM.USER_NAME 					AS studentName
 		     , CC.CATEGORY_NAME 				AS categoryName
 		     , CL.CLASS_NAME 					AS className
 		     , CM.USER_NAME 					AS counselorName
 		     , TRUNC(SYSDATE - C.CREATED_AT) 	AS elapsedDays
+		     , C.CATEGORY_NO					AS categoryNo
+		     
 		  FROM COUNSEL_RESERVATION 	C
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
 		  JOIN MEMBER 				SM 		ON SD.USER_NO = SM.USER_NO
@@ -27,46 +32,58 @@
 		  JOIN CLASS 				CL 		ON SM.CLASS_NO = CL.CLASS_NO
 		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
 		  JOIN MEMBER 				CM 		ON CP.USER_NO = CM.USER_NO
+		  
 		 WHERE C.RESERVATION_STATUS = 'APPLIED'
 		   AND SM.STATUS = 'ACTIVE'
 		   AND CM.STATUS = 'ACTIVE'
+		   
 		 ORDER BY C.CREATED_AT ASC
 	</select>
 	
 	<!-- 3. 상담신청 목록 개수 쿼리  -->
 	<select id="selectCounselWaitingCount" resultType="_int">
+	
 		SELECT COUNT(*)
+		
 		  FROM COUNSEL_RESERVATION 	C
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
 		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
+		  
 		 WHERE C.RESERVATION_STATUS = 'APPLIED'
 		   AND SD.STUDENT_STATUS = 'ATTENDING'
 		   AND CP.STATUS = 'ACTIVE'
+		   
 	</select>
 	
 	<!-- 4. 금일 상담일정 목록 조회 -->
 	<select id="selectTodayReservationList" 
 			resultType="com.kh.know_how.admin.model.dto.TodayReservationDto">
-		SELECT TO_CHAR(C.CREATED_AT,'HH24:MI') 	AS reservationTime
-		     , CC.CATEGORY_NAME 				AS categoryName
-		     , SM.USER_NAME 					AS studentName
-		     , CM.USER_NAME 					AS counselorName
+			
+		SELECT TO_CHAR(C.CONSULT_DATE,'HH24:MI') 	AS reservationTime
+		     , CC.CATEGORY_NAME 					AS categoryName
+		     , SM.USER_NAME 						AS studentName
+		     , CM.USER_NAME 						AS counselorName
+		     , C.CATEGORY_NO						AS categoryNo
+		     
 		  FROM COUNSEL_RESERVATION 	C
 		  JOIN COUNSEL_CATEGORY 	CC 		ON C.CATEGORY_NO = CC.CATEGORY_NO
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
 		  JOIN MEMBER 				SM 		ON SD.USER_NO = SM.USER_NO
 		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
 		  JOIN MEMBER 				CM 		ON CP.USER_NO = CM.USER_NO
+		  
 		 WHERE C.RESERVATION_STATUS = 'RESERVED'
 		   AND SM.STATUS = 'ACTIVE'
 		   AND CM.STATUS = 'ACTIVE'
 		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
 		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
+		   
 		 ORDER BY C.CREATED_AT ASC
+		 
  	</select>
  	
  	<!-- 5. 금일 상담일정 목록 개수 조회 -->
- 	<select id="todayReservatioCount" resultType="_int">
+ 	<select id="todayReservationCount" resultType="_int">
  		SELECT COUNT(*)
 		  FROM COUNSEL_RESERVATION C
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
@@ -77,6 +94,38 @@
 		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
 		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
  	</select>
+ 	
+ 	<!-- 6. 관리자 대시보드 쿼리, 합계 101% 막기(-)  -->
+ 	<select id="selectdashboardStats" 
+ 			resultType="com.kh.know_how.admin.model.dto.AdminDashboardStatsDto">
+		SELECT C.CATEGORY_NO    AS categoryNo
+		     , CC.CATEGORY_NAME AS categoryName
+		     
+		     , COUNT(CASE 
+		               WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM')
+		               THEN 1 
+		             END) AS currCount
+		             
+		     , COUNT(CASE 
+		               WHEN C.CREATED_AT &gt;= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+		                AND C.CREATED_AT &lt;  TRUNC(SYSDATE, 'MM')
+		               THEN 1 
+		             END) AS prevCount
+		             
+		     , ROUND(
+		           COUNT(CASE  WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM') THEN 1 END)
+		                / NULLIF( SUM(
+		                   COUNT(CASE WHEN C.CREATED_AT &gt;= TRUNC(SYSDATE, 'MM')THEN 1 END)
+		                              ) OVER(), 0
+		                 )* 100 , 1)  AS rate
+		
+		  FROM COUNSEL_RESERVATION  C
+		  LEFT JOIN COUNSEL_CATEGORY     CC      ON C.CATEGORY_NO = CC.CATEGORY_NO
+		 GROUP BY C.CATEGORY_NO, CC.CATEGORY_NAME
+		 ORDER BY C.CATEGORY_NO
+	 </select>
+	 
+	 
 </mapper>
 	
 	

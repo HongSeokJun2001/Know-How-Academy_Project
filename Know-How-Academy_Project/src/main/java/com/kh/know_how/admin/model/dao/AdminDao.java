@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
+import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 
 @Repository
@@ -31,9 +32,14 @@ public class AdminDao {
 		return (ArrayList)sqlSession.selectList("adminMapper.selectTodayReservationList");
 	}
 
-	public int todayReservatioCount(SqlSessionTemplate sqlSession) {
+	public int todayReservationCount(SqlSessionTemplate sqlSession) {
 		
-		return sqlSession.selectOne("adminMapper.todayReservatioCount");
+		return sqlSession.selectOne("adminMapper.todayReservationCount");
+	}
+
+	public ArrayList<AdminDashboardStatsDto>  selectdashboardStats(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("adminMapper.selectdashboardStats");
 	}
 
 	

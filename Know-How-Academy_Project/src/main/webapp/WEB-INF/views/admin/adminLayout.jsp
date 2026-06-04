@@ -258,8 +258,8 @@
                 메인페이지
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor/enroll" 
-                onclick="go('/admin/counselor/enroll')">
+            <div class="menu-item" data-path="/admin/counselorInvite" 
+                onclick="go('/admin/counselorInvite')">
                 상담사 등록
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 메뉴항목 수정(-)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
@@ -272,8 +272,8 @@
                 학원생 관리
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor"
-                 onclick="go('/admin/counselor')">
+            <div class="menu-item" data-path="/admin/counselorList"
+                 onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  메뉴항목 수정 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->

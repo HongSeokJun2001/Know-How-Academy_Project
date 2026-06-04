@@ -9,7 +9,7 @@
 <style>
 .counselor-section {
 		width: 100%;
-		padding: 40px 52px 80px;
+		padding: 0px 40px 80px;
 		box-sizing: border-box;
 	}
 
