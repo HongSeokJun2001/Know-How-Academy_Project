@@ -266,8 +266,8 @@
             <div class="sidebar-category">
                 관리페이지
             </div>
-
-            <div class="menu-item" data-path="/admin/studentList"
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            <div class="menu-item ${page eq 'studentList' ? 'active' : ''}" data-path="/admin/studentList"
                  onclick="go('/admin/studentList')">
                 학원생 관리
             </div>

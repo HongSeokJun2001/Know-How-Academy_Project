@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -338,12 +339,12 @@
                 </div>
 
                 <div class="profile-text">
-                    <h3>김민지</h3>
+                    <h3>${ requestScope.s.studentName }</h3>
                 </div>
             </div>
 
             <div class="profile-right">
-                <button type="button" class="btn-danger">휴원 처리</button>
+                <button type="button" class="btn-danger">휴학 처리</button>
             </div>
         </div>
 
@@ -358,22 +359,22 @@
 
                 <div class="info-row">
                     <span class="info-label">이름</span>
-                    <span class="info-value">김민지</span>
+                    <span class="info-value">${ requestScope.s.studentName }</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">연락처</span>
-                    <span class="info-value">010-1234-5678</span>
+                    <span class="info-value">${ requestScope.s.phone }</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">이메일</span>
-                    <span class="info-value">minji@gmail.com</span>
+                    <span class="info-value">${ requestScope.s.email }</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">가입일</span>
-                    <span class="info-value">2026.06.01</span>
+                    <span class="info-value">${ requestScope.s.createdAt }</span>
                 </div>
             </div>
 
@@ -385,22 +386,32 @@
 
                 <div class="info-row">
                     <span class="info-label">소속 클래스</span>
-                    <span class="info-value">DB-B</span>
+                    <span class="info-value">${ requestScope.s.className }</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">담당 상담사</span>
-                    <span class="info-value">김철수</span>
+                    <span class="info-value">${ requestScope.s.counselorName }</span>
                 </div>
-
-                <div class="info-row">
-                    <span class="info-label">현재 상태</span>
-                    <span class="status-badge active">재원</span>
-                </div>
-
+                
+				<c:choose>
+				<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
+	                <div class="info-row">
+	                    <span class="info-label">현재 상태</span>
+	                    <span class="status-badge active">재학</span>
+	                </div>
+                </c:when>
+                <c:otherwise>
+	                <div class="info-row">
+	                    <span class="info-label">현재 상태</span>
+	                    <span class="status-badge active">휴학</span>
+	                </div>
+                </c:otherwise>
+				</c:choose>
+				
                 <div class="info-row">
                     <span class="info-label">최근 변경일</span>
-                    <span class="info-value">2026.06.02</span>
+                    <span class="info-value">${ requestScope.s.updatedAt }</span>
                 </div>
             </div>
         </div>

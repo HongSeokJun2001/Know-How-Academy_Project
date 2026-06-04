@@ -17,15 +17,4 @@ public class IntroduceController {
 		
 	}
 	
-	/**
-	 * 학원 소식 상세조회페이지
-	 * @return
-	 */
-	@GetMapping("/academyNews")
-	public String academyNews() {
-		
-		return "common/academyNews";
-		
-	}
-	
 }

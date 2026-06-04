@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <style>
 .student-section {
     width: 100%;
@@ -297,6 +297,7 @@
     color: #fff;
 }
 </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<!-- 학원생 목록조회 콘텐츠 시작 -->
 	<section class="student-section">
 
@@ -314,38 +315,41 @@
 
 		<!-- 검색 / 필터 카드 -->
 		<div class="student-search-card">
-
-			<div class="search-top-row">
-				<div class="search-field">
-					<label for="studentKeyword">검색어</label>
-					<input type="text"
-						id="studentKeyword"
-						name="keyword"
-						class="student-search-input"
-						placeholder="이름 또는 연락처 검색">
+			<form action="/know-how/admin/studentList/search" method="get">
+				<div class="search-top-row">
+					<div class="search-field">
+						<label for="studentKeyword">검색어</label>
+						<input type="text"
+							id="studentKeyword"
+							name="keyword"
+							class="student-search-input"
+							placeholder="이름 또는 연락처 검색">
+					</div>
+	
+					<div class="search-field small">
+						<label for="studentStatus">상태</label>
+						<select id="studentStatus" name="status" class="student-select">
+							<option value="">전체</option>
+							<option value="ACTIVE">재학</option>
+							<option value="REST">휴학</option>
+						</select>
+					</div>
+	
+					<button type="submit" class="btn-primary search-btn">
+						검색
+					</button>
 				</div>
-
-				<div class="search-field small">
-					<label for="studentStatus">상태</label>
-					<select id="studentStatus" name="status" class="student-select">
-						<option value="">전체</option>
-						<option value="ACTIVE">재원</option>
-						<option value="REST">휴원</option>
-					</select>
-				</div>
-
-				<button type="button" class="btn-primary search-btn">
-					검색
-				</button>
-			</div>
-
+			</form>
 			<!-- 검색어 재출력 자리 -->
-			<div class="search-keyword-area">
-				<span class="keyword-chip">
-					검색어: <strong>김</strong>
-					<button type="button">×</button>
-				</span>
-			</div>
+			<c:if test="${ not empty requestScope.keyword }">
+				<div class="search-keyword-area">
+					<span class="keyword-chip">
+						검색어: <strong>${ requestScope.keyword }</strong>
+						<button type="button" onclick="go('/admin/studentList')">×</button>
+					</span>
+				</div>
+			</c:if>
+
 		</div>
 
 		<!-- 목록 카드 -->
@@ -353,15 +357,32 @@
 
 			<div class="list-header">
 				<div>
-					<strong>총 24명</strong>
+					<strong>총 ${ requestScope.pi.listCount }명</strong>
 					<span>재원중 / 휴원 상태의 학원생만 표시됩니다.</span>
 				</div>
 
 				<label class="hide-rest-check">
 					<input type="checkbox">
-					휴원생 숨기기
+					휴학생 숨기기
 				</label>
 			</div>
+			<script>
+				$('.hide-rest-check>input').on('change', function() {
+					if($(this).is(':checked')) {
+						$('.student-table>tbody tr').each(function() {
+							if ($(this).find('span').text().trim() === '휴학') {
+								$(this).hide();
+								if ($('.student-table>tbody tr:visible').length === 0) {
+						            $('#emptyRow').show();
+						        }
+							} 
+						});
+					} else {
+						$('.student-table>tbody tr').show();
+						$('#emptyRow').hide();
+					}
+				});
+			</script>
 
 			<table class="student-table">
 				<thead>
@@ -376,76 +397,120 @@
 				</thead>
 
 				<tbody>
-					<tr>
-						<td>
-							<a href="#" class="student-name-link">김민지</a>
-						</td>
-						<td>010-1234-5678</td>
-						<td>김철수</td>
-						<td>2026-06-01</td>
-						<td>
-							<span class="student-status active">재원</span>
-						</td>
-						<td>
-							<button type="button" class="btn-outline small">상세보기</button>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<a href="#" class="student-name-link">이도윤</a>
-						</td>
-						<td>010-5555-1111</td>
-						<td>미배정</td>
-						<td>2026-05-28</td>
-						<td>
-							<span class="student-status rest">휴원</span>
-						</td>
-						<td>
-							<button type="button" class="btn-outline small">상세보기</button>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<a href="#" class="student-name-link">박서연</a>
-						</td>
-						<td>010-7777-2222</td>
-						<td>박민지</td>
-						<td>2026-05-20</td>
-						<td>
-							<span class="student-status active">재원</span>
-						</td>
-						<td>
-							<button type="button" class="btn-outline small">상세보기</button>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<a href="#" class="student-name-link">최현우</a>
-						</td>
-						<td>010-9999-3333</td>
-						<td>이도윤</td>
-						<td>2026-05-12</td>
-						<td>
-							<span class="student-status active">재원</span>
-						</td>
-						<td>
-							<button type="button" class="btn-outline small">상세보기</button>
-						</td>
-					</tr>
+					<c:choose>
+						<c:when test="${ empty requestScope.list }">
+							<tr>
+								<th colspan="6">
+									학생 정보가 없습니다.
+								</th>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<tr id="emptyRow" style="display: none;">
+						        <th colspan="6">
+						            학생 정보가 없습니다.
+						        </th>
+						    </tr>	
+							<c:forEach var="s" items="${ requestScope.list }">
+								<tr>
+									<td>
+										<a href="#" class="student-name-link">${ s.studentName }</a>
+									</td>
+									<td>${ s.phone }</td>
+									<td>${ s.counselorName }</td>
+									<td>${ s.createdAt }</td>
+									<td>
+										<c:choose>
+											<c:when test="${ s.status eq 'ATTENDING' }">
+												<span class="student-status active">재학</span>
+											</c:when>
+											<c:otherwise>
+												<span class="student-status rest">휴학</span>
+											</c:otherwise>
+										</c:choose>
+									</td>
+									<td>
+										<button type="button" class="btn-outline small">상세보기</button>
+										<input type="hidden" value="${ s.studentNo }">
+									</td>
+								</tr>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
 				</tbody>
 			</table>
+			
+			<script>
+				$(function() {
+					$(".student-table>tbody>tr button").click(function() {
+					
+						let sno = $(this).siblings().val();
+						
+						location.href = "/know-how/admin/studentDetails/" + sno;
+						
+					});
+						
+				});
+			</script>	
 
 			<!-- 페이징 -->
 			<div class="pagination-area">
-				<button type="button">&lt;</button>
-				<button type="button" class="active">1</button>
-				<button type="button">2</button>
-				<button type="button">3</button>
-				<button type="button">4</button>
-				<button type="button">&gt;</button>
+				<c:choose>
+					<c:when test="${ requestScope.pi.currentPage eq 1 }">
+						<button type="button" disabled>&lt;</button>
+					</c:when>
+					<c:otherwise>
+					
+						<c:choose>
+							<c:when test="${ empty requestScope.condition }">
+								<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+							</c:otherwise>
+							
+						</c:choose>
+					</c:otherwise>
+				</c:choose>
+				
+				<c:forEach var="p" begin="${ requestScope.pi.startPage }" end="${ requestScope.pi.endPage }" step="1">
+					
+					<c:choose>
+						<c:when test="${ requestScope.pi.currentPage eq p }">
+							<button type="button" class="active">${ p }</button>
+						</c:when>
+						<c:otherwise>
+						
+							<c:choose>
+								<c:when test="${ empty requestScope.status }">
+									<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ p }')">${ p }</button>
+								</c:when>
+								<c:otherwise>
+									<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+								</c:otherwise>
+							</c:choose>
+							
+						</c:otherwise>
+					</c:choose>
+					
+				</c:forEach>
+				
+				<c:choose>
+					<c:when test="${ requestScope.pi.currentPage eq requestScope.pi.maxPage or empty requestScope.list }">
+						<button type="button" disabled>&gt;</button>
+					</c:when>
+					<c:otherwise>
+					
+						<c:choose>
+							<c:when test="${ empty requestScope.status }">
+								<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+							</c:otherwise>
+						</c:choose>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 	</section>

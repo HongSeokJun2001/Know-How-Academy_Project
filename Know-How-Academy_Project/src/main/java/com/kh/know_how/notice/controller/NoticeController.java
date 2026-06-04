@@ -29,7 +29,7 @@ public class NoticeController {
 	}
 	
 	@ResponseBody
-	@GetMapping("/mplist")
+	@GetMapping("/mainnoticelist")
 	public ArrayList<Board> mainPageNoticeList() {
 		
 		return boardService.mainPageNoticeList();

@@ -13,7 +13,7 @@
 	<br><br>
 	
 	<h1 align="center" style="color : red;">
-		${ requsetScope.errorMsg }
+		${ requestScope.errorMsg }
 	</h1>
 	
 </body>

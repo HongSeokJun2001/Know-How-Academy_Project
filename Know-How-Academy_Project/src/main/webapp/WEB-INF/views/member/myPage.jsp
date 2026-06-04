@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>마이페이지</title>
 <style>
     #login-form table {
 		margin : auto;
@@ -20,6 +20,20 @@
 		 margin : 5px;
 		 width : 100px;
 	}
+	#login-page table > button {
+	     padding : 5px;
+		 margin : 5px;
+		 width : 150px;
+	}
+	#login-form table>thead {
+        padding : 20%;
+	}
+	#login-form table>tbody {
+        padding : 40%;
+	}
+	#login-form table>tfoot {
+        padding : 24%;
+	}
 </style>
 </head>
 <body>
@@ -28,8 +42,8 @@
       <br><br>
       
       <div class="mypage-outer">
-      <!-- 로그인 관련 영역 -->
-	  <div class="login-area">
+       <!-- 로그인 관련 영역 -->
+	   <div class="login-area">
 
 		<c:choose>
 		
@@ -46,57 +60,53 @@
 		            
 	                <br><br>
 	                
-					<table id="login-page" align="center">
+					<table id="login-page">
+						<thead>
 						<tr>
 							<h2 align="center">로그인</h2>
 						</tr>
-						<tr>
-							<th>아이디</th>
-							<td>
-								<input type="text" name="userId">
-							</td>
-						</tr>
-						<tr>
-							<th>비밀번호</th>
-							<td>
-								<input type="password" name="userPwd" required>
-							</td>
-						</tr>
-						<tr>
-							<th>
-								<br>
-							</th>
-						</tr>
-					    <tr>
-					        <th colspan="3">
-					            <button type="submit" class="btn btn-secondary btn-sm">로그인</button>
-					        </th>
-					    </tr>
-						<tr>
-							<th>
-								<br>
-							</th>
-						</tr>
+						</thead>
+						<tbody>
 						<tr align="center">
-							<th colspan="3">
+							<th>&nbsp;&nbsp;&nbsp;아이디<input type="text" name="userId" required value="${ cookie.saveId.value }"></th>
+						</tr>
+						<tr>	
+							<th>&nbsp;&nbsp;&nbsp;비밀번호<input type="password" name="userPwd" required></th>
+						</tr>
+						<tr id="idcheck" align="right">
+						    <!-- 아이디 저장 -->
+							<!-- 로그인 요청 시 아이디 저장 여부를 서버로 같이 넘기기 -->
+							<th>
+							<input type="checkbox" id="saveId" name="saveId" value="y">
+						    <label for="saveId">아이디 저장</label>
+							</th>
+						</tr>
+                        </table>
+						<div id="loginbutton" align="center">
+					    
+					            <button type="submit" class="btn btn-secondary btn-sm">로그인</button>
+					    </div>
+						<div align="center">
+					      --------------------------------------------------------------
+						<br>
+							
 								<button type="button" class="btn btn-secondary btn-sm"
 													  onclick="enrollPage();">회원가입</button>
 								<button type="button" class="btn btn-secondary btn-sm"
 								                      onclick="searchIdPage();">아이디 찾기</button>
 								<button type="button" class="btn btn-secondary btn-sm"
 								                      onclick="searchPasswordPage();">비밀번호 찾기</button>					  
-							</th>
-						</tr>
-						<tr>
-							<th><br><br></th>
-						</tr>
-					</table> 
+						<br><br>
+						</div>
+					 
+					
+					</form>
 					
 					<script>
 					function enrollPage() {
 						
 						// 회원가입페이지로 이동
-						location.href = "/know-how/member/enrollForm";
+						location.href = "/know-how/member/myPage/enrollForm";
 						// GET 방식
 					}
 				    </script>
@@ -105,7 +115,7 @@
 					function searchIdPage() {
 						
 						// 아이디찾기페이지로 이동
-						location.href = "/know-how/member/searchIdForm";
+						location.href = "/know-how/member/myPage/searchIdForm";
 						// GET 방식
 					}
 				    </script>
@@ -114,7 +124,7 @@
 					function searchPasswordPage() {
 						
 						// 비밀번호찾기페이지로 이동
-						location.href = "/know-how/member/searchPasswordForm";
+						location.href = "/know-how/member/myPage/searchPasswordForm";
 						// GET 방식
 					}
 				    </script> 
@@ -125,10 +135,10 @@
 				<div id="user-info">
 				    
 					  <table id="login-page" align="center">
-					      <tr>
+					      <tr align="center">
 							<h2 align="center">마이페이지</h2>
 							<td>
-                              <b>${ sessionScope.loginUser.userName }</b> 님 환영합니다.
+                              <h3><b>${ sessionScope.loginUser.userName }</b> 님 환영합니다.</h3>
 							</td>
 							<br><br>
 						  </tr>
@@ -141,10 +151,19 @@
 													  onclick="myInformationSelectPage();">내정보 조회</button>					  
 						    </th>
 						 </tr>
-						 <tr>
+						 <tr align="center">
 							<th>
 							    <button type="button" class="btn btn-secondary btn-sm"
 									                  onclick="myInformationChangePage();">내정보 수정</button>
+						   </th>
+						 </tr>
+						 <tr>
+							<th>--------------------------------------------</th>
+						 </tr>
+						 <tr align="center">
+						   <th>
+						       <button type="button" class="btn btn-secondary btn-sm" 
+						               onclick="logout();">로그아웃</button>             
 						   </th>
 						 </tr>
 					</table> 
@@ -152,8 +171,8 @@
 					<script>
 					function myInformationSelectPage() {
 						
-						// 내정보 찾기 페이지로 이동
-						location.href = "/know-how/member/myInformationSelectFrom";
+						// 내정보 조회 페이지로 이동
+						location.href = "/know-how/member/myPage/myInformationSelectForm";
 						// GET 방식
 					}
 				    </script>
@@ -162,7 +181,16 @@
 					function myInformationChangePage() {
 						
 						// 내정보 수정 페이지로 이동
-						location.href = "/know-how/member/myInformationChangeForm";
+						location.href = "/know-how/member/myPage/myInformationChangeForm";
+						// GET 방식
+					}
+				    </script>
+				    
+				    <script>
+					function logout() {
+						
+						// 로그아웃
+						location.href = "/know-how/member/myPage/logout";
 						// GET 방식
 					}
 				    </script>
@@ -175,6 +203,20 @@
         </div> 
       </div>
       
-     
+      <script>
+		$(function() {
+			
+			let saveId = "${ cookie.saveId.value }"; 
+			
+			// console.log(saveId); // "admin" / ""
+			
+			if(saveId != "") {
+				// 쿠키에 저장된 아이디가 있으면 
+				
+				$("#saveId").prop("checked", true);
+			}
+			
+		});
+	</script>
 </body>
 </html>

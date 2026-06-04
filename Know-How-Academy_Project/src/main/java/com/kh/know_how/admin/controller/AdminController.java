@@ -66,6 +66,7 @@ public class AdminController {
     	model.addAttribute("page", "counselorList");
     	return "admin/adminLayout";
     } 
+
     
     @GetMapping("/counselorProfile")
     public String counselorProfile(Model model) {
