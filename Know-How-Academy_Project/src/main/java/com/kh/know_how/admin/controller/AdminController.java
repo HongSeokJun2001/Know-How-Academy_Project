@@ -28,7 +28,7 @@ public class AdminController {
     	
         return "redirect:/admin/index"; 
     }
-
+    
     @GetMapping("/index")
     public String adminIndex(Model model) {
     	
@@ -41,6 +41,7 @@ public class AdminController {
     	//금일 상담일정 목록 개수 조회
     	int todayReservatioCount = as.todayReservationCount();
     	//통계 조회 - 월간 상담 현황 (당월/전월, 카테고리별)
+    	//조회건수가 0일 경우 정상 출력 확인(-), %를 합친 값이 101%일 경우 처리(-)
     	ArrayList<AdminDashboardStatsDto> dashboard = as.selectdashboardStats();;
     	
     	
@@ -57,12 +58,19 @@ public class AdminController {
     @GetMapping("/counselorList")
     public String counselorList(Model model) {
     	
+    	
+    	
+    	
+    	
+    	
     	model.addAttribute("page", "counselorList");
     	return "admin/adminLayout";
     } 
     
     @GetMapping("/counselorProfile")
     public String counselorProfile(Model model) {
+    	
+    	
     	
     	model.addAttribute("page", "counselorProfile");
     	return "admin/adminLayout";
@@ -75,5 +83,9 @@ public class AdminController {
     	model.addAttribute("page", "counselorInvite");
     	return "admin/adminLayout";
     } 
+    
+    
+    
+    
     
 }//컨트롤러 끝
