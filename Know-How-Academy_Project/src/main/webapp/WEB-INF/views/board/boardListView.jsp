@@ -74,6 +74,9 @@
 					border-color: #6f42c1 !important;
 					color: white !important ;
 				}
+				 .btn-hover:hover{
+                    background-color: blueviolet !important;   
+				 }
 			</style>
 		</head>
 
@@ -92,18 +95,13 @@
 						<option value="content">내용</option>
 					</select>
 
-					<select name="condition2" class="form-control mr-sm-2">
-						<option value="admission">입학상담</option>
-						<option value="employment">취업상담</option>
-					</select>
-
 					<input type="search" name="keyword" class="form-control mr-sm-2" placeholder="검색어를 입력하세요">
-					<button type="submit" class="btn btn-outline-secondary">검색</button>
+					<button type="submit" class="btn btn-outline-secondary btn-hover">검색</button>
 					<br> <br>
 				</div>
 
 				<div class="write-btn-area" align="right">
-					<button type="button" class="btn btn-outline-secondary">글쓰기</button>
+					<a href="/know-how/board/enrollForm" type="button" class="btn btn-outline-secondary btn-hover">글쓰기</a>
 				</div>
 
 				<table class="table table-hover">
