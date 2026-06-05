@@ -410,7 +410,7 @@
 		<div class="list-card">
 
 			<div class="list-card-header">
-				<strong>총 12명</strong>
+				<strong>재원 12명</strong>
 				<span>동명이인 구분을 위해 이메일과 현재 담당 정보를 함께 표시합니다.</span>
 			</div>
 

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
+import com.kh.know_how.admin.model.dto.CounselorListPageDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 import com.kh.know_how.admin.model.service.AdminService;
 
@@ -42,7 +44,7 @@ public class AdminController {
     	int todayReservatioCount = as.todayReservationCount();
     	//통계 조회 - 월간 상담 현황 (당월/전월, 카테고리별)
     	//조회건수가 0일 경우 정상 출력 확인(-), %를 합친 값이 101%일 경우 처리(-)
-    	ArrayList<AdminDashboardStatsDto> dashboard = as.selectdashboardStats();;
+    	ArrayList<AdminDashboardStatsDto> dashboard = as.selectdashboardStats();
     	
     	
     	model.addAttribute("waitingList",waitingList);
@@ -56,10 +58,12 @@ public class AdminController {
     
     
     @GetMapping("/counselorList")
-    public String counselorList(Model model) {
+    public String counselorList(@RequestParam(value="cpage", defaultValue="1") int currentPage
+    						  , @RequestParam(value="status", defaultValue="AcTIVE") String status
+    						  , Model model) {
     	
-    	
-    	
+    	//상담사리스트 조회 + 페이징처리
+    	CounselorListPageDto clp = as.counselorList(currentPage, status);
     	
     	
     	
