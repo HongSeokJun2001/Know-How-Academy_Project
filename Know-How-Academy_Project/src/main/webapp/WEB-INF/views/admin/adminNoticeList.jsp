@@ -1,36 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
 <style>
-.student-section {
+.notice-section {
     width: 100%;
     padding: 0px 40px 80px;
     box-sizing: border-box;
 }
 
 /* 제목 영역 */
-.student-title-area {
+.notice-title-area {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 28px;
 }
 
-.student-title-area h2 {
+.notice-title-area h2 {
     margin: 0;
     font-size: 32px;
     font-weight: 800;
     color: #2c2f3f;
 }
 
-.student-title-area p {
+.notice-title-area p {
     margin: 10px 0 0;
     font-size: 15px;
     color: #6b7280;
 }
 
 /* 검색 카드 */
-.student-search-card {
+.notice-search-card {
     padding: 24px 28px;
     margin-bottom: 28px;
     background-color: #fff;
@@ -52,18 +57,7 @@
     gap: 8px;
 }
 
-.search-field.small {
-    flex: 0 0 180px;
-}
-
-.search-field label {
-    font-size: 15px;
-    font-weight: 800;
-    color: #2c2f3f;
-}
-
-.student-search-input,
-.student-select {
+.notice-search-input {
     height: 46px;
     padding: 0 14px;
     border: 1px solid #d1d5db;
@@ -74,8 +68,7 @@
     outline: none;
 }
 
-.student-search-input:focus,
-.student-select:focus {
+.notice-search-input:focus {
     border-color: #4233c7;
     box-shadow: 0 0 0 3px rgba(66, 51, 199, 0.12);
 }
@@ -112,7 +105,7 @@
 }
 
 /* 목록 카드 */
-.student-list-card {
+.notice-list-card {
     padding: 28px;
     background-color: #fff;
     border: 1px solid #e5e7eb;
@@ -120,43 +113,8 @@
     box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
 }
 
-.list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.list-header strong {
-    margin-right: 10px;
-    font-size: 17px;
-    font-weight: 800;
-    color: #2c2f3f;
-}
-
-.list-header span {
-    font-size: 14px;
-    color: #6b7280;
-}
-
-.hide-rest-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.hide-rest-check input {
-    width: 16px;
-    height: 16px;
-    accent-color: #4233c7;
-}
-
 /* 테이블 */
-.student-table {
+.notice-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -164,65 +122,47 @@
     border-radius: 10px;
     overflow: hidden;
     font-size: 15px;
+    text-align: center;
 }
 
-.student-table thead th {
+.notice-table thead th {
     height: 54px;
     padding: 0 18px;
     background-color: #fafafa;
     color: #2c2f3f;
     font-weight: 800;
-    text-align: left;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.student-table tbody td {
+.notice-table tbody td {
     padding: 16px 18px;
     color: #374151;
     border-bottom: 1px solid #eef0f4;
     vertical-align: middle;
 }
 
-.student-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.student-table tbody tr:hover {
-    background-color: #fafaff;
-}
-
-.student-name-link {
-    color: #4233c7;
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.student-name-link:hover {
-    color: #2f2499;
-}
-
 /* 상태 배지 */
-.student-status {
+.notice-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 58px;
-    height: 28px;
-    padding: 0 12px;
-    border-radius: 999px;
+    width: 50px;
+    height: 26px;
+    border-radius: 2px;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 500;
+    background-color: #fff;
+    cursor: pointer;
 }
 
-.student-status.active {
-    background-color: #e8f8ec;
-    color: #128a3a;
+.notice-status.show {
+    border: 1px solid #22c55e;
+    color: #22c55e;
 }
 
-.student-status.rest {
-    background-color: #fff5d6;
-    color: #c47a00;
+.notice-status.hide {
+    border: 1px solid #a1a1aa;
+    color: #a1a1aa;
 }
 
 /* 버튼 */
@@ -244,27 +184,26 @@
 }
 
 .btn-outline {
-    min-width: 90px;
-    height: 38px;
-    padding: 0 16px;
+    width: 48px;
+    height: 30px;
     border: 1px solid #c9ccd6;
-    border-radius: 8px;
+    border-radius: 2px;
     background-color: #fff;
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 13px;
     cursor: pointer;
+    margin: 0 2px;
 }
 
-.btn-outline:hover {
-    border-color: #4233c7;
-    color: #4233c7;
+.btn-outline.edit {
+    border: 1px solid #a1a1aa;
+    color: #52525b;
 }
 
-.btn-outline.small {
-    min-width: 82px;
-    height: 36px;
+.btn-outline.delete {
+    border: 1px solid #ef4444;
+    color: #ef4444;
 }
+
 
 /* 페이징 */
 .pagination-area {
@@ -297,42 +236,31 @@
     color: #fff;
 }
 </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<!-- 학원생 목록조회 콘텐츠 시작 -->
-	<section class="student-section">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+	<section class="notice-section">
 
 		<!-- 페이지 제목 -->
-		<div class="student-title-area">
+		<div class="notice-title-area">
 			<div>
-				<h2>학원생 관리</h2>
-				<p>재원중, 휴원 상태의 학원생 정보를 조회하고 관리합니다.</p>
+				<h2>공지사항 관리</h2>
+				<p>공지사항을 등록, 수정, 삭제할 수 있습니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary" onclick="go('/admin/student/enroll')">
-				가입 승인 관리
+			<button type="button" class="btn-primary" onclick="go('/admin/notice/insert')">
+				+ 새 공지 등록
 			</button>
 		</div>
 
 		<!-- 검색 / 필터 카드 -->
-		<div class="student-search-card">
-			<form action="/know-how/admin/studentList/search" method="get">
+		<div class="notice-search-card">
+			<form action="/know-how/admin/notice/search" method="get">
 				<div class="search-top-row">
 					<div class="search-field">
-						<label for="studentKeyword">검색어</label>
 						<input type="search"
-							id="studentKeyword"
 							name="keyword"
-							class="student-search-input"
-							placeholder="이름 또는 연락처 검색">
-					</div>
-	
-					<div class="search-field small">
-						<label for="studentStatus">상태</label>
-						<select id="studentStatus" name="status" class="student-select">
-							<option value="">전체</option>
-							<option value="ACTIVE">재학</option>
-							<option value="REST">휴학</option>
-						</select>
+							class="notice-search-input">
 					</div>
 	
 					<button type="submit" class="btn-primary search-btn">
@@ -345,7 +273,7 @@
 				<div class="search-keyword-area">
 					<span class="keyword-chip">
 						검색어: <strong>${ requestScope.keyword }</strong>
-						<button type="button" onclick="go('/admin/studentList')">×</button>
+						<button type="button" onclick="go('/admin/notice/search')">×</button>
 					</span>
 				</div>
 			</c:if>
@@ -353,45 +281,16 @@
 		</div>
 
 		<!-- 목록 카드 -->
-		<div class="student-list-card">
+		<div class="notice-list-card">
 
-			<div class="list-header">
-				<div>
-					<strong>총 ${ requestScope.pi.listCount }명</strong>
-					<span>재원중 / 휴원 상태의 학원생만 표시됩니다.</span>
-				</div>
-
-				<label class="hide-rest-check">
-					<input type="checkbox">
-					휴학생 숨기기
-				</label>
-			</div>
-			<script>
-				$('.hide-rest-check>input').on('change', function() {
-					if($(this).is(':checked')) {
-						$('.student-table>tbody tr').each(function() {
-							if ($(this).find('span').text().trim() === '휴학') {
-								$(this).hide();
-								if ($('.student-table>tbody tr:visible').length === 0) {
-						            $('#emptyRow').show();
-						        }
-							} 
-						});
-					} else {
-						$('.student-table>tbody tr').show();
-						$('#emptyRow').hide();
-					}
-				});
-			</script>
-
-			<table class="student-table">
+			<table class="notice-table">
 				<thead>
 					<tr>
-						<th>이름</th>
-						<th>연락처</th>
-						<th>담당 상담사</th>
+						<th>번호</th>
+						<th>제목</th>
+						<th>작성자</th>
 						<th>등록일</th>
-						<th>현재 상태</th>
+						<th>노출여부</th>
 						<th>관리</th>
 					</tr>
 				</thead>
@@ -401,36 +300,30 @@
 						<c:when test="${ empty requestScope.list }">
 							<tr>
 								<th colspan="6">
-									학생 정보가 없습니다.
+									공지사항 정보가 없습니다.
 								</th>
 							</tr>
 						</c:when>
-						<c:otherwise>
-							<tr id="emptyRow" style="display: none;">
-						        <th colspan="6">
-						            학생 정보가 없습니다.
-						        </th>
-						    </tr>	
-							<c:forEach var="s" items="${ requestScope.list }">
+						<c:otherwise>	
+							<c:forEach var="n" items="${ requestScope.list }">
 								<tr>
-									<td>
-										<a href="#" class="student-name-link">${ s.studentName }</a>
-									</td>
-									<td>${ s.phone }</td>
-									<td>${ s.counselorName }</td>
-									<td>${ s.createdAt }</td>
+									<td>${ n.postNo }</td>
+									<td>${ n.title }</td>
+									<td>${ n.postWriter }</td>
+									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>
-											<c:when test="${ s.status eq 'ATTENDING' }">
-												<span class="student-status active">재학</span>
+											<c:when test="${ n.status eq 'Y' }">
+												<span class="notice-status show">노출</span>
 											</c:when>
 											<c:otherwise>
-												<span class="student-status rest">휴학</span>
+												<span class="notice-status hide">숨김</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td>
-										<button type="button" class="btn-outline small" onclick="go('/admin/studentDetails/${ s.studentNo }');">상세보기</button>
+										<button type="button" class="btn-outline edit" onclick="go(/admin/notice/update/${ n.postNo })">수정</button>
+										<button type="button" class="btn-outline delete" onclick="go(/admin/notice/delete/${ n.postNo })">삭제</button>
 									</td>
 								</tr>
 							</c:forEach>
@@ -449,10 +342,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.condition }">
-								<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/know-how/admin/notice?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/know-how/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 							</c:otherwise>
 							
 						</c:choose>
@@ -469,10 +362,10 @@
 						
 							<c:choose>
 								<c:when test="${ empty requestScope.status }">
-									<button type="button" onclick="go('/admin/studentList?cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/notice?cpage=${ p }')">${ p }</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
 								</c:otherwise>
 							</c:choose>
 							
@@ -489,10 +382,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.status }">
-								<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/notice?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:otherwise>
 						</c:choose>
 					</c:otherwise>
@@ -500,4 +393,5 @@
 			</div>
 		</div>
 	</section>
-	<!-- 학원생 목록조회 콘텐츠 끝 -->
+</body>
+</html>
