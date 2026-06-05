@@ -90,4 +90,18 @@ public class AdminDao2 {
 		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
 	}
 	
+	public int adminSelectNoticeCount(SqlSessionTemplate sqlSession) {
+		
+		return sqlSession.selectOne("boardMapper.adminSelectNoticeCount");
+	}
+	
+	public ArrayList<StudentDto> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList");
+	}
+	
 }//클래스 끝
