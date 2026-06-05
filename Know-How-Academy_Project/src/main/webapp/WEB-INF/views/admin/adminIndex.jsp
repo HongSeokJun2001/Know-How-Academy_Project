@@ -446,8 +446,7 @@
                     </div>
                 </c:forEach>
             </div>
-
-            <br><br>
+<br>
             <div class="chart-footer">
 
                 <div class="info-card trend-card">
@@ -471,7 +470,7 @@
                 </div>
 
                 <div class="info-card rate-card">
-                    <div class="info-title">✅ 신청율</div>
+                    <div class="info-title">✅ 신청률</div>
                     <c:forEach var="d" items="${requestScope.dashboard}">
                         <div class="info-row">
                             <span>${d.categoryName}상담</span>

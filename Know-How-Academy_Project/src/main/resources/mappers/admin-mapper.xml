@@ -119,12 +119,53 @@
 		                              ) OVER(), 0
 		                 )* 100 , 1)  AS rate
 		
-		  FROM COUNSEL_RESERVATION  C
-		  LEFT JOIN COUNSEL_CATEGORY     CC      ON C.CATEGORY_NO = CC.CATEGORY_NO
+		  FROM COUNSEL_RESERVATION  	C
+		  LEFT JOIN COUNSEL_CATEGORY    CC 	ON 	C.CATEGORY_NO = CC.CATEGORY_NO
 		 GROUP BY C.CATEGORY_NO, CC.CATEGORY_NAME
 		 ORDER BY C.CATEGORY_NO
 	 </select>
 	 
+	 <!-- 7.상담사리스트 조회  -->
+	<!-- 
+		계정 활성/비활성 기준은 MEMBER.STATUS 기준으로 조회
+		COUNSELOR.STATUS는 현재 가입/입력 로직에서 동일하게 관리된다는 전제로 사용하지 않음
+	 -->
+	 <select id="" >
+		SELECT *
+		  FROM (
+		        SELECT ROWNUM AS RNUM, P.* 
+		          FROM (
+		                SELECT CI.USER_NO           AS userNo
+		                     , CM.USER_NAME         AS userName
+		                     , CL.CLASS_NAME        AS className
+		                     , CL.CLASS_NO          AS classNo
+		                     , CI.INVITE_NO         AS inviteNo
+		                     , COUNT(CASE WHEN CI.INVITE_STATUS = 'USED' 
+		                                  THEN 1 
+		                              END) OVER()   AS counselorCount
+		                     , C.COUNSEL_NO         AS counselNo
+		                     , CC.CATEGORY_NO       AS  categoryNo
+		                     , CC.CATEGORY_NAME     AS categoryName
+		                     
+		                  FROM COUNSELOR_INVITE         CI 
+		                  LEFT JOIN MEMBER 			    CM  ON 	CM.USER_NO = CI.USER_NO
+		                  LEFT JOIN COUNSELOR_PROFILE 	C 	ON 	CM.USER_NO = C.USER_NO
+		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
+		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = C.CATEGORY_NO
+		                  <choose>
+		                  	<when test="status == 'ACTIVE'">
+		                 WHERE CI.INVITE_STATUS IN ('PENDING', 'USED')
+		                   	</when>
+		                   	<otherwise>
+		                 WHERE CI.INVITE_STATUS = 'USED'
+		                   	</otherwise>
+		                   </choose>
+		                   AND CM.STATUS = #{status} 
+		                 ORDER BY CI.USER_NO NULLS FIRST, CM.USER_NAME
+		                 )P
+		        )
+		 WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+ </select>
 	 
 </mapper>
 	

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.admin.model.dao.AdminDao;
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
+import com.kh.know_how.admin.model.dto.CounselorListPageDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 
 @Service
@@ -66,6 +67,15 @@ public class AdminService {
 		
 		return ad.selectdashboardStats(sqlSession);
 	}
+
+	public CounselorListPageDto counselorList(int currentPage, String status) {
+		
+		
+		return null;
+	}
+
+
+
 
 	
 	
