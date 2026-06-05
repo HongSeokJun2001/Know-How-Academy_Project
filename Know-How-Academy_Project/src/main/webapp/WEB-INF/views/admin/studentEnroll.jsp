@@ -145,7 +145,11 @@
 	            	</c:when>
 	            	<c:otherwise>
 	            		<tr>
-	            			<td colspan="5"><h3>가입 승인 대기 내역이 존재하지 않습니다.</h3></td>
+	            			<td></td>
+	            			<td></td>
+	            			<td><h3>가입 승인 대기 내역이 존재하지 않습니다.</h3></td>
+	            			<td></td>
+	            			<td></td>
 	            		</tr>
 	            	</c:otherwise>
             	</c:choose>

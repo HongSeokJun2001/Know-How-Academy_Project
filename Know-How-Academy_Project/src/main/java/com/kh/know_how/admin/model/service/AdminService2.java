@@ -92,14 +92,4 @@ public class AdminService2 {
 		return ad2.updateStudentReject(sqlSession, userNo);
 	}
 	
-	public int adminSelectNoticeCount() {
-		
-		return ad2.adminSelectNoticeCount(sqlSession);
-	}
-	
-	public ArrayList<StudentDto> adminSelectNoticeList(PageInfo pi) {
-		
-		return ad2.adminSelectNoticeList(sqlSession, pi);
-	}
-	
 }//클래스 끝
