@@ -2,8 +2,19 @@ package com.kh.know_how.member.model.vo;
 
 import java.sql.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@ToString
 public class Member {
-	private int number;//	USER_NO	NUMBER	사용자번호
+	private int userNo;//	USER_NO	NUMBER	사용자번호
 	private String userId;//	USER_ID	VARCHAR2(50 BYTE)	사용자아이디
 	private String userPwd;//	USER_PWD	VARCHAR2(200 BYTE)	사용자비밀번호
 	private String userName;//	USER_NAME	VARCHAR2(20 BYTE)	사용자이름

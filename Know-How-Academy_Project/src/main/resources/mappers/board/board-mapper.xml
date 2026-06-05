@@ -22,6 +22,35 @@
   	<result column="USER_NAME" property="userName"/> 	  	
   	</resultMap>
   	
+  	<resultMap id="memberResultSet" type="member">
+    <result property="userNo"    column="USER_NO" />
+    <result property="userId"    column="USER_ID" />
+    <result property="userPwd"   column="USER_PWD" />
+    <result property="userName"  column="USER_NAME" />
+    <result property="phone"     column="PHONE" />
+    <result property="enail"     column="EMAIL" />
+    <result property="address"   column="ADDRESS" />
+    <result property="rollCode"  column="ROLE_CODE" />
+    <result property="status"    column="STATUS" />
+    <result property="createdAt" column="CREATED_AT" />
+    <result property="updateAt"  column="UPDATED_AT" />
+    <result property="classNo"   column="CLASS_NO" />
+</resultMap>
+
+<resultMap id="fileAttachmentResultSet" type="fileAttachment">
+    <id column="FILE_NO" property="fileNo" />
+    <result column="TARGET_NO" property="targetNo" />
+    <result column="TARGET_TYPE" property="targetType" />
+    <result column="ORIGIN_NAME" property="originName" />
+    <result column="SAVE_NAME" property="saveName" />
+    <result column="FILE_PATH" property="filePath" />
+    <result column="CREATED_AT" property="createdAt" />
+    <result column="UPDATED_AT" property="updatedAt" />
+    <result column="STATUS" property="status" />
+    <result column="FILE_LEVEL" property="fileLevel" />
+</resultMap>
+
+  	
 <!-- resultSet을 활용해 페이징처리(10)적용, 게시글 목록을 조회쿼리문 -->
  <select id="selectBoardList" parameterType="hashmap"
   			resultMap="boardResultSet">
@@ -93,7 +122,51 @@ WHERE POST_NO = #{postNo}
 AND B.STATUS = 'Y'	
 </select>
 
+<!--  일반(A)게시글 등록용 쿼리문 -->
+<insert id="insertBoard" parameterType="board">
+INSERT INTO BOARD_POST(POST_NO,
+                       POST_TYPE,                       
+                       TITLE,
+                       CONTENT,
+                       WRITER_NO,
+                       VIEW_COUNT,
+                       CREATED_AT,
+                       CATEGORY,
+                       STATUS)
+                VALUES(SEQ_BNO.NEXTVAL,
+                        'A',
+                        #{title},
+                        #{content},
+                        #{writerNo},
+                        #{viewCount},
+                        SYSDATE,
+                        '일반게시판',
+                        'Y')
+</insert>
 
+<!--  첨부파일 등록용 쿼리문 -->
+<insert id="insertFileAttachment" parameterType="fileAttachment">
+	INSERT INTO FILE_ATTACHMENT(FILE_NO,
+                            TARGET_NO,
+                            TARGET_TYPE,
+                            ORIGIN_NAME,
+                            SAVE_NAME,
+                            FILE_PATH)
+            VALUES(SEQ_FNO.NEXTVAL,
+                    SEQ_BNO.CURRVAL,
+                    'A',
+                    #{originName},
+                    #{saveName},
+                    #{filePath})
+</insert>
+
+<select id="selectAttachment" parameterType="_int" resultMap="fileAttachmentResultSet">
+    SELECT FILE_NO, TARGET_NO, TARGET_TYPE, ORIGIN_NAME, SAVE_NAME, FILE_PATH, CREATED_AT, UPDATED_AT, STATUS, FILE_LEVEL
+    FROM FILE_ATTACHMENT
+    WHERE TARGET_NO = #{postNo}
+      AND TARGET_TYPE = 'A'
+      AND STATUS = 'Y'
+</select>
 	
   	
   

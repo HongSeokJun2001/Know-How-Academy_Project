@@ -153,12 +153,17 @@
                         <td colspan="3">${b.content}</td>
                     </tr>
                     <tr>
+                    <!-- 첨부파일의 있고없고의 따른 경우 -->
                         <th>첨부파일</th>
                         <td colspan="3">
                             <c:choose>
                                 <c:when test="${empty at}">
                                     첨부파일이 없습니다.
                                 </c:when>
+                                <c:otherwise>
+                                	<a download="${at.originName}" 
+                                       href="/know-how/${at.filePath}${at.saveName}">${at.originName}</a>
+                                </c:otherwise>
                             </c:choose>
                         </td>
                     </tr>
