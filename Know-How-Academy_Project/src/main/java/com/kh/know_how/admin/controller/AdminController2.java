@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -99,7 +100,7 @@ public class AdminController2 {
     @GetMapping("/student/mlist")
     public ArrayList<MemoDto> selectStudentMemo(int userNo) {
     	
-    	return as2.selectStudentMemo(userNo); 
+    	return as2.selectStudentMemoList(userNo); 
     }
     
     @ResponseBody
@@ -117,6 +118,38 @@ public class AdminController2 {
     	
     	int result = as2.updateStudentStatus(s);
 
+    	return (result > 0) ? "success" : "fail"; 
+    }
+    
+    @GetMapping("/student/enroll")
+    public String selectPendingStudentList(Model model) {
+    	
+    	ArrayList<StudentDto> list = as2.selectPendingStudentList();
+    	model.addAttribute("list", list)
+    		 .addAttribute("page", "studentEnroll");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/student/approve")
+    public String updateStudentApprove(int userNo, int classNo) {
+    	
+    	HashMap<String, Integer> map = new HashMap<>();
+		map.put("userNo", userNo);
+		map.put("classNo", classNo);
+		
+    	int result = as2.updateStudentApprove(map);
+    	
+    	return (result > 0) ? "success" : "fail"; 
+    }
+
+    @ResponseBody
+    @PostMapping("/student/reject")
+    public String updateStudentReject(int userNo) {
+		
+    	int result = as2.updateStudentReject(userNo);
+    	
     	return (result > 0) ? "success" : "fail"; 
     }
     

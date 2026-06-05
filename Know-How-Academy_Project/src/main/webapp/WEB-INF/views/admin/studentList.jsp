@@ -308,7 +308,7 @@
 				<p>재원중, 휴원 상태의 학원생 정보를 조회하고 관리합니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary">
+			<button type="button" class="btn-primary" onclick="location.assign('/know-how/admin/student/enroll')">
 				가입 승인 관리
 			</button>
 		</div>

@@ -55,9 +55,9 @@ public class AdminService2 {
 		return ad2.insertStudentMemo(sqlSession, m);
 	}
 
-	public ArrayList<MemoDto> selectStudentMemo(int userNo) {
+	public ArrayList<MemoDto> selectStudentMemoList(int userNo) {
 		
-		return ad2.selectStudentMemo(sqlSession, userNo);
+		return ad2.selectStudentMemoList(sqlSession, userNo);
 	}
 
 	@Transactional
@@ -71,9 +71,25 @@ public class AdminService2 {
 	
 		return ad2.updateStudentStatus(sqlSession, s);
 	}
+
+	public ArrayList<StudentDto> selectPendingStudentList() {
+		
+		return ad2.selectPendingStudentList(sqlSession);
+	}
+
+	@Transactional
+	public int updateStudentApprove(HashMap<String, Integer> map) {
+
+		int result1 = ad2.updateStudentApprove(sqlSession, map);
+		int result2 = ad2.insertStudent(sqlSession, map);
+		
+		return result1*result2;
+	}
 	
-	
-	
-	
+	@Transactional
+	public int updateStudentReject(int userNo) {
+		
+		return ad2.updateStudentReject(sqlSession, userNo);
+	}
 	
 }//클래스 끝
