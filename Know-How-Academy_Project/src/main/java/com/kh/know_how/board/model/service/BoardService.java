@@ -1,71 +1,48 @@
 package com.kh.know_how.board.model.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ArrayList; // 필요에 따라 추가
 
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
-import com.kh.know_how.common.model.vo.PageInfo;
+import com.kh.know_how.common.model.vo.PageInfo; // 페이징 처리용
 
 @Service
 public class BoardService {
-	
-	@Autowired
-	private SqlSessionTemplate sqlSession;
-	@Autowired
-	private BoardDao boardDao;
-	//Spring에게 sql과 dao 객체관리
-	
-	/**
-	 * 일반 게시글 목록 조회 
-	 * @param pi 페이징 처리
-	 * @return ArrayList반환
-	 */
-	public ArrayList<Board> selectBoardList(PageInfo pi){
-						
-		//sql은 상단에서 작성햇으니 바로 리턴작성
-		//dao로 보내줄 sql과 pi 발사
-		return boardDao.selectBoardList(sqlSession, pi);
-	}
-	/**
-	 * 게시글 전체 갯수
-	 * @return
-	 */
-	public int selectListCount() {
-		
-		return boardDao.selectListCount(sqlSession);
-	}
-	/**
-	 * 검색된 게시글 총 갯수
-	 * @param map 게시글 기본 정보
-	 * @return
-	 */
-	public int selectSearchCount(HashMap<String, String> map) {
-		
-		return boardDao.selectSearchCount(sqlSession, map);
-	}
-	/**
-	 * 게시글 조회
-	 * @param boardNo 
-	 * @return
-	 */
-	@Transactional
-	public int increaseCount(int boardNo) {
-		
-		return boardDao.increaseCount(sqlSession, boardNo);
-	}
-	/**
-	 * 
-	 * @param boardNo
-	 * @return
-	 */
-	public Board selectBoard(int boardNo) {
-		
-		return boardDao.selectBoard(sqlSession,  boardNo);
-	}
+
+    @Autowired
+    private BoardDao boardDao;
+
+    // 만약 sqlSession을 직접 넘기는 방식이 아니라면 아래 매개변수에서 sqlSession을 제거해야 합니다.
+    // 보통 Dao에서 SqlSessionTemplate을 주입받아 사용하므로, 
+    // 아래와 같이 sqlSession 파라미터를 제거하고 호출하는 것이 일반적입니다.
+
+    public int selectListCount() {
+        return boardDao.selectListCount();
+    }
+
+    public ArrayList<Board> selectBoardList(PageInfo pi) {
+        return boardDao.selectBoardList(pi);
+    }
+
+    public int selectSearchCount(HashMap<String, String> map) {
+        return boardDao.selectSearchCount(map);
+    }
+
+    @Transactional
+    public int increaseCount(int boardNo) {
+        return boardDao.increaseCount(boardNo);
+    }
+
+    public Board selectBoard(int boardNo) {
+        return boardDao.selectBoard(boardNo);
+    }
+    
+    public int inserBoard(Board b) {
+        return boardDao.inserBoard(b);
+    }
 }
