@@ -19,14 +19,14 @@
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
 		SELECT SM.USER_NAME AS studentName
 		     , SM.PHONE AS phone
-		     , CM.USER_NAME AS counselorName
+		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
 		     , S.STUDENT_STATUS AS status
 		     , S.STUDENT_NO AS studentNo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
-		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
-		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		 WHERE SM.ROLE_CODE = 'STUDENT'
 		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
 		   AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
@@ -58,14 +58,14 @@
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
 		SELECT SM.USER_NAME AS studentName
 		     , SM.PHONE AS phone
-		     , CM.USER_NAME AS counselorName
+		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
 		     , S.STUDENT_STATUS AS status
 		     , S.STUDENT_NO AS studentNo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
-		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
-		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		  WHERE (SM.USER_NAME LIKE '%' || #{keyword} || '%' 
 		    OR SM.PHONE LIKE '%' || #{keyword} || '%')
 		   AND SM.ROLE_CODE = 'STUDENT'
@@ -92,14 +92,14 @@
 			 , SM.EMAIL AS email
 			 , SM.CREATED_AT AS createdAt
 			 , CLASS_NAME AS className
-			 , CM.USER_NAME AS counselorName
+			 , NVL(CM.USER_NAME, '미배정') AS counselorName
 			 , S.STUDENT_STATUS AS status
 			 , S.UPDATED_AT AS updatedAt
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (S.USER_NO = SM.USER_NO)
 		  JOIN CLASS CL ON (SM.CLASS_NO = CL.CLASS_NO)
-		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
-		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		 WHERE S.STUDENT_NO = #{studentNo}
 	</select>
 	
