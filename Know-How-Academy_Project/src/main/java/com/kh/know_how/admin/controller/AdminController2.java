@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.admin.model.service.AdminService2;
+import com.kh.know_how.board.model.service.BoardService;
 import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.Pagination;
 import com.kh.know_how.common.template.XssDefencePolicy;
@@ -29,7 +29,6 @@ public class AdminController2 {
 	//필드부
 	@Autowired
 	AdminService2 as2;
-	
 	
 	//메소드부
         
@@ -151,6 +150,26 @@ public class AdminController2 {
     	int result = as2.updateStudentReject(userNo);
     	
     	return (result > 0) ? "success" : "fail"; 
+    }
+    
+    @GetMapping("/notice")
+    public ModelAndView selectNoticeList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) {
+    	
+    	int listCount = as2.adminSelectNoticeCount();
+    	int pageLimit = 10;
+    	int boardLimit = 10;
+    	
+    	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	ArrayList<StudentDto> list = as2.adminSelectNoticeList(pi);
+    	
+    	
+    	mv.addObject("list", list)
+    	  .addObject("pi", pi)
+    	  .addObject("page", "adminNoticeList")
+    	  .setViewName("admin/adminLayout");
+    	
+    	return mv;
     }
     
 }//컨트롤러 끝

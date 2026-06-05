@@ -9,10 +9,11 @@
 		<result column="CATEGORY" property="category" />
 		<result column="TITLE" property="title" />
 		<result column="CONTENT" property="content" />
-		<result column="USER_ID" property="postWriter" />
+		<result column="USER_NAME" property="postWriter" />
 		<result column="CREATED_AT" property="createdAt" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="TITLEIMG" property="titleImg"/>
+		<result column="status" property="status"/>
 	</resultMap>
 	
 	<resultMap type="fileAttachment" id="fileAttachmentResultSet">
@@ -67,11 +68,12 @@
 		 ORDER BY POST_NO DESC
 	</select>
 	
+	<!-- 학원소식 상세조회 하는 쿼리문 -->
 	<select id="selectNews" parameterType="_int" resultMap="boardResultSet">
 		SELECT POST_NO
 			 , CATEGORY
 			 , TITLE
-			 , USER_ID
+			 , USER_NAME
 			 , B.CREATED_AT
 			 , CONTENT
 		  FROM BOARD_POST B
@@ -80,6 +82,7 @@
 		   AND B.STATUS = 'Y'
 	</select>
 	
+	<!-- 첨부파일을 조회하는 쿼리문 -->
 	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
 		SELECT FILE_NO
 		     , ORIGIN_NAME
@@ -88,6 +91,26 @@
 		  FROM FILE_ATTACHMENT
 		 WHERE TARGET_NO = #{postNo}
 		 ORDER BY FILE_NO ASC
+	</select>
+	
+	<!-- (관리자용)공지사항 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSelectNoticeCount" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = 'NOTICE'
+	</select>
+	
+	<!-- (관리자용)공지사항 목록 조회용 쿼리문 -->
+	<select id="adminSelectNoticeList" parameterType="hashmap" resultMap="boardResultSet">
+		SELECT POST_NO
+			 , TITLE
+			 , USER_NAME
+			 , B.CREATED_AT
+			 , B.STATUS
+		  FROM BOARD_POST B
+		  JOIN MEMBER ON (WRITER_NO = USER_NO)
+		 WHERE POST_TYPE = 'NOTICE'
+		 ORDER BY POST_NO DESC
 	</select>
 	
 </mapper>
