@@ -23,7 +23,9 @@
 	 <select id="loginMember" parameterType="member" 
 								  resultMap="memberResultSet">
 			<!-- 암호화 작업 전 : 아이디, 비밀번호가 모두 일치해야 조회 -->
-			SELECT * 
+			SELECT USER_NO, USER_ID, USER_PWD, USER_NAME, PHONE, 
+           EMAIL, ADDRESS, ROLE_CODE, STATUS, CREATED_AT, 
+           UPDATED_AT, CLASS_NO
 			  FROM MEMBER
 			 WHERE USER_ID = #{userId}
 			   AND USER_PWD = #{userPwd}

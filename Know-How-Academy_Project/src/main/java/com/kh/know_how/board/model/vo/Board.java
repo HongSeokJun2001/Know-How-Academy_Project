@@ -1,7 +1,6 @@
 package com.kh.know_how.board.model.vo;
 
 import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +23,7 @@ public class Board {
     private int writerNo;      // WRITER_NO
     private String status;     // STATUS
     private int viewCount;     // VIEW_COUNT
-
+    
+    //Board_POST 테이블에는 없는 컬럼이지만, JOIN 결과를 담기 위해 추가함
+    private String userName; //USER_NAME 
 }

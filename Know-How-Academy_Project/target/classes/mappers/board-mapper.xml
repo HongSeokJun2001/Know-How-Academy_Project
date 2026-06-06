@@ -17,22 +17,23 @@
 		<result column="UPDATED_AT" property="updatedAt" />
 		<result column="STATUS" property="status" />
 		<result column="VIEW_COUNT" property="viewCount" />
+		
 		<result column="USER_NAME" property="userName" />
 	</resultMap>
 
 	<resultMap id="memberResultSet" type="member">
-		<result property="userNo" column="USER_NO" />
-		<result property="userId" column="USER_ID" />
-		<result property="userPwd" column="USER_PWD" />
-		<result property="userName" column="USER_NAME" />
-		<result property="phone" column="PHONE" />
-		<result property="enail" column="EMAIL" />
-		<result property="address" column="ADDRESS" />
-		<result property="rollCode" column="ROLE_CODE" />
-		<result property="status" column="STATUS" />
-		<result property="createdAt" column="CREATED_AT" />
-		<result property="updateAt" column="UPDATED_AT"/>
-		<result property="classNo" column="CLASS_NO" />
+		<result column="USER_NO" property="userNo" />
+		<result column="USER_ID" property="userId" />
+		<result column="USER_PWD" property="userPwd" />
+		<result column="USER_NAME" property="userName" />
+		<result column="PHONE" property="phone" />
+		<result column="EMAIL" property="email" />
+		<result column="ADDRESS" property="address" />
+		<result column="ROLE_CODE" property="roleCode" />
+		<result column="STATUS" property="status" />
+		<result column="CREATED_AT" property="createdAt" />
+		<result column="UPDATED_AT" property="updateAt" />
+		<result column="CLASS_NO" property="classNo" />
 	</resultMap>
 
 	<resultMap id="fileAttachmentResultSet" type="fileAttachment">
@@ -80,8 +81,8 @@
 		resultType="_int">
 		SELECT COUNT(*)
 		FROM BOARD_POST B
-		JOIN MEMBER M ON (B.WRITER = M.USER_NO)
-		WHERE BOARD_POST = 'POST'
+		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
+		WHERE BOARD_TYPE = 'POST'
 		AND B.STATUS = 'Y'
 		<if test="condition1 == 'writer'">
 			AND M.USER_NAME LIKE '%' || #{keyword} || '%'

@@ -2,6 +2,7 @@ package com.kh.know_how.board.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,10 +22,7 @@ import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.kh.know_how.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -98,30 +97,23 @@ public class BoardController {
 
 	// 5. 게시글 등록 처리
 	@PostMapping("insert") // 주소 매핑이 누락되어 있어 임의로 추가했습니다.
-	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {
-
-		/*
-		 * Member loginUser = (Member) session.getAttribute("loginUser");
-		 * b.setWriterNo(loginUser.getUserNo());
-		 */
+	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {		
+				 
+		//Member loginUser = (Member) session.getAttribute("loginUser");
 		
-		//로그인기능 탑재후 삭제  예정====================
-		int[] userNos = {1,2,3,4,5,6,7,8,9,10,11};
-		int randomIndex = (int)(Math.random() * userNos.length);		
-		b.setWriterNo(userNos[randomIndex]);
-		//=========================================
+		//b.setWriterNo(loginUser.getUserNo());
 		
 		FileAttachment at = null;	
-		//if (originalFile != null && !originalFile.getOriginalFilename().equals(""))
-		if (originalFile != null && !originalFile.isEmpty()) {
-			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
 
+		if (originalFile != null && !originalFile.isEmpty()) {
+			
+			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");	
+			
 			at = new FileAttachment();
 			at.setOriginName(originalFile.getOriginalFilename());
 			at.setSaveName(saveName);
 			at.setFilePath("resources/board_upfiles/");
-			
-			System.out.println("생성된 Attachment 객체: " + at);
+						
 		}
 
 		int result = boardService.insertBoard(b, at);

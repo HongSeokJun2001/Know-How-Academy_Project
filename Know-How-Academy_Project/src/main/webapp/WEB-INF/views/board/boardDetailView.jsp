@@ -11,12 +11,14 @@
                     border: none !important;
                 }
 
+                /*테이블전체 설정*/
                 #content {
                     width: 940px;
                     margin: 10px auto;
                     border-collapse: collapse;
                 }
 
+                /*테이블 헤드 설정*/
                 #content th {
                     width: 100px;
                     text-align: center;
@@ -26,21 +28,13 @@
                     padding: 10px;
                 }
 
+                /**/
                 #content td {
-                    width: 370px;
                     padding: 10px;
                 }
 
-                #reply-area {
-                    margin: auto;
-                    padding: 10px;
-                    width: 940px;
-                }
-
-                #reply-area td {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
+                #content-body {
+                    height: 300px;
                 }
 
                 .btn-area {
@@ -71,32 +65,45 @@
                     border: 1px solid #ccc;
                     border-radius: 5px;
                     margin: 20px auto;
+                    padding: 10px;
                     display: flex;
-                    /* 가로 정렬 시작 */
-                    justify-content: space-between;
-                    /* 왼쪽과 오른쪽으로 배치 */
-                    align-items: center;
+                    gap: 10px;
+                    justify-content: space-between;/* 양 옆으로 배치  */                    
+                    align-items: center;/* 가로 정렬 */                    
                 }
 
-                #reply-area>#replyContent {
+                #replyContent {
                     width: 88%;
                     height: 100px;
                     border: none;
                     resize: none;
                 }
 
-                #reply-area>#reply-btn {
+                #replyContent:focus {
+                    outline-color: blueviolet;
+                    border: 2px;
+                }
+
+                #reply-btn {
                     width: 12%;
                     height: 100px;
                     border: none;
                 }
-                #replyContent:focus{
-                    outline-color: blueviolet;
-                    border: 2px;
-                }   
-                #reply-btn:hover, #upBtn:hover, #delBtn:hover, #listBtn1:hover, #listBtn2:hover{
-                    background-color: blueviolet;                    
+
+                #reply-btn:hover,
+                #upBtn:hover,
+                #delBtn:hover,
+                #listBtn1:hover,
+                #listBtn2:hover {
+                    background-color: blueviolet;
                 }
+
+                .fileName{
+                    font-weight: bold;
+                    color: blueviolet;
+                }
+   
+
             </style>
         </head>
 
@@ -113,7 +120,7 @@
                         <a id="delBtn" class="btn btn-outline-secondary" onclick="upPostSubmit(2)">삭제</a>
                         <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
                         <c:if test="${(not empty sessionScope.loginUser) and 
-                            (sessionScope.loginUser.userId eq b.boardWriter)} ">
+                            (sessionScope.loginUser.userNo eq b.writerNo)} ">
                             <!--로그인중이며, 사용자와 작성자명이 같을 경우에~~-->
 
 
@@ -150,10 +157,10 @@
                     </tr>
                     <tr>
                         <th>내용</th>
-                        <td colspan="3">${b.content}</td>
+                        <td id="content-body" colspan="3">${b.content}</td>
                     </tr>
                     <tr>
-                    <!-- 첨부파일의 있고없고의 따른 경우 -->
+                        <!-- 첨부파일의 있고없고의 따른 경우 -->
                         <th>첨부파일</th>
                         <td colspan="3">
                             <c:choose>
@@ -161,23 +168,23 @@
                                     첨부파일이 없습니다.
                                 </c:when>
                                 <c:otherwise>
-                                	<a download="${at.originName}" 
-                                       href="/know-how/${at.filePath}${at.saveName}">${at.originName}</a>
+                                    <a class="fileName" download="${at.originName}"
+                                        href="/know-how/${at.filePath}${at.saveName}">${at.originName}</a>
                                 </c:otherwise>
                             </c:choose>
                         </td>
                     </tr>
                 </table>
-            </div>
-            <div class="rightBtn2">
+                <div class="rightBtn2">
                 <a href="/know-how/board/list" id="listBtn2" class="btn btn-outline-secondary">목록</a>
             </div>
-
 
             <div class="" id="reply-area">
                 <textarea id="replyContent"></textarea>
                 <button type="submit" class="btn btn-outline-secondary" id="reply-btn">댓글 작성</button>
             </div>
+            </div>
+            
 
 
 

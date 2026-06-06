@@ -2,6 +2,7 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 		<!DOCTYPE html>
 		<html>
+
 		<head>
 			<meta charset="UTF-8">
 			<title>Insert title here</title>
@@ -10,6 +11,7 @@
 					text-align: center;
 					border: none !important;
 				}
+
 				#search-area {}
 
 				.table tbody {
@@ -71,14 +73,12 @@
 				.pagination .page-item.active .page-link {
 					background-color: #6f42c1 !important;
 					border-color: #6f42c1 !important;
-					color: white !important ;
+					color: white !important;
 				}
-				 .btn-hover:hover{
-                    background-color: blueviolet !important;   
-				 }
-				 .table td{
-				 cursor: ;
-				 }
+
+				.btn-hover:hover {
+					background-color: blueviolet !important;
+				}				
 			</style>
 		</head>
 
@@ -102,9 +102,13 @@
 					<br> <br>
 				</div>
 
-				<div class="write-btn-area" align="right">
-					<a href="/know-how/board/enrollForm" type="button" class="btn btn-outline-secondary btn-hover">글쓰기</a>
-				</div>
+				<c:if test="${not empty loginUser}">
+					<div class="write-btn-area" align="right">
+						<a href="/know-how/board/enrollForm" type="button"
+						   class="btn btn-outline-secondary btn-hover">글쓰기</a>
+					</div>
+				</c:if>
+
 
 				<table class="table table-hover">
 					<!--게시글 카테고리-->
@@ -158,19 +162,19 @@
 						</c:choose>
 						<!--게시글 클릭시 게시글내부로 진입-->
 						<script>
-							$(function(){
-								$(".table>tbody>tr").click(function(){
+							$(function () {
+								$(".table>tbody>tr").click(function () {
 
-									
+
 
 									let bno = $(this).children().eq(0).text();
 									console.log(bno);
-									location.href="/know-how/board/detail/" + bno;
+									location.href = "/know-how/board/detail/" + bno;
 								})
-							
+
 							})
 						</script>
-						
+
 					</tbody>
 				</table>
 				<!--@@@페이징바영역@@@-->
@@ -180,7 +184,8 @@
 							<%--'<' 버튼의 페이징 및 이동--%>
 								<c:when test="${requestScope.pi.currentPage eq 1}">
 									<li class="page-item disabled">
-										<a class="page-link"><</a>
+										<a class="page-link">
+											<< /a>
 									</li>
 								</c:when>
 								<c:otherwise>
@@ -189,8 +194,8 @@
 											<c:when test="${empty keyword}">
 												<li class="page-item">
 													<a class="page-link" href="/know-how/board/list?cpage=
-														${requestScope.pi.currentPage - 1}"><
-														</a>
+														${requestScope.pi.currentPage - 1}">
+														< </a>
 												</li>
 											</c:when>
 											<%--검색어 입력 조회 일경우--%>
@@ -220,8 +225,7 @@
 										<c:when test="${ empty keyword}">
 
 											<li class="page-item">
-												<a class="page-link"
-													href="/know-how/board/list?cpage=${p}">${p}</a>
+												<a class="page-link" href="/know-how/board/list?cpage=${p}">${p}</a>
 											</li>
 
 										</c:when>
