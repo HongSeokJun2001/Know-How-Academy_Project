@@ -53,6 +53,5 @@ public class Pagination {
 		return new PageInfo(listCount, currentPage, pageLimit, boardLimit, maxPage, startPage, endPage);
 		// 새로운 객체로서 PageInfo 를 만들엇다. 기존의 PageInfo와는 이름은같지만 주소값이 다른 객체
 		//101호 PageInfo와 102호 PageInfo
-	}
-
+										}
 }

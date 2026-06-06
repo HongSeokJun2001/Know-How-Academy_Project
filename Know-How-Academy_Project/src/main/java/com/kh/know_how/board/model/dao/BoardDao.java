@@ -2,7 +2,6 @@ package com.kh.know_how.board.model.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +53,25 @@ public FileAttachment selectAttachment(SqlSessionTemplate sqlSession, int boardN
 		
 		return sqlSession.selectOne("boardMapper.selectAttachment", boardNo);
 	}
+
+	public ArrayList<Board> mainPageNoticeList(SqlSessionTemplate sqlSessison) {
+		
+		return (ArrayList)sqlSessison.selectList("boardMapper.mainPageNoticeList");
+	}
+
+	public int selectNewsListCount(SqlSessionTemplate sqlSession) {
+
+		return sqlSession.selectOne("boardMapper.selectNewsListCount");
+	}
+
+	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.selectOne("boardMapper.selectNews", postNo);
+	}
+	
+	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.selectFileAttachmentList", postNo);
+	}
 }
+

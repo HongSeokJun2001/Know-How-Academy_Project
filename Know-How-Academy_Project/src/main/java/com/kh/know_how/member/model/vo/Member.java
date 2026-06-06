@@ -26,4 +26,5 @@ public class Member {
 	private Date createdAt;//	CREATED_AT	DATE	생성일
 	private Date updateAt;//	UPDATED_AT	DATE	수정일
 	private int classNo;//	CLASS_NO	NUMBER	반번호
+
 }

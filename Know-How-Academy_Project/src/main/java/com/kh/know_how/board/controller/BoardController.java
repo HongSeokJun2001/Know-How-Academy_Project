@@ -20,6 +20,9 @@ import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import jakarta.servlet.http.HttpSession;
@@ -131,4 +134,39 @@ public class BoardController {
 			return "common/errorPage";
 		}
 	}
+	
+	@ResponseBody
+	@GetMapping("news/list")
+	public Map<String, Object> selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage) {
+		int listCount = boardService.selectNewsListCount();
+		int boardLimit = 4;
+		int pageLimit = 1;
+
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		ArrayList<Board> list = boardService.selectNewsList(pi);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", list);
+		map.put("pi", pi);
+		return map;
+	}
+	
+	/**
+	 * 학원 소식 상세조회페이지
+	 * @return
+	 */
+	@GetMapping("news/detail/{postNo}")
+	public ModelAndView academyNews(@PathVariable int postNo, ModelAndView mv) {
+		Board b = boardService.selectNews(postNo);
+		
+		ArrayList<FileAttachment> list = boardService.selectFileAttachmentList(postNo);
+
+		mv.addObject("b", b)
+		  .addObject("list", list)
+		  .setViewName("common/academyNews");
+		
+		return mv;
+	}
+	
+	
 }

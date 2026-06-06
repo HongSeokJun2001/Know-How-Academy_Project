@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -16,7 +15,7 @@ import lombok.ToString;
  * 페이징처리 기본 데이터
  */
 public class PageInfo {
-	
+
 	private int listCount;
 	private int currentPage;
 	private int pageLimit;
@@ -25,6 +24,8 @@ public class PageInfo {
 	private int maxPage;
 	private int startPage;
 	private int endPage;
+
 	
 
 }
+

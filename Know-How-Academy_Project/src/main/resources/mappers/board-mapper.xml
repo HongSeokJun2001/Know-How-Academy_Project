@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+	
+	<resultMap type="board" id="boardResultSet">
+		<id column="POST_NO" property="postNo" />
+		<result column="CATEGORY" property="category" />
+		<result column="TITLE" property="title" />
+		<result column="CONTENT" property="content" />
+		<result column="USER_ID" property="postWriter" />
+		<result column="CREATED_AT" property="createdAt" />
+		<result column="VIEW_COUNT" property="viewCount" />
+		<result column="TITLEIMG" property="titleImg"/>
+	</resultMap>
+	
+	<resultMap type="fileAttachment" id="fileAttachmentResultSet">
+		<id column="FILE_NO" property="fileNo" />
+		<result column="ORIGIN_NAME" property="originName" />
+		<result column="SAVE_NAME" property="saveName" />
+		<result column="FILE_PATH" property="filePath" />
+	</resultMap>
+	
+	<!-- 메인페이지 공지사항 목록 조회용 쿼리문 -->
+	<select id="mainPageNoticeList" resultMap="boardResultSet">
+		SELECT TITLE
+			 , VIEW_COUNT
+			 , POST_NO
+		  FROM
+			(
+			SELECT ROWNUM RNUM, A.*
+			  FROM
+				( 
+				SELECT POST_NO
+					 , TITLE
+					 , VIEW_COUNT
+				  FROM BOARD_POST
+				 WHERE POST_TYPE = 'NOTICE'
+				   AND STATUS = 'Y'
+				 ORDER BY POST_NO DESC
+				) A
+			)
+		WHERE RNUM &lt;= 8
+	</select>
+	
+	<!-- 학원 소식의 총 갯수를 구하는 쿼리문 -->
+	<select id="selectNewsListCount" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = 'NEWS'
+		   AND STATUS = 'Y'
+	</select>
+	
+	<!-- 학원 소식 목록 조회용 쿼리문 -->
+	<select id="selectNewsList" parameterType="hashmap" resultMap="boardResultSet">
+		SELECT POST_NO
+			 , TITLE
+			 , VIEW_COUNT
+			 , FILE_PATH || SAVE_NAME AS "TITLEIMG"
+			 , B.CREATED_AT
+		  FROM BOARD_POST B
+		  JOIN FILE_ATTACHMENT ON (POST_NO = TARGET_NO)
+		 WHERE POST_TYPE = 'NEWS'
+		   AND B.STATUS = 'Y'
+		   AND FILE_LEVEL = 1
+		 ORDER BY POST_NO DESC
+	</select>
+	
+	<select id="selectNews" parameterType="_int" resultMap="boardResultSet">
+		SELECT POST_NO
+			 , CATEGORY
+			 , TITLE
+			 , USER_ID
+			 , B.CREATED_AT
+			 , CONTENT
+		  FROM BOARD_POST B
+		  JOIN MEMBER ON (WRITER_NO = USER_NO)
+		 WHERE POST_NO = #{postNo}
+		   AND B.STATUS = 'Y'
+	</select>
+	
+	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
+		SELECT FILE_NO
+		     , ORIGIN_NAME
+		     , SAVE_NAME
+		     , FILE_PATH
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+		 ORDER BY FILE_NO ASC
+	</select>
+	
+</mapper>
