@@ -63,7 +63,7 @@
         #logo_link {
             display: inline-block
         }
-        #img_area{
+     
 	    .mypage-outer {
 		width : 800px;
 		border : 1px dotted black;

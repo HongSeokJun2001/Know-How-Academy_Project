@@ -2,92 +2,181 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="boardMapper">
-	
-	<resultMap type="board" id="boardResultSet">
+
+	<!-- DB의 BOARD 테이블과 자바의 Board를 서로 매칭 -->
+	<resultMap id="boardResultSet" type="board">
 		<id column="POST_NO" property="postNo" />
+		<result column="WRITER_NO" property="writerNo" />
+		<result column="POST_TYPE" property="postType" />
 		<result column="CATEGORY" property="category" />
 		<result column="TITLE" property="title" />
 		<result column="CONTENT" property="content" />
-		<result column="USER_ID" property="postWriter" />
 		<result column="CREATED_AT" property="createdAt" />
+		<result column="UPDATED_AT" property="updatedAt" />
+		<result column="STATUS" property="status" />
 		<result column="VIEW_COUNT" property="viewCount" />
-		<result column="TITLEIMG" property="titleImg"/>
+		<result column="USER_NAME" property="userName" />
 	</resultMap>
-	
-	<resultMap type="fileAttachment" id="fileAttachmentResultSet">
+
+	<resultMap id="memberResultSet" type="member">
+		<result property="userNo" column="USER_NO" />
+		<result property="userId" column="USER_ID" />
+		<result property="userPwd" column="USER_PWD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="phone" column="PHONE" />
+		<result property="enail" column="EMAIL" />
+		<result property="address" column="ADDRESS" />
+		<result property="rollCode" column="ROLE_CODE" />
+		<result property="status" column="STATUS" />
+		<result property="createdAt" column="CREATED_AT" />
+		<result property="updateAt" column="UPDATED_AT" />
+		<result property="classNo" column="CLASS_NO" />
+	</resultMap>
+
+	<resultMap id="fileAttachmentResultSet" type="fileAttachment">
 		<id column="FILE_NO" property="fileNo" />
+		<result column="TARGET_NO" property="targetNo" />
+		<result column="TARGET_TYPE" property="targetType" />
 		<result column="ORIGIN_NAME" property="originName" />
 		<result column="SAVE_NAME" property="saveName" />
 		<result column="FILE_PATH" property="filePath" />
+		<result column="CREATED_AT" property="createdAt" />
+		<result column="UPDATED_AT" property="updatedAt" />
+		<result column="STATUS" property="status" />
+		<result column="FILE_LEVEL" property="fileLevel" />
 	</resultMap>
-	
-	<!-- 메인페이지 공지사항 목록 조회용 쿼리문 -->
-	<select id="mainPageNoticeList" resultMap="boardResultSet">
-		SELECT TITLE
-			 , VIEW_COUNT
-			 , POST_NO
-		  FROM
-			(
-			SELECT ROWNUM RNUM, A.*
-			  FROM
-				( 
-				SELECT POST_NO
-					 , TITLE
-					 , VIEW_COUNT
-				  FROM BOARD_POST
-				 WHERE POST_TYPE = 'NOTICE'
-				   AND STATUS = 'Y'
-				 ORDER BY POST_NO DESC
-				) A
-			)
-		WHERE RNUM &lt;= 8
+
+
+	<!-- resultSet을 활용해 페이징처리(10)적용, 게시글 목록을 조회쿼리문 -->
+	<select id="selectBoardList" parameterType="hashmap"
+		resultMap="boardResultSet">
+		SELECT
+		B.POST_NO,<!-- 게시글번호 -->
+		B.CATEGORY, <!-- 카테고리 -->
+		B.TITLE, <!-- 제목 -->
+		M.USER_NAME, <!-- 작성자명 -->
+		B.VIEW_COUNT, <!-- 조회수 -->
+		B.CREATED_AT <!-- 작성일 -->
+		FROM BOARD_POST B <!-- 약칭 -->
+		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
+		<!-- 연관된 데이터 B와 (약칭)M과 조인하여 작성자명(USER_NAME) 가져오기 -->
+		WHERE B.STATUS = 'Y'<!-- Y=노출/N 숨김처리 -->
+		AND B.POST_TYPE = 'POST'
+		ORDER BY B.POST_NO DESC <!-- 오름차순?이엿나 -->
 	</select>
-	
-	<!-- 학원 소식의 총 갯수를 구하는 쿼리문 -->
-	<select id="selectNewsListCount" resultType="_int">
+
+	<!-- 게시글 총갯수 쿼리문 -->
+	<select id="selectListCount" resultType="_int">
 		SELECT COUNT(*)
-		  FROM BOARD_POST
-		 WHERE POST_TYPE = 'NEWS'
-		   AND STATUS = 'Y'
+		FROM BOARD_POST
+		WHERE POST_TYPE = 'POST'
+		AND STATUS = 'Y'
 	</select>
-	
-	<!-- 학원 소식 목록 조회용 쿼리문 -->
-	<select id="selectNewsList" parameterType="hashmap" resultMap="boardResultSet">
-		SELECT POST_NO
-			 , TITLE
-			 , VIEW_COUNT
-			 , FILE_PATH || SAVE_NAME AS "TITLEIMG"
-			 , B.CREATED_AT
-		  FROM BOARD_POST B
-		  JOIN FILE_ATTACHMENT ON (POST_NO = TARGET_NO)
-		 WHERE POST_TYPE = 'NEWS'
-		   AND B.STATUS = 'Y'
-		   AND FILE_LEVEL = 1
-		 ORDER BY POST_NO DESC
+
+	<!-- 검색결과의 갯수를 세오는 쿼리문 -->
+	<select id="selectSearchCount" parameterType="hashmap"
+		resultType="_int">
+		SELECT COUNT(*)
+		FROM BOARD_POST B
+		JOIN MEMBER M ON (B.WRITER = M.USER_NO)
+		WHERE BOARD_POST = 'POST'
+		AND B.STATUS = 'Y'
+		<if test="condition1 == 'writer'">
+			AND M.USER_NAME LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition1 == 'title'">
+			AND B.TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition1 == 'content'">
+			AND B.CONTNET LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition2 == 'admission'">
+			AND B.CATEGORY = '입학상담'
+		</if>
+		<if test="condition2 == 'employment'">
+			AND B.CATEGORY = '취업상담'
+		</if>
 	</select>
-	
-	<select id="selectNews" parameterType="_int" resultMap="boardResultSet">
-		SELECT POST_NO
-			 , CATEGORY
-			 , TITLE
-			 , USER_ID
-			 , B.CREATED_AT
-			 , CONTENT
-		  FROM BOARD_POST B
-		  JOIN MEMBER ON (WRITER_NO = USER_NO)
-		 WHERE POST_NO = #{postNo}
-		   AND B.STATUS = 'Y'
+
+	<!-- 일반 게시글 조회수증가용 쿼리문 -->
+	<update id="increaseCount" parameterType="_int">
+		UPDATE BOARD_POST
+		SET VIEW_COUNT = VIEW_COUNT +1
+		WHERE POST_NO = #{postNo}
+		AND STATUS = 'Y'
+	</update>
+
+	<!-- 일반게시글 상세조회용 쿼리문 -->
+	<select id="selectBoard" parameterType="_int"
+		resultMap="boardResultSet">
+		SELECT B.POST_NO,
+		B.TITLE,
+		M.USER_NAME,
+		B.CREATED_AT,
+		B.CONTENT
+		FROM BOARD_POST B
+		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
+		WHERE POST_NO = #{postNo}
+		AND B.STATUS = 'Y'
 	</select>
-	
-	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
-		SELECT FILE_NO
-		     , ORIGIN_NAME
-		     , SAVE_NAME
-		     , FILE_PATH
-		  FROM FILE_ATTACHMENT
-		 WHERE TARGET_NO = #{postNo}
-		 ORDER BY FILE_NO ASC
+
+	<!-- 일반(A)게시글 등록용 쿼리문 -->
+	<insert id="insertBoard" parameterType="board">
+		INSERT INTO BOARD_POST(POST_NO,
+		POST_TYPE,
+		TITLE,
+		CONTENT,
+		WRITER_NO,
+		VIEW_COUNT,
+		CREATED_AT,
+		CATEGORY,
+		STATUS)
+		VALUES(SEQ_BNO.NEXTVAL,
+		'POST',
+		#{title},
+		#{content},
+		#{writerNo},
+		#{viewCount},
+		SYSDATE,
+		'일반',
+		'Y')
+	</insert>
+
+	<!-- 첨부파일 등록용 쿼리문 -->
+	<insert id="insertFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO,
+		TARGET_NO,
+		TARGET_TYPE,
+		ORIGIN_NAME,
+		SAVE_NAME,
+		FILE_PATH)
+		VALUES(SEQ_FNO.NEXTVAL,
+		SEQ_BNO.CURRVAL,
+		'POST',
+		#{originName},
+		#{saveName},
+		#{filePath})
+	</insert>
+
+	<select id="selectAttachment" parameterType="_int"
+		resultMap="fileAttachmentResultSet">
+		SELECT FILE_NO, 
+				TARGET_NO, 
+				TARGET_TYPE, 
+				ORIGIN_NAME, 
+				SAVE_NAME, 
+				FILE_PATH,
+				CREATED_AT, 
+				UPDATED_AT, 
+				STATUS, 
+				FILE_LEVEL
+		FROM FILE_ATTACHMENT
+		WHERE TARGET_NO = #{postNo}
+		AND STATUS = 'Y'
 	</select>
-	
+
+
+
 </mapper>

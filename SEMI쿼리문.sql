@@ -1,3 +1,9 @@
+--컬럼데이터 수정용 쿼리문
+UPDATE BOARD_POST
+SET POST_TYPE = 'POST'
+WHERE POST_TYPE = 'A';
+
+COMMIT;
 
 -- 로그인용 쿼리문
 SELECT *

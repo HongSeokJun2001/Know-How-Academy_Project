@@ -63,6 +63,14 @@ public FileAttachment selectAttachment(SqlSessionTemplate sqlSession, int boardN
 
 		return sqlSession.selectOne("boardMapper.selectNewsListCount");
 	}
+	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
+	}
 
 	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
 		

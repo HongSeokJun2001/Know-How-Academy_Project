@@ -2,7 +2,6 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 		<!DOCTYPE html>
 		<html>
-
 		<head>
 			<meta charset="UTF-8">
 			<title>Insert title here</title>
@@ -78,7 +77,7 @@
                     background-color: blueviolet !important;   
 				 }
 				 .table td{
-				 
+				 cursor: ;
 				 }
 			</style>
 		</head>
@@ -121,7 +120,7 @@
 					</thead>
 					<!--게시글 목록-->
 					<!--
-				c:choose/ c:when/  c:otherwise/ c:forEach 들은
+				c:choose/ c:when/ . c:otherwise/ c:forEach 들은
 				if-else 구조와 비슷하다. 
 				c:choose == if else
 				c:when == lf(){c:when은 true 일때의 상황}					 	
@@ -140,7 +139,7 @@
 					<tbody>
 						<c:choose>
 							<c:when test="${empty list}">
-								<tr style="pointer-events:none; cursor:default;">
+								<tr>
 									<td colspan="6">조회된 게시글이 없습니다.</td>
 								</tr>
 							</c:when>
@@ -201,7 +200,8 @@
 														${requestScope.pi.currentPage - 1}
 														&condition1=${condition1}
 														&condition2=${condition2}
-														&keyword=${keyword}"><</a>
+														&keyword=${keyword}">
+															<< /a>
 												</c:otherwise>
 									</c:choose>
 								</c:otherwise>
@@ -240,7 +240,7 @@
 							<c:choose>
 								<c:when test="${pi.currentPage eq pi.maxPage}">
 									<li class="page-item disabled">
-										<a class="page-link">></a>
+										<a class="page-link">Next</a>
 									</li>
 								</c:when>
 								<c:otherwise>
