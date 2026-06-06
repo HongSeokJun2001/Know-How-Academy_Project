@@ -77,6 +77,9 @@
 				 .btn-hover:hover{
                     background-color: blueviolet !important;   
 				 }
+				 .table td{
+				 
+				 }
 			</style>
 		</head>
 
@@ -137,7 +140,7 @@
 					<tbody>
 						<c:choose>
 							<c:when test="${empty list}">
-								<tr>
+								<tr style="pointer-events:none; cursor:default;">
 									<td colspan="6">조회된 게시글이 없습니다.</td>
 								</tr>
 							</c:when>
@@ -198,8 +201,7 @@
 														${requestScope.pi.currentPage - 1}
 														&condition1=${condition1}
 														&condition2=${condition2}
-														&keyword=${keyword}">
-															<< /a>
+														&keyword=${keyword}"><</a>
 												</c:otherwise>
 									</c:choose>
 								</c:otherwise>
@@ -238,7 +240,7 @@
 							<c:choose>
 								<c:when test="${pi.currentPage eq pi.maxPage}">
 									<li class="page-item disabled">
-										<a class="page-link">Next</a>
+										<a class="page-link">></a>
 									</li>
 								</c:when>
 								<c:otherwise>

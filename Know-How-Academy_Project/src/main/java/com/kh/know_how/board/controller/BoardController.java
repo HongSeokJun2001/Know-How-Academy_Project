@@ -103,7 +103,7 @@ public class BoardController {
 		 */
 		
 		//로그인기능 탑재후 삭제  예정====================
-		int[] userNos = {2, 3, 4};
+		int[] userNos = {1,2,3,4,5,6,7,8,9,10,11};
 		int randomIndex = (int)(Math.random() * userNos.length);		
 		b.setWriterNo(userNos[randomIndex]);
 		//=========================================
