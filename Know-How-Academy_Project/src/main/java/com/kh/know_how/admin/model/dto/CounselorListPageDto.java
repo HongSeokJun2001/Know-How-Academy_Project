@@ -2,6 +2,8 @@ package com.kh.know_how.admin.model.dto;
 
 import java.util.ArrayList;
 
+import com.kh.know_how.admin.common.PageResponseDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +21,8 @@ import lombok.ToString;
 @ToString
 public class CounselorListPageDto {
 	
-    private ArrayList<CounselorListDto> counselorList;	//상담사 목록
-
-    private PageInfoDto paging;							//페이징공용DTO
+    private ArrayList<CounselorListResponseDto> counselorList;	//상담사 목록
+    private PageResponseDto pageInfo;							//페이징공용DTO
+    private ArrayList<ClassListDto> classList;
     
 }
