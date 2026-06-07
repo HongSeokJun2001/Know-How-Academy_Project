@@ -308,6 +308,23 @@
     background-color: #d7281d;
 }
 
+.btn-active {
+    min-width: 96px;
+    height: 42px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 8px;
+    background-color: #128a3a;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-active:hover {
+    background-color: #107a32;
+}
+
 /* 하단 버튼 */
 .detail-bottom-actions {
     display: flex;
@@ -351,7 +368,7 @@
 			        </c:when>
 			        <c:otherwise>
 			        	<div class="profile-right">
-			                <button type="button" class="btn-danger" onclick="rest('${ requestScope.s.status }');">휴학 취소</button>
+			                <button type="button" class="btn-active" onclick="rest('${ requestScope.s.status }');">재학 처리</button>
 			            </div>
 			        </c:otherwise>
 			</c:choose>

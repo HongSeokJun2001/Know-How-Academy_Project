@@ -273,7 +273,7 @@
                 관리페이지
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-            <div class="menu-item ${page eq 'studentList' ? 'active' : ''}" data-path="/admin/studentList"
+            <div class="menu-item ${page.contains('student') ? 'active' : ''}" data-path="/admin/studentList"
                  onclick="go('/admin/studentList')">
                 학원생 관리
             </div>

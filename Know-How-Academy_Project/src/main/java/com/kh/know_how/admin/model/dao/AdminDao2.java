@@ -55,9 +55,9 @@ public class AdminDao2 {
 		return sqlSession.insert("adminMapper2.insertStudentMemo", m);
 	}
 
-	public ArrayList<MemoDto> selectStudentMemo(SqlSessionTemplate sqlSession, int userNo) {
+	public ArrayList<MemoDto> selectStudentMemoList(SqlSessionTemplate sqlSession, int userNo) {
 		
-		return (ArrayList)sqlSession.selectList("adminMapper2.selectStudentMemo", userNo);
+		return (ArrayList)sqlSession.selectList("adminMapper2.selectStudentMemoList", userNo);
 	}
 
 	public int deleteStudentNo(SqlSessionTemplate sqlSession, int memoNo) {
@@ -70,9 +70,38 @@ public class AdminDao2 {
 		return sqlSession.update("adminMapper2.updateStudentStatus", s);
 	}
 
+	public ArrayList<StudentDto> selectPendingStudentList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("adminMapper2.selectPendingStudentList");
+	}
+
+	public int updateStudentApprove(SqlSessionTemplate sqlSession, HashMap<String, Integer> map) {
+		
+		return sqlSession.update("adminMapper2.updateStudentApprove", map);
+	}
+
+	public int insertStudent(SqlSessionTemplate sqlSession, HashMap<String, Integer> map) {
+		
+		return sqlSession.insert("adminMapper2.insertStudent", map);
+	}
+
+	public int updateStudentReject(SqlSessionTemplate sqlSession, int userNo) {
+		
+		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
+	}
 	
+	public int adminSelectNoticeCount(SqlSessionTemplate sqlSession) {
+		
+		return sqlSession.selectOne("boardMapper.adminSelectNoticeCount");
+	}
 	
-	
-	
-	
+	public ArrayList<StudentDto> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList");
+	}
+
 }//클래스 끝

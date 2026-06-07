@@ -308,7 +308,7 @@
 				<p>재원중, 휴원 상태의 학원생 정보를 조회하고 관리합니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary">
+			<button type="button" class="btn-primary" onclick="go('/admin/student/enroll')">
 				가입 승인 관리
 			</button>
 		</div>
@@ -319,7 +319,7 @@
 				<div class="search-top-row">
 					<div class="search-field">
 						<label for="studentKeyword">검색어</label>
-						<input type="text"
+						<input type="search"
 							id="studentKeyword"
 							name="keyword"
 							class="student-search-input"
@@ -458,10 +458,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.condition }">
-								<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 							</c:otherwise>
 							
 						</c:choose>
@@ -478,10 +478,10 @@
 						
 							<c:choose>
 								<c:when test="${ empty requestScope.status }">
-									<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/studentList?cpage=${ p }')">${ p }</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
 								</c:otherwise>
 							</c:choose>
 							
@@ -498,10 +498,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.status }">
-								<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:otherwise>
 						</c:choose>
 					</c:otherwise>
