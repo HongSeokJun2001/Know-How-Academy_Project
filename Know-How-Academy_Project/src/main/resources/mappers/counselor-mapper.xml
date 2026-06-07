@@ -3,7 +3,16 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="counselorMapper">
-
-  
+<!--
+ counsel_log 테이블 
+	 <resultMap id="counselLog" type="counselLog">
+	     <id column="LOG_NO" property="logNo" />
+	     <result column="RESERVATION_NO" property="reservationNo" />
+	     <result column="CONTENT" property="content" />
+	     <result column="CREATED_AT" property="createdAt" />
+	     <result column="UPDATED_AT" property="updatedAt" />
+	     <result column="STATUS" property="status" />
+	 </resultMap>
+-->  
 
 </mapper>
