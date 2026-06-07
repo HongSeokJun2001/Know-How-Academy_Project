@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.CounselCategoryDto;
 import com.kh.know_how.admin.model.dto.CounselorListPageDto;
 import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
+import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 import com.kh.know_how.admin.model.service.AdminService;
@@ -42,25 +44,23 @@ public class AdminController {
     @GetMapping("/index")
     public String adminIndex(Model model) {
 	    	
-	    	//상담신청 대기목록 조회
+	    	//상담신청 대기목록 및 개수 조회
 	    	ArrayList<AdminCounselWaitingDto> waitingList = as.selectWaitingList();
-	    	//상담신청 대기목록 개수 조회
-	    	int CounselWaitingCount = as.selectCounselWaitingCount();
-	    	//금일 상담일정 목록 조회
+	    	int counselWaitingCount = as.selectCounselWaitingCount();
+	    	
+	    	//금일 상담일정 목록 및 개수  조회
 	    	ArrayList<TodayReservationDto> reservationList = as.selectTodayReservationList();
-	    	//금일 상담일정 목록 개수 조회
-	    	int todayReservatioCount = as.todayReservationCount();
-	    	//통계 조회 - 월간 상담 현황 (당월/전월, 카테고리별)
-	    	//조회건수가 0일 경우 정상 출력 확인(-), %를 합친 값이 101%일 경우 처리(-)
+	    	int todayReservationCount = as.todayReservationCount();
+	    	
+	    	// 통계 및 상담 카테고리 조회	: %를 합친 값이 101%일 경우 처리(-)
 	    	ArrayList<AdminDashboardStatsDto> dashboard = as.selectDashboardStats();
-	    	//상담카테고리 조회
 	    	ArrayList<CounselCategoryDto> counselCategory = as.selectCounselCategory();
 	    	
 	    	
 	    	model.addAttribute("waitingList",waitingList);
-	    	model.addAttribute("CounselWaitingCount",CounselWaitingCount);
+	    	model.addAttribute("CounselWaitingCount",counselWaitingCount);
 	    	model.addAttribute("reservationList",reservationList);
-	    	model.addAttribute("todayReservatioCount",todayReservatioCount);
+	    	model.addAttribute("todayReservatioCount",todayReservationCount);
 	    	model.addAttribute("dashboard",dashboard);
 	    	model.addAttribute("counselCategory",counselCategory);
 	    model.addAttribute("page", "adminIndex");
@@ -74,14 +74,13 @@ public class AdminController {
     //----------- 상담사목록페이지조회메소드
     @GetMapping("/counselorList")
     public String counselorList(@RequestParam(value="cpage", defaultValue="1") int currentPage
-    						  , CounselorSearchRequestDto counselorSearchRequestDto
-    						  , Model model) {
+    						      , CounselorSearchRequestDto counselorSearchRequestDto
+    						      , Model model) {
     		
     		counselorSearchRequestDto.getPageRequest().setCurrentPage(currentPage);
     		
 	    //상담사 목록 조회
 	    	CounselorListPageDto counselorList = as.selectcounselorList(counselorSearchRequestDto);
-	    	ArrayList<CounselorListResponseDto> a = counselorList.getCounselorList();
 	    	
 	    	model.addAttribute("status", counselorSearchRequestDto.getStatus());
 	    	model.addAttribute("keyword", counselorSearchRequestDto.getKeyword());
@@ -94,19 +93,6 @@ public class AdminController {
     } 
     
     
-  //----------- 초대링크 비활성화 메소드
-    @PostMapping("/invite/delete")
-    public String deleteCounselorInvite(Model model) {
-    	
-        // 가입대기중인 상담사 초대링크 삭제
-    		
-    		
-        model.addAttribute("page", "counselorList");
-        
-        
-        return "admin/adminLayout";
-    }
-
     //----------- 상담사 직무(클래스) 변경 메소드
     @ResponseBody
     @PostMapping("/class/update")
@@ -118,16 +104,41 @@ public class AdminController {
         return (result > 0) ? "success" : "fail";
     }
 
+    
     //----------- 상담사 상세조회용 메소드
-    @GetMapping("/counselorProfile")
-    public String counselorProfile(Model model) {
-
+    @GetMapping("/counselorProfile/{userNo}")
+    public String selectCounselorProfile(@PathVariable int userNo, Model model) {
+    		
+    	
+    		CounselorProfileDTO counselor = as.selectCounselorProfile(userNo);
+    		
+    		model.addAttribute("counselor",counselor);
         model.addAttribute("page", "counselorProfile");
-
+        
         return "admin/adminLayout";
     }
+    
+    //----------- 상담사 (휴직/재직) 변경용 메소드(-)
+    @PostMapping("/counselor/updateStatus")
+    public String updateCounselorStatus(int userNo, String status, Model model) {
+    		
+    		int result = as.updateCounselorStatus(userNo, status);
+    		
+    		if(result > 0) {
+    			
+    			return "redirect:/admin/counselorProfile/" + userNo;
+    		}else {
+    			
+    			model.addAttribute("errorMsg", "변경 실패. 다시 시도해주세요.");
+    			model.addAttribute("redirectUrl", "/admin/counselorProfile/"+userNo);
+    			model.addAttribute("page", "adminAlert");
 
-    //----------- 상담사 등록 메소드
+    			return "admin/adminLayout";
+    		}
+    }
+    
+   
+    //----------- 상담사 등록 메소드 (-)
     @GetMapping("/counselorInvite")
     public String counselorInvite(Model model) {
     	
@@ -136,4 +147,14 @@ public class AdminController {
         return "admin/adminLayout";
     }
     
+    
+    //----------- 초대링크 비활성화 메소드 (-)
+    @ResponseBody
+    @PostMapping("/invite/delete")
+    public String updateCounselorInvite(int inviteNo) {
+    	
+	    	int result = as.updateCounselorInvite(inviteNo);
+	    	
+	    	return result > 0 ? "success" : "fail";
+    }
 }//컨트롤러 끝

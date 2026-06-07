@@ -13,6 +13,7 @@ import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.ClassListDto;
 import com.kh.know_how.admin.model.dto.CounselCategoryDto;
 import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
+import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 
@@ -74,6 +75,22 @@ public class AdminDao {
 		
 		return (ArrayList)sqlSession.selectList("adminMapper.selectCounselCategory");
 	}
+
+	public CounselorProfileDTO selectCounselorProfile(SqlSessionTemplate sqlSession, int userNo) {
+
+		return sqlSession.selectOne("adminMapper.selectCounselorProfile",userNo);
+	}
+
+	public int updateCounselorStatus(SqlSessionTemplate sqlSession, Map<String, Object> param) {
+		
+		return sqlSession.update("adminMapper.updateCounselorStatus",param);
+	}
+
+	public int updateCounselorInvite(SqlSessionTemplate sqlSession, int inviteNo) {
+		
+		return sqlSession.update("adminMapper.deleteCounselorInvite",inviteNo);
+	}
+
 
 
 

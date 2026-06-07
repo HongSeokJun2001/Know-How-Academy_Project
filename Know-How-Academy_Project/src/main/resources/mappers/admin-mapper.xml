@@ -223,6 +223,7 @@
 	 <update id="updateCounselorClass" parameterType="map">
 	    UPDATE MEMBER M
 	       SET M.CLASS_NO = #{classNo}
+	         , M.UPDATED_AT = SYSDATE
 	     WHERE M.USER_NO = #{userNo}
 	       AND M.ROLE_CODE = 'COUNSELOR'
 	       AND NOT EXISTS (
@@ -235,8 +236,56 @@
 	      			 	)
 	 </update>
 	 
+ 	 <!-- 12. 상담사 기본프로필을 조회하는 쿼리 -->
+	 <select id="selectCounselorProfile" parameterType="_int"
+	 		 resultType="com.kh.know_how.admin.model.dto.CounselorProfileDTO">
+		 SELECT M.USER_NO           AS userNo
+		      , M.USER_ID           AS userId
+		      , NVL(C.PROFILE_IMG_PATH, '/resources/image/default-profile.png')  AS imgPath
+		      , M.STATUS            AS status
+		      , NVL(CL.CLASS_NAME, '미지정')  AS className
+		      , M.USER_NAME           AS userName
+		      , M.PHONE               AS phone
+		      , M.EMAIL               AS email
+		      , (
+		            SELECT COUNT(*)
+		              FROM MEMBER SM
+		             WHERE SM.CLASS_NO = M.CLASS_NO
+		               AND SM.ROLE_CODE = 'STUDENT'
+		        ) AS studentCount
+		        
+		  FROM MEMBER M
+		  LEFT JOIN COUNSELOR_PROFILE C ON M.USER_NO = C.USER_NO
+		  LEFT JOIN CLASS CL ON M.CLASS_NO = CL.CLASS_NO
+		 WHERE M.USER_NO = #{value}
+	 	  
+	 </select>
 	 
+ 	 <!-- 13. 휴직/재직상태 변경을 하는 쿼리 -->
+	 <update id="updateCounselorStatus" parameterType="map">
+		 UPDATE MEMBER
+		 	SET UPDATED_AT = SYSDATE
+		 <choose>
+		 	<when test="status == 'INACTIVE'">
+		      , STATUS = 'ACTIVE'
+		 	</when>
+		 	<when test="status == 'ACTIVE'">
+		      , STATUS = 'INACTIVE'
+		      , CLASS_NO = NULL
+		    </when>
+		 </choose>
+		  WHERE USER_NO = #{userNo}
+	 </update>
 	 
+	 <!-- 14. 상담사 초대링크를 비활성화하는 쿼리 -->
+	 <update id="deleteCounselorInvite" parameterType="_int">
+	 	UPDATE COUNSELOR_INVITE
+	 	   SET INVITE_STATUS = 'CANCELED'
+	 	 WHERE INVITE_NO = #{value} 
+	 	   AND INVITE_STATUS = 'PENDING' 
+	 </update>
+	 
+	 	  
 </mapper>
 	
 	

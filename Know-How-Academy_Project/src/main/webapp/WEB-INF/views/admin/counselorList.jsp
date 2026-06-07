@@ -469,9 +469,10 @@
 													<span class="status-badge waiting">초대대기</span>
 												</td>
 												<td>
+													<!-- 초대삭제 ( - ) -->
 													<div class="action-group">
 														<button type="button" class="btn-danger-outline"
-																onclick="go('/admin/counselorList?inviteNo=${c.inviteNo}')">초대삭제</button>
+ 														        onclick="deleteInvite(${c.inviteNo})">초대삭제</button>
 													</div>
 												</td>
 											</c:when>
@@ -493,7 +494,7 @@
 														<button type="button" class="btn-primary small"
 																onclick="updateClass(${c.userNo});">저장</button>
 														<button type="button" class="btn-outline"
-																onclick="go('/admin/counselorProfile?userNo=${c.userNo}')">상세보기</button>
+																onclick="go('/admin/counselorProfile/${c.userNo}')">상세보기</button>
 													</div>
 												</td>
 											</c:when>
@@ -510,7 +511,7 @@
 												<td>
 													<div class="action-group">
 														<button type="button" class="btn-outline"
-																onclick="go('/admin/counselorProfile?userNo=${c.userNo}')">상세보기</button>
+																onclick="go('/admin/counselorProfile/${c.userNo}')">상세보기</button>
 													</div>
 												</td>
 											</c:when>
@@ -600,6 +601,27 @@
 				},
 				error: function() {
 					alert("저장 실패");
+				}
+			});
+		}
+
+		function deleteInvite(inviteNo){
+			$.ajax({
+				url: "${pageContext.request.contextPath}/admin/invite/delete",
+				type: "POST",
+				data: {
+					inviteNo: inviteNo
+				},
+				success: function(result) {
+					if(result == "success"){
+						alert("초대링크가 삭제되었습니다.");
+						location.reload();
+					}else {
+						alert("사용되거나 만료된 링크입니다.");
+					}
+				},
+				error: function() {
+					alert("삭제 실패. 다시 시도해주세요.");
 				}
 			});
 		}

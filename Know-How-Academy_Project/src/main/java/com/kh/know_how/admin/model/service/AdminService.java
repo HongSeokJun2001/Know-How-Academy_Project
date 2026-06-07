@@ -18,6 +18,7 @@ import com.kh.know_how.admin.model.dto.ClassListDto;
 import com.kh.know_how.admin.model.dto.CounselCategoryDto;
 import com.kh.know_how.admin.model.dto.CounselorListPageDto;
 import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
+import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 
@@ -106,9 +107,34 @@ public class AdminService {
 		return ad.updateCounselorClass(sqlSession, param);
 	}
 
+	@Transactional(readOnly = true)
 	public ArrayList<CounselCategoryDto> selectCounselCategory() {
 		
 		return ad.selectCounselCategory(sqlSession);
+	}
+	
+	@Transactional(readOnly = true)
+	public CounselorProfileDTO selectCounselorProfile(int userNo) {
+		
+		
+		return ad.selectCounselorProfile(sqlSession, userNo);
+	}
+	
+	@Transactional
+	public int updateCounselorStatus(int userNo, String status) {
+		
+		Map<String, Object> param = new HashMap<>();
+
+		param.put("userNo", userNo);
+		param.put("status", status);
+		
+		return ad.updateCounselorStatus(sqlSession, param);
+	}
+	
+	@Transactional
+	public int updateCounselorInvite(int inviteNo) {
+		
+		return ad.updateCounselorInvite(sqlSession, inviteNo);
 	}
 
 	
