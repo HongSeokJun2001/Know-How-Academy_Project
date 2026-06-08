@@ -105,7 +105,7 @@
 }
 
 /* 목록 카드 */
-.notice-list-card {
+.notice-card {
     padding: 28px;
     background-color: #fff;
     border: 1px solid #e5e7eb;
@@ -129,14 +129,12 @@
     height: 54px;
     padding: 0 18px;
     background-color: #fafafa;
-    color: #2c2f3f;
     font-weight: 800;
     border-bottom: 1px solid #e5e7eb;
 }
 
 .notice-table tbody td {
     padding: 16px 18px;
-    color: #374151;
     border-bottom: 1px solid #eef0f4;
     vertical-align: middle;
 }
@@ -282,7 +280,7 @@
 		</div>
 
 		<!-- 목록 카드 -->
-		<div class="notice-list-card">
+		<div class="notice-card">
 
 			<table class="notice-table">
 				<thead>
