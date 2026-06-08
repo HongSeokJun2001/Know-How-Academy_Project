@@ -59,13 +59,11 @@ public class MemberController {
 				cookie.setMaxAge(1 * 24 * 60 * 60); // 1일 (초단위)
 				cookie.setPath("/know-how/"); // 이 쿠키를 우리 웹사이트 내부에서만 이용 가능하게끔
 				
-				
 				response.addCookie(cookie);
 				
 			} else {
 				// > 아이디를 저장하지 않을 경우
 				//   아이디값을 갖고 있던 "쿠키" 를 삭제
-				
 				Cookie cookie = new Cookie("saveId", m.getUserId());
 				cookie.setMaxAge(0);
 				cookie.setPath("/know-how/");
@@ -76,7 +74,7 @@ public class MemberController {
 			// 암호화 작업
 			// Service 요청 후 결과 받기
 			Member loginUser = memberService.loginMember(m);
-			 
+			
 			// 암호화 작업 후 비밀알아내기
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
@@ -84,14 +82,28 @@ public class MemberController {
 			if((loginUser != null) && 
 			   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))) {
 				// > 로그인 성공일 경우
-			
+				
 				// 로그인한 회원의 정보를 마찬가지로 session 에 담아야함!! (loginUser 키값으로)
 				session.setAttribute("loginUser", loginUser);
 				
-				// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
-				session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+				String roleCode = loginUser.getRoleCode(); 
 				
-				return "redirect:/";
+				if("STUDENT".equals(loginUser.getRoleCode())) {
+					// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+					session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+					
+					return "redirect:/myPage";
+				} else if("COUNSELOR".equals(loginUser.getRoleCode())) {
+					// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+					session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+					
+					return "redirect:/myPageCounselor";
+				} else {
+					// > 관리자 계정일때
+					model.addAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
+					
+					return "redirect:/";
+				}
 				
 			} else {
 				// > 로그인 실패일 경우
@@ -272,8 +284,8 @@ public class MemberController {
 		return "redirect:/member/myPage";
 	}
 	
-	@GetMapping("memberDeleteForm") // 회원탈퇴 페이지로 이동
-	public ModelAndView memberDeleteForm(ModelAndView mv, String userId, String userPwd, HttpSession session) {
+	@PostMapping("memberDeleteForm") // 회원탈퇴 페이지로 이동
+	public String memberDeleteForm(String userPwd, HttpSession session) {
 		
         Member loginUser = (Member)(session.getAttribute("loginUser"));
 		
@@ -282,7 +294,7 @@ public class MemberController {
 			
 			session.setAttribute("alertMsg", "비밀번호가 확인되었습니다.");
 			
-			mv.setViewName("redirect:/myPage/memberDeleteForm");
+			return "member/memberDeleteForm";
 			
 		} else {
 			// > 평문과 암호문 비밀번호가 맞아 떨어지지 않을 경우
@@ -291,11 +303,8 @@ public class MemberController {
 			// 1회성 알림 문구로 잘못입력했다고 알려주기
 			session.setAttribute("alertMsg", "잘못된 비밀번호입니다. 다시 입력해주세요.");
 			
-			mv.setViewName("redirect:/myPage/checkPasswordForm");
+			return "redirect:/";
 		}
-		
-		return mv;
-		
 		
 	}
 	
@@ -387,7 +396,7 @@ public class MemberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("sendMail")
+	@GetMapping("sendMail")
 	public String sendCertNo(String email) {
 		
 		// 6자리의 랜덤 1회성 인증번호 발급 (100000 ~ 999999)
@@ -418,7 +427,7 @@ public class MemberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("validateMail")
+	@GetMapping("validateMail")
 	public String validateCertNo(String email, String checkNo) {
 		
 		String result = "";
@@ -441,6 +450,67 @@ public class MemberController {
 
 		// 1회성인 만큼 인증이 성공하든 실패하든 간에 무조건 발급 정보를 삭제해줄 것!!
 		certNoList.remove(email);
+		
+		// > CERT 테이블로부터 DELETE (1회성)
+		
+		return result;
+	}
+	
+	@ResponseBody
+	@PostMapping("newSendMail")
+	public String newSendCertNo(String newEmail) {
+		
+		// 6자리의 랜덤 1회성 인증번호 발급 (100000 ~ 999999)
+		// > OTP : One Time Password
+		int random = (int)(Math.random() * 900000 + 100000);
+		
+		// 위의 OTP 를 email 로 전송하기
+		// > 단, 그냥 넘기는게 아니라 이따 대조를 위해 어딘가에 OTP 를 저장도 해둬야함!!
+		//   Controller 의 전역변수로 OTP 를 저장할 수 있는 Map 을 정의한 뒤 put
+		certNoList.put(newEmail, String.valueOf(random));
+		
+		// > CERT 테이블에 INSERT (EMAIL, CERT_NO, SYSDATE)
+		
+		// System.out.println(certNoList);
+		
+		// SimpleMailMessage 로 전송해보기
+		SimpleMailMessage message = new SimpleMailMessage();
+		
+		// 메세지 정보 담기 : 제목, 내용, 받는사람
+		message.setSubject("know-how academy 이메일 인증 번호입니다");
+		message.setText("인증번호 : " + random);
+		message.setTo(newEmail);
+		
+		mailSender.send(message);
+		
+		return "인증번호 전송이 완료되었습니다.";
+		
+	}
+	
+	@ResponseBody
+	@PostMapping("newValidateMail")
+	public String newValidateCertNo(String newEmail, String newCheckNo) {
+		
+		String result = "";
+		
+		// email 과 checkNo 세트가 certNoList 에 있는지 대조 후 결과에 따른 응답데이터 넘기기
+		if((certNoList.get(newEmail) != null) && (certNoList.get(newEmail).equals(newCheckNo))) {
+			// > 인증번호 발급 정보가 있다면
+			
+			// > CERT 테이블로부터 SELECT 
+			//   SELECT * FROM CERT 
+			//   WHERE EMAIL 일치, CERT_NO 일치, SYSDATE <= CREATE_DATE + 3분
+			// > 3분 이내라면 한개의 행이 조회, 3분 이후라면 EMAIL, CERT_NO 이 일치해도 NULL 조회
+			
+			result = "success";
+			
+		} else {
+			
+			result = "fail";
+		}
+
+		// 1회성인 만큼 인증이 성공하든 실패하든 간에 무조건 발급 정보를 삭제해줄 것!!
+		certNoList.remove(newEmail);
 		
 		// > CERT 테이블로부터 DELETE (1회성)
 		

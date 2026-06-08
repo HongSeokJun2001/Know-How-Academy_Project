@@ -29,13 +29,15 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		// 회원용 
 		registry.addInterceptor(loginInterceptor)
 		        .addPathPatterns("/myPage/myInformationSelectForm")
-		        .addPathPatterns("/myPage/myInformationchangeForm")
+		        .addPathPatterns("/myPage/myInformationChangeForm")
+		        .addPathPatterns("/myPage/checkPasswordForm")
 		        .addPathPatterns("/myPage/memberDeleteForm");
 		        
 		// 직원용
-		registry.addInterceptor(counselorInterceptor);
+		registry.addInterceptor(counselorInterceptor)
+		        .addPathPatterns("/myPageCounselor");
 		
-		 */
+		
 		
 		//관리자페이지 인터셉터와 연결되는 곳
 		registry.addInterceptor(adminInterceptor)
