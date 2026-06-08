@@ -15,7 +15,7 @@ public class ReservationDao {
 	public int selectListCount(SqlSessionTemplate sqlSession, int userNo) {
 		return sqlSession.selectOne("reservationMapper.selectListCount", userNo);
 	}
-	
+	/*
 	public ArrayList<Reservation> selectReservationList(SqlSessionTemplate sqlSession, ReservationPageInfo pi) {
 		int limit = pi.getReservationLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
@@ -28,5 +28,5 @@ public class ReservationDao {
 	public ArrayList<CounselCategory> selectCategoryList(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("reservationMapper.selectCategoryList");
 	}
-
+    */
 }

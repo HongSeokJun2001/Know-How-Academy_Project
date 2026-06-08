@@ -1,6 +1,5 @@
 package com.kh.know_how.admin.model.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
