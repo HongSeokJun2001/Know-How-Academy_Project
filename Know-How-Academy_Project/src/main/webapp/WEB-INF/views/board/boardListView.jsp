@@ -78,7 +78,8 @@
 
 				.btn-hover:hover {
 					background-color: blueviolet !important;
-				}				
+				}		
+				
 			</style>
 		</head>
 
@@ -86,7 +87,7 @@
 			<jsp:include page="../common/menubar.jsp" />
 
 			<div class="outer">
-				<h2>일반게시판</h2>
+				<h2>자유게시판</h2>
 				<br>
 				<hr>
 				<div id="search-area">
@@ -184,8 +185,7 @@
 							<%--'<' 버튼의 페이징 및 이동--%>
 								<c:when test="${requestScope.pi.currentPage eq 1}">
 									<li class="page-item disabled">
-										<a class="page-link">
-											<< /a>
+										<a class="page-link"><</a>
 									</li>
 								</c:when>
 								<c:otherwise>
@@ -194,8 +194,7 @@
 											<c:when test="${empty keyword}">
 												<li class="page-item">
 													<a class="page-link" href="/know-how/board/list?cpage=
-														${requestScope.pi.currentPage - 1}">
-														< </a>
+														${requestScope.pi.currentPage - 1}"><</a>
 												</li>
 											</c:when>
 											<%--검색어 입력 조회 일경우--%>
@@ -205,8 +204,7 @@
 														${requestScope.pi.currentPage - 1}
 														&condition1=${condition1}
 														&condition2=${condition2}
-														&keyword=${keyword}">
-															<< /a>
+														&keyword=${keyword}"><</a>
 												</c:otherwise>
 									</c:choose>
 								</c:otherwise>
@@ -244,7 +242,7 @@
 							<c:choose>
 								<c:when test="${pi.currentPage eq pi.maxPage}">
 									<li class="page-item disabled">
-										<a class="page-link">Next</a>
+										<a class="page-link">></a>
 									</li>
 								</c:when>
 								<c:otherwise>

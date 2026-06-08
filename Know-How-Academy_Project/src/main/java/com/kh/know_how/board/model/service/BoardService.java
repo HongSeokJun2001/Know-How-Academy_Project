@@ -1,16 +1,18 @@
 package com.kh.know_how.board.model.service;
+
 import java.util.ArrayList; // 필요에 따라 추가
 import java.util.HashMap;
+import java.util.Locale.Category;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo; // 페이징 처리용
-import com.kh.know_how.board.model.vo.FileAttachment;
 
 @Service
 public class BoardService {
@@ -38,12 +40,12 @@ public class BoardService {
 	}
 
 	@Transactional
-	public int increaseCount(int boardNo) {
-		return boardDao.increaseCount(boardNo, sqlSession);
+	public int increaseCount(int postNo) {
+		return boardDao.increaseCount(postNo, sqlSession);
 	}
 
-	public Board selectBoard(int boardNo) {
-		return boardDao.selectBoard(boardNo, sqlSession);
+	public Board selectBoard(int postNo) {
+		return boardDao.selectBoard(postNo, sqlSession);
 	}
 
 	@Transactional
@@ -61,14 +63,50 @@ public class BoardService {
 		return result1 * result2;
 	}
 
-	public FileAttachment selectAttachment(int boardNo) {
+	public ArrayList<Category> selectCategoryList() {
 
-		return boardDao.selectAttachment(sqlSession, boardNo);
+		return boardDao.selectCategoryList(sqlSession);
 	}
 
+	public FileAttachment selectAttachment(int postNo) {
 
-	public ArrayList<Board> mainPageNoticeList() {
+		return boardDao.selectAttachment(sqlSession, postNo);
+	}
+
+	public ArrayList<FileAttachment> selectFileAttachmentList(int postNo) {
+
+		return boardDao.selectFileAttachmentList(sqlSession, postNo);
+	}
+
+	public int updateBoard(Board b, FileAttachment at) {
+
+		int result1 = boardDao.updateBoard(sqlSession, b);
+		int result2 = 1;
+
+		if (at != null) {
+
+			if (at.getFileNo() != 0) {
+
+				result2 = boardDao.updateFileAttachment(sqlSession, at);
+
+			} else {
+
+				result2 = boardDao.insertNewFileAttachment(sqlSession, at);
+			}
+		}
+
+		return result1 * result2;
+	}
+	
+	@Transactional
+	public int deleteBoard(int postNo) {
 		
+		return boardDao.deleteBoard(sqlSession,postNo);
+	}
+
+//====================================================
+	public ArrayList<Board> mainPageNoticeList() {
+
 		return boardDao.mainPageNoticeList(sqlSession);
 	}
 
@@ -77,20 +115,13 @@ public class BoardService {
 	}
 
 	public ArrayList<Board> selectNewsList(PageInfo pi) {
-		
+
 		return boardDao.selectNewsList(sqlSession, pi);
 	}
 
 	public Board selectNews(int postNo) {
-		
+
 		return boardDao.selectNews(sqlSession, postNo);
 	}
 
-	public ArrayList<FileAttachment> selectFileAttachmentList(int postNo) {
-		
-		return boardDao.selectFileAttachmentList(sqlSession, postNo);
-	}
-
-
 }
-

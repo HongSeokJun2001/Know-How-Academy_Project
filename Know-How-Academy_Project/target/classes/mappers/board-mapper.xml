@@ -17,7 +17,7 @@
 		<result column="UPDATED_AT" property="updatedAt" />
 		<result column="STATUS" property="status" />
 		<result column="VIEW_COUNT" property="viewCount" />
-		
+
 		<result column="USER_NAME" property="userName" />
 	</resultMap>
 
@@ -71,7 +71,8 @@
 	<!-- 게시글 총갯수 쿼리문 -->
 	<select id="selectListCount" resultType="_int">
 		SELECT COUNT(*)
-		FROM BOARD_POST
+		FROM
+		BOARD_POST
 		WHERE POST_TYPE = 'POST'
 		AND STATUS = 'Y'
 	</select>
@@ -81,7 +82,8 @@
 		resultType="_int">
 		SELECT COUNT(*)
 		FROM BOARD_POST B
-		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
+		JOIN MEMBER M ON (B.WRITER_NO =
+		M.USER_NO)
 		WHERE BOARD_TYPE = 'POST'
 		AND B.STATUS = 'Y'
 		<if test="condition1 == 'writer'">
@@ -104,7 +106,8 @@
 	<!-- 일반 게시글 조회수증가용 쿼리문 -->
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD_POST
-		SET VIEW_COUNT = VIEW_COUNT +1
+		SET
+		VIEW_COUNT = VIEW_COUNT +1
 		WHERE POST_NO = #{postNo}
 		AND STATUS = 'Y'
 	</update>
@@ -114,18 +117,22 @@
 		resultMap="boardResultSet">
 		SELECT B.POST_NO,
 		B.TITLE,
+		B.WRITER_NO,
 		M.USER_NAME,
 		B.CREATED_AT,
 		B.CONTENT
 		FROM BOARD_POST B
-		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
-		WHERE POST_NO = #{postNo}
+		JOIN MEMBER M ON (B.WRITER_NO =
+		M.USER_NO)
+		WHERE
+		POST_NO = #{postNo}
 		AND B.STATUS = 'Y'
 	</select>
 
 	<!-- 일반(A)게시글 등록용 쿼리문 -->
 	<insert id="insertBoard" parameterType="board">
-		INSERT INTO BOARD_POST(POST_NO,
+		INSERT INTO
+		BOARD_POST(POST_NO,
 		POST_TYPE,
 		TITLE,
 		CONTENT,
@@ -147,7 +154,8 @@
 
 	<!-- 첨부파일 등록용 쿼리문 -->
 	<insert id="insertFileAttachment" parameterType="fileAttachment">
-		INSERT INTO FILE_ATTACHMENT(FILE_NO,
+		INSERT INTO
+		FILE_ATTACHMENT(FILE_NO,
 		TARGET_NO,
 		TARGET_TYPE,
 		ORIGIN_NAME,
@@ -163,21 +171,74 @@
 
 	<select id="selectAttachment" parameterType="_int"
 		resultMap="fileAttachmentResultSet">
-		SELECT FILE_NO, 
-				TARGET_NO, 
-				TARGET_TYPE, 
-				ORIGIN_NAME, 
-				SAVE_NAME, 
-				FILE_PATH,
-				CREATED_AT, 
-				UPDATED_AT, 
-				STATUS, 
-				FILE_LEVEL
+		SELECT FILE_NO,
+		TARGET_NO,
+		TARGET_TYPE,
+		ORIGIN_NAME,
+		SAVE_NAME,
+		FILE_PATH,
+		CREATED_AT,
+		UPDATED_AT,
+		STATUS,
+		FILE_LEVEL
 		FROM FILE_ATTACHMENT
 		WHERE TARGET_NO = #{postNo}
 		AND STATUS = 'Y'
 	</select>
 
+	<!-- 공지,자유,수강생 카테고리 전체 조회용 쿼리문 -->
+	<select id="selectCategoryList" parameterType="String"
+		resultMap="boardResultSet">
+		SELECT *
+		FROM
+		BOARD_POST
+		WHERE POST_TYPE = #{postType}
+		AND
+		STATUS = 'Y'
+		ORDER BY
+		POST_NO DESC
+	</select>
+
+	<!-- 공지,자유,수강생 게시글 수정용 쿼리문 -->
+	<update id="updateBoard" parameterType="board">
+		UPDATE BOARD_POST
+		SET
+		TITLE = #{title},
+		CONTENT = #{content}
+		WHERE POST_NO = #{postNo}
+		AND
+		POST_TYPE = #{postType}
+		AND STATUS = 'Y'
+	</update>
+
+	<update id="updateFileAttachment" parameterType="fileAttachment">
+		UPDATE
+		FILE_ATTACHMENT
+		SET ORIGIN_NAME = #{originName},
+		SAVE_NAME =
+		#{saveName},
+		UPDATED_AT = SYSDATE
+		WHERE FILE_NO = #{fileNo}
+	</update>
+	<insert id="inserNewFIleAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO,
+		TARGET_NO,
+		ORIGIN_NAME,
+		SAVE_NAME,
+		FILE_PATH)
+		VALUES(SEQ_FNO.NEXTVAL,
+		#{targetNo},
+		#{originName},
+		#{saveName},
+		#{filePath})
+	</insert>
+	
+<update id="deleteBoard" parameterType="_int">
+UPDATE BOARD_POST
+SET STATUS = 'N'
+WHERE POST_NO = #{postNo}
+AND STATUS = 'Y'
+</update>
 
 
 </mapper>

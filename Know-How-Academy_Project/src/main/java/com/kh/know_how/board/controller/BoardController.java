@@ -1,7 +1,9 @@
 package com.kh.know_how.board.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale.Category;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
-import com.kh.know_how.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -34,14 +35,14 @@ public class BoardController {
 	private BoardService boardService;
 
 	// 1. 일반 게시글 리스트 조회
-	@GetMapping("/list")
+	@GetMapping("list")
 	public ModelAndView selectBoardList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
 			ModelAndView mv) {
 
 		int listCount = boardService.selectListCount();
 		int pageLimit = 10;
 		int boardLimit = 10;
-		//System.out.println("listCount: " + listCount);
+		// System.out.println("listCount: " + listCount);
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		ArrayList<Board> list = boardService.selectBoardList(pi);
 
@@ -53,7 +54,7 @@ public class BoardController {
 	}
 
 	// 2. 검색 기능
-	@GetMapping("/search")
+	@GetMapping("search")
 	public ModelAndView searchBoardList(String condition1, String condition2, String keyword,
 			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
 
@@ -70,19 +71,19 @@ public class BoardController {
 	}
 
 	// 3. 게시글 상세 조회
-	@GetMapping("detail/{boardNo}")
-	public String selectBoard(@PathVariable int boardNo, Model model) {
+	@GetMapping("detail/{postNo}")
+	public String selectBoard(@PathVariable int postNo, Model model, HttpSession session) {
 
-		int result = boardService.increaseCount(boardNo);
+		int result = boardService.increaseCount(postNo);
 
 		if (result > 0) {
-			
-			Board b = boardService.selectBoard(boardNo);
-			FileAttachment at = boardService.selectAttachment(boardNo);
-			
+
+			Board b = boardService.selectBoard(postNo);
+			FileAttachment at = boardService.selectAttachment(postNo);
+
 			model.addAttribute("b", b);
 			model.addAttribute("at", at);
-			
+
 			return "board/boardDetailView";
 		} else {
 			return "common/errorPage";
@@ -91,29 +92,42 @@ public class BoardController {
 
 	// 4. 게시글 작성 폼 이동
 	@GetMapping("enrollForm")
-	public String enrollForm() {
+	public String enrollForm(Model model) {
+
+		ArrayList<Category> list = boardService.selectCategoryList();
+
+		model.addAttribute("list", list);
+
 		return "board/boardEnrollForm";
 	}
 
-	// 5. 게시글 등록 처리
-	@PostMapping("insert") // 주소 매핑이 누락되어 있어 임의로 추가했습니다.
-	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {		
-				 
-		//Member loginUser = (Member) session.getAttribute("loginUser");
-		
-		//b.setWriterNo(loginUser.getUserNo());
-		
-		FileAttachment at = null;	
+	/**
+	 * 게시글 등록
+	 * 
+	 * @param b            Board VO
+	 * @param session      로그인정보와 결과에 대한 메시지 정보
+	 * @param model        브라우저에 데이터 전달을 도와줄 객체
+	 * @param originalFile 첨부파일
+	 * @return
+	 */
+	@PostMapping("insert")
+	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {
+
+		// Member loginUser = (Member) session.getAttribute("loginUser");
+
+		// b.setWriterNo(loginUser.getUserNo());
+
+		FileAttachment at = null;
 
 		if (originalFile != null && !originalFile.isEmpty()) {
-			
-			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");	
-			
+
+			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
+
 			at = new FileAttachment();
 			at.setOriginName(originalFile.getOriginalFilename());
 			at.setSaveName(saveName);
 			at.setFilePath("resources/board_upfiles/");
-						
+
 		}
 
 		int result = boardService.insertBoard(b, at);
@@ -126,10 +140,89 @@ public class BoardController {
 			return "common/errorPage";
 		}
 	}
+
+	@PostMapping("updateForm")
+	public ModelAndView updateForm(@RequestParam("bno") int postNo, ModelAndView mv) {
+
+		ArrayList<Category> list = boardService.selectCategoryList();
+
+		Board b = boardService.selectBoard(postNo);
+
+		FileAttachment at = boardService.selectAttachment(postNo);
+
+		mv.addObject("b", b).
+		addObject("list", list).
+		addObject("at", at).
+		setViewName("board/boardUpdateForm");
+
+		return mv;
+	}
+
+	@PostMapping("update")
+	public String updateBoard(@RequestParam(defaultValue = "0") int originalFileNo, Board b, MultipartFile originalFile,
+			String originalFileSaveName, HttpSession session, Model model) {
+
+		FileAttachment at = null;
+
+		if (!originalFile.getOriginalFilename().equals("")) {
+
+			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
+
+			at = new FileAttachment();
+			at.setOriginName(originalFile.getOriginalFilename());
+			at.setSaveName(saveName);
+
+			if (originalFileNo != 0) {
+
+				at.setFileNo(originalFileNo);
+
+				String savePath = session.getServletContext().getRealPath("/resources/board_upfiles/");
+				new File(savePath + originalFileSaveName).delete();
+			} else {
+
+				at.setTargetNo(b.getPostNo());
+				at.setFilePath("/resorces/board_upfiles/");
+			}
+		}
+
+		int result = boardService.updateBoard(b, at);
+
+		if (result > 0) {
+
+			session.setAttribute("alertMsg", "게시글  수정 성공");
+
+			return "redirect:/board/detail/" + b.getPostNo();
+		} else {
+
+			model.addAttribute("errorMsg", "게시글수정 실패");
+			return "common/errorPage";
+		}
+
+	}
 	
+	@PostMapping("deleteForm")
+	public String deleteBoard(@RequestParam("bno") int postNo,
+							Model model, HttpSession session) {
+			
+		int result = boardService.deleteBoard(postNo);
+		
+		if(result > 0) {
+			
+			session.setAttribute("alertMsg", "삭제 성공");
+			
+			return "redirect:/board/list";
+			
+		}else {
+			
+			model.addAttribute("errorMsg", "삭제 실패");
+			
+			return "common/errorPage";
+		}
+	}
+
 	@ResponseBody
 	@GetMapping("news/list")
-	public Map<String, Object> selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage) {
+	public Map<String, Object> selectNewsList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage) {
 		int listCount = boardService.selectNewsListCount();
 		int boardLimit = 4;
 		int pageLimit = 1;
@@ -142,23 +235,21 @@ public class BoardController {
 		map.put("pi", pi);
 		return map;
 	}
-	
+
 	/**
 	 * 학원 소식 상세조회페이지
+	 * 
 	 * @return
 	 */
 	@GetMapping("news/detail/{postNo}")
 	public ModelAndView academyNews(@PathVariable int postNo, ModelAndView mv) {
 		Board b = boardService.selectNews(postNo);
-		
+
 		ArrayList<FileAttachment> list = boardService.selectFileAttachmentList(postNo);
 
-		mv.addObject("b", b)
-		  .addObject("list", list)
-		  .setViewName("common/academyNews");
-		
+		mv.addObject("b", b).addObject("list", list).setViewName("common/academyNews");
+
 		return mv;
 	}
-	
-	
+
 }

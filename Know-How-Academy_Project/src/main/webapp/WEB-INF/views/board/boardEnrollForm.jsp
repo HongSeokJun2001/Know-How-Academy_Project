@@ -1,108 +1,114 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-	<!DOCTYPE html>
-	<html>
+	<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+		<!DOCTYPE html>
+		<html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title>Insert title here</title>
-		<style>
-			.outer {
-				border: none !important;
-			}
+		<head>
+			<meta charset="UTF-8">
+			<title>Insert title here</title>
+			<style>
+				/* 전체 레이아웃 */
+				.outer {
+					border: none;
+				}
 
-			table {
-				width: 940px;
-				margin: 10px auto;				
-			}
+				table {
+					width: 940px !important;
+					margin: 10px auto;
+					border-collapse: collapse;			
+			
+				}
 
-			table th {
-				width: 100px;
-				font-weight: 450;
-				padding: 10px;
-				height: 45px;
-				vertical-align: middle;
-				text-align: center;
-				background-color: rgb(233, 233, 233);
+				/* 헤더(th) 및 데이터(td) 공통 설정 */
+				table th,
+				table td {
+					padding: 5px 10px;
+					height: 40px; /* 높이를 통일하여 정렬 문제 해결 */
+					vertical-align: middle;
+					box-sizing: border-box;
+				}
 				
-			}
+				table th {
+					width: 100px;
+					font-weight: 450;
+					text-align: center;
+					background-color: rgb(233, 233, 233);
+				}
 
-			table td {
-				vertical-align: middle;
-			}
+				/* 버튼 영역 */
+				.btn-area {
+					width: 940px;
+					margin: 0 auto;
+					display: flex;
+					justify-content: flex-end;
+					gap: 3px;
+					/* 버튼 간격 조정 */
+				}
 
-			.btn-area {
-				width: 940px;
-				margin: 0 auto;
-				display: flex;
-				justify-content: end;
-			}
+				/* 입력창 공통 */
+				input[type="text"],
+				textarea {
+					width: 100%;
+					border: none;
+					outline: none;
+					box-sizing: border-box;
+				}
 
-			#listBtn {
-				margin-right: 3px;
-			}
+				textarea {
+					height: 300px;
+					padding: 10px;
+					resize: none;
+					display: block;
+				}
 
-			textarea {
-				width: 100%;
-				height: 300px;
-				border: none;
-				padding: 10px;
-				outline: none;
-				resize: none;
-				box-sizing: border-box;
-				display: block;
-			}
+				input[type="text"] {
+					height: 100%;
+					padding: 0 10px;
+				}
 
-			input[type="text"] {
-				width: 100%;
-				height: 100%;
-				border: none;
-				padding: 0 10px;
-				/* 입력창 테두리를 없애야 표 선과 하나로 보임 */
-				outline: none;
-				/* 클릭 시 나타나는 파란 테두리 제거 */
-				box-sizing: border-box;
-			}
+				/* 버튼 호버 효과 */
+				.btn-hover:hover {
+					background-color: blueviolet !important;
+					color: white;
+				}
+			</style>
+		</head>
 
-			.btn-hover:hover {
-				background-color: blueviolet !important;
-			}
-		</style>
-	</head>
+		<body>
+			<jsp:include page="../common/menubar.jsp" />
 
-	<body>
-		<jsp:include page="../common/menubar.jsp" />
+			<div class="outer">
+				<h2 align="center">자유게시글</h2>
 
-		<div class="outer">
-			<h2 align="center">일반게시글</h2>
+				<form id="enrollForm" action="/know-how/board/insert" method="post" enctype="multipart/form-data">
 
-			<form id="enrollForm" action="/know-how/board/insert" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">
+					<div class="btn-area">
+						<a id="listBtn" href="/know-how/board/list" class="btn btn-outline-secondary btn-hover">목록</a>
+						<button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
+					</div>
 
-				<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">
-				<div class="btn-area">
-					<a id="listBtn" href="/know-how/board/list" class="btn btn-outline-secondary btn-hover">목록</a>
-					<button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
-				</div>
+					<!--카테고리/ 제목/ 내용/ 첨부파일-->
+					<table class="table">
+						<tr>
+							<th>제목</th>
+							<td colspan="3"><input type="text" id="title" name="title" required></td>
+						</tr>
+						<tr>
+							<th>내용</th>
+							<td colspan="3"><textarea id="boardContent" name="content" required></textarea>
+							</td>
+						</tr>
+						<tr>
+							<th>첨부파일</th>
+							<td><input type="file" name="originalFile" class="btn btn-outline-secondary btn-hover"
+									style="border: none !important;"></td>
+						</tr>
+					</table>
+					<br>
+					<br>
+				</form>
+			</div>
+		</body>
 
-				<!--카테고리/ 제목/ 내용/ 첨부파일-->
-				<table class="table">
-					<tr>
-						<th>제목</th>
-						<td colspan="3"><input type="text" id="title" name="title" required></td>
-					</tr>
-					<tr>
-						<th>내용</th>
-						<td colspan="3"><textarea id="boardContent" name="content" required></textarea>
-						</td>
-					</tr>
-					<tr>
-						<th>첨부파일</th>
-						<td><input type="file" name="originalFile" class="btn btn-outline-secondary btn-hover" style="resize: none;"></td>
-					</tr>
-				</table>
-				<br>
-				<br>
-			</form>
-		</div>
-	</body>
-
-	</html>
+		</html>

@@ -129,7 +129,7 @@
             <a href="#">커뮤니티</a>
             <ul>
                 <li><a href="/know-how/notice/list">공지사항</a></li>
-                <li><a href="/know-how/board/list">일반게시판</a></li>
+                <li><a href="/know-how/board/list">자유게시판</a></li>
                 <li><a href="/know-how/student/list">수강생게시판</a></li>
             </ul>
         </div>
