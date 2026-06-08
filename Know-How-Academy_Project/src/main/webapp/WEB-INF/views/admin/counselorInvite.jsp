@@ -263,8 +263,8 @@
             border-spacing: 0;
             border: 1px solid #e5e7eb;
             border-radius: 10px;
-            overflow: hidden;
             font-size: 15px;
+            min-width: 1100px;
         }
 
         .invite-history-table thead th {
@@ -491,47 +491,49 @@
                 </div>
             </div>
 
-            <table class="invite-history-table">
-                <thead>
-                    <tr>
-                        <th>이름</th>
-                        <th>이메일</th>
-                        <th>발송일</th>
-                        <th>상태</th>
-                        <th>관리</th>
-                    </tr>
-                </thead>
+            <div class="table-wrap">
+                <table class="invite-history-table">
+                    <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>이메일</th>
+                            <th>발송일</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr>
-                        <td>김철수</td>
-                        <td>kim***@naver.com</td>
-                        <td>2026-06-02</td>
-                        <td>
-                            <span class="invite-status waiting">초대대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="btn-danger-outline small">
-                                초대삭제
-                            </button>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>김철수</td>
+                            <td>kim***@naver.com</td>
+                            <td>2026-06-02</td>
+                            <td>
+                                <span class="invite-status waiting">초대대기</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn-danger-outline small">
+                                    초대삭제
+                                </button>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td>박민지</td>
-                        <td>minji***@gmail.com</td>
-                        <td>2026-06-01</td>
-                        <td>
-                            <span class="invite-status done">가입완료</span>
-                        </td>
-                        <td>
-                            <button type="button" class="btn-outline small">
-                                상세보기
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        <tr>
+                            <td>박민지</td>
+                            <td>minji***@gmail.com</td>
+                            <td>2026-06-01</td>
+                            <td>
+                                <span class="invite-status done">가입완료</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn-outline small">
+                                    상세보기
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </section>

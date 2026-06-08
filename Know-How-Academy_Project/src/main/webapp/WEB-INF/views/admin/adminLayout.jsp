@@ -233,8 +233,14 @@
     .primary-btn:hover {
         background: #F3F1FF;
     }
+    /* 테이블 잘림 방지 */
+	.table-wrap {
+		width: 100%;
+		overflow-x: auto;
+	}
 
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- 
@@ -272,7 +278,7 @@
                 학원생 관리
             </div>
 
-            <div class="menu-item" data-path="/admin/counselorList"
+            <div class="menu-item" data-path="/admin/counselor/list"
                  onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>

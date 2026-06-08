@@ -162,8 +162,8 @@
     border-spacing: 0;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
-    overflow: hidden;
     font-size: 15px;
+	min-width: 1100px;
 }
 
 .student-table thead th {
@@ -383,61 +383,70 @@
 					}
 				});
 			</script>
+			<div class="table-wrap">
+				<table class="student-table">
+					<thead>
+						<tr>
+							<th>이름</th>
+							<th>연락처</th>
+							<th>담당 상담사</th>
+							<th>등록일</th>
+							<th>현재 상태</th>
+							<th>관리</th>
+						</tr>
+					</thead>
 
-			<table class="student-table">
-				<thead>
-					<tr>
-						<th>이름</th>
-						<th>연락처</th>
-						<th>담당 상담사</th>
-						<th>등록일</th>
-						<th>현재 상태</th>
-						<th>관리</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<c:choose>
-						<c:when test="${ empty requestScope.list }">
-							<tr>
-								<th colspan="6">
-									학생 정보가 없습니다.
-								</th>
-							</tr>
-						</c:when>
-						<c:otherwise>
-							<tr id="emptyRow" style="display: none;">
-						        <th colspan="6">
-						            학생 정보가 없습니다.
-						        </th>
-						    </tr>	
-							<c:forEach var="s" items="${ requestScope.list }">
+					<tbody>
+						<c:choose>
+							<c:when test="${ empty requestScope.list }">
 								<tr>
-									<td>
-										<a href="#" class="student-name-link">${ s.studentName }</a>
-									</td>
-									<td>${ s.phone }</td>
-									<td>${ s.counselorName }</td>
-									<td>${ s.createdAt }</td>
-									<td>
-										<c:choose>
-											<c:when test="${ s.status eq 'ATTENDING' }">
-												<span class="student-status active">재학</span>
-											</c:when>
-											<c:otherwise>
-												<span class="student-status rest">휴학</span>
-											</c:otherwise>
-										</c:choose>
-									</td>
-									<td>
-										<button type="button" class="btn-outline small" onclick="go('/admin/studentDetails/${ s.studentNo }');">상세보기</button>
-									</td>
+									<th colspan="6">
+										학생 정보가 없습니다.
+									</th>
 								</tr>
-							</c:forEach>
-						</c:otherwise>
-					</c:choose>
-				</tbody>
-			</table>	
+							</c:when>
+							<c:otherwise>
+								<tr id="emptyRow" style="display: none;">
+									<th colspan="6">
+										학생 정보가 없습니다.
+									</th>
+								</tr>	
+								<c:forEach var="s" items="${ requestScope.list }">
+									<tr>
+										<td>
+											<a href="#" class="student-name-link">${ s.studentName }</a>
+										</td>
+										<td>${ s.phone }</td>
+										<td>${ s.counselorName }</td>
+										<td>${ s.createdAt }</td>
+										<td>
+											<c:choose>
+												<c:when test="${ s.status eq 'ATTENDING' }">
+													<span class="student-status active">재학</span>
+												</c:when>
+												<c:otherwise>
+													<span class="student-status rest">휴학</span>
+												</c:otherwise>
+											</c:choose>
+										</td>
+										<td>
+											<button type="button" class="btn-outline small" onclick="studentDetail(${ s.studentNo })">상세보기</button>
+											<input type="hidden" value="${ s.studentNo }">
+										</td>
+									</tr>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>
+			<script>
+				function studentDetail(sno) {
+					
+					location.href = "/know-how/admin/studentDetails/" + sno;
+						
+				}
+			</script>	
 
 			<!-- 페이징 -->
 			<div class="pagination-area">

@@ -1,15 +1,25 @@
 package com.kh.know_how.admin.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.know_how.admin.common.AdminPagination;
+import com.kh.know_how.admin.common.PageResponseDto;
 import com.kh.know_how.admin.model.dao.AdminDao;
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
+import com.kh.know_how.admin.model.dto.ClassListDto;
+import com.kh.know_how.admin.model.dto.CounselCategoryDto;
+import com.kh.know_how.admin.model.dto.CounselorListPageDto;
+import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
+import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
+import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 
 @Service
@@ -45,13 +55,15 @@ public class AdminService {
 		
 		return ad.selectTodayReservationList(sqlSession);
 	}
-
+	
+	@Transactional(readOnly = true)
 	public int todayReservationCount() {
 		
 		return ad.todayReservationCount(sqlSession);
 	}
-
-	public ArrayList<AdminDashboardStatsDto> selectdashboardStats() {
+	
+	@Transactional(readOnly = true)
+	public ArrayList<AdminDashboardStatsDto> selectDashboardStats() {
 	
 		// double 타입, % 계산 CheckList : 
 		// 1. 분모가 0일 경우 어떻게 처리합니까?  
@@ -64,8 +76,71 @@ public class AdminService {
 		
 		// + 하드코딩 같으면 DB에서 가져온다
 		
-		return ad.selectdashboardStats(sqlSession);
+		return ad.selectDashboardStats(sqlSession);
 	}
+
+	@Transactional(readOnly = true)
+	public CounselorListPageDto selectcounselorList(
+			CounselorSearchRequestDto counselorSearchRequestDto) {
+		
+		//전체페이지조회
+		int listCount = ad.selectlistCount(sqlSession,counselorSearchRequestDto);
+		//페이징처리용 자료
+		PageResponseDto pageInfo = AdminPagination.createPageInfo(counselorSearchRequestDto.getPageRequest(),listCount);
+		//리스트 목록 조회
+		ArrayList<CounselorListResponseDto> counselorList = ad.selectcounselorList(sqlSession,counselorSearchRequestDto);
+		//클래스 목록 조회
+		ArrayList<ClassListDto> classList = ad.selectClassList(sqlSession);
+		
+		
+		CounselorListPageDto counselorListPage = new CounselorListPageDto(counselorList, pageInfo,classList);
+		return counselorListPage;
+	}
+	
+	@Transactional
+	public int updateCounselorClass(int userNo, Integer classNo) {
+		
+		Map<String, Integer> param = new HashMap<>();
+		param.put("userNo", userNo);
+		param.put("classNo", classNo);
+		
+		return ad.updateCounselorClass(sqlSession, param);
+	}
+
+	@Transactional(readOnly = true)
+	public ArrayList<CounselCategoryDto> selectCounselCategory() {
+		
+		return ad.selectCounselCategory(sqlSession);
+	}
+	
+	@Transactional(readOnly = true)
+	public CounselorProfileDTO selectCounselorProfile(int userNo) {
+		
+		
+		return ad.selectCounselorProfile(sqlSession, userNo);
+	}
+	
+	@Transactional
+	public int updateCounselorStatus(int userNo, String status) {
+		
+		Map<String, Object> param = new HashMap<>();
+
+		param.put("userNo", userNo);
+		param.put("status", status);
+		
+		return ad.updateCounselorStatus(sqlSession, param);
+	}
+	
+	@Transactional
+	public int updateCounselorInvite(int inviteNo) {
+		
+		return ad.updateCounselorInvite(sqlSession, inviteNo);
+	}
+
+	
+
+
+
 
 	
 	
