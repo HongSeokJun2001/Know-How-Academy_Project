@@ -34,7 +34,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		// 직원용
 		registry.addInterceptor(counselorInterceptor);
 		
-		
+		 */
 		
 		//관리자페이지 인터셉터와 연결되는 곳
 		registry.addInterceptor(adminInterceptor)
@@ -48,7 +48,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 "/js/**",
                 "/image/**"
         );
-        */
+       
 	}
 	
 	
