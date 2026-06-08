@@ -146,8 +146,12 @@
 							
 						}
 					},
-					error() {
-						console.log("상태 변경용 ajax 통신 실패!");
+					error(xhr) {
+						if (xhr.status === 413) {
+				            alert("첨부파일의 용량이 너무 큽니다. 파일 크기를 줄여서 다시 시도해주세요.");
+				        } else {
+				        	console.log("공지사항 등록용 ajax 통신 실패!!");
+				        }
 					}
 		        });
 		    });
