@@ -363,6 +363,31 @@
 					});
 				}
 				
+				function deleteNotice(postNo) {
+					if(confirm("해당 공지사항을 삭제하시겠습니까?")) {
+						$.ajax({
+							url : "/know-how/admin/notice/delete",
+							type : "post",
+							data : {
+								postNo : postNo
+							},
+							success(result) {
+								if(result == "success") {
+									alert("삭제가 완료되었습니다.");
+									location.reload();
+									
+								} else {
+									
+									alert("삭제가 실패했습니다.");
+									
+								}
+							},
+							error() {
+								console.log("공지사항 삭제용 ajax 통신 실패!");
+							}
+						});
+					}
+				}
 			</script>
 			
 			<!-- 페이징 -->

@@ -198,4 +198,14 @@ public class AdminController2 {
     	
     	return (result > 0) ? "success" : "fail";
     }
+    
+    @ResponseBody
+    @PostMapping("/notice/delete")
+    public String deleteNotice(int postNo) {
+
+    	int result = as2.deleteNoticeStatus(postNo);
+    	
+    	return (result > 0) ? "success" : "fail";
+    }
+    
 }//컨트롤러 끝

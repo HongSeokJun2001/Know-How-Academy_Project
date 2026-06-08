@@ -157,4 +157,12 @@
 		 WHERE POST_NO = #{postNo}
 	</update>
 	
+	
+	<!-- (관리자용)공지사항 삭제용 쿼리문 -->
+	<delete id="deleteNotice" parameterType="_int">
+		DELETE
+		  FROM BOARD_POST
+		 WHERE POST_NO = #{postNo}
+	</delete>
+	
 </mapper>

@@ -118,4 +118,10 @@ public class AdminService2 {
 		return ad2.updateNoticeStatus(sqlSession, b);
 	}
 
+	@Transactional
+	public int deleteNoticeStatus(int postNo) {
+		
+		return ad2.deleteNotice(sqlSession, postNo);
+	}
+
 }//클래스 끝
