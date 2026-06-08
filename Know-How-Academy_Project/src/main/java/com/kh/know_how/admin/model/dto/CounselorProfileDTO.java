@@ -15,12 +15,12 @@ public class CounselorProfileDTO {
 	
 	private int userNo;
 	private String userId;		
-	private String imgPath;	
+	private String imgPath;			//이미지 저장 경로
 	private String status;	
     private String className;			
     private String userName;			
     private String phone;		
     private String email;	
-    private int studentCount;
+    private int studentCount;		//담당반의 학생수
     
 }
