@@ -105,7 +105,7 @@
 }
 
 /* 목록 카드 */
-.notice-list-card {
+.notice-card {
     padding: 28px;
     background-color: #fff;
     border: 1px solid #e5e7eb;
@@ -129,14 +129,12 @@
     height: 54px;
     padding: 0 18px;
     background-color: #fafafa;
-    color: #2c2f3f;
     font-weight: 800;
     border-bottom: 1px solid #e5e7eb;
 }
 
 .notice-table tbody td {
     padding: 16px 18px;
-    color: #374151;
     border-bottom: 1px solid #eef0f4;
     vertical-align: middle;
 }
@@ -248,7 +246,7 @@
 				<p>공지사항을 등록, 수정, 삭제할 수 있습니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary" onclick="go('/admin/notice/insert')">
+			<button type="button" class="btn-primary" onclick="go('/admin/notice/enrollForm')">
 				+ 새 공지 등록
 			</button>
 		</div>
@@ -260,7 +258,8 @@
 					<div class="search-field">
 						<input type="search"
 							name="keyword"
-							class="notice-search-input">
+							class="notice-search-input"
+							placeholder="제목을 입력해주세요.">
 					</div>
 	
 					<button type="submit" class="btn-primary search-btn">
@@ -273,7 +272,7 @@
 				<div class="search-keyword-area">
 					<span class="keyword-chip">
 						검색어: <strong>${ requestScope.keyword }</strong>
-						<button type="button" onclick="go('/admin/notice/search')">×</button>
+						<button type="button" onclick="go('/admin/notice')">×</button>
 					</span>
 				</div>
 			</c:if>
@@ -281,7 +280,7 @@
 		</div>
 
 		<!-- 목록 카드 -->
-		<div class="notice-list-card">
+		<div class="notice-card">
 
 			<table class="notice-table">
 				<thead>
@@ -307,23 +306,23 @@
 						<c:otherwise>	
 							<c:forEach var="n" items="${ requestScope.list }">
 								<tr>
-									<td>${ n.postNo }</td>
+									<td>${ n.rowNum }</td>
 									<td>${ n.title }</td>
 									<td>${ n.postWriter }</td>
 									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>
 											<c:when test="${ n.status eq 'Y' }">
-												<span class="notice-status show">노출</span>
+												<span class="notice-status show" onclick="visible('${ n.status }', ${ n.postNo });">노출</span>
 											</c:when>
 											<c:otherwise>
-												<span class="notice-status hide">숨김</span>
+												<span class="notice-status hide" onclick="visible('${ n.status }', ${ n.postNo });">숨김</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td>
-										<button type="button" class="btn-outline edit" onclick="go(/admin/notice/update/${ n.postNo })">수정</button>
-										<button type="button" class="btn-outline delete" onclick="go(/admin/notice/delete/${ n.postNo })">삭제</button>
+										<button type="button" class="btn-outline edit" onclick="go(/admin/notice/update/${ n.postNo });">수정</button>
+										<button type="button" class="btn-outline delete" onclick="deleteNotice(${ n.postNo });">삭제</button>
 									</td>
 								</tr>
 							</c:forEach>
@@ -331,7 +330,66 @@
 					</c:choose>
 				</tbody>
 			</table>	
-
+			
+			<script>
+				function visible(status, postNo) {
+					if(status == 'Y') {
+						status = 'N';
+					} else {
+						status = 'Y';
+					} 
+					console.log(postNo);
+					$.ajax({
+						url : "/know-how/admin/notice/visible",
+						type : "get",
+						data : {
+							status : status,
+							postNo : postNo
+						},
+						success(result) {
+							if(result == "success") {
+								
+								location.reload();
+								
+							} else {
+								
+								alert("상태 변경에 실패했습니다.");
+								
+							}
+						},
+						error() {
+							console.log("상태 변경용 ajax 통신 실패!");
+						}
+					});
+				}
+				
+				function deleteNotice(postNo) {
+					if(confirm("해당 공지사항을 삭제하시겠습니까?")) {
+						$.ajax({
+							url : "/know-how/admin/notice/delete",
+							type : "post",
+							data : {
+								postNo : postNo
+							},
+							success(result) {
+								if(result == "success") {
+									alert("삭제가 완료되었습니다.");
+									location.reload();
+									
+								} else {
+									
+									alert("삭제가 실패했습니다.");
+									
+								}
+							},
+							error() {
+								console.log("공지사항 삭제용 ajax 통신 실패!");
+							}
+						});
+					}
+				}
+			</script>
+			
 			<!-- 페이징 -->
 			<div class="pagination-area">
 				<c:choose>
@@ -342,10 +400,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.condition }">
-								<button type="button" onclick="go('/know-how/admin/notice?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/notice?cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/know-how/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
 							</c:otherwise>
 							
 						</c:choose>
@@ -362,10 +420,10 @@
 						
 							<c:choose>
 								<c:when test="${ empty requestScope.status }">
-									<button type="button" onclick="go('/admin/notice?cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/notice?cpage=${ p }');">${ p }</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }');">${ p }</button>
 								</c:otherwise>
 							</c:choose>
 							

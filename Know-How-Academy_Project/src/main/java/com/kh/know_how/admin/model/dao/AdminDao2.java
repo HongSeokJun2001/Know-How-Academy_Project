@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Repository
@@ -95,13 +97,47 @@ public class AdminDao2 {
 		return sqlSession.selectOne("boardMapper.adminSelectNoticeCount");
 	}
 	
-	public ArrayList<StudentDto> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList");
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList", null, rowBounds);
 	}
 
+	public int adminSearchNoticeCount(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("boardMapper.adminSearchNoticeCount", keyword);
+	}
+
+	public ArrayList<Board> adminSearchNoticeList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
+	}
+
+	public int updateNoticeStatus(SqlSessionTemplate sqlSession, Board b) {
+		
+		return sqlSession.update("boardMapper.updateNoticeStatus", b);
+	}
+
+	public int deleteNotice(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.deleteNotice", postNo);
+	}
+
+	public int insertNotice(SqlSessionTemplate sqlSession, Board b) {
+		
+		return sqlSession.insert("boardMapper.insertNotice", b);
+	}
+
+	public int insertNoticeFileAttachment(SqlSessionTemplate sqlSession, FileAttachment at) {
+		
+		return sqlSession.insert("boardMapper.insertNoticeFileAttachment", at);
+	}
 }//클래스 끝

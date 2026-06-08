@@ -1,5 +1,6 @@
 package com.kh.know_how.admin.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,15 +13,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.admin.model.service.AdminService2;
-import com.kh.know_how.board.model.service.BoardService;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
+import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
 import com.kh.know_how.common.template.XssDefencePolicy;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin")
@@ -51,9 +57,8 @@ public class AdminController2 {
     }
     
     @GetMapping("/studentList/search")
-    public ModelAndView searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage) {
+    public String searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
-    	ModelAndView mv = new ModelAndView();
     	keyword = XssDefencePolicy.defence(keyword);
     	HashMap<String, String> map = new HashMap<>();
     	map.put("status", status);
@@ -67,14 +72,14 @@ public class AdminController2 {
     	
     	ArrayList<StudentDto> list = as2.selectStudentList(map, pi);
     	
-    	mv.addObject("list", list)
-    	  .addObject("pi", pi)
-    	  .addObject("status", status)
-    	  .addObject("keyword", keyword)
-    	  .addObject("page", "studentList")
-    	  .setViewName("admin/adminLayout");
+    	model .addAttribute("list", list)
+    	  .addAttribute("pi", pi)
+    	  .addAttribute("status", status)
+    	  .addAttribute("keyword", keyword)
+    	  .addAttribute("page", "studentList");
+    	  
     	
-    	return mv;
+    	return "admin/adminLayout";
     }
     
     @GetMapping("/studentDetails/{studentNo}")
@@ -113,7 +118,7 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/rest")
-    public String UpdateStudentStatus(StudentDto s) {
+    public String updateStudentStatus(StudentDto s) {
     	
     	int result = as2.updateStudentStatus(s);
 
@@ -161,8 +166,7 @@ public class AdminController2 {
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<StudentDto> list = as2.adminSelectNoticeList(pi);
-    	
+    	ArrayList<Board> list = as2.adminSelectNoticeList(pi);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -172,4 +176,87 @@ public class AdminController2 {
     	return mv;
     }
     
+    @GetMapping("/notice/search")
+    public String searchNoticeList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
+    	
+    	keyword = XssDefencePolicy.defence(keyword);
+    	int listCount = as2.adminSearchNoticeCount(keyword);
+    	int pageLimit = 10;
+    	int boardLimit = 10;
+    	
+    	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	ArrayList<Board> list = as2.adminSearchNoticeList(pi, keyword);
+    	
+    	model.addAttribute("list", list)
+    	     .addAttribute("pi", pi)
+    	     .addAttribute("keyword", keyword)
+       	     .addAttribute("page", "adminNoticeList");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @GetMapping("/notice/visible")
+    public String updateNoticeStatus(Board b) {
+    	
+    	int result = as2.updateNoticeStatus(b);
+    	
+    	return (result > 0) ? "success" : "fail";
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/delete")
+    public String deleteNotice(int postNo) {
+
+    	int result = as2.deleteNoticeStatus(postNo);
+    	
+    	return (result > 0) ? "success" : "fail";
+    }
+    
+    @GetMapping("/notice/enrollForm")
+    public String NoticeEnrollForm(Model model) {
+    	
+    	model.addAttribute("page", "adminNoticeEnrollForm");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/insert")
+    public String NoticeEnrollForm(Board b, MultipartFile upfile, HttpSession session) {
+    	
+    	FileAttachment at = null;
+    	
+    	if(!upfile.getOriginalFilename().equals("")) {
+    		
+    		String saveName = FileRenamePolicy.saveFile(upfile, session, "/resources/upload/notice/");
+    		
+    		at = new FileAttachment();
+    		at.setOriginName(upfile.getOriginalFilename());
+    		at.setSaveName(saveName);
+    		at.setFilePath("resources/upload/notice/");
+    	}
+    	
+    	b.setTitle(XssDefencePolicy.defence(b.getTitle()));
+    	b.setContent(XssDefencePolicy.defence(b.getContent()));
+    	
+    	int result = as2.insertNotice(b, at);
+    	
+    	if(result > 0) {
+    		
+    		return "success";
+    	} else {
+    		
+    		if(at != null) {
+    			
+    			String savePath = session.getServletContext()
+    									 .getRealPath("resources/upload/notice");
+    			
+    			new File(savePath + at.getSaveName()).delete();
+    		}
+    		
+    		return "fail";
+    	}
+    }
 }//컨트롤러 끝

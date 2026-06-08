@@ -430,7 +430,7 @@
 											</c:choose>
 										</td>
 										<td>
-											<button type="button" class="btn-outline small" onclick="studentDetail(${ s.studentNo })">상세보기</button>
+											<button type="button" class="btn-outline small" onclick="go('/admin/studentDetails/${ s.studentNo }')">상세보기</button>
 											<input type="hidden" value="${ s.studentNo }">
 										</td>
 									</tr>
@@ -439,14 +439,7 @@
 						</c:choose>
 					</tbody>
 				</table>
-			</div>
-			<script>
-				function studentDetail(sno) {
-					
-					location.href = "/know-how/admin/studentDetails/" + sno;
-						
-				}
-			</script>	
+			</div>	
 
 			<!-- 페이징 -->
 			<div class="pagination-area">
