@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.admin.model.dao.AdminDao2;
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Service
@@ -124,4 +126,19 @@ public class AdminService2 {
 		return ad2.deleteNotice(sqlSession, postNo);
 	}
 
+	@Transactional
+	public int insertNotice(Board b, FileAttachment at) {
+		
+		int result1 = ad2.insertNotice(sqlSession, b);
+		
+		int result2 = 1;
+		
+		if(at != null) {
+			
+			result2 = ad2.insertNoticeFileAttachment(sqlSession, at);
+			
+		}
+		
+		return result1 * result2;
+	}
 }//클래스 끝

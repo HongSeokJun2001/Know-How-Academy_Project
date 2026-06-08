@@ -246,7 +246,7 @@
 				<p>공지사항을 등록, 수정, 삭제할 수 있습니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary" onclick="go('/admin/notice/insert')">
+			<button type="button" class="btn-primary" onclick="go('/admin/notice/enrollForm')">
 				+ 새 공지 등록
 			</button>
 		</div>

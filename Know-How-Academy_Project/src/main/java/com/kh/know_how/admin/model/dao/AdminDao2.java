@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Repository
@@ -129,4 +131,13 @@ public class AdminDao2 {
 		return sqlSession.delete("boardMapper.deleteNotice", postNo);
 	}
 
+	public int insertNotice(SqlSessionTemplate sqlSession, Board b) {
+		
+		return sqlSession.insert("boardMapper.insertNotice", b);
+	}
+
+	public int insertNoticeFileAttachment(SqlSessionTemplate sqlSession, FileAttachment at) {
+		
+		return sqlSession.insert("boardMapper.insertNoticeFileAttachment", at);
+	}
 }//클래스 끝

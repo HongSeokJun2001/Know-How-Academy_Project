@@ -165,4 +165,38 @@
 		 WHERE POST_NO = #{postNo}
 	</delete>
 	
+	<!-- (관리자용)공지사항 등록용 쿼리문 -->
+	<insert id="insertNotice" parameterType="board">
+		INSERT INTO BOARD_POST(POST_NO
+							 , POST_TYPE
+							 , CATEGORY
+							 , TITLE
+							 , CONTENT
+							 , CREATED_AT
+							 , WRITER_NO)
+						VALUES(SEQ_POST_NO.NEXTVAL
+							 , 'NOTICE'
+							 , 'NOTICE'
+							 , #{title}
+							 , #{content}
+							 , SYSDATE
+							 , #{postWriter})	
+	</insert>
+	
+	<!-- 첨부파일 등록용 쿼리문 -->
+	<insert id="insertNoticeFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+							 , TARGET_NO
+							 , TARGET_TYPE
+							 , ORIGIN_NAME
+							 , SAVE_NAME
+							 , FILE_PATH)
+						VALUES(SEQ_FILE_NO.NEXTVAL
+							 , SEQ_POST_NO.CURRVAL
+							 , 'NOTICE'
+							 , #{originName}
+							 , #{saveName}
+							 , #{filePath})
+							 
+	</insert>
 </mapper>
