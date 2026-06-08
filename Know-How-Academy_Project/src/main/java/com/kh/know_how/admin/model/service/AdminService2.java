@@ -121,12 +121,6 @@ public class AdminService2 {
 	}
 
 	@Transactional
-	public int deleteNoticeStatus(int postNo) {
-		
-		return ad2.deleteNotice(sqlSession, postNo);
-	}
-
-	@Transactional
 	public int insertNotice(Board b, FileAttachment at) {
 		
 		int result1 = ad2.insertNotice(sqlSession, b);
@@ -141,4 +135,5 @@ public class AdminService2 {
 		
 		return result1 * result2;
 	}
+
 }//클래스 끝

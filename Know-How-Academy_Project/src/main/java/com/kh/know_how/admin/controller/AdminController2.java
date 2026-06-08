@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.admin.model.service.AdminService2;
+import com.kh.know_how.board.model.service.BoardService;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
@@ -35,6 +36,9 @@ public class AdminController2 {
 	//필드부
 	@Autowired
 	AdminService2 as2;
+	
+	@Autowired
+	BoardService bs;
 	
 	//메소드부
         
@@ -84,7 +88,7 @@ public class AdminController2 {
     
     @GetMapping("/studentDetails/{studentNo}")
     public String studentDetails(@PathVariable int studentNo, Model model) {
-    	StudentDto s = as2.selectStudentList(studentNo);
+    	StudentDto s = as2.selectStudent(studentNo);
     	model.addAttribute("s", s);
     	model.addAttribute("page", "studentDetails");
     	return "admin/adminLayout";
@@ -209,9 +213,16 @@ public class AdminController2 {
     @PostMapping("/notice/delete")
     public String deleteNotice(int postNo) {
 
-    	int result = as2.deleteNoticeStatus(postNo);
+    	FileAttachment at = bs.selectFileAttachment(postNo);
     	
-    	return (result > 0) ? "success" : "fail";
+    	int result2 = 1;
+    	
+    	if(at != null) {
+			result2 =  bs.deleteFileAttachment(postNo);
+		}
+    	int result1 = bs.deleteBoard(postNo);
+    	
+    	return ((result1 * result2) > 0) ? "success" : "fail";
     }
     
     @GetMapping("/notice/enrollForm")

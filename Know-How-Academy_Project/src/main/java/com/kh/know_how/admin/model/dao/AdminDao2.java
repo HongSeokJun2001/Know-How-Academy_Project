@@ -126,11 +126,6 @@ public class AdminDao2 {
 		return sqlSession.update("boardMapper.updateNoticeStatus", b);
 	}
 
-	public int deleteNotice(SqlSessionTemplate sqlSession, int postNo) {
-		
-		return sqlSession.delete("boardMapper.deleteNotice", postNo);
-	}
-
 	public int insertNotice(SqlSessionTemplate sqlSession, Board b) {
 		
 		return sqlSession.insert("boardMapper.insertNotice", b);
@@ -140,4 +135,5 @@ public class AdminDao2 {
 		
 		return sqlSession.insert("boardMapper.insertNoticeFileAttachment", at);
 	}
+
 }//클래스 끝

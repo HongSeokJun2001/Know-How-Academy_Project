@@ -39,5 +39,13 @@ public class BoardDao {
 	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {
 		
 		return (ArrayList)sqlSession.selectList("boardMapper.selectFileAttachmentList", postNo);
+	public int deleteBoard(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.deleteBoard", postNo);
+	}
+	
+	public int deleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.deleteFileAttachment", postNo);
 	}
 }

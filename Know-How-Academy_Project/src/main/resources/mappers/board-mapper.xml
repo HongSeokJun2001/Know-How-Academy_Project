@@ -158,8 +158,8 @@
 	</update>
 	
 	
-	<!-- (관리자용)공지사항 삭제용 쿼리문 -->
-	<delete id="deleteNotice" parameterType="_int">
+	<!-- 게시글, 공지사항, 학원 소식 삭제용 쿼리문 -->
+	<delete id="deleteBoard" parameterType="_int">
 		DELETE
 		  FROM BOARD_POST
 		 WHERE POST_NO = #{postNo}
@@ -183,7 +183,7 @@
 							 , #{postWriter})	
 	</insert>
 	
-	<!-- 첨부파일 등록용 쿼리문 -->
+	<!-- (관리자용)첨부파일 등록용 쿼리문 -->
 	<insert id="insertNoticeFileAttachment" parameterType="fileAttachment">
 		INSERT INTO FILE_ATTACHMENT(FILE_NO
 							 , TARGET_NO
@@ -197,6 +197,13 @@
 							 , #{originName}
 							 , #{saveName}
 							 , #{filePath})
-							 
 	</insert>
+
+	<!-- 첨부파일 삭제용 쿼리문 -->
+	<delete id="deleteFileAttachment" parameterType="_int">
+		DELETE
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+	</delete>
+
 </mapper>
