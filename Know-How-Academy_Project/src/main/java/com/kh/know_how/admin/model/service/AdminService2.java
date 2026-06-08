@@ -112,4 +112,10 @@ public class AdminService2 {
 		return ad2.adminSearchNoticeList(sqlSession, pi, keyword);
 	}
 
+	@Transactional
+	public int updateNoticeStatus(Board b) {
+		
+		return ad2.updateNoticeStatus(sqlSession, b);
+	}
+
 }//클래스 끝

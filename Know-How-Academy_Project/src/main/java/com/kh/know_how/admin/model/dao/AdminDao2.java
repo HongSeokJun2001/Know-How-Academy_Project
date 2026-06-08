@@ -118,4 +118,10 @@ public class AdminDao2 {
 		
 		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
 	}
+
+	public int updateNoticeStatus(SqlSessionTemplate sqlSession, Board b) {
+		
+		return sqlSession.update("boardMapper.updateNoticeStatus", b);
+	}
+
 }//클래스 끝

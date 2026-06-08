@@ -190,4 +190,12 @@ public class AdminController2 {
     	return "admin/adminLayout";
     }
     
+    @ResponseBody
+    @GetMapping("/notice/visible")
+    public String updateNoticeStatus(Board b) {
+    	
+    	int result = as2.updateNoticeStatus(b);
+    	
+    	return (result > 0) ? "success" : "fail";
+    }
 }//컨트롤러 끝

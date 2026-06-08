@@ -332,7 +332,41 @@
 					</c:choose>
 				</tbody>
 			</table>	
-
+			
+			<script>
+				function visible(status, postNo) {
+					if(status == 'Y') {
+						status = 'N';
+					} else {
+						status = 'Y';
+					} 
+					console.log(postNo);
+					$.ajax({
+						url : "/know-how/admin/notice/visible",
+						type : "get",
+						data : {
+							status : status,
+							postNo : postNo
+						},
+						success(result) {
+							if(result == "success") {
+								
+								location.reload();
+								
+							} else {
+								
+								alert("상태 변경에 실패했습니다.");
+								
+							}
+						},
+						error() {
+							console.log("상태 변경용 ajax 통신 실패!");
+						}
+					});
+				}
+				
+			</script>
+			
 			<!-- 페이징 -->
 			<div class="pagination-area">
 				<c:choose>

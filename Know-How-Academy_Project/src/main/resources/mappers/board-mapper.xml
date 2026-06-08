@@ -150,4 +150,11 @@
 		 ORDER BY ROWNUM DESC 
 	</select>
 	
+	<!-- (관리자용)공지사항 상태 변경용 쿼리문 -->
+	<update id="updateNoticeStatus" parameterType="board">
+		UPDATE BOARD_POST
+		   SET STATUS = #{status}
+		 WHERE POST_NO = #{postNo}
+	</update>
+	
 </mapper>
