@@ -25,11 +25,11 @@
     <jsp:include page="../common/menubar.jsp"/>
 
     
-    <form id="searchId-form"> 
+    <form id="searchId-form" action="/know-how/myPage/searchIdForm" method="post"> 
 		            
         <br><br>
              
-		<table id="login-page">
+		<table id="login-page" >
 			<tr>
 				<h2 align="center">아이디 찾기</h2>
 			</tr>
@@ -53,7 +53,7 @@
 		    <tr>
 				<th></th>
 				<td>
-					<button type="button" class="btn btn-secondary btn-sm">아이디 찾기</button>
+					<button type="submit" class="btn btn-secondary btn-sm">아이디 찾기</button>
 		            <button type="button" class="btn btn-secondary btn-sm">확인</button>
 		            <%-- 이름 일치확인 + 이메일 인증 후 
 		               창에 아이디 값 띄워주고 확인 버튼 누르면 사라지게 해야됨 아직 기능 구현 x --%>
@@ -90,27 +90,25 @@
 		   function enrollPage() {
 				
 			 // 회원가입페이지로 이동
-			 location.href = "/know-how/member/myPage/enrollForm";
+			 location.href = "/know-how/myPage/enrollForm";
 			 // GET 방식
 		   }
-		</script>
-		
-		<script>
+	
 		  function myPage() {
 			
 			// 마이페이지로 이동
-			location.href = "/know-how/member/myPage";
+			location.href = "/know-how/myPage";
 			// GET 방식
 		  }
-		</script>
-		    
-		<script>
+		
 		  function searchPasswordPage() {
 			
 			// 비밀번호찾기페이지로 이동
-			location.href = "/know-how/member/myPage/searchPasswordForm";
+			location.href = "/know-how/myPage/searchPasswordForm";
 			// GET 방식
 		  }
+		  
+		  
 		</script>
 		
 </body>
