@@ -6,6 +6,7 @@
 	
 	<resultMap type="board" id="boardResultSet">
 		<id column="POST_NO" property="postNo" />
+		<result column="ROWNUM" property="rowNum" />
 		<result column="CATEGORY" property="category" />
 		<result column="TITLE" property="title" />
 		<result column="CONTENT" property="content" />
@@ -101,16 +102,52 @@
 	</select>
 	
 	<!-- (관리자용)공지사항 목록 조회용 쿼리문 -->
-	<select id="adminSelectNoticeList" parameterType="hashmap" resultMap="boardResultSet">
-		SELECT POST_NO
-			 , TITLE
-			 , USER_NAME
-			 , B.CREATED_AT
-			 , B.STATUS
-		  FROM BOARD_POST B
-		  JOIN MEMBER ON (WRITER_NO = USER_NO)
+	<select id="adminSelectNoticeList" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+					     , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = 'NOTICE'
+					 ORDER BY POST_NO
+					) A
+				 )
+		 ORDER BY ROWNUM DESC 
+	</select>
+	
+	<!-- (관리자용)공지사항 키워드 검색시 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSearchNoticeCount" parameterType="string" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
 		 WHERE POST_TYPE = 'NOTICE'
-		 ORDER BY POST_NO DESC
+		   AND TITLE LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<!-- (관리자용)공지사항 목록 조회용 쿼리문 -->
+	<select id="adminSearchNoticeList" parameterType="string" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+						 , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = 'NOTICE'
+					   AND TITLE LIKE '%' || #{keyword} || '%'
+					 ORDER BY POST_NO
+					 ) A
+			      )
+		 ORDER BY ROWNUM DESC 
 	</select>
 	
 </mapper>

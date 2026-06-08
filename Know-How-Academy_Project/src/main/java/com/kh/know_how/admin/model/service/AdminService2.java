@@ -97,8 +97,19 @@ public class AdminService2 {
 		return ad2.adminSelectNoticeCount(sqlSession);
 	}
 	
-	public ArrayList<StudentDto> adminSelectNoticeList(PageInfo pi) {
+	public ArrayList<Board> adminSelectNoticeList(PageInfo pi) {
 		
 		return ad2.adminSelectNoticeList(sqlSession, pi);
 	}
+
+	public int adminSearchNoticeCount(String keyword) {
+		
+		return ad2.adminSearchNoticeCount(sqlSession, keyword);
+	}
+
+	public ArrayList<Board> adminSearchNoticeList(PageInfo pi, String keyword) {
+		
+		return ad2.adminSearchNoticeList(sqlSession, pi, keyword);
+	}
+
 }//클래스 끝

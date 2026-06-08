@@ -95,13 +95,27 @@ public class AdminDao2 {
 		return sqlSession.selectOne("boardMapper.adminSelectNoticeCount");
 	}
 	
-	public ArrayList<StudentDto> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList");
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList", null, rowBounds);
 	}
 
+	public int adminSearchNoticeCount(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("boardMapper.adminSearchNoticeCount", keyword);
+	}
+
+	public ArrayList<Board> adminSearchNoticeList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
+	}
 }//클래스 끝

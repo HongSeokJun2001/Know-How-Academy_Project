@@ -51,9 +51,8 @@ public class AdminController2 {
     }
     
     @GetMapping("/studentList/search")
-    public ModelAndView searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage) {
+    public String searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
-    	ModelAndView mv = new ModelAndView();
     	keyword = XssDefencePolicy.defence(keyword);
     	HashMap<String, String> map = new HashMap<>();
     	map.put("status", status);
@@ -67,14 +66,14 @@ public class AdminController2 {
     	
     	ArrayList<StudentDto> list = as2.selectStudentList(map, pi);
     	
-    	mv.addObject("list", list)
-    	  .addObject("pi", pi)
-    	  .addObject("status", status)
-    	  .addObject("keyword", keyword)
-    	  .addObject("page", "studentList")
-    	  .setViewName("admin/adminLayout");
+    	model .addAttribute("list", list)
+    	  .addAttribute("pi", pi)
+    	  .addAttribute("status", status)
+    	  .addAttribute("keyword", keyword)
+    	  .addAttribute("page", "studentList");
+    	  
     	
-    	return mv;
+    	return "admin/adminLayout";
     }
     
     @GetMapping("/studentDetails/{studentNo}")
@@ -113,7 +112,7 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/rest")
-    public String UpdateStudentStatus(StudentDto s) {
+    public String updateStudentStatus(StudentDto s) {
     	
     	int result = as2.updateStudentStatus(s);
 
@@ -161,8 +160,7 @@ public class AdminController2 {
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<StudentDto> list = as2.adminSelectNoticeList(pi);
-    	
+    	ArrayList<Board> list = as2.adminSelectNoticeList(pi);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -170,6 +168,26 @@ public class AdminController2 {
     	  .setViewName("admin/adminLayout");
     	
     	return mv;
+    }
+    
+    @GetMapping("/notice/search")
+    public String searchNoticeList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
+    	
+    	keyword = XssDefencePolicy.defence(keyword);
+    	int listCount = as2.adminSearchNoticeCount(keyword);
+    	int pageLimit = 10;
+    	int boardLimit = 10;
+    	
+    	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	ArrayList<Board> list = as2.adminSearchNoticeList(pi, keyword);
+    	
+    	model.addAttribute("list", list)
+    	     .addAttribute("pi", pi)
+    	     .addAttribute("keyword", keyword)
+       	     .addAttribute("page", "adminNoticeList");
+    	
+    	return "admin/adminLayout";
     }
     
 }//컨트롤러 끝

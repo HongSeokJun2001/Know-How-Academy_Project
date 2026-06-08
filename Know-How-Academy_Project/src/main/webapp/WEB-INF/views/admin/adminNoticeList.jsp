@@ -260,7 +260,8 @@
 					<div class="search-field">
 						<input type="search"
 							name="keyword"
-							class="notice-search-input">
+							class="notice-search-input"
+							placeholder="제목을 입력해주세요.">
 					</div>
 	
 					<button type="submit" class="btn-primary search-btn">
@@ -273,7 +274,7 @@
 				<div class="search-keyword-area">
 					<span class="keyword-chip">
 						검색어: <strong>${ requestScope.keyword }</strong>
-						<button type="button" onclick="go('/admin/notice/search')">×</button>
+						<button type="button" onclick="go('/admin/notice')">×</button>
 					</span>
 				</div>
 			</c:if>
@@ -307,23 +308,23 @@
 						<c:otherwise>	
 							<c:forEach var="n" items="${ requestScope.list }">
 								<tr>
-									<td>${ n.postNo }</td>
+									<td>${ n.rowNum }</td>
 									<td>${ n.title }</td>
 									<td>${ n.postWriter }</td>
 									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>
 											<c:when test="${ n.status eq 'Y' }">
-												<span class="notice-status show">노출</span>
+												<span class="notice-status show" onclick="visible('${ n.status }', ${ n.postNo });">노출</span>
 											</c:when>
 											<c:otherwise>
-												<span class="notice-status hide">숨김</span>
+												<span class="notice-status hide" onclick="visible('${ n.status }', ${ n.postNo });">숨김</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td>
-										<button type="button" class="btn-outline edit" onclick="go(/admin/notice/update/${ n.postNo })">수정</button>
-										<button type="button" class="btn-outline delete" onclick="go(/admin/notice/delete/${ n.postNo })">삭제</button>
+										<button type="button" class="btn-outline edit" onclick="go(/admin/notice/update/${ n.postNo });">수정</button>
+										<button type="button" class="btn-outline delete" onclick="deleteNotice(${ n.postNo });">삭제</button>
 									</td>
 								</tr>
 							</c:forEach>
@@ -342,10 +343,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.condition }">
-								<button type="button" onclick="go('/know-how/admin/notice?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/notice?cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/know-how/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
 							</c:otherwise>
 							
 						</c:choose>
@@ -362,10 +363,10 @@
 						
 							<c:choose>
 								<c:when test="${ empty requestScope.status }">
-									<button type="button" onclick="go('/admin/notice?cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/notice?cpage=${ p }');">${ p }</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }');">${ p }</button>
 								</c:otherwise>
 							</c:choose>
 							
