@@ -53,10 +53,10 @@
 				<%-- 
 					* 로그인 기능 구현
 					- 아이디와 비밀번호를 입력한 후 로그인 버튼을 클릭
-					- 로그인 요청 시 http://localhost:8002/know-how/member/myPage/login 으로 요청
+					- 로그인 요청 시 http://localhost:8002/know-how/myPage/login 으로 요청
 				--%>
                 
-				<form id="login-form" action="/know-how/member/myPage/login" method="post"> 
+				<form id="login-form" action="/know-how/myPage/login" method="post"> 
 		            
 	                <br><br>
 	                
@@ -106,25 +106,21 @@
 					function enrollPage() {
 						
 						// 회원가입페이지로 이동
-						location.href = "/know-how/member/myPage/enrollForm";
+						location.href = "/know-how/myPage/enrollForm";
 						// GET 방식
 					}
-				    </script>
 				    
-				    <script>
 					function searchIdPage() {
 						
 						// 아이디찾기페이지로 이동
-						location.href = "/know-how/member/myPage/searchIdForm";
+						location.href = "/know-how/myPage/searchIdForm";
 						// GET 방식
 					}
-				    </script>
-				    
-				    <script>
+			
 					function searchPasswordPage() {
 						
 						// 비밀번호찾기페이지로 이동
-						location.href = "/know-how/member/myPage/searchPasswordForm";
+						location.href = "/know-how/myPage/searchPasswordForm";
 						// GET 방식
 					}
 				    </script> 
@@ -172,25 +168,21 @@
 					function myInformationSelectPage() {
 						
 						// 내정보 조회 페이지로 이동
-						location.href = "/know-how/member/myPage/myInformationSelectForm";
+						location.href = "/know-how/myPage/myInformationSelectForm";
 						// GET 방식
 					}
-				    </script>
 				    
-				    <script>
 					function myInformationChangePage() {
 						
 						// 내정보 수정 페이지로 이동
-						location.href = "/know-how/member/myPage/myInformationChangeForm";
+						location.href = "/know-how/myPage/myInformationChangeForm";
 						// GET 방식
 					}
-				    </script>
 				    
-				    <script>
 					function logout() {
 						
 						// 로그아웃
-						location.href = "/know-how/member/myPage/logout";
+						location.href = "/know-how/myPage/logout";
 						// GET 방식
 					}
 				    </script>
