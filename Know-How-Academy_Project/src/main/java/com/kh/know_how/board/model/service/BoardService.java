@@ -35,9 +35,9 @@ public class BoardService {
 		return boardDao.selectNewsList(sqlSession, pi);
 	}
 
-	public Board selectNews(int postNo) {
+	public Board selectBoard(int postNo) {
 		
-		return boardDao.selectNews(sqlSession, postNo);
+		return boardDao.selectBoard(sqlSession, postNo);
 	}
 
 	public ArrayList<FileAttachment> selectFileAttachmentList(int postNo) {
@@ -45,6 +45,11 @@ public class BoardService {
 		return boardDao.selectFileAttachmentList(sqlSession, postNo);
 	}
 
+	public FileAttachment selectFileAttachment(int postNo) {
+		
+		return boardDao.selectFileAttachment(sqlSession, postNo);
+	}
+	
 	@Transactional
 	public int deleteBoard(int postNo) {
 		

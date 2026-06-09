@@ -46,7 +46,7 @@ public class AdminService2 {
 		return ad2.selectStudentList(sqlSession, map, pi);
 	}
 
-	public StudentDto selectStudentList(int studentNo) {
+	public StudentDto selectStudent(int studentNo) {
 		
 		return ad2.selectStudent(sqlSession, studentNo);
 	}

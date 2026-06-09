@@ -59,7 +59,7 @@ public class BoardController {
 	 */
 	@GetMapping("news/detail/{postNo}")
 	public ModelAndView academyNews(@PathVariable int postNo, ModelAndView mv) {
-		Board b = boardService.selectNews(postNo);
+		Board b = boardService.selectBoard(postNo);
 		
 		ArrayList<FileAttachment> list = boardService.selectFileAttachmentList(postNo);
 

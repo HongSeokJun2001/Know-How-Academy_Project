@@ -14,7 +14,7 @@
 		<result column="CREATED_AT" property="createdAt" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="TITLEIMG" property="titleImg"/>
-		<result column="status" property="status"/>
+		<result column="STATUS" property="status"/>
 	</resultMap>
 	
 	<resultMap type="fileAttachment" id="fileAttachmentResultSet">
@@ -70,7 +70,7 @@
 	</select>
 	
 	<!-- 학원소식 상세조회 하는 쿼리문 -->
-	<select id="selectNews" parameterType="_int" resultMap="boardResultSet">
+	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
 		SELECT POST_NO
 			 , CATEGORY
 			 , TITLE
@@ -80,11 +80,10 @@
 		  FROM BOARD_POST B
 		  JOIN MEMBER ON (WRITER_NO = USER_NO)
 		 WHERE POST_NO = #{postNo}
-		   AND B.STATUS = 'Y'
 	</select>
 	
 	<!-- 첨부파일을 조회하는 쿼리문 -->
-	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
+	<select id="selectFileAttachment" parameterType="_int" resultMap="fileAttachmentResultSet">
 		SELECT FILE_NO
 		     , ORIGIN_NAME
 		     , SAVE_NAME

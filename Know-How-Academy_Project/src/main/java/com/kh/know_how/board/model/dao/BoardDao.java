@@ -31,14 +31,21 @@ public class BoardDao {
 		return (ArrayList)sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
 	}
 
-	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
+	public Board selectBoard(SqlSessionTemplate sqlSession, int postNo) {
 		
-		return sqlSession.selectOne("boardMapper.selectNews", postNo);
+		return sqlSession.selectOne("boardMapper.selectBoard", postNo);
 	}
 	
 	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.selectFileAttachmentList", postNo);
+		return (ArrayList)sqlSession.selectList("boardMapper.selectFileAttachment", postNo);
+	}
+
+	public FileAttachment selectFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+	
+		return sqlSession.selectOne("boardMapper.selectFileAttachment", postNo);
+	}
+
 	public int deleteBoard(SqlSessionTemplate sqlSession, int postNo) {
 		
 		return sqlSession.delete("boardMapper.deleteBoard", postNo);

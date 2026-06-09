@@ -139,6 +139,13 @@
     vertical-align: middle;
 }
 
+.notice-title-link {
+    color: #4233c7;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 /* 상태 배지 */
 .notice-status {
     display: inline-flex;
@@ -307,16 +314,16 @@
 							<c:forEach var="n" items="${ requestScope.list }">
 								<tr>
 									<td>${ n.rowNum }</td>
-									<td>${ n.title }</td>
+									<td><a href="/know-how/admin/notice/detail/${ n.postNo }" class="notice-title-link">${ n.title }</a></td>
 									<td>${ n.postWriter }</td>
 									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>
 											<c:when test="${ n.status eq 'Y' }">
-												<span class="notice-status show" onclick="visible('${ n.status }', ${ n.postNo });">노출</span>
+												<span class="notice-status show" onclick="visible('${ n.status }', ${ n.postNo })">노출</span>
 											</c:when>
 											<c:otherwise>
-												<span class="notice-status hide" onclick="visible('${ n.status }', ${ n.postNo });">숨김</span>
+												<span class="notice-status hide" onclick="visible('${ n.status }', ${ n.postNo })">숨김</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
