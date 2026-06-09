@@ -27,15 +27,17 @@ public class AdminInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
         
+        
+        
         // 세션이 없거나 로그인 정보가 없으면 차단
         if (session == null || session.getAttribute("loginUser") == null) {
-            response.sendRedirect(request.getContextPath() + "/admin/login");
+            response.sendRedirect(request.getContextPath() + "/admin/login"); //****컨트롤러매핑에맞춰수정필요(-)
             return false;
         }
 
         // 로그인 유저 정보 꺼내기 (Member 객체로 형변환)
         Member loginUser = (Member) session.getAttribute("loginUser");
-
+		
         // 관리자(admin) 권한 검사
         if (!"admin".equals(loginUser.getRoleCode())) {
         	// redirect 후 보여줄 메시지

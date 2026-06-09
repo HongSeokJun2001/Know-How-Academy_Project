@@ -289,7 +289,9 @@
 	 <update id="clearStudentCounselorNo" parameterType="_int">
 	 	UPDATE STUDENT_DETAIL
 	 	   SET COUNSELOR_NO = NULL
-	 	 WHERE COUNSELOR_NO = (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE WHERE USER_NO = #{value})
+	 	 WHERE COUNSELOR_NO = (SELECT COUNSEL_NO 
+	 	 						 FROM COUNSELOR_PROFILE 
+	 	 						WHERE USER_NO = #{value})
 	 </update>
 	 
 	 <!-- 16. 상담사 클래스 변경 시 학생들의 정보에 상담사번호를 추가하는 쿼리 -->
@@ -316,7 +318,7 @@
     						   VALUES(SEQ_INVITE_NO.NEXTVAL, #{counselorName}, #{email}, #{inviteToken})
 	 </insert>
 	 
-	 <!-- 19. 최근 초대내역 조회 -->
+	 <!-- 19. 초대내역 조회 -->
 	 <select id="selectInviteList" resultType="com.kh.know_how.admin.model.dto.CounselorInviteListDto">
 	 	SELECT CI.INVITE_NO			AS inviteNo
 	 		 , CI.INVITE_NAME		AS inviteName

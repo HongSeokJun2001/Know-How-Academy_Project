@@ -107,10 +107,10 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/class/update")
     public String updateCounselorClass(int userNo, Integer classNo) {
-
+    	
         // 상담사 담당 클래스 변경
 		int result = as.updateCounselorClass(userNo, classNo);
-
+		
         return (result > 0) ? "success" : "fail";
     }
 
@@ -132,13 +132,14 @@ public class AdminController {
     @PostMapping("/counselor/updateStatus")
     public String updateCounselorStatus(int userNo, String status, Model model) {
     		
+    	System.out.println(">>> [updateCounselorStatus] " +userNo+status );
 		int result = as.updateCounselorStatus(userNo, status);
 		
 		if(result > 0) {
-			
+			System.out.println(result);
 			return "redirect:/admin/counselorProfile/" + userNo;
 		}else {
-			
+			System.out.println(result);
 			model.addAttribute("errorMsg", "변경 실패. 다시 시도해주세요.");
 			model.addAttribute("redirectUrl", "/admin/counselorProfile/"+userNo);
 			model.addAttribute("page", "adminAlert");
@@ -216,7 +217,7 @@ public class AdminController {
 //    		System.out.println(a);
 //    	}
     	
-    	return "/admin/counselorInviteList";
+    	return "admin/counselorInviteList";
     }
 
     

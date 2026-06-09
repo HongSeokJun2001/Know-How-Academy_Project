@@ -154,12 +154,15 @@ public class AdminService {
 		param.put("status", status);
 		int changeStatus = ad.updateCounselorStatus(sqlSession, param);
 		
-		//상담사와 classNo가 같은 학생의 상담사번호 NULL로 UPDATE
+		//상담사의 변경 전 class에 지정된 학생의 상담사번호를 NULL로 UPDATE
 		int	clearNo = 1;
 		if("ACTIVE".equals(status)) {
 			clearNo = ad.clearStudentCounselorNo(sqlSession, userNo);
-		}
-		return changeStatus * clearNo;
+		} // 0행이어도 정상. 담당 학생이 없을 뿐.
+          // SQL 에러면 예외 터지고 트랜잭션 롤백.
+		
+		
+		return changeStatus;// 업무상 휴직 처리 성공
 	}
 	
 	@Transactional

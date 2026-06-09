@@ -379,7 +379,7 @@
                 <input type="hidden" name=status value="${requestScope.counselor.status}">
                 <div class="profile-right">
                     <button type="submit" class="${isActive ? 'btn-danger' : 'btn-primary'}">
-                        ${isActive ? '휴직 처리' : '재직 처리'} 
+                        ${isActive ? '휴직 처리' : '재직 처리'}
                     </button>
                 </div>
             </form>
