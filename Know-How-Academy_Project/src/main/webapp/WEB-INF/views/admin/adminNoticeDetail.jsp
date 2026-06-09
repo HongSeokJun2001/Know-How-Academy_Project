@@ -113,13 +113,13 @@
 					<th>첨부파일</th>
 					<td colspan="3">
 						<c:choose>
-							<c:when test="${ empty requestScope.at }">
+							<c:when test="${ empty requestScope.fa }">
 								첨부파일이 없습니다..
 							</c:when>
 							<c:otherwise>
-								<a download="${ requestScope.at.originName }"
-								   href="/know-how/${ requestScope.at.filePath }${ requestScope.at.saveName }">
-									${ requestScope.at.originName }   
+								<a download="${ requestScope.fa.originName }"
+								   href="/know-how/${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
+									${ requestScope.fa.originName }   
 								</a>
 							</c:otherwise>
 						</c:choose>

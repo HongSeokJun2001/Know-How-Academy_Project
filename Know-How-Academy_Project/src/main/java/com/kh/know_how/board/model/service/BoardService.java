@@ -56,11 +56,49 @@ public class BoardService {
 		return boardDao.deleteBoard(sqlSession, postNo);
 	}
 
-
 	@Transactional
 	public int deleteFileAttachment(int postNo) {
 		return boardDao.deleteFileAttachment(sqlSession, postNo);
 		
+	}
+	
+	@Transactional
+	public int updateBoard(Board b, FileAttachment fa) {
+		
+		int result1 = boardDao.updateBoard(sqlSession, b);
+		
+		int result2 = 1;
+		
+		if(fa != null) {
+			
+			if(fa.getFileNo() != 0) {
+				
+				result2 = boardDao.updateFileAttachment(sqlSession, fa);
+			
+			} else {
+				
+				result2 = boardDao.insertNewFileAttachment(sqlSession, fa);
+			}
+			
+		}
+		
+		return result1 * result2;
+	}
+
+	@Transactional
+	public int insertBoard(Board b, FileAttachment fa) {
+		
+		int result1 = boardDao.insertBoard(sqlSession, b);
+		
+		int result2 = 1;
+		
+		if(fa != null) {
+			
+			result2 = boardDao.insertFileAttachment(sqlSession, fa);
+			
+		}
+		
+		return result1 * result2;
 	}
 
 }

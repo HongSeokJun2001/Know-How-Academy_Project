@@ -55,4 +55,30 @@ public class BoardDao {
 		
 		return sqlSession.delete("boardMapper.deleteFileAttachment", postNo);
 	}
+	
+	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
+		
+		return sqlSession.insert("boardMapper.insertBoard", b);
+	}
+	
+	public int insertFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+		
+		return sqlSession.insert("boardMapper.insertFileAttachment", fa);
+	}
+	
+	public int updateBoard(SqlSessionTemplate sqlSession, Board b) {
+		
+		return sqlSession.update("boardMapper.updateBoard", b);
+	}
+	
+	public int updateFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+		
+		return sqlSession.update("boardMapper.updateFileAttachment", fa);
+	}
+
+	public int insertNewFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+		
+		return sqlSession.insert("boardMapper.insertNewFileAttachment", fa);
+	}
+
 }

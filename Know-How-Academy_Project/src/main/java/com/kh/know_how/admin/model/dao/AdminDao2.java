@@ -121,19 +121,9 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
 	}
 
-	public int updateNoticeStatus(SqlSessionTemplate sqlSession, Board b) {
+	public int updateNoticeStatus(SqlSessionTemplate sqlSession, Board n) {
 		
-		return sqlSession.update("boardMapper.updateNoticeStatus", b);
-	}
-
-	public int insertNotice(SqlSessionTemplate sqlSession, Board b) {
-		
-		return sqlSession.insert("boardMapper.insertNotice", b);
-	}
-
-	public int insertNoticeFileAttachment(SqlSessionTemplate sqlSession, FileAttachment at) {
-		
-		return sqlSession.insert("boardMapper.insertNoticeFileAttachment", at);
+		return sqlSession.update("boardMapper.updateNoticeStatus", n);
 	}
 
 }//클래스 끝

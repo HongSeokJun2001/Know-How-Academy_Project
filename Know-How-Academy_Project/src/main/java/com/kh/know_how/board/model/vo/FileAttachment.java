@@ -13,6 +13,8 @@ import lombok.ToString;
 @ToString
 public class FileAttachment {
 	private int fileNo;
+	private int targetNo;
+	private String targetType;
 	private String originName;
 	private String saveName;
 	private String filePath;

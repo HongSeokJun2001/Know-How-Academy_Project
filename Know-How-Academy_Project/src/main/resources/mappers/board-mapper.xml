@@ -165,7 +165,7 @@
 	</delete>
 	
 	<!-- (관리자용)공지사항 등록용 쿼리문 -->
-	<insert id="insertNotice" parameterType="board">
+	<insert id="insertBoard" parameterType="board">
 		INSERT INTO BOARD_POST(POST_NO
 							 , POST_TYPE
 							 , CATEGORY
@@ -174,16 +174,16 @@
 							 , CREATED_AT
 							 , WRITER_NO)
 						VALUES(SEQ_POST_NO.NEXTVAL
-							 , 'NOTICE'
-							 , 'NOTICE'
+							 , #{postType}
+							 , #{category}
 							 , #{title}
 							 , #{content}
 							 , SYSDATE
 							 , #{postWriter})	
 	</insert>
 	
-	<!-- (관리자용)첨부파일 등록용 쿼리문 -->
-	<insert id="insertNoticeFileAttachment" parameterType="fileAttachment">
+	<!-- 첨부파일 등록용 쿼리문 -->
+	<insert id="insertFileAttachment" parameterType="fileAttachment">
 		INSERT INTO FILE_ATTACHMENT(FILE_NO
 							 , TARGET_NO
 							 , TARGET_TYPE
@@ -192,7 +192,7 @@
 							 , FILE_PATH)
 						VALUES(SEQ_FILE_NO.NEXTVAL
 							 , SEQ_POST_NO.CURRVAL
-							 , 'NOTICE'
+							 , #{targetType}
 							 , #{originName}
 							 , #{saveName}
 							 , #{filePath})
@@ -204,5 +204,39 @@
 		  FROM FILE_ATTACHMENT
 		 WHERE TARGET_NO = #{postNo}
 	</delete>
+	
+	<!-- 게시판 수정용 쿼리문 -->
+	<update id="updateBoard" parameterType="board">
+		UPDATE BOARD_POST
+		   SET TITLE = #{title}
+		   	 , CONTENT = #{content}
+		   	 , UPDATED_AT = SYSDATE
+		 WHERE POST_NO = #{postNo}
+ 	</update>
+ 	
+ 	<!-- 첨부파일 수정용 쿼리문 -->
+	<update id="updateFileAttachment" parameterType="fileAttachment">
+		UPDATE FILE_ATTACHMENT
+		   SET ORIGIN_NAME = #{originName}
+		   	 , SAVE_NAME = #{saveName}
+		   	 , UPDATED_AT = SYSDATE
+		 WHERE FILE_NO = #{fileNo}
+	</update>
+	
+	<!-- 게시글 수정 시 새로운 첨부파일 등록하는 쿼리문 -->
+	<insert id="insertNewFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , #{targetNo}
+								 , #{targetType}
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath})
+	</insert>
 
 </mapper>

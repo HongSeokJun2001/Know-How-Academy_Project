@@ -112,7 +112,7 @@
 				<tr>
 					<th>첨부파일</th>
 					<td>
-						<input type="file" name="upfile">
+						<input type="file" name="reUpfile">
 					</td>
 				</tr>
 			</table>
@@ -128,7 +128,7 @@
 		        let formData = new FormData(this);
 		        
 		        $.ajax({
-		            url : "/know-how/admin/notice/insert",
+		            url : "/know-how/admin/notice/update",
 		            type : "post",
 		            data : formData,
 		            processData : false,

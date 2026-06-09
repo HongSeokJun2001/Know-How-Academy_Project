@@ -52,11 +52,15 @@
 		border-bottom : 1px solid #eef0f4;
 	}
 	
-	.notice-table input, .notice-table textarea {
+	.notice-table input, .notice-table textarea, .notice-table a {
 		padding : 9px;
 		margin : 7px;
 		width : 99%;
 		border : none;
+	}
+	
+	.notice-table a {
+		text-decoration: none;
 	}
 	
 	.notice-table textarea {
@@ -84,9 +88,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-	<form class="notice-session" id="insertForm" enctype="multipart/form-data">
+	<form class="notice-session" id="updateForm" enctype="multipart/form-data">
 	
-		<input type="hidden" name="postWriter" value="1"<%--value="${ sessionScope.loginUser.userNo }"--%>>
+		<input type="hidden" name="postNo" value="${ requestScope.n.postNo }">
 		
 		<div class="notice-title-area">
 			<h2>공지사항</h2>
@@ -113,18 +117,18 @@
 				<tr>
 					<th>첨부파일</th>
 					<td>
-						<c:if test="${ not empty requestScope.at }">
+						<c:if test="${ not empty requestScope.fa }">
 							
-							<a download="${ requestScope.at.originName }"
-							   href="/know-how/${ requestScope.at.filePath }${ requestScope.at.saveName }">
-								${ requestScope.at.originName }
+							<a download="${ requestScope.fa.originName }"
+							   href="/know-how/${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
+								${ requestScope.fa.originName }
 							</a>
-							<input type="hidden" name="originalFileNo" value="${ requestScope.at.fileNo }">
-							<input type="hidden" name="originalFileChangeName"
-												 value="${ requestScope.at.saveName }">
+							<input type="hidden" name="originalFileNo" value="${ requestScope.fa.fileNo }">
+							<input type="hidden" name="originalFileSaveName"
+												 value="${ requestScope.fa.saveName }">
 						</c:if>
 						
-						<input type="file" name="upfile">
+						<input type="file" name="reUpfile">
 					</td>
 				</tr>
 			</table>
@@ -134,13 +138,13 @@
 	<script>
 		$(function() {
 		   
-		    $("#update").on("submit", function(event) {
+		    $("#updateForm").on("submit", function(event) {
 		        event.preventDefault();
 		        
 		        let formData = new FormData(this);
 		        
 		        $.ajax({
-		            url : "/know-how/admin/notice/insert",
+		            url : "/know-how/admin/notice/update",
 		            type : "post",
 		            data : formData,
 		            processData : false,
@@ -148,13 +152,13 @@
 		            success(result) {
 						if(result == "success") {
 							
-							alert("공지사항이 등록되었습니다.")
+							alert("공지사항이 수정되었습니다.")
 							
 							location.href = "/know-how/admin/notice";
 							
 						} else {
 							
-							alert("공지사항 등록에 실패했습니다.");
+							alert("공지사항 수정에 실패했습니다.");
 							
 						}
 					},
@@ -162,7 +166,7 @@
 						if (xhr.status === 413) {
 				            alert("첨부파일의 용량이 너무 큽니다. 파일 크기를 줄여서 다시 시도해주세요.");
 				        } else {
-				        	console.log("공지사항 등록용 ajax 통신 실패!!");
+				        	console.log("공지사항 수정용 ajax 통신 실패!!");
 				        }
 					}
 		        });
