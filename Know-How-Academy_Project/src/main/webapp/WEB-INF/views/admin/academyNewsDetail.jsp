@@ -7,19 +7,19 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	.notice-section {
+	.news-section {
 	    width : 100%;
 	    padding : 0px 40px 80px;
 	    box-sizing : border-box;
 	}
-	.notice-title-area {
+	.news-title-area {
 		display : flex;
 		justify-content : space-between;
 		align-items: flex-end;
 		margin-bottom : 28px;
 	}
 	
-	.notice-card {
+	.news-card {
 		padding : 28px;
 		background-color : #fff;
 		border : 1px solid #e5e7ed;
@@ -27,7 +27,7 @@
 		box-shadow : 0 4px 14px rgba(17, 12, 39, 0.06); 
 	}
 	
-	.notice-table {
+	.news-table {
 		width : 100%;
 		border-collapse : separate;
 		border-spacing : 0;
@@ -37,7 +37,7 @@
 		font-size : 18px;
 	}
 	
-	.notice-table th {
+	.news-table th {
 		width: 10%;
 		background-color : #fafafa;
 		text-align: center;
@@ -45,16 +45,24 @@
 		border-right : 1px solid #e5e7eb;
 	}
 	
-	.notice-table tr:not(:nth-child(2)) td {
+	.news-table tr:not(:nth-child(2)) td {
 		width : 90%;
 	}
 	
-	.notice-table tr:nth-child(2) td {
+	.news-table tr:nth-child(2) td {
 		width : 40%;	
 	}
 	
-	.notice-table tr:nth-child(2) th:last-of-type {
+	.news-table tr:nth-child(2) th:last-of-type {
 		border-left : 1px solid #e5e7eb;
+	}
+	
+	.news-table td {
+		text-align : center;
+	}
+	
+	.news-table tr:last-child td {
+    	width : 30%;
 	}
 	
 	.btn-update {
@@ -80,7 +88,6 @@
 		font-weight: 700;
 		cursor: pointer;
 	}
-	
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -88,25 +95,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<form class="notice-session" id="postForm" action="/know-how/admin/notice/updateForm" method="POST">
-	
+	<form class="news-session" id="postForm" action="/know-how/admin/academyNews/updateForm" method="POST">
+		
 		<input type="hidden" name="postNo" value="${ requestScope.n.postNo }">
 		
-		<div class="notice-title-area">
-			<h2>공지사항</h2>
+		<div class="news-title-area">
+			<h2>학원소식</h2>
 			
 			<div>
 				<button type="submit" class="btn-update">
 					수정
 				</button>
-				<button type="button" class="btn-delete" onclick="deleteNotice(${ requestScope.n.postNo });">
+				<button type="button" class="btn-delete" onclick="deleteNews(${ requestScope.n.postNo });">
 					삭제
 				</button>
 			</div>
 		</div>
 		
-		<div class="notice-card">
-			<table class="notice-table table">
+		<div class="news-card">
+			<table class="news-table table">
 				<tr>
 					<th>제목</th>
 					<td colspan="3">${ requestScope.n.title }</td>
@@ -126,51 +133,36 @@
 					</td>
 				</tr>
 				<tr>
-					<th>첨부파일</th>
-					<td colspan="3">
+					<th>대표이미지</th>
+					<td colspan="3" align="center">
+						<img src="/know-how/${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
+							 width="250" height="170">
+					</td>
+				</tr>
+				<tr>
+					<th>상세이미지</th>
+					<td colspan="3" align="center">
 						<c:choose>
-							<c:when test="${ empty requestScope.fa }">
-								첨부파일이 없습니다..
+							<c:when test="${ requestScope.list.size() eq 1 }">
+								상세이미지가 존재하지 않습니다.
 							</c:when>
 							<c:otherwise>
-								<a download="${ requestScope.fa.originName }"
-								   href="/know-how/${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
-									${ requestScope.fa.originName }   
-								</a>
+								<c:forEach var="i" begin="1" end="${ requestScope.list.size() - 1 }" step="1">
+								
+									<img src="/know-how/${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
+										 width="150" height="110">
+								
+								<</c:forEach>
 							</c:otherwise>
 						</c:choose>
 					</td>
 				</tr>
 			</table>
 		</div>
+		<br><br>
 		
 	</form>
-	<script>
-		function deleteNotice(postNo) {
-			if(confirm("해당 공지사항을 삭제하시겠습니까?")) {
-				$.ajax({
-					url : "/know-how/admin/notice/delete",
-					type : "post",
-					data : {
-						postNo : postNo
-					},
-					success(result) {
-						if(result == "success") {
-							alert("삭제가 완료되었습니다.");
-							location.href = "/know-how/admin/notice";
-							
-						} else {
-							
-							alert("삭제가 실패했습니다.");
-							
-						}
-					},
-					error() {
-						console.log("공지사항 삭제용 ajax 통신 실패!");
-					}
-				});
-			}
-		}
-	</script>
+	
+	<br><br>
 </body>
 </html>

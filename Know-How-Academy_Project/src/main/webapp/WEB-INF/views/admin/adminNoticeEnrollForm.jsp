@@ -51,6 +51,10 @@
 		border-bottom : 1px solid #eef0f4;
 	}
 	
+	.notice-table tr:last-child * {
+    	border-bottom: none;
+	}
+	
 	.notice-table input, .notice-table textarea {
 		padding : 9px;
 		margin : 7px;
@@ -112,7 +116,7 @@
 				<tr>
 					<th>첨부파일</th>
 					<td>
-						<input type="file" name="reUpfile">
+						<input type="file" name="upfile">
 					</td>
 				</tr>
 			</table>
@@ -128,7 +132,7 @@
 		        let formData = new FormData(this);
 		        
 		        $.ajax({
-		            url : "/know-how/admin/notice/update",
+		            url : "/know-how/admin/notice/insert",
 		            type : "post",
 		            data : formData,
 		            processData : false,

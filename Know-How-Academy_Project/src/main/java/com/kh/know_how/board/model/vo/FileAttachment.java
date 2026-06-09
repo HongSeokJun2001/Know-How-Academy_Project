@@ -18,4 +18,5 @@ public class FileAttachment {
 	private String originName;
 	private String saveName;
 	private String filePath;
+	private int fileLevel;
 }

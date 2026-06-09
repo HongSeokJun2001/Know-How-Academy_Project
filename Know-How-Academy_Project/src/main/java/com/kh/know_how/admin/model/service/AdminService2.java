@@ -119,9 +119,39 @@ public class AdminService2 {
 	}
 
 	@Transactional
-	public int updateNoticeStatus(Board b) {
+	public int adminUpdateStatus(Board b) {
 		
-		return ad2.updateNoticeStatus(sqlSession, b);
+		return ad2.adminUpdateStatus(sqlSession, b);
+	}
+
+	public int adminSelectNewsListCount() {
+		
+		return ad2.adminSelectNewsCount(sqlSession);
+	}
+
+	public ArrayList<Board> adminSelectNewsList(PageInfo pi) {
+		
+		return ad2.adminSelectNewsList(sqlSession, pi);
+	}
+
+	public int adminSearchNewsCount(String keyword) {
+		
+		return ad2.adminSearchNewsCount(sqlSession, keyword);
+	}
+
+	public ArrayList<Board> adminSearchNewsList(PageInfo pi, String keyword) {
+		
+		return ad2.adminSearchNewsList(sqlSession, pi, keyword);
+	}
+
+	@Transactional
+	public int insertNews(Board n, ArrayList<FileAttachment> list) {
+		
+		int result1 = bd.insertBoard(sqlSession, n);
+		
+		int result2 = ad2.insertAttachmentList(sqlSession, list);
+		
+		return result1 * result2;
 	}
 
 
