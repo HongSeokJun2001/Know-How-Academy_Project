@@ -239,6 +239,41 @@
 		overflow-x: auto;
 	}
 
+    #toastMessage{
+        position: fixed;
+        top: 80px;
+        right: 30px;
+        max-width: 360px;
+        white-space: nowrap;
+
+        padding: 14px 20px;
+
+        background: #4233C7;
+        color: white;
+
+        border-radius: 12px;
+        font-size: 14px;
+
+        display: none;
+        z-index: 9999;
+    }
+
+    #toastMessage::before{
+    content: "!";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+
+    background: white;
+    color: #2f24b8;
+    border-radius: 50%;
+    font-weight: 900;
+}
+
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
@@ -323,7 +358,7 @@
     </div>
    
     
-    
+
 <script>
 
     const cp = "${pageContext.request.contextPath}";
@@ -346,6 +381,21 @@
 
     };
 
+    // 메시지박스
+    function showToast(message){
+
+        $("#toastMessage")
+            .stop(true, true)
+            .text(message)
+            .fadeIn();
+
+        setTimeout(function(){
+            $("#toastMessage").fadeOut();
+        }, 2000);
+    }
+
 </script>
+<!-- 공통 메시지박스 -->
+<div id="toastMessage"></div>
 </body>
 </html>

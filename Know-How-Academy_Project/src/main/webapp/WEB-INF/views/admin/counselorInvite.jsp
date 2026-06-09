@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <style>
         .counselor-invite-section {
             width: 100%;
@@ -301,14 +302,28 @@
             font-weight: 800;
         }
 
-        .invite-status.waiting {
+        /* 초대 발송 */
+        .invite-status.pending {
             background-color: #fff5d6;
             color: #c47a00;
         }
 
-        .invite-status.done {
+        /* 가입 완료 */
+        .invite-status.used {
             background-color: #e8f8ec;
             color: #128a3a;
+        }
+
+        /* 관리자 취소 */
+        .invite-status.canceled {
+            background-color: #f1f3f5;
+            color: #6c757d;
+        }
+
+        /* 만료 */
+        .invite-status.expired {
+            background-color: #e9ecef;
+            color: #495057;
         }
 
         /* 버튼 */
@@ -371,9 +386,10 @@
         .btn-danger-outline:hover {
             background-color: #fff1f1;
         }
-    </style>
 
+    </style>
     <!-- 상담사 등록 콘텐츠 시작 -->
+     
     <section class="counselor-invite-section">
 
         <!-- 페이지 제목 -->
@@ -407,40 +423,27 @@
                     <p>상담사 이름과 이메일 주소를 정확히 입력해주세요.</p>
                 </div>
 
-                <form action="#" method="post">
+                <div class="form-group">
+                    <label for="counselorName">이름</label>
+                    <input type="text"
+                        id="counselorName"
+                        class="invite-input"
+                        placeholder="상담사 이름 입력">
+                </div>
 
-                    <div class="form-group">
-                        <label for="counselorName">이름</label>
-                        <input type="text"
-                            id="counselorName"
-                            name="counselorName"
-                            class="invite-input"
-                            placeholder="상담사 이름 입력">
-                        <p class="input-help error">필수 입력 항목입니다.</p>
-                    </div>
+                <div class="form-group">
+                    <label for="counselorEmail">이메일 주소</label>
+                    <input type="email"
+                        id="counselorEmail"
+                        class="invite-input"
+                        placeholder="example@email.com">
+                </div>
 
-                    <div class="form-group">
-                        <label for="counselorEmail">이메일 주소</label>
-                        <input type="email"
-                            id="counselorEmail"
-                            name="email"
-                            class="invite-input"
-                            placeholder="example@email.com">
-                        <p class="input-help">
-                            중복 확인 후 가입 링크가 발송됩니다.
-                        </p>
-                    </div>
-
-                    <div class="form-button-area">
-                        <button type="button" class="btn-outline">
-                            목록으로
-                        </button>
-
-                        <button type="submit" class="btn-primary">
-                            초대메일 발송
-                        </button>
-                    </div>
-                </form>
+                <div class="form-button-area">
+                    <button type="button" class="btn-primary" onclick="sendMail();">
+                        초대메일 발송
+                    </button>
+                </div>
             </div>
 
             <!-- 처리 안내 카드 -->
@@ -502,35 +505,7 @@
                             <th>관리</th>
                         </tr>
                     </thead>
-
-                    <tbody>
-                        <tr>
-                            <td>김철수</td>
-                            <td>kim***@naver.com</td>
-                            <td>2026-06-02</td>
-                            <td>
-                                <span class="invite-status waiting">초대대기</span>
-                            </td>
-                            <td>
-                                <button type="button" class="btn-danger-outline small">
-                                    초대삭제
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>박민지</td>
-                            <td>minji***@gmail.com</td>
-                            <td>2026-06-01</td>
-                            <td>
-                                <span class="invite-status done">가입완료</span>
-                            </td>
-                            <td>
-                                <button type="button" class="btn-outline small">
-                                    상세보기
-                                </button>
-                            </td>
-                        </tr>
+                    <tbody id="inviteTableBody">
                     </tbody>
                 </table>
             </div>
@@ -538,3 +513,103 @@
 
     </section>
     <!-- 상담사 등록 콘텐츠 끝 -->
+     <script>
+        const ctx = "${pageContext.request.contextPath}";
+
+        $(function(){
+            
+            // console.log("조회함수진입");
+            selectInviteList();
+            // http://www.localhost:8002/know-how/admin/invite/list
+
+        });
+
+        function selectInviteList(){
+            $.ajax({
+                url : ctx+"/admin/invite/list",
+                type : "get",
+                dataType : "html",
+                success : function(result){
+                    // console.log("조회결과도착");
+                    $('#inviteTableBody').html(result);
+                    
+                },
+                error : function(){
+                    
+                    alert('목록을 불러오는데 실패했습니다.');
+                }
+            });
+        }
+
+        function sendMail(){
+
+            const counselorName = $("#counselorName").val().trim();
+            const email = $("#counselorEmail").val().trim();
+
+            if(counselorName === ""){
+                alert("상담사 이름을 입력해주세요.");
+                $("#counselorName").focus();
+                return;
+            }
+
+            if(email === ""){
+                alert("이메일을 입력해주세요.");
+                $("#counselorEmail").focus();
+                return;
+            }      
+
+            $.ajax({
+                url : ctx+"/admin/invite/mail",
+                type : "post",
+                data : {
+                    counselorName : counselorName,
+                    email : email
+                },
+                success : function(result){
+                    alert(result.message);
+                    if(result.status === "SUCCESS"){
+                        $("#counselorName").val("");
+                        $("#counselorEmail").val("");
+
+                        //목록재조회
+                        selectInviteList();
+                    }
+                },
+                error : function(xhr){
+                    console.log("상담사 초대메일 발송 ajax 통신 실패!");
+                    console.log("ctx =", "${ctx}");
+                    console.log("ajax url =", "${ctx}/admin/invite/mail");
+
+                    console.log("에러코드 :", xhr.status);
+
+                    alert("초대 처리 중 문제가 발생했습니다. 문제가 지속될 경우 관리자에게 문의해주세요.");
+                }
+            });
+        }
+        
+        function cancelInvite(btn){
+            
+            const inviteNo = $(btn).closest('td').data('invite-no');
+
+            console.log(inviteNo);
+
+            $.ajax({
+                url : ctx + "/admin/invite/delete",
+                type : "post",
+                data : { inviteNo : inviteNo },
+                success : function(){
+                    
+                    selectInviteList();
+                },
+                error : function(xhr){
+                    console.log("inviteNo : " + inviteNo);
+                    console.log("초대 취소 ajax 통신 실패! cancelInvite");
+                    console.log("에러코드 :", xhr.status);
+                }
+            });
+        }
+
+
+
+
+     </script>

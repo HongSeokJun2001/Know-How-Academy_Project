@@ -285,6 +285,50 @@
 	 	   AND INVITE_STATUS = 'PENDING' 
 	 </update>
 	 
+	 <!-- 15. 상담사 클래스 변경 시 기존 학생테이블의 상담사번호를 null 처리해주는 쿼리 -->
+	 <update id="clearStudentCounselorNo" parameterType="_int">
+	 	UPDATE STUDENT_DETAIL
+	 	   SET COUNSELOR_NO = NULL
+	 	 WHERE COUNSELOR_NO = (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE WHERE USER_NO = #{value})
+	 </update>
+	 
+	 <!-- 16. 상담사 클래스 변경 시 학생들의 정보에 상담사번호를 추가하는 쿼리 -->
+	 <update id="updateStudentCounselorNoByClassNo" parameterType="map">
+	 	UPDATE STUDENT_DETAIL SD 
+	 	   SET COUNSELOR_NO = (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE WHERE USER_NO = #{userNo})
+	 	 WHERE SD.USER_NO IN (SELECT M.USER_NO FROM MEMBER M WHERE ROLE_CODE = 'STUDENT' AND CLASS_NO = #{classNo})
+	 </update>
+	 
+	 <!-- 17. 초대메일 중복체크 -->
+	 <select id="existsByEmail" parameterType="string" resultType="_int">
+	 	SELECT COUNT(*)
+	 	  FROM DUAL
+	 	 WHERE EXISTS (SELECT 1 FROM MEMBER WHERE EMAIL = #{value})
+	 	    OR EXISTS (SELECT 1 
+	 	    			 FROM COUNSELOR_INVITE 
+	 	    			WHERE INVITE_EMAIL = #{value} 
+	 	    			  AND INVITE_STATUS = 'PENDING')
+	 </select>
+	 
+	 <!-- 18. 초대메일 발송 전 초대정보 DB 저장 -->
+	 <insert id="insertCounselorInvite" parameterType="com.kh.know_how.admin.model.dto.CounselorInviteDto">
+	 	INSERT INTO COUNSELOR_INVITE (INVITE_NO, INVITE_NAME, INVITE_EMAIL, INVITE_TOKEN) 
+    						   VALUES(SEQ_INVITE_NO.NEXTVAL, #{counselorName}, #{email}, #{inviteToken})
+	 </insert>
+	 
+	 <!-- 19. 최근 초대내역 조회 -->
+	 <select id="selectInviteList" resultType="com.kh.know_how.admin.model.dto.CounselorInviteListDto">
+	 	SELECT CI.INVITE_NO			AS inviteNo
+	 		 , CI.INVITE_NAME		AS inviteName
+	 	     , CI.INVITE_EMAIL		AS inviteEmail
+	 	     , CI.INVITE_SENT_AT	AS inviteSentAt
+	 	     , DECODE(CI.INVITE_STATUS, 'USED', M.STATUS, 
+	 	     							CI.INVITE_STATUS)	AS inviteStatus
+	 	     , CI.USER_NO			AS userNo
+	 	  FROM COUNSELOR_INVITE CI
+	 	  LEFT JOIN MEMBER M ON (CI.USER_NO = M.USER_NO)
+	 	 ORDER BY INVITE_SENT_AT DESC
+	 </select>
 	 	  
 </mapper>
 	
