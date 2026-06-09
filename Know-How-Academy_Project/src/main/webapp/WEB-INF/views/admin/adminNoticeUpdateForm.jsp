@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -83,7 +84,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-	<form class="notice-session" id="enrollForm" enctype="multipart/form-data">
+	<form class="notice-session" id="insertForm" enctype="multipart/form-data">
 	
 		<input type="hidden" name="postWriter" value="1"<%--value="${ sessionScope.loginUser.userNo }"--%>>
 		
@@ -91,7 +92,7 @@
 			<h2>공지사항</h2>
 			
 			<button type="submit" class="btn-primary">
-				등록
+				수정하기
 			</button>
 		</div>
 		
@@ -100,18 +101,29 @@
 				<tr>
 					<th>제목</th>
 					<td>
-						<input type="text" name="title" required>
+						<input type="text" name="title" value="${ requestScope.n.title }" required>
 					</td>
 				</tr>
 				<tr>
 					<th>내용</th>
 					<td>
-						<textarea name="content" required></textarea>
+						<textarea name="content" required>${ requestScope.n.content }</textarea>
 					</td>
 				</tr>
 				<tr>
 					<th>첨부파일</th>
 					<td>
+						<c:if test="${ not empty requestScope.at }">
+							
+							<a download="${ requestScope.at.originName }"
+							   href="/know-how/${ requestScope.at.filePath }${ requestScope.at.saveName }">
+								${ requestScope.at.originName }
+							</a>
+							<input type="hidden" name="originalFileNo" value="${ requestScope.at.fileNo }">
+							<input type="hidden" name="originalFileChangeName"
+												 value="${ requestScope.at.saveName }">
+						</c:if>
+						
 						<input type="file" name="upfile">
 					</td>
 				</tr>
@@ -122,7 +134,7 @@
 	<script>
 		$(function() {
 		   
-		    $("#enrollForm").on("submit", function(event) {
+		    $("#update").on("submit", function(event) {
 		        event.preventDefault();
 		        
 		        let formData = new FormData(this);

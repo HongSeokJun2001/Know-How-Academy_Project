@@ -282,4 +282,17 @@ public class AdminController2 {
     	return "admin/adminLayout";
     }
     
+    @PostMapping("/notice/updateForm")
+    public String noticeUpdateForm(int postNo, Model model) {
+    	
+    	Board n = bs.selectBoard(postNo);
+    	FileAttachment at = bs.selectFileAttachment(postNo);
+    	
+    	model.addAttribute("n", n)
+    	 	 .addAttribute("at", at)
+    	 	 .addAttribute("page", "adminNoticeUpdateForm");
+    	
+		return "admin/adminLayout";
+    	
+    }
 }//컨트롤러 끝

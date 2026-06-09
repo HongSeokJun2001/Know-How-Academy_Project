@@ -328,8 +328,8 @@
 										</c:choose>
 									</td>
 									<td>
-										<button type="button" class="btn-outline edit" onclick="go(/admin/notice/update/${ n.postNo });">수정</button>
-										<button type="button" class="btn-outline delete" onclick="deleteNotice(${ n.postNo });">삭제</button>
+										<button type="button" class="btn-outline edit" onclick="updateNotice(${ n.postNo })">수정</button>
+										<button type="button" class="btn-outline delete" onclick="deleteNotice(${ n.postNo })">삭제</button>
 									</td>
 								</tr>
 							</c:forEach>
@@ -337,7 +337,9 @@
 					</c:choose>
 				</tbody>
 			</table>	
-			
+			<form id="postForm" action="/know-how/admin/notice/updateForm" method="POST">
+				<input type="hidden" id="targetPostNo" name="postNo" value="${ n.postNo }">
+			</form>	
 			<script>
 				function visible(status, postNo) {
 					if(status == 'Y') {
@@ -368,6 +370,13 @@
 							console.log("상태 변경용 ajax 통신 실패!");
 						}
 					});
+				}
+				
+				function updateNotice(postNo) {
+					
+					$("#targetPostNo").val(postNo);
+					
+					$("#postForm").submit();
 				}
 				
 				function deleteNotice(postNo) {
