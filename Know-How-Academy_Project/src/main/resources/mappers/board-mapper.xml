@@ -313,4 +313,29 @@
 								 , #{fileLevel})
 	</insert>
 	
+	<!-- (관리자용)학원소식 수정 시 새로운 이미지를 등록하는 쿼리문 -->
+	<insert id="insertNewsFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH
+								  , FILE_LEVEL)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , #{targetNo}
+								 , #{targetType}
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath}
+								 , #{fileLevel})
+	</insert>
+	
+	<!-- (관리자용)학원소식 수정 시 기존 이미지를 삭제하는 쿼리문 -->
+	<delete id="deleteNewsFileAttachment" parameterType="_int">
+		DELETE
+		  FROM FILE_ATTACHMENT
+		 WHERE FILE_NO = #{fileNo}
+	</delete>
+	
 </mapper>
