@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Repository
@@ -95,13 +97,76 @@ public class AdminDao2 {
 		return sqlSession.selectOne("boardMapper.adminSelectNoticeCount");
 	}
 	
-	public ArrayList<StudentDto> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList");
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList", null, rowBounds);
+	}
+
+	public int adminSearchNoticeCount(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("boardMapper.adminSearchNoticeCount", keyword);
+	}
+
+	public ArrayList<Board> adminSearchNoticeList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
+	}
+
+	public int adminUpdateStatus(SqlSessionTemplate sqlSession, Board n) {
+		
+		return sqlSession.update("boardMapper.adminUpdateStatus", n);
+	}
+
+	public int adminSelectNewsCount(SqlSessionTemplate sqlSession) {
+		
+		return sqlSession.selectOne("boardMapper.adminSelectNewsCount");
+	}
+
+	public ArrayList<Board> adminSelectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
+
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNewsList", null, rowBounds);
+	}
+
+	public int adminSearchNewsCount(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("boardMapper.adminSearchNewsCount", keyword);
+	}
+
+	public ArrayList<Board> adminSearchNewsList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNewsList", keyword, rowBounds);
+	}
+
+	public int insertAttachmentList(SqlSessionTemplate sqlSession, ArrayList<FileAttachment> list) {
+		
+		int result = 1;
+		
+		for(FileAttachment fa : list) {
+			result *= sqlSession.insert("boardMapper.insertFileAttachmentList", fa);
+		}
+		
+		return result;
+	}
+
 	}
 
 }//클래스 끝

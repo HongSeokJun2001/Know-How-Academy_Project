@@ -6,6 +6,7 @@
 	
 	<resultMap type="board" id="boardResultSet">
 		<id column="POST_NO" property="postNo" />
+		<result column="ROWNUM" property="rowNum" />
 		<result column="CATEGORY" property="category" />
 		<result column="TITLE" property="title" />
 		<result column="CONTENT" property="content" />
@@ -13,7 +14,7 @@
 		<result column="CREATED_AT" property="createdAt" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="TITLEIMG" property="titleImg"/>
-		<result column="status" property="status"/>
+		<result column="STATUS" property="status"/>
 	</resultMap>
 	
 	<resultMap type="fileAttachment" id="fileAttachmentResultSet">
@@ -54,7 +55,7 @@
 	</select>
 	
 	<!-- 학원 소식 목록 조회용 쿼리문 -->
-	<select id="selectNewsList" parameterType="hashmap" resultMap="boardResultSet">
+	<select id="selectNewsList" resultMap="boardResultSet">
 		SELECT POST_NO
 			 , TITLE
 			 , VIEW_COUNT
@@ -69,7 +70,7 @@
 	</select>
 	
 	<!-- 학원소식 상세조회 하는 쿼리문 -->
-	<select id="selectNews" parameterType="_int" resultMap="boardResultSet">
+	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
 		SELECT POST_NO
 			 , CATEGORY
 			 , TITLE
@@ -79,11 +80,10 @@
 		  FROM BOARD_POST B
 		  JOIN MEMBER ON (WRITER_NO = USER_NO)
 		 WHERE POST_NO = #{postNo}
-		   AND B.STATUS = 'Y'
 	</select>
 	
 	<!-- 첨부파일을 조회하는 쿼리문 -->
-	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
+	<select id="selectFileAttachment" parameterType="_int" resultMap="fileAttachmentResultSet">
 		SELECT FILE_NO
 		     , ORIGIN_NAME
 		     , SAVE_NAME
@@ -101,16 +101,216 @@
 	</select>
 	
 	<!-- (관리자용)공지사항 목록 조회용 쿼리문 -->
-	<select id="adminSelectNoticeList" parameterType="hashmap" resultMap="boardResultSet">
-		SELECT POST_NO
-			 , TITLE
-			 , USER_NAME
-			 , B.CREATED_AT
-			 , B.STATUS
-		  FROM BOARD_POST B
-		  JOIN MEMBER ON (WRITER_NO = USER_NO)
-		 WHERE POST_TYPE = 'NOTICE'
-		 ORDER BY POST_NO DESC
+	<select id="adminSelectNoticeList" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+					     , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = 'NOTICE'
+					 ORDER BY POST_NO
+					) A
+				 )
+		 ORDER BY ROWNUM DESC 
 	</select>
+	
+	<!-- (관리자용)공지사항 키워드 검색시 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSearchNoticeCount" parameterType="string" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = 'NOTICE'
+		   AND TITLE LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<!-- (관리자용)공지사항 키워드 검색시 목록 조회용 쿼리문 -->
+	<select id="adminSearchNoticeList" parameterType="string" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+						 , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = 'NOTICE'
+					   AND TITLE LIKE '%' || #{keyword} || '%'
+					 ORDER BY POST_NO
+					 ) A
+			      )
+		 ORDER BY ROWNUM DESC
+	</select>
+	
+	<!-- (관리자용)공지사항, 학원소식 상태 변경용 쿼리문 -->
+	<update id="adminUpdateStatus" parameterType="board">
+		UPDATE BOARD_POST
+		   SET STATUS = #{status}
+		 WHERE POST_NO = #{postNo}
+	</update>
+	
+	
+	<!-- 게시글 삭제용 쿼리문 -->
+	<delete id="deleteBoard" parameterType="_int">
+		DELETE
+		  FROM BOARD_POST
+		 WHERE POST_NO = #{postNo}
+	</delete>
+	
+	<!-- 게시글 등록용 쿼리문 -->
+	<insert id="insertBoard" parameterType="board">
+		INSERT INTO BOARD_POST(POST_NO
+							 , POST_TYPE
+							 , CATEGORY
+							 , TITLE
+							 , CONTENT
+							 , CREATED_AT
+							 , WRITER_NO)
+						VALUES(SEQ_POST_NO.NEXTVAL
+							 , #{postType}
+							 , #{category}
+							 , #{title}
+							 , #{content}
+							 , SYSDATE
+							 , #{postWriter})	
+	</insert>
+	
+	<!-- 첨부파일 등록용 쿼리문 -->
+	<insert id="insertFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+							 , TARGET_NO
+							 , TARGET_TYPE
+							 , ORIGIN_NAME
+							 , SAVE_NAME
+							 , FILE_PATH)
+						VALUES(SEQ_FILE_NO.NEXTVAL
+							 , SEQ_POST_NO.CURRVAL
+							 , #{targetType}
+							 , #{originName}
+							 , #{saveName}
+							 , #{filePath})
+	</insert>
+
+	<!-- 첨부파일 삭제용 쿼리문 -->
+	<delete id="deleteFileAttachment" parameterType="_int">
+		DELETE
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+	</delete>
+	
+	<!-- 게시판 수정용 쿼리문 -->
+	<update id="updateBoard" parameterType="board">
+		UPDATE BOARD_POST
+		   SET TITLE = #{title}
+		   	 , CONTENT = #{content}
+		   	 , UPDATED_AT = SYSDATE
+		 WHERE POST_NO = #{postNo}
+ 	</update>
+ 	
+ 	<!-- 첨부파일 수정용 쿼리문 -->
+	<update id="updateFileAttachment" parameterType="fileAttachment">
+		UPDATE FILE_ATTACHMENT
+		   SET ORIGIN_NAME = #{originName}
+		   	 , SAVE_NAME = #{saveName}
+		   	 , UPDATED_AT = SYSDATE
+		 WHERE FILE_NO = #{fileNo}
+	</update>
+	
+	<!-- 게시글 수정 시 새로운 첨부파일 등록하는 쿼리문 -->
+	<insert id="insertNewFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , #{targetNo}
+								 , #{targetType}
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath})
+	</insert>
+	
+	<!-- (관리자용) 학원소식 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSelectNewsCount" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = 'NEWS'
+	</select>
+	
+	<!-- (관리자용) 학원소식 목록 조회용 쿼리문 -->
+	<select id="adminSelectNewsList" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+						 , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = 'NEWS'
+					 ORDER BY POST_NO
+					 ) A
+				 )
+		 ORDER BY ROWNUM DESC 
+	</select>
+	
+	<!-- (관리자용)학원소식 키워드 검색시 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSearchNewsCount" parameterType="string" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = 'NEWS'
+		   AND TITLE LIKE '%' || #{keyword} || '%'
+	</select>
+
+	<!-- (관리자용)학원소식 키워드 검색시 목록 조회용 쿼리문 -->
+	<select id="adminSearchNewsList" parameterType="string" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+						 , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = 'NEWS'
+					   AND TITLE LIKE '%' || #{keyword} || '%'
+					 ORDER BY POST_NO
+					 ) A
+			      )
+		 ORDER BY ROWNUM DESC
+	</select>
+	
+	<!-- (관리자용)학원소식 대표이미지와 상세이미지 추가용 쿼리문 -->
+	<insert id="insertFileAttachmentList" parameterType="FileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH
+								  , FILE_LEVEL)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , SEQ_POST_NO.CURRVAL
+								 , 'NEWS'
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath}
+								 , #{fileLevel})
+	</insert>
 	
 </mapper>

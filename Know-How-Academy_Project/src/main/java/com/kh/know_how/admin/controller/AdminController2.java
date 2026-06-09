@@ -1,5 +1,6 @@
 package com.kh.know_how.admin.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,15 +13,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.admin.model.service.AdminService2;
 import com.kh.know_how.board.model.service.BoardService;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
+import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
 import com.kh.know_how.common.template.XssDefencePolicy;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,6 +36,9 @@ public class AdminController2 {
 	//필드부
 	@Autowired
 	AdminService2 as2;
+	
+	@Autowired
+	BoardService bs;
 	
 	//메소드부
         
@@ -51,9 +61,8 @@ public class AdminController2 {
     }
     
     @GetMapping("/studentList/search")
-    public ModelAndView searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage) {
+    public String searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
-    	ModelAndView mv = new ModelAndView();
     	keyword = XssDefencePolicy.defence(keyword);
     	HashMap<String, String> map = new HashMap<>();
     	map.put("status", status);
@@ -67,19 +76,19 @@ public class AdminController2 {
     	
     	ArrayList<StudentDto> list = as2.selectStudentList(map, pi);
     	
-    	mv.addObject("list", list)
-    	  .addObject("pi", pi)
-    	  .addObject("status", status)
-    	  .addObject("keyword", keyword)
-    	  .addObject("page", "studentList")
-    	  .setViewName("admin/adminLayout");
+    	model .addAttribute("list", list)
+    	  .addAttribute("pi", pi)
+    	  .addAttribute("status", status)
+    	  .addAttribute("keyword", keyword)
+    	  .addAttribute("page", "studentList");
+    	  
     	
-    	return mv;
+    	return "admin/adminLayout";
     }
     
     @GetMapping("/studentDetails/{studentNo}")
-    public String studentDetails(@PathVariable int studentNo, Model model) {
-    	StudentDto s = as2.selectStudentList(studentNo);
+    public String selectStudentDetails(@PathVariable int studentNo, Model model) {
+    	StudentDto s = as2.selectStudent(studentNo);
     	model.addAttribute("s", s);
     	model.addAttribute("page", "studentDetails");
     	return "admin/adminLayout";
@@ -87,7 +96,7 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/minsert")
-    public String InsertStudentMemo(MemoDto m) {
+    public String insertStudentMemo(MemoDto m) {
     	
     	m.setUserMemo(XssDefencePolicy.defence(m.getUserMemo()));
     	int result = as2.insertStudentMemo(m);
@@ -104,7 +113,7 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/mdelete")
-    public String DeleteStudentMemo(int memoNo) {
+    public String deleteStudentMemo(int memoNo) {
     	
     	int result = as2.deleteStudentMemo(memoNo);
     	
@@ -113,7 +122,7 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/rest")
-    public String UpdateStudentStatus(StudentDto s) {
+    public String updateStudentStatus(StudentDto s) {
     	
     	int result = as2.updateStudentStatus(s);
 
@@ -161,8 +170,7 @@ public class AdminController2 {
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<StudentDto> list = as2.adminSelectNoticeList(pi);
-    	
+    	ArrayList<Board> list = as2.adminSelectNoticeList(pi);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -170,6 +178,311 @@ public class AdminController2 {
     	  .setViewName("admin/adminLayout");
     	
     	return mv;
+    }
+    
+    @GetMapping("/notice/search")
+    public String searchNoticeList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
+    	
+    	keyword = XssDefencePolicy.defence(keyword);
+    	int listCount = as2.adminSearchNoticeCount(keyword);
+    	int pageLimit = 10;
+    	int boardLimit = 10;
+    	
+    	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	ArrayList<Board> list = as2.adminSearchNoticeList(pi, keyword);
+    	
+    	model.addAttribute("list", list)
+    	     .addAttribute("pi", pi)
+    	     .addAttribute("keyword", keyword)
+       	     .addAttribute("page", "adminNoticeList");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/visible")
+    public String updateNoticeStatus(Board b) {
+    	
+    	int result = as2.adminUpdateStatus(b);
+    	
+    	return (result > 0) ? "success" : "fail";
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/delete")
+    public String deleteNotice(int postNo) {
+
+    	FileAttachment fa = bs.selectFileAttachment(postNo);
+    	
+    	int result2 = 1;
+    	
+    	if(fa != null) {
+			result2 =  bs.deleteFileAttachment(postNo);
+		}
+    	int result1 = bs.deleteBoard(postNo);
+    	
+    	return ((result1 * result2) > 0) ? "success" : "fail";
+    }
+    
+    @GetMapping("/notice/enrollForm")
+    public String noticeEnrollForm(Model model) {
+    	
+    	model.addAttribute("page", "adminNoticeEnrollForm");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/insert")
+    public String insertNotice(Board n, MultipartFile upfile, HttpSession session) {
+    	
+    	FileAttachment fa = null;
+    	
+    	if(!upfile.getOriginalFilename().equals("")) {
+    		
+    		String saveName = FileRenamePolicy.saveFile(upfile, session, "/resources/upload/notice/");
+    		
+    		fa = new FileAttachment();
+    		fa.setTargetType("NOTICE");
+    		fa.setOriginName(upfile.getOriginalFilename());
+    		fa.setSaveName(saveName);
+    		fa.setFilePath("resources/upload/notice/");
+    	}
+    	
+    	n.setPostType("NOTICE");
+    	n.setCategory("NOTICE");
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	
+    	int result = bs.insertBoard(n, fa);
+    	
+    	if(result > 0) {
+    		
+    		return "success";
+    	} else {
+    		
+    		if(fa != null) {
+    			
+    			String savePath = session.getServletContext()
+    									 .getRealPath("resources/upload/notice");
+    			
+    			new File(savePath + fa.getSaveName()).delete();
+    		}
+    		
+    		return "fail";
+    	}
+    }
+    
+    @GetMapping("/notice/detail/{postNo}")
+    public String selectNoticeDetail(@PathVariable int postNo, Model model) {
+    	Board n = bs.selectBoard(postNo);
+    	
+    	FileAttachment fa = bs.selectFileAttachment(postNo);
+    	model.addAttribute("n", n)
+    		 .addAttribute("fa", fa)
+    	     .addAttribute("page", "adminNoticeDetail");
+    	return "admin/adminLayout";
+    }
+    
+    @PostMapping("/notice/updateForm")
+    public String noticeUpdateForm(int postNo, Model model) {
+    	
+    	Board n = bs.selectBoard(postNo);
+    	FileAttachment fa = bs.selectFileAttachment(postNo);
+    	
+    	model.addAttribute("n", n)
+    	 	 .addAttribute("fa", fa)
+    	 	 .addAttribute("page", "adminNoticeUpdateForm");
+    	
+		return "admin/adminLayout";
+    	
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/update")
+    public String updateNotice(Board n ,MultipartFile reUpfile,
+    						   @RequestParam(defaultValue="0") int originalFileNo,
+    						   String originalFileSaveName,
+    						   HttpSession session,
+    						   Model model) {
+    	
+    	FileAttachment fa = null;
+    	
+    	if(!reUpfile.getOriginalFilename().equals("")) {
+    		
+    		String saveName = FileRenamePolicy.saveFile(reUpfile, session, "resources/upload/notice/");	
+    		
+    		fa = new FileAttachment();
+    		fa.setTargetType("NOTICE");
+    		fa.setOriginName(reUpfile.getOriginalFilename());
+    		fa.setSaveName(saveName);
+    		
+    		if(originalFileNo != 0 ) {
+    			
+    			fa.setFileNo(originalFileNo);
+    			
+    			String savePath = session.getServletContext()
+    									 .getRealPath("/resources/upload/notice/");
+    			new File(savePath + originalFileSaveName).delete();
+    			
+    		} else {
+    			
+    			fa.setTargetNo(n.getPostNo());
+    			fa.setFilePath("resources/upload/notice/");
+    			
+    		}
+    		
+    	}
+    	
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	
+    	int result = bs.updateBoard(n, fa);
+    	
+    	return (result > 0) ? "success" : "fail";
+    	
+    }
+    
+    @GetMapping("/academyNews")
+    public ModelAndView selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) {
+    	
+    	int listCount = as2.adminSelectNewsListCount();
+    	int pageLimit = 10;
+    	int boardLimit = 10;
+    	
+    	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	ArrayList<Board> list = as2.adminSelectNewsList(pi);
+    	
+    	mv.addObject("list", list)
+    	  .addObject("pi", pi)
+    	  .addObject("page", "academyNewsList")
+    	  .setViewName("admin/adminLayout");
+    	
+    	return mv;
+    }
+    
+    @GetMapping("/academyNews/search")
+    public String searchNewsList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
+    	
+    	keyword = XssDefencePolicy.defence(keyword);
+    	int listCount = as2.adminSearchNewsCount(keyword);
+    	int pageLimit = 10;
+    	int boardLimit = 10;
+    	
+    	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	ArrayList<Board> list = as2.adminSearchNewsList(pi, keyword);
+    	
+    	model.addAttribute("list", list)
+    	     .addAttribute("pi", pi)
+    	     .addAttribute("keyword", keyword)
+       	     .addAttribute("page", "academyNewsList");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/academyNews/visible")
+    public String updateNewsStatus(Board b) {
+    	
+    	int result = as2.adminUpdateStatus(b);
+    	
+    	return (result > 0) ? "success" : "fail";
+    }
+    
+    @ResponseBody
+    @PostMapping("/academyNews/delete")
+    public String deleteNews(int postNo) {
+
+    	ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
+    	
+    	int result2 = 1;
+    	
+    	if(list != null) {
+			result2 =  bs.deleteFileAttachment(postNo);
+		}
+    	int result1 = bs.deleteBoard(postNo);
+    	
+    	return ((result1 * result2) > 0) ? "success" : "fail";
+    }
+    
+    @GetMapping("/academyNews/enrollForm")
+    public String newsEnrollForm(Model model) {
+    	
+    	model.addAttribute("page", "academyNewsEnrollForm");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/academyNews/insert")
+    public String insertNews(Board n, MultipartFile[] files, HttpSession session) {
+    	
+    	ArrayList<FileAttachment> list = new ArrayList<>();
+    	
+    	for(int i = 0; i < files.length; i++) {
+    		
+    		if(!files[i].getOriginalFilename().equals("")) {
+        		
+        		String saveName = FileRenamePolicy.saveFile(files[i], session, "/resources/upload/news/");
+        		
+        		FileAttachment fa = new FileAttachment();
+        		fa.setTargetType("NEWS");
+        		fa.setOriginName(files[i].getOriginalFilename());
+        		fa.setSaveName(saveName);
+        		fa.setFilePath("resources/upload/news/");
+        		
+        		if(i == 0) {
+        			
+        			fa.setFileLevel(1);
+        			
+        		} else {
+        			
+        			fa.setFileLevel(2);
+        		}
+        		
+        		list.add(fa);
+        	}
+    		
+    	}
+    	
+    	n.setPostType("NEWS");
+    	n.setCategory("NEWS");
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	
+    	int result = as2.insertNews(n, list);
+    	
+    	return (result > 0) ? "success" : "fail";
+     }
+    
+    @GetMapping("academyNews/detail/{postNo}")
+	public String selectNewsDetail(@PathVariable int postNo, Model model) {
+		Board n = bs.selectBoard(postNo);
+		
+		ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
+
+		model.addAttribute("n", n)
+		     .addAttribute("list", list)
+		     .addAttribute("page", "academyNewsDetail");
+		
+		return "admin/adminLayout";
+	}
+    
+    @PostMapping("/academyNews/updateForm")
+    public String NewsUpdateForm(int postNo, Model model) {
+    	
+    	Board n = bs.selectBoard(postNo);
+    	ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
+    	
+    	model.addAttribute("n", n)
+    	 	 .addAttribute("list", list)
+    	 	 .addAttribute("page", "academyNewsUpdateForm");
+    	
+		return "admin/adminLayout";
+    	
     }
     
 }//컨트롤러 끝

@@ -7,35 +7,35 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-.notice-section {
+.news-section {
     width: 100%;
     padding: 0px 40px 80px;
     box-sizing: border-box;
 }
 
 /* 제목 영역 */
-.notice-title-area {
+.news-title-area {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 28px;
 }
 
-.notice-title-area h2 {
+.news-title-area h2 {
     margin: 0;
     font-size: 32px;
     font-weight: 800;
     color: #2c2f3f;
 }
 
-.notice-title-area p {
+.news-title-area p {
     margin: 10px 0 0;
     font-size: 15px;
     color: #6b7280;
 }
 
 /* 검색 카드 */
-.notice-search-card {
+.news-search-card {
     padding: 24px 28px;
     margin-bottom: 28px;
     background-color: #fff;
@@ -57,7 +57,7 @@
     gap: 8px;
 }
 
-.notice-search-input {
+.news-search-input {
     height: 46px;
     padding: 0 14px;
     border: 1px solid #d1d5db;
@@ -68,7 +68,7 @@
     outline: none;
 }
 
-.notice-search-input:focus {
+.news-search-input:focus {
     border-color: #4233c7;
     box-shadow: 0 0 0 3px rgba(66, 51, 199, 0.12);
 }
@@ -105,7 +105,7 @@
 }
 
 /* 목록 카드 */
-.notice-card {
+.news-card {
     padding: 28px;
     background-color: #fff;
     border: 1px solid #e5e7eb;
@@ -114,7 +114,7 @@
 }
 
 /* 테이블 */
-.notice-table {
+.news-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -125,7 +125,7 @@
     text-align: center;
 }
 
-.notice-table thead th {
+.news-table thead th {
     height: 54px;
     padding: 0 18px;
     background-color: #fafafa;
@@ -133,33 +133,33 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.notice-table tbody td {
+.news-table tbody td {
     padding: 16px 18px;
     border-bottom: 1px solid #eef0f4;
     vertical-align: middle;
 }
 
-.notice-table tbody tr:last-child td {
+.news-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-.notice-table tbody tr:hover {
+.news-table tbody tr:hover {
     background-color: #fafaff;
 }
 
-.notice-title-link {
+.news-title-link {
     color: #4233c7;
     font-weight: 800;
     text-decoration: underline;
     text-underline-offset: 3px;
 }
 
-.notice-title-link:hover {
+.news-title-link:hover {
     color: #2f2499;
 }
 
 /* 상태 배지 */
-.notice-status {
+.news-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -172,12 +172,12 @@
     cursor: pointer;
 }
 
-.notice-status.show {
+.news-status.show {
     border: 1px solid #22c55e;
     color: #22c55e;
 }
 
-.notice-status.hide {
+.news-status.hide {
     border: 1px solid #a1a1aa;
     color: #a1a1aa;
 }
@@ -256,28 +256,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-	<section class="notice-section">
+	<section class="news-section">
 
 		<!-- 페이지 제목 -->
-		<div class="notice-title-area">
+		<div class="news-title-area">
 			<div>
-				<h2>공지사항 관리</h2>
-				<p>공지사항을 등록, 수정, 삭제할 수 있습니다.</p>
+				<h2>학원소식 관리</h2>
+				<p>학원소식을 등록, 수정, 삭제할 수 있습니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary" onclick="go('/admin/notice/enrollForm')">
-				+ 새 공지 등록
+			<button type="button" class="btn-primary" onclick="go('/admin/academyNews/enrollForm')">
+				+ 새 소식 등록
 			</button>
 		</div>
 
 		<!-- 검색 / 필터 카드 -->
-		<div class="notice-search-card">
-			<form action="/know-how/admin/notice/search" method="get">
+		<div class="news-search-card">
+			<form action="/know-how/admin/academyNews/search" method="get">
 				<div class="search-top-row">
 					<div class="search-field">
 						<input type="search"
 							name="keyword"
-							class="notice-search-input"
+							class="news-search-input"
 							placeholder="제목을 입력해주세요.">
 					</div>
 	
@@ -291,7 +291,7 @@
 				<div class="search-keyword-area">
 					<span class="keyword-chip">
 						검색어: <strong>${ requestScope.keyword }</strong>
-						<button type="button" onclick="go('/admin/notice')">×</button>
+						<button type="button" onclick="go('/admin/academyNews')">×</button>
 					</span>
 				</div>
 			</c:if>
@@ -299,9 +299,9 @@
 		</div>
 
 		<!-- 목록 카드 -->
-		<div class="notice-card">
+		<div class="news-card">
 
-			<table class="notice-table">
+			<table class="news-table">
 				<thead>
 					<tr>
 						<th>번호</th>
@@ -318,7 +318,7 @@
 						<c:when test="${ empty requestScope.list }">
 							<tr>
 								<th colspan="6">
-									공지사항 정보가 없습니다.
+									학원소식 정보가 없습니다.
 								</th>
 							</tr>
 						</c:when>
@@ -326,22 +326,22 @@
 							<c:forEach var="n" items="${ requestScope.list }">
 								<tr>
 									<td>${ n.rowNum }</td>
-									<td><a href="/know-how/admin/notice/detail/${ n.postNo }" class="notice-title-link">${ n.title }</a></td>
+									<td><a href="/know-how/admin/academyNews/detail/${ n.postNo }" class="news-title-link">${ n.title }</a></td>
 									<td>${ n.postWriter }</td>
 									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>
 											<c:when test="${ n.status eq 'Y' }">
-												<span class="notice-status show" onclick="visible('${ n.status }', ${ n.postNo })">노출</span>
+												<span class="news-status show" onclick="visible('${ n.status }', ${ n.postNo })">노출</span>
 											</c:when>
 											<c:otherwise>
-												<span class="notice-status hide" onclick="visible('${ n.status }', ${ n.postNo })">숨김</span>
+												<span class="news-status hide" onclick="visible('${ n.status }', ${ n.postNo })">숨김</span>
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td>
-										<button type="button" class="btn-outline edit" onclick="updateNotice(${ n.postNo })">수정</button>
-										<button type="button" class="btn-outline delete" onclick="deleteNotice(${ n.postNo })">삭제</button>
+										<button type="button" class="btn-outline edit" onclick="updateNews(${ n.postNo })">수정</button>
+										<button type="button" class="btn-outline delete" onclick="deleteNews(${ n.postNo })">삭제</button>
 									</td>
 								</tr>
 							</c:forEach>
@@ -349,7 +349,7 @@
 					</c:choose>
 				</tbody>
 			</table>	
-			<form id="postForm" action="/know-how/admin/notice/updateForm" method="POST">
+			<form id="postForm" action="/know-how/admin/academyNews/updateForm" method="POST">
 				<input type="hidden" id="targetPostNo" name="postNo" value="${ n.postNo }">
 			</form>	
 			<script>
@@ -361,7 +361,7 @@
 					} 
 					console.log(postNo);
 					$.ajax({
-						url : "/know-how/admin/notice/visible",
+						url : "/know-how/admin/academyNews/visible",
 						type : "post",
 						data : {
 							status : status,
@@ -384,17 +384,17 @@
 					});
 				}
 				
-				function updateNotice(postNo) {
+				function updateNews(postNo) {
 					
 					$("#targetPostNo").val(postNo);
 					
 					$("#postForm").submit();
 				}
 				
-				function deleteNotice(postNo) {
-					if(confirm("해당 공지사항을 삭제하시겠습니까?")) {
+				function deleteNews(postNo) {
+					if(confirm("해당 학원소식을 삭제하시겠습니까?")) {
 						$.ajax({
-							url : "/know-how/admin/notice/delete",
+							url : "/know-how/admin/academyNews/delete",
 							type : "post",
 							data : {
 								postNo : postNo
@@ -411,7 +411,7 @@
 								}
 							},
 							error() {
-								console.log("공지사항 삭제용 ajax 통신 실패!");
+								console.log("학원소식 삭제용 ajax 통신 실패!");
 							}
 						});
 					}
@@ -428,10 +428,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.condition }">
-								<button type="button" onclick="go('/admin/notice?cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
+								<button type="button" onclick="go('/admin/academyNews?cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
+								<button type="button" onclick="go('/admin/academyNews/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }');">&lt;</button>
 							</c:otherwise>
 							
 						</c:choose>
@@ -448,10 +448,10 @@
 						
 							<c:choose>
 								<c:when test="${ empty requestScope.status }">
-									<button type="button" onclick="go('/admin/notice?cpage=${ p }');">${ p }</button>
+									<button type="button" onclick="go('/admin/academyNews?cpage=${ p }');">${ p }</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }');">${ p }</button>
+									<button type="button" onclick="go('/admin/academyNews/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }');">${ p }</button>
 								</c:otherwise>
 							</c:choose>
 							
@@ -468,10 +468,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.status }">
-								<button type="button" onclick="go('/admin/notice?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/academyNews?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/admin/notice/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/academyNews/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:otherwise>
 						</c:choose>
 					</c:otherwise>

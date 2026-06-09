@@ -15,10 +15,10 @@ import lombok.ToString;
 @ToString
 public class Counselor {
 	
-	private int logNo;         // LOG_NO	NUMBER
-	private int reservationNo; // RESERVATION_NO	NUMBER
-	private String content;    // CONTENT	CLOB
-	private Date createdAt;    // CREATED_AT	DATE
-	private Date updatedAt;    // UPDATED_AT	DATE
-	private String status;     // STATUS	VARCHAR2(1 BYTE)
+	private int logNo;         // LOG_NO	NUMBER            상담일지 번호
+	private int reservationNo; // RESERVATION_NO	NUMBER    예약 번호
+	private String content;    // CONTENT	CLOB              상담내용
+	private Date createdAt;    // CREATED_AT	DATE          작성일
+	private Date updatedAt;    // UPDATED_AT	DATE          수정일
+	private String status;     // STATUS	VARCHAR2(1 BYTE)  상태값
 }

@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.admin.model.dao.AdminDao2;
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.board.model.dao.BoardDao;
+import com.kh.know_how.board.model.vo.Board;
+import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
 
 @Service
@@ -19,6 +22,9 @@ public class AdminService2 {
 	//필드부
 	@Autowired
 	AdminDao2 ad2;
+	
+	@Autowired
+	BoardDao bd;
 	
 	@Autowired
 	SqlSessionTemplate sqlSession;
@@ -44,7 +50,7 @@ public class AdminService2 {
 		return ad2.selectStudentList(sqlSession, map, pi);
 	}
 
-	public StudentDto selectStudentList(int studentNo) {
+	public StudentDto selectStudent(int studentNo) {
 		
 		return ad2.selectStudent(sqlSession, studentNo);
 	}
@@ -97,8 +103,56 @@ public class AdminService2 {
 		return ad2.adminSelectNoticeCount(sqlSession);
 	}
 	
-	public ArrayList<StudentDto> adminSelectNoticeList(PageInfo pi) {
+	public ArrayList<Board> adminSelectNoticeList(PageInfo pi) {
 		
 		return ad2.adminSelectNoticeList(sqlSession, pi);
 	}
+
+	public int adminSearchNoticeCount(String keyword) {
+		
+		return ad2.adminSearchNoticeCount(sqlSession, keyword);
+	}
+
+	public ArrayList<Board> adminSearchNoticeList(PageInfo pi, String keyword) {
+		
+		return ad2.adminSearchNoticeList(sqlSession, pi, keyword);
+	}
+
+	@Transactional
+	public int adminUpdateStatus(Board b) {
+		
+		return ad2.adminUpdateStatus(sqlSession, b);
+	}
+
+	public int adminSelectNewsListCount() {
+		
+		return ad2.adminSelectNewsCount(sqlSession);
+	}
+
+	public ArrayList<Board> adminSelectNewsList(PageInfo pi) {
+		
+		return ad2.adminSelectNewsList(sqlSession, pi);
+	}
+
+	public int adminSearchNewsCount(String keyword) {
+		
+		return ad2.adminSearchNewsCount(sqlSession, keyword);
+	}
+
+	public ArrayList<Board> adminSearchNewsList(PageInfo pi, String keyword) {
+		
+		return ad2.adminSearchNewsList(sqlSession, pi, keyword);
+	}
+
+	@Transactional
+	public int insertNews(Board n, ArrayList<FileAttachment> list) {
+		
+		int result1 = bd.insertBoard(sqlSession, n);
+		
+		int result2 = ad2.insertAttachmentList(sqlSession, list);
+		
+		return result1 * result2;
+	}
+
+
 }//클래스 끝

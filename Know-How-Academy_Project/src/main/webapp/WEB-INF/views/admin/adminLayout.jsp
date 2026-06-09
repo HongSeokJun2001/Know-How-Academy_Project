@@ -322,9 +322,14 @@
                 설정
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  공지사항 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-            <div class="menu-item" data-path="/admin/notice"
+            <div class="menu-item  ${page.contains('Notice') ? 'active' : ''}" data-path="/admin/notice"
                  onclick="go('/admin/notice')">
                 공지사항 관리
+            </div>
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  학원소식 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            <div class="menu-item  ${page.contains('academyNews') ? 'active' : ''}" data-path="/admin/academyNews"
+                 onclick="go('/admin/academyNews')">
+                학원소식 관리
             </div>
         </div>
 
