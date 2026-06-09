@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.admin.model.service.AdminService2;
+import com.kh.know_how.board.model.service.BoardService;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
@@ -35,6 +36,9 @@ public class AdminController2 {
 	//필드부
 	@Autowired
 	AdminService2 as2;
+	
+	@Autowired
+	BoardService bs;
 	
 	//메소드부
         
@@ -84,7 +88,7 @@ public class AdminController2 {
     
     @GetMapping("/studentDetails/{studentNo}")
     public String studentDetails(@PathVariable int studentNo, Model model) {
-    	StudentDto s = as2.selectStudentList(studentNo);
+    	StudentDto s = as2.selectStudent(studentNo);
     	model.addAttribute("s", s);
     	model.addAttribute("page", "studentDetails");
     	return "admin/adminLayout";
@@ -209,9 +213,16 @@ public class AdminController2 {
     @PostMapping("/notice/delete")
     public String deleteNotice(int postNo) {
 
-    	int result = as2.deleteNoticeStatus(postNo);
+    	FileAttachment fa = bs.selectFileAttachment(postNo);
     	
-    	return (result > 0) ? "success" : "fail";
+    	int result2 = 1;
+    	
+    	if(fa != null) {
+			result2 =  bs.deleteFileAttachment(postNo);
+		}
+    	int result1 = bs.deleteBoard(postNo);
+    	
+    	return ((result1 * result2) > 0) ? "success" : "fail";
     }
     
     @GetMapping("/notice/enrollForm")
@@ -224,39 +235,112 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/notice/insert")
-    public String NoticeEnrollForm(Board b, MultipartFile upfile, HttpSession session) {
+    public String NoticeEnrollForm(Board n, MultipartFile upfile, HttpSession session) {
     	
-    	FileAttachment at = null;
+    	FileAttachment fa = null;
     	
     	if(!upfile.getOriginalFilename().equals("")) {
     		
     		String saveName = FileRenamePolicy.saveFile(upfile, session, "/resources/upload/notice/");
     		
-    		at = new FileAttachment();
-    		at.setOriginName(upfile.getOriginalFilename());
-    		at.setSaveName(saveName);
-    		at.setFilePath("resources/upload/notice/");
+    		fa = new FileAttachment();
+    		fa.setTargetType("NOTICE");
+    		fa.setOriginName(upfile.getOriginalFilename());
+    		fa.setSaveName(saveName);
+    		fa.setFilePath("resources/upload/notice/");
     	}
     	
-    	b.setTitle(XssDefencePolicy.defence(b.getTitle()));
-    	b.setContent(XssDefencePolicy.defence(b.getContent()));
+    	n.setPostType("NOTICE");
+    	n.setCategory("NOTICE");
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
     	
-    	int result = as2.insertNotice(b, at);
+    	int result = bs.insertBoard(n, fa);
     	
     	if(result > 0) {
     		
     		return "success";
     	} else {
     		
-    		if(at != null) {
+    		if(fa != null) {
     			
     			String savePath = session.getServletContext()
     									 .getRealPath("resources/upload/notice");
     			
-    			new File(savePath + at.getSaveName()).delete();
+    			new File(savePath + fa.getSaveName()).delete();
     		}
     		
     		return "fail";
     	}
+    }
+    
+    @GetMapping("/notice/detail/{postNo}")
+    public String noticeDetail(@PathVariable int postNo, Model model) {
+    	Board n = bs.selectBoard(postNo);
+    	
+    	FileAttachment fa = bs.selectFileAttachment(postNo);
+    	model.addAttribute("n", n)
+    		 .addAttribute("fa", fa)
+    	     .addAttribute("page", "adminNoticeDetail");
+    	return "admin/adminLayout";
+    }
+    
+    @PostMapping("/notice/updateForm")
+    public String noticeUpdateForm(int postNo, Model model) {
+    	
+    	Board n = bs.selectBoard(postNo);
+    	FileAttachment fa = bs.selectFileAttachment(postNo);
+    	
+    	model.addAttribute("n", n)
+    	 	 .addAttribute("fa", fa)
+    	 	 .addAttribute("page", "adminNoticeUpdateForm");
+    	
+		return "admin/adminLayout";
+    	
+    }
+    
+    @ResponseBody
+    @PostMapping("/notice/update")
+    public String noticeUpdate(Board n ,MultipartFile reUpfile,
+    						   @RequestParam(defaultValue="0") int originalFileNo,
+    						   String originalFileSaveName,
+    						   HttpSession session,
+    						   Model model) {
+    	
+    	FileAttachment fa = null;
+    	
+    	if(!reUpfile.getOriginalFilename().equals("")) {
+    		
+    		String saveName = FileRenamePolicy.saveFile(reUpfile, session, "resources/upload/notice/");	
+    		
+    		fa = new FileAttachment();
+    		fa.setTargetType("NOTICE");
+    		fa.setOriginName(reUpfile.getOriginalFilename());
+    		fa.setSaveName(saveName);
+    		
+    		if(originalFileNo != 0 ) {
+    			
+    			fa.setFileNo(originalFileNo);
+    			
+    			String savePath = session.getServletContext()
+    									 .getRealPath("/resources/upload/notice/");
+    			new File(savePath + originalFileSaveName).delete();
+    			
+    		} else {
+    			
+    			fa.setTargetNo(n.getPostNo());
+    			fa.setFilePath("resources/upload/notice/");
+    			
+    		}
+    		
+    	}
+    	
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	
+    	int result = bs.updateBoard(n, fa);
+    	
+    	return (result > 0) ? "success" : "fail";
+    	
     }
 }//컨트롤러 끝

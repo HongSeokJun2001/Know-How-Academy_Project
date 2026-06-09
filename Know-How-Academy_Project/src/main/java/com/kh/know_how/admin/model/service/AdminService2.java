@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.admin.model.dao.AdminDao2;
 import com.kh.know_how.admin.model.dto.MemoDto;
 import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
@@ -21,6 +22,9 @@ public class AdminService2 {
 	//필드부
 	@Autowired
 	AdminDao2 ad2;
+	
+	@Autowired
+	BoardDao bd;
 	
 	@Autowired
 	SqlSessionTemplate sqlSession;
@@ -46,7 +50,7 @@ public class AdminService2 {
 		return ad2.selectStudentList(sqlSession, map, pi);
 	}
 
-	public StudentDto selectStudentList(int studentNo) {
+	public StudentDto selectStudent(int studentNo) {
 		
 		return ad2.selectStudent(sqlSession, studentNo);
 	}
@@ -120,25 +124,5 @@ public class AdminService2 {
 		return ad2.updateNoticeStatus(sqlSession, b);
 	}
 
-	@Transactional
-	public int deleteNoticeStatus(int postNo) {
-		
-		return ad2.deleteNotice(sqlSession, postNo);
-	}
 
-	@Transactional
-	public int insertNotice(Board b, FileAttachment at) {
-		
-		int result1 = ad2.insertNotice(sqlSession, b);
-		
-		int result2 = 1;
-		
-		if(at != null) {
-			
-			result2 = ad2.insertNoticeFileAttachment(sqlSession, at);
-			
-		}
-		
-		return result1 * result2;
-	}
 }//클래스 끝

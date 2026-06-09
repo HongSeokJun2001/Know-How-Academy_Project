@@ -14,7 +14,7 @@
 		<result column="CREATED_AT" property="createdAt" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="TITLEIMG" property="titleImg"/>
-		<result column="status" property="status"/>
+		<result column="STATUS" property="status"/>
 	</resultMap>
 	
 	<resultMap type="fileAttachment" id="fileAttachmentResultSet">
@@ -70,7 +70,7 @@
 	</select>
 	
 	<!-- 학원소식 상세조회 하는 쿼리문 -->
-	<select id="selectNews" parameterType="_int" resultMap="boardResultSet">
+	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
 		SELECT POST_NO
 			 , CATEGORY
 			 , TITLE
@@ -80,11 +80,10 @@
 		  FROM BOARD_POST B
 		  JOIN MEMBER ON (WRITER_NO = USER_NO)
 		 WHERE POST_NO = #{postNo}
-		   AND B.STATUS = 'Y'
 	</select>
 	
 	<!-- 첨부파일을 조회하는 쿼리문 -->
-	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
+	<select id="selectFileAttachment" parameterType="_int" resultMap="fileAttachmentResultSet">
 		SELECT FILE_NO
 		     , ORIGIN_NAME
 		     , SAVE_NAME
@@ -158,15 +157,15 @@
 	</update>
 	
 	
-	<!-- (관리자용)공지사항 삭제용 쿼리문 -->
-	<delete id="deleteNotice" parameterType="_int">
+	<!-- 게시글, 공지사항, 학원 소식 삭제용 쿼리문 -->
+	<delete id="deleteBoard" parameterType="_int">
 		DELETE
 		  FROM BOARD_POST
 		 WHERE POST_NO = #{postNo}
 	</delete>
 	
 	<!-- (관리자용)공지사항 등록용 쿼리문 -->
-	<insert id="insertNotice" parameterType="board">
+	<insert id="insertBoard" parameterType="board">
 		INSERT INTO BOARD_POST(POST_NO
 							 , POST_TYPE
 							 , CATEGORY
@@ -175,8 +174,8 @@
 							 , CREATED_AT
 							 , WRITER_NO)
 						VALUES(SEQ_POST_NO.NEXTVAL
-							 , 'NOTICE'
-							 , 'NOTICE'
+							 , #{postType}
+							 , #{category}
 							 , #{title}
 							 , #{content}
 							 , SYSDATE
@@ -184,7 +183,7 @@
 	</insert>
 	
 	<!-- 첨부파일 등록용 쿼리문 -->
-	<insert id="insertNoticeFileAttachment" parameterType="fileAttachment">
+	<insert id="insertFileAttachment" parameterType="fileAttachment">
 		INSERT INTO FILE_ATTACHMENT(FILE_NO
 							 , TARGET_NO
 							 , TARGET_TYPE
@@ -193,10 +192,51 @@
 							 , FILE_PATH)
 						VALUES(SEQ_FILE_NO.NEXTVAL
 							 , SEQ_POST_NO.CURRVAL
-							 , 'NOTICE'
+							 , #{targetType}
 							 , #{originName}
 							 , #{saveName}
 							 , #{filePath})
-							 
 	</insert>
+
+	<!-- 첨부파일 삭제용 쿼리문 -->
+	<delete id="deleteFileAttachment" parameterType="_int">
+		DELETE
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+	</delete>
+	
+	<!-- 게시판 수정용 쿼리문 -->
+	<update id="updateBoard" parameterType="board">
+		UPDATE BOARD_POST
+		   SET TITLE = #{title}
+		   	 , CONTENT = #{content}
+		   	 , UPDATED_AT = SYSDATE
+		 WHERE POST_NO = #{postNo}
+ 	</update>
+ 	
+ 	<!-- 첨부파일 수정용 쿼리문 -->
+	<update id="updateFileAttachment" parameterType="fileAttachment">
+		UPDATE FILE_ATTACHMENT
+		   SET ORIGIN_NAME = #{originName}
+		   	 , SAVE_NAME = #{saveName}
+		   	 , UPDATED_AT = SYSDATE
+		 WHERE FILE_NO = #{fileNo}
+	</update>
+	
+	<!-- 게시글 수정 시 새로운 첨부파일 등록하는 쿼리문 -->
+	<insert id="insertNewFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , #{targetNo}
+								 , #{targetType}
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath})
+	</insert>
+
 </mapper>
