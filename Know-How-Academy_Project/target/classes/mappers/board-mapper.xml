@@ -53,6 +53,7 @@
 	<!-- resultSet을 활용해 페이징처리(10)적용, 게시글 목록을 조회쿼리문 -->
 	<select id="selectBoardList" parameterType="hashmap"
 		resultMap="boardResultSet">
+		SELECT * FROM(
 		SELECT
 		B.POST_NO,<!-- 게시글번호 -->
 		B.CATEGORY, <!-- 카테고리 -->
@@ -66,6 +67,7 @@
 		WHERE B.STATUS = 'Y'<!-- Y=노출/N 숨김처리 -->
 		AND B.POST_TYPE = 'POST'
 		ORDER BY B.POST_NO DESC <!-- 오름차순?이엿나 -->
+		)
 	</select>
 
 	<!-- 게시글 총갯수 쿼리문 -->
@@ -84,7 +86,7 @@
 		FROM BOARD_POST B
 		JOIN MEMBER M ON (B.WRITER_NO =
 		M.USER_NO)
-		WHERE BOARD_TYPE = 'POST'
+		WHERE POST_TYPE = 'POST'
 		AND B.STATUS = 'Y'
 		<if test="condition1 == 'writer'">
 			AND M.USER_NAME LIKE '%' || #{keyword} || '%'
@@ -93,7 +95,7 @@
 			AND B.TITLE LIKE '%' || #{keyword} || '%'
 		</if>
 		<if test="condition1 == 'content'">
-			AND B.CONTNET LIKE '%' || #{keyword} || '%'
+			AND B.CONTENT LIKE '%' || #{keyword} || '%'
 		</if>
 		<if test="condition2 == 'admission'">
 			AND B.CATEGORY = '입학상담'
@@ -103,7 +105,7 @@
 		</if>
 	</select>
 
-	<!-- 일반 게시글 조회수증가용 쿼리문 -->
+	<!-- 자유 게시글 조회수증가용 쿼리문 -->
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD_POST
 		SET
@@ -112,24 +114,26 @@
 		AND STATUS = 'Y'
 	</update>
 
-	<!-- 일반게시글 상세조회용 쿼리문 -->
+	<!-- 자유게시글 상세조회용 쿼리문 -->
 	<select id="selectBoard" parameterType="_int"
 		resultMap="boardResultSet">
 		SELECT B.POST_NO,
 		B.TITLE,
+		B.POST_TYPE,
 		B.WRITER_NO,
 		M.USER_NAME,
 		B.CREATED_AT,
 		B.CONTENT
 		FROM BOARD_POST B
-		JOIN MEMBER M ON (B.WRITER_NO =
+		JOIN MEMBER M ON
+		(B.WRITER_NO =
 		M.USER_NO)
 		WHERE
 		POST_NO = #{postNo}
 		AND B.STATUS = 'Y'
 	</select>
 
-	<!-- 일반(A)게시글 등록용 쿼리문 -->
+	<!-- 자유(A)게시글 등록용 쿼리문 -->
 	<insert id="insertBoard" parameterType="board">
 		INSERT INTO
 		BOARD_POST(POST_NO,
@@ -141,14 +145,14 @@
 		CREATED_AT,
 		CATEGORY,
 		STATUS)
-		VALUES(SEQ_BNO.NEXTVAL,
-		'POST',
+		VALUES(SEQ_POST_NO.NEXTVAL,
+		#{postType},
 		#{title},
 		#{content},
 		#{writerNo},
 		#{viewCount},
 		SYSDATE,
-		'일반',
+		'자유',
 		'Y')
 	</insert>
 
@@ -162,7 +166,7 @@
 		SAVE_NAME,
 		FILE_PATH)
 		VALUES(SEQ_FNO.NEXTVAL,
-		SEQ_BNO.CURRVAL,
+		SEQ_POST_NO.CURRVAL,
 		'POST',
 		#{originName},
 		#{saveName},
@@ -171,19 +175,13 @@
 
 	<select id="selectAttachment" parameterType="_int"
 		resultMap="fileAttachmentResultSet">
-		SELECT FILE_NO,
-		TARGET_NO,
-		TARGET_TYPE,
-		ORIGIN_NAME,
-		SAVE_NAME,
-		FILE_PATH,
-		CREATED_AT,
-		UPDATED_AT,
-		STATUS,
-		FILE_LEVEL
+		SELECT *
+		FROM (SELECT *
 		FROM FILE_ATTACHMENT
 		WHERE TARGET_NO = #{postNo}
-		AND STATUS = 'Y'
+		ORDER BY FILE_NO DESC
+		)
+		WHERE ROWNUM = 1
 	</select>
 
 	<!-- 공지,자유,수강생 카테고리 전체 조회용 쿼리문 -->
@@ -220,25 +218,33 @@
 		UPDATED_AT = SYSDATE
 		WHERE FILE_NO = #{fileNo}
 	</update>
-	<insert id="inserNewFIleAttachment" parameterType="fileAttachment">
+	<insert id="insertNewFileAttachment"
+		parameterType="fileAttachment">
 		INSERT INTO FILE_ATTACHMENT(FILE_NO,
 		TARGET_NO,
+		TARGET_TYPE,
 		ORIGIN_NAME,
 		SAVE_NAME,
-		FILE_PATH)
+		FILE_PATH,
+		CREATED_AT,
+		STATUS)
 		VALUES(SEQ_FNO.NEXTVAL,
 		#{targetNo},
+		#{targetType},
 		#{originName},
 		#{saveName},
-		#{filePath})
+		#{filePath},
+		SYSDATE,
+		'Y')
 	</insert>
-	
-<update id="deleteBoard" parameterType="_int">
-UPDATE BOARD_POST
-SET STATUS = 'N'
-WHERE POST_NO = #{postNo}
-AND STATUS = 'Y'
-</update>
+
+	<update id="deleteBoard" parameterType="_int">
+		UPDATE BOARD_POST
+		SET
+		STATUS = 'N'
+		WHERE POST_NO = #{postNo}
+		AND STATUS = 'Y'
+	</update>
 
 
 </mapper>

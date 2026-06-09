@@ -1,3 +1,8 @@
+INSERT INTO MEMBER VALUES(SEQ_USER_NO.NEXTVAL, 'admin','admin1234!','관리자','01012345678','admin1234@gmail.com','서울특별시 강남구 테헤란로14길 6 남도빌딩','ADMIN','ACTIVE',SYSDATE,SYSDATE,NULL);
+INSERT INTO MEMBER VALUES(SEQ_USER_NO.NEXTVAL, 'counselor2928','pass2928^','정종욱','01029289121','a01029289121@gmail.com','경기도 남양주시 화도읍 비룡로110-17','COUNSELOR','ACTIVE',SYSDATE,SYSDATE,'1'); 
+INSERT INTO MEMBER VALUES(SEQ_USER_NO.NEXTVAL, 'student2928','PASS0001^','홍길동','01098765432','unk21059@naver.com','서울특별시 강남구 테헤란로14길 6 남도빌딩2F','STUDENT','ACTIVE',SYSDATE,SYSDATE,'1');
+
+
 -- 직원관리 테이블 데이터 삽입 
 --(userNO가 4, 6, 7, 8인 상담사 insert)
 INSERT INTO COUNSELOR_PROFILE VALUES(SEQ_COUNSEL_NO.NEXTVAL, 1, '/profile/counselor1.png', '취업 상담 전문 상담사입니다.', 'ACTIVE', 4);

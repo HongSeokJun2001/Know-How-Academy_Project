@@ -78,6 +78,7 @@ public class BoardService {
 		return boardDao.selectFileAttachmentList(sqlSession, postNo);
 	}
 
+	@Transactional
 	public int updateBoard(Board b, FileAttachment at) {
 
 		int result1 = boardDao.updateBoard(sqlSession, b);

@@ -1,6 +1,6 @@
 --게시글 전체조회 쿼리문
 SELECT
-		B.POST_NO,<!-- 게시글번호 -->
+		B.POST_NO, <!-- 게시글번호 -->
 		B.CATEGORY, <!-- 카테고리 -->
 		B.TITLE, <!-- 제목 -->
 		M.USER_NAME, <!-- 작성자명 -->
@@ -22,7 +22,6 @@ SELECT
 
 
 	<!-- 검색결과의 갯수를 세오는 쿼리문 -->
-		resultType="_int">
 		SELECT COUNT(*)
 		FROM BOARD_POST B
 		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
@@ -146,14 +145,20 @@ WHERE FILE_NO = #{fileNo}
 --게시글 첨부파일 수정시 새 첨부파일로 등록하는 쿼리문
 INSERT INTO FILE_ATTACHMENT(FILE_NO,
                             TARGET_NO,
+                            TARGET_TYPE,
                             ORIGIN_NAME,
                             SAVE_NAME,
-                            FILE_PATH)
+                            FILE_PATH,
+                            CREATED_AT,
+                            STATUS)
                     VALUES(SEQ_FNO.NEXTVAL,
                             #{targetNo},
+                            #{targetType},
                             #{originName},
                             #{saveName},
-                            #{filePath})
+                            #{filePath},
+                            SYSDATE,
+                            Y)
 
 --게시글 삭제용 쿼리문
 UPDATE BOARD_POST

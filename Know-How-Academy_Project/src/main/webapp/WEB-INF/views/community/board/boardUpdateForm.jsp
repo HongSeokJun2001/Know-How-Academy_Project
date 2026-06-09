@@ -6,8 +6,7 @@
         <head>
             <meta charset="UTF-8">
             <title>Insert title here</title>
-            <style>         
-
+            <style>
                 /* 레이아웃 공통 설정 */
                 .outer {
                     width: 940px !important;
@@ -15,7 +14,7 @@
                 }
 
                 /* 게시글 테이블 */
-                .table {                   
+                .table {
                     margin: 10px auto;
                     border-collapse: collapse;
                     table-layout: fixed;
@@ -25,7 +24,7 @@
                 .table th {
                     width: 100px;
                     padding: 10px;
-                    text-align: center;                   
+                    text-align: center;
                     font-weight: 450;
                     background-color: rgb(233, 233, 233);
                 }
@@ -67,16 +66,17 @@
         </head>
 
         <body>
-            <jsp:include page="../common/menubar.jsp" />
+            <jsp:include page="../../common/menubar.jsp" />
 
             <div class="outer">
                 <h2 align="center">자유게시글 수정</h2>
 
-                <form id="updateForm" action="/know-how/board/insert" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="writerNo" value="${b.postNo}">
+                <form id="updateForm" action="/know-how/community/board/update" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="postNo" value="${b.postNo}">
+					<input type="hidden" name="postType" value="POST">
 
                     <div class="btn-area">
-                        <a id="listBtn" href="/know-how/board/list" class="btn btn-outline-secondary btn-hover">목록</a>
+                        <a id="listBtn" href="/know-how/community/board/list" class="btn btn-outline-secondary btn-hover">목록</a>
                         <button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
                     </div>
 
@@ -92,8 +92,20 @@
                         </tr>
                         <tr>
                             <th>첨부파일</th>
-                            <td colspan="3"><input type="file" name="originalFile" class="btn-hover"
-                                    style="resize: none;"></td>
+                            <td colspan="3">
+                                <!--기존의 파일이 이미 있을 경우-->
+                                <c:if test="${ not empty requestScope.at}">
+                                    <a download="${at.originName}" href="/know-how/${at.filePath}${at.saveName}">
+                                        ${at.originName}
+                                    </a>
+                                    <!--DB의 어떤 데이터를 지울지 말지를 알아야하기에 기존 파일번호보내기-->
+                                    <input type="hidden" name="fileNo" value="${at.fileNo}">
+                                    <!--DB 데이터 변경후 서버폴더에 남아있는 파일을 지우기 위해 저장파일명 보내기 -->
+                                    <input type="hidden" name="saveName" value="${at.saveName}">
+                                </c:if>
+                                <input type="file" name="originalFile" class="btn-hover"
+                                    style="resize: none;">
+                            </td>
                         </tr>
                     </table>
                     <br>

@@ -28,7 +28,7 @@ import com.kh.know_how.common.template.Pagination;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/board")
+@RequestMapping("community/board")
 public class BoardController {
 
 	@Autowired
@@ -48,7 +48,7 @@ public class BoardController {
 
 		mv.addObject("list", list);
 		mv.addObject("pi", pi);
-		mv.setViewName("board/boardListView");
+		mv.setViewName("community/board/boardListView");
 
 		return mv;
 	}
@@ -84,7 +84,7 @@ public class BoardController {
 			model.addAttribute("b", b);
 			model.addAttribute("at", at);
 
-			return "board/boardDetailView";
+			return "community/board/boardDetailView";
 		} else {
 			return "common/errorPage";
 		}
@@ -98,7 +98,7 @@ public class BoardController {
 
 		model.addAttribute("list", list);
 
-		return "board/boardEnrollForm";
+		return "community/board/boardEnrollForm";
 	}
 
 	/**
@@ -112,11 +112,7 @@ public class BoardController {
 	 */
 	@PostMapping("insert")
 	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {
-
-		// Member loginUser = (Member) session.getAttribute("loginUser");
-
-		// b.setWriterNo(loginUser.getUserNo());
-
+		
 		FileAttachment at = null;
 
 		if (originalFile != null && !originalFile.isEmpty()) {
@@ -134,7 +130,7 @@ public class BoardController {
 
 		if (result > 0) {
 			session.setAttribute("alertMsg", "게시글 등록 성공");
-			return "redirect:/board/list";
+			return "redirect:/community/board/list";
 		} else {
 			model.addAttribute("alertMsg", "게시글 등록 실패");
 			return "common/errorPage";
@@ -142,7 +138,7 @@ public class BoardController {
 	}
 
 	@PostMapping("updateForm")
-	public ModelAndView updateForm(@RequestParam("bno") int postNo, ModelAndView mv) {
+	public ModelAndView updateForm(@RequestParam("postNo") int postNo, ModelAndView mv) {
 
 		ArrayList<Category> list = boardService.selectCategoryList();
 
@@ -153,7 +149,7 @@ public class BoardController {
 		mv.addObject("b", b).
 		addObject("list", list).
 		addObject("at", at).
-		setViewName("board/boardUpdateForm");
+		setViewName("community/board/boardUpdateForm");
 
 		return mv;
 	}
@@ -161,16 +157,17 @@ public class BoardController {
 	@PostMapping("update")
 	public String updateBoard(@RequestParam(defaultValue = "0") int originalFileNo, Board b, MultipartFile originalFile,
 			String originalFileSaveName, HttpSession session, Model model) {
-
+		
 		FileAttachment at = null;
-
+	
 		if (!originalFile.getOriginalFilename().equals("")) {
 
 			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
 
 			at = new FileAttachment();
 			at.setOriginName(originalFile.getOriginalFilename());
-			at.setSaveName(saveName);
+			at.setSaveName(saveName);	
+			at.setTargetType(b.getPostType());
 
 			if (originalFileNo != 0) {
 
@@ -181,7 +178,7 @@ public class BoardController {
 			} else {
 
 				at.setTargetNo(b.getPostNo());
-				at.setFilePath("/resorces/board_upfiles/");
+				at.setFilePath("/resources/board_upfiles/");
 			}
 		}
 
@@ -191,7 +188,7 @@ public class BoardController {
 
 			session.setAttribute("alertMsg", "게시글  수정 성공");
 
-			return "redirect:/board/detail/" + b.getPostNo();
+			return "redirect:/community/board/detail/" + b.getPostNo();
 		} else {
 
 			model.addAttribute("errorMsg", "게시글수정 실패");
@@ -201,7 +198,7 @@ public class BoardController {
 	}
 	
 	@PostMapping("deleteForm")
-	public String deleteBoard(@RequestParam("bno") int postNo,
+	public String deleteBoard(@RequestParam("postNo") int postNo,
 							Model model, HttpSession session) {
 			
 		int result = boardService.deleteBoard(postNo);
@@ -210,7 +207,7 @@ public class BoardController {
 			
 			session.setAttribute("alertMsg", "삭제 성공");
 			
-			return "redirect:/board/list";
+			return "redirect:/community/board/list";
 			
 		}else {
 			

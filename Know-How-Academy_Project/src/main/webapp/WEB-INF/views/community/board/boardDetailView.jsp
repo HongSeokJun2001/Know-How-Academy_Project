@@ -37,20 +37,14 @@
                 }
 
                 /* 버튼 영역 */
-                .btn-area, .rightBtn2{
+                .btn-area, .rightBtn1, .rightBtn2{
                     width: 940px;
                     margin: 0 auto;
                     display: flex;
-                    justify-content: space-between;
+                     justify-content: flex-end;
                     align-items: center;
                 }
-
-                .rightBtn1,
-                .rightBtn2 {
-                    display: flex;
-                    justify-content: flex-end;
-                }
-
+                
                 .rightBtn2 {
                     margin-top: 10px;
                 }
@@ -105,20 +99,24 @@
         </head>
 
         <body>
-            <jsp:include page="../common/menubar.jsp" />
+            <jsp:include page="../../common/menubar.jsp" />
 
             <div class="outer">
                 <h2 align="center">자유게시판</h2>
                 <div class="btn-area">
+                    <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
                     <c:if test="${(not empty sessionScope.loginUser) and 
                             (sessionScope.loginUser.userNo eq b.writerNo)}">
+                        <!--로그인중이며, 사용자와 작성자명이 같을 경우에~~-->
                         <div class="leftBtn">
                             <a id="upBtn" class="btn btn-outline-secondary" onclick="postSubmit(1)">수정</a>
                             <a id="delBtn" class="btn btn-outline-secondary" onclick="postSubmit(2)">삭제</a>
                         </div>
+                        <!--삭제하기위한 정보를 post 방식으로 전송-->
                         <form id="postForm" method="post">
                             <input type="hidden" name="postNo" value="${b.postNo}">
                         </form>
+                        <!--수정과 삭제에 대한 실행작성-->
                         <script>
                             function postSubmit(num) {
                                 if (num == 1) {
@@ -130,10 +128,11 @@
                         </script>
                     </c:if>
 
-                    <div class="rightBtn1">
+                    
+                </div>
+                <div class="rightBtn1">
                         <a href="/know-how/community/board/list" id="listBtn1" class="btn btn-outline-secondary">목록</a>
                     </div>
-                </div>
             </div>
             <table class="table" id="content">
                 <tr>
@@ -151,6 +150,7 @@
                     <td id="content-body" colspan="3">${b.content}</td>
                 </tr>
                 <tr>
+                    <!-- 첨부파일의 있고없고의 따른 경우 -->
                     <th>첨부파일</th>
                     <td colspan="3">
                         <c:choose>
@@ -174,5 +174,12 @@
                 <button type="submit" class="btn btn-outline-secondary" id="reply-btn">댓글 작성</button>
             </div>
             </div>
+
+
+
+
+
         </body>
+
+
         </html>

@@ -73,7 +73,7 @@ public class BoardDao {
 	
 	public int insertNewFileAttachment(SqlSessionTemplate sqlSession, FileAttachment at) {
 		
-		return sqlSession.insert("boardMapper.insertNewFIleAttachment",at);
+		return sqlSession.insert("boardMapper.insertNewFileAttachment",at);
 	}
 	
 	public int deleteBoard(SqlSessionTemplate sqlSession, int postNo) {
