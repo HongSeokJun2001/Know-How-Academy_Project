@@ -73,10 +73,10 @@
 	<!--  아이디찾기용 쿼리문 -->
 	 <select id="searchId" parameterType="member" 
 								  resultMap="memberResultSet">
-			<!-- 암호화 작업 후 : 아이디로만 조회 -->
 			SELECT *
 		      FROM MEMBER
-		     WHERE USER_ID = #{userId}
+		     WHERE USER_NAME = #{userName}
+		       AND EMAIL  = #{email}
 		       AND STATUS = 'ACTIVE'   
 	 </select>
 	 

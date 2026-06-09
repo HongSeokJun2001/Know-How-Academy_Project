@@ -24,7 +24,7 @@
 <body>
     <jsp:include page="../common/menubar.jsp"/>
 
-    
+
     <form id="searchId-form" action="/know-how/myPage/searchIdForm" method="post"> 
 		            
         <br><br>
@@ -86,6 +86,8 @@
 		
 		</form>
 		
+		<br><br>
+	     
 		<script>
 		   function enrollPage() {
 				
