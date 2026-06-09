@@ -12,7 +12,7 @@ import com.kh.know_how.board.model.service.BoardService;
 import com.kh.know_how.board.model.vo.Board;
 
 @Controller
-@RequestMapping("/notice")
+@RequestMapping("community/notice")
 public class NoticeController {
 	
 	//@Autowired

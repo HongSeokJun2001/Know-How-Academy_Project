@@ -37,14 +37,20 @@
                 }
 
                 /* 버튼 영역 */
-                .btn-area, .rightBtn1, .rightBtn2{
+               .rightBtn1, .rightBtn2{
                     width: 940px;
                     margin: 0 auto;
                     display: flex;
-                     justify-content: flex-end;
+                    justify-content: flex-end;
                     align-items: center;
                 }
-                
+
+                .leftBtn{
+                    width: 940px;
+                    margin: 0 auto;
+                    display: flex;
+                    justify-content: flex-start;
+                }
                 .rightBtn2 {
                     margin-top: 10px;
                 }
