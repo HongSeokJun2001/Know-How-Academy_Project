@@ -25,15 +25,7 @@
 		 margin : 5px;
 		 width : 150px;
 	}
-	#login-form table>thead {
-        padding : 20%;
-	}
-	#login-form table>tbody {
-        padding : 40%;
-	}
-	#login-form table>tfoot {
-        padding : 24%;
-	}
+	
 </style>
 </head>
 <body>
@@ -102,7 +94,7 @@
 					
 					</form>
 					
-					<script>
+					<script>  
 					function enrollPage() {
 						
 						// 회원가입페이지로 이동
@@ -128,7 +120,7 @@
 	     <c:otherwise>	
 	        
 	        <!-- case2. 로그인 후 -->
-				<div id="user-info">
+				<div id="userstudent-info">
 				    
 					  <table id="login-page" align="center">
 					      <tr align="center">
@@ -187,9 +179,8 @@
 					}
 				    </script>
 				  </div>
-		
+		        
 			</c:otherwise>
-		
 		</c:choose>	        
          
         </div> 

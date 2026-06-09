@@ -29,13 +29,13 @@
 		<h2 align="center">회원가입</h2>
 		<br>
 
-		<form id="enroll-form" >
-           <div id="enroll-form">
+		 <form id="enroll-form">
+           <div id="enroll-form" >
 			<table>
 				<tr>
 					<th><label for="userId" >* 아이디</label></th>
 					<td>
-						<input type="text" id="userId" name="userId" maxlength="16" placeholder="8~16자리 영문자/숫자" required>
+						<input type="text" name="userId" id="userId" maxlength="16" placeholder="8~16자리 영문자/숫자" required>
 						<div class="errorMessage" id="userIdErrorMessage"></div>
 					</td>
 					<td>
@@ -47,15 +47,15 @@
 				<tr>
 					<th><label for="userPwd" >* 비밀번호</label></th>
 					<td>
-						<input type="password" id="userPwd" name="userPwd" maxlength="20" placeholder="8~20자리 영문자/숫자" required>
+						<input type="password" name="userPwd" id="userPwd"  maxlength="20" placeholder="8~20자리 영문자/숫자" required>
 						<div class="errorMessage" id="userPwdErrorMessage"></div>
 					</td>
 					<td></td>
 				</tr>
 				<tr>
-					<th><label for="userPwdCheck" >* 비밀번호</label></th>
+					<th><label for="userPwdCheck" >* 비밀번호 확인</label></th>
 					<td>
-						<input type="password" id="userPwdCheck" name="userPwdCheck" maxlength="20" required>
+						<input type="password" name="userPwdCheck" id="userPwdCheck" maxlength="20" required>
 						<div class="errorMessage" id="userPwdCheckErrorMessage"></div>
 					</td>
 					<td></td>
@@ -63,7 +63,7 @@
 				<tr>
 					<th><label for="userName" >* 이름</label></th>
 					<td>
-						<input type="text" id="userName" name="userName" maxlength="6" required>
+						<input type="text" name="userName" id="userName" maxlength="6" required>
 					</td>
 					<td></td>
 				</tr>
@@ -71,34 +71,34 @@
 				<tr>
 					<th><label for="email" >* 이메일</label></th>
 					<td>
-						<input type="email" id="email" name="email" required>
+						<input type="email" id="email" required>
 					</td>
 					<td>
-                        <button type="button" id="sendMail"  onclick="sendMail();"
-								class="btn btn-secondary btn-sm">인증번호발송</button>
+                        <button type="button" id="sendMail" onclick="sendMail();"
+								class="btn btn-secondary btn-sm" required>인증번호발송</button>
                     </td>
 				</tr>
                 <tr>
                    <th><label for="checkNo" >* 이메일 인증번호</label></th>
                     <td>
-                        <input type="text" id="checkNo" disabled required>
+                        <input type="text"  id="checkNo" disabled required>
                     </td>
 					<td>
-						<button type="button" id="validateMail"  onclick="validateMail();"
-								class="btn btn-secondary btn-sm" disabled>인증확인</button>
+						<button type="button" id="validateMail" onclick="validateMail();"
+								class="btn btn-secondary btn-sm" disabled required>인증확인</button>
 					</td>
                 </tr>
 				<tr>
 					<th><label for="address">&nbsp;&nbsp;&nbsp;주소</label></th>
 					<td>
-						<input type="text" id="address" name="address" >
+						<input type="text" name="address" id="address">
 					</td>
 					<td></td>
 				</tr>
                 <tr>
 					<th><label for="phone">&nbsp;&nbsp;&nbsp;전화번호</label></th>
 					<td>
-						<input type="text" id="phone" name="phone" placeholder="-제외하고 입력">
+						<input type="text" name="phone" id="phone" placeholder="-제외하고 입력">
 					</td>
 					<td></td>
 				</tr>
@@ -125,7 +125,7 @@
 	
 	         $("#enroll-Form").on("submit", requestEnrollForm)
 	         $('#userId').on("blur", function () {
-	             $('#userIdErrorMessage').text(!userIdRegex.test($(this).val()) ? "영문자로 시작해야 하며 8~16자의 영문자, 숫자,특수문자를 사용해야합니다." : "");
+	             $('#userIdErrorMessage').text(!userIdRegex.test($(this).val()) ? "영문자로 시작해야 하며 8~16자의 영문자, 숫자를 사용해야합니다." : "");
 	         });
 	         $("#userPwd").on("blur", function () {
 	             $('#userPwdErrorMessage').text(!passwordRegex.test($(this).val()) ? "8~20자의 영문 대/소문자, 숫자, 특수문자를 사용해야합니다." : "");
@@ -181,13 +181,18 @@
 		
         function validateMail() {
 			
+        	let $email = $("#enroll-form input[id=email]");
+			let $sendMail = $("#enroll-form button[id=sendMail]");
+			let $checkNo = $("#enroll-form input[id=checkNo]");
+			let $valiadateMail = $("#enroll-form button[id=validateMail]");
+        	
 			// 이메일주소와 인증 번호를 서버로 다시 보내서 대조 작업
 			$.ajax({
 				url : "/know-how/myPage/validateMail",
 				type : "post", 
 				data : {
-					email : $("#email").val(),
-					checkNo : $("#checkNo").val()
+					email : $email.val(),
+					checkNo : $checkNo.val()
 				}, 
 				success : function(result) {
 					
@@ -197,8 +202,8 @@
 						alert("본인 인증에 성공했습니다.");
 					
 						// 인증 관련 요소들도 다시 disabled (readonly) 상태로 되돌려놓기
-						$("#checkNo").prop("readonly", true);
-						$("#validateMail").prop("disabled", true);
+						$checkNo.prop("readonly", true);
+						$validateMail.prop("disabled", true);
 						
 					} else {
 						// > 대조 실패일 경우
@@ -207,13 +212,13 @@
 						
 						// 인증 관련 요소들도 다시 disabled 상태로 되돌려놓기
 						// > 특히, 이미 입력한 인증번호를 초기화까지 시켜줘야함
-						$("#checkNo").prop("disabled", true).val("");
-						$("#validateMail").prop("disabled", true);
+						$checkNo.prop("disabled", true).val("");
+						$validateMail.prop("disabled", true);
 						
 						// 이메일 관련 요소들도 다시 활성화 상태로 되돌리기
 						// > 마찬가지로 이미 입력했던 이메일 주소도 초기화 해줘야함
-						$("#email").prop("disabled", false).val("");
-						$("#sendMail").prop("disabled", false);
+						$email.prop("disabled", false).val("");
+						$sendMail.prop("disabled", false);
 						
 					}
 					
@@ -227,24 +232,29 @@
 	
 		function sendMail() {
 			
+			let $email = $("#enroll-form input[id=email]");
+			let $sendMail = $("#enroll-form button[id=sendMail]");
+			let $checkNo = $("#enroll-form input[id=checkNo]");
+			let $valiadateMail = $("#enroll-form button[id=validateMail]");
+			
 			// 인증 번호를 이메일로 전송할 수 있도록 요청
 			$.ajax({
 				url : "/know-how/myPage/sendMail",
 				type : "post",
 				data : {
-					email : $("#email").val()
+					email : $email.val() 
 				},
 				success : function(result) {
 					
 					alert(result);
 					
 					// 인증번호 발급 후 이메일 관련 요소들은 비활성화
-					$("#email").prop("readonly", true);
-					$("#sendMail").prop("readonly", true);
+					$email.prop("readonly", true);
+					$sendMail.prop("readonly", true);
 					
 					// 인증 관련 요소들은 활성화
-					$("#checkNo").prop("disabled", false);
-					$("#validateMail").prop("disabled", false);
+					$checkNo.prop("disabled", false);
+					$validateMail.prop("disabled", false);
 					
 				},
 				error : function() {
