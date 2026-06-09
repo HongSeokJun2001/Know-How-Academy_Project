@@ -16,14 +16,10 @@ public class FileRenamePolicy {
 		
 		String originName = upfile.getOriginalFilename();
 		
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss")
+		String currentTime = new SimpleDateFormat("yyyyMM")
 								.format(new Date());
 		
-		int ranNum = (int)(Math.random() * 90000 + 10000);
-		
-		String ext = originName.substring(originName.lastIndexOf("."));
-		
-		String saveName = currentTime + ranNum + ext;
+		String saveName = currentTime + "_" + originName;
 		
 		String savePath = session.getServletContext()
 						  .getRealPath(path);

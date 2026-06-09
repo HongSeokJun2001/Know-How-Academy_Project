@@ -183,8 +183,8 @@ public class AdminService2 {
 		}
 		
 		if (deleteFileNo != null) {
-	        for (String fileNoStr : deleteFileNo) {
-	            int fileNo = Integer.parseInt(fileNoStr);
+	        for (String dfno : deleteFileNo) {
+	            int fileNo = Integer.parseInt(dfno);
 	            
 	            int delResult = ad2.deleteNewsFileAttachment(sqlSession, fileNo); 
 	            

@@ -128,7 +128,7 @@
 				<tr>
 					<th>대표이미지</th>
 					<td colspan="3" align="center">
-						<img src="/know-how/${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
+						<img src="/know-how${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
 							 width="250" height="170">
 					</td>
 				</tr>
@@ -142,7 +142,7 @@
 							<c:otherwise>
 								<c:forEach var="i" begin="1" end="${ requestScope.list.size() - 1 }" step="1">
 								
-									<img src="/know-how/${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
+									<img src="/know-how${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
 										 width="150" height="110" style="margin: 0 10px;">
 								
 								</c:forEach>

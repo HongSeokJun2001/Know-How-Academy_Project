@@ -126,7 +126,7 @@
 							<c:when test="${ not empty  requestScope.list[0] }">
 								<input type="hidden" name="originalFileNo1" value="${ requestScope.list[0].fileNo }">
 								<input type="hidden" name="originalFileSaveName1" value="${ requestScope.list[0].saveName }">
-								<img id="titleImg" width="250" height="170" src="/know-how/${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }">
+								<img id="titleImg" width="250" height="170" src="/know-how${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }">
 							</c:when>
 							<c:otherwise>
 								<img id="titleImg" width="250" height="170">
@@ -141,7 +141,7 @@
 							<c:when test="${ not empty  requestScope.list[1] }">
 								<input type="hidden" name="originalFileNo2" value="${ requestScope.list[1].fileNo }">
 								<input type="hidden" name="originalFileSaveName2" value="${ requestScope.list[1].saveName }">
-								<img id="contentImg1" width="250" height="170" src="/know-how/${ requestScope.list[1].filePath }${ requestScope.list[1].saveName }">
+								<img id="contentImg1" width="250" height="170" src="/know-how${ requestScope.list[1].filePath }${ requestScope.list[1].saveName }">
 							</c:when>
 							<c:otherwise>
 								<img id="contentImg1" width="250" height="170">
@@ -153,7 +153,7 @@
 							<c:when test="${ not empty  requestScope.list[2] }">
 								<input type="hidden" name="originalFileNo3" value="${ requestScope.list[2].fileNo }">
 								<input type="hidden" name="originalFileSaveName3" value="${ requestScope.list[2].saveName }">
-								<img id="contentImg2" width="250" height="170" src="/know-how/${ requestScope.list[2].filePath }${ requestScope.list[2].saveName }">
+								<img id="contentImg2" width="250" height="170" src="/know-how${ requestScope.list[2].filePath }${ requestScope.list[2].saveName }">
 							</c:when>
 							<c:otherwise>
 								<img id="contentImg2" width="250" height="170">
@@ -165,7 +165,7 @@
 							<c:when test="${ not empty  requestScope.list[3] }">
 								<input type="hidden" name="originalFileNo4" value="${ requestScope.list[3].fileNo }">
 								<input type="hidden" name="originalFileSaveName4" value="${ requestScope.list[3].saveName }">
-								<img id="contentImg3" width="250" height="170" src="/know-how/${ requestScope.list[3].filePath }${ requestScope.list[3].saveName }">
+								<img id="contentImg3" width="250" height="170" src="/know-how${ requestScope.list[3].filePath }${ requestScope.list[3].saveName }">
 							</c:when>
 							<c:otherwise>
 								<img id="contentImg3" width="250" height="170">
