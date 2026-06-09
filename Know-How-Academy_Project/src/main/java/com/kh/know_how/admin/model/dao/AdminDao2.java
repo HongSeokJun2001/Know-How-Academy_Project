@@ -121,9 +121,52 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
 	}
 
-	public int updateNoticeStatus(SqlSessionTemplate sqlSession, Board n) {
+	public int adminUpdateStatus(SqlSessionTemplate sqlSession, Board n) {
 		
-		return sqlSession.update("boardMapper.updateNoticeStatus", n);
+		return sqlSession.update("boardMapper.adminUpdateStatus", n);
+	}
+
+	public int adminSelectNewsCount(SqlSessionTemplate sqlSession) {
+		
+		return sqlSession.selectOne("boardMapper.adminSelectNewsCount");
+	}
+
+	public ArrayList<Board> adminSelectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
+
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNewsList", null, rowBounds);
+	}
+
+	public int adminSearchNewsCount(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("boardMapper.adminSearchNewsCount", keyword);
+	}
+
+	public ArrayList<Board> adminSearchNewsList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNewsList", keyword, rowBounds);
+	}
+
+	public int insertAttachmentList(SqlSessionTemplate sqlSession, ArrayList<FileAttachment> list) {
+		
+		int result = 1;
+		
+		for(FileAttachment fa : list) {
+			result *= sqlSession.insert("boardMapper.insertFileAttachmentList", fa);
+		}
+		
+		return result;
+	}
+
 	}
 
 }//클래스 끝

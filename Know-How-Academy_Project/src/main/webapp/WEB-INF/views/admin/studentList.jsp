@@ -170,7 +170,6 @@
     height: 54px;
     padding: 0 18px;
     background-color: #fafafa;
-    color: #2c2f3f;
     font-weight: 800;
     text-align: left;
     border-bottom: 1px solid #e5e7eb;
@@ -178,7 +177,6 @@
 
 .student-table tbody td {
     padding: 16px 18px;
-    color: #374151;
     border-bottom: 1px solid #eef0f4;
     vertical-align: middle;
 }
@@ -189,17 +187,6 @@
 
 .student-table tbody tr:hover {
     background-color: #fafaff;
-}
-
-.student-name-link {
-    color: #4233c7;
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.student-name-link:hover {
-    color: #2f2499;
 }
 
 /* 상태 배지 */
@@ -413,9 +400,7 @@
 								</tr>	
 								<c:forEach var="s" items="${ requestScope.list }">
 									<tr>
-										<td>
-											<a href="#" class="student-name-link">${ s.studentName }</a>
-										</td>
+										<td>${ s.studentName }</td>
 										<td>${ s.phone }</td>
 										<td>${ s.counselorName }</td>
 										<td>${ s.createdAt }</td>

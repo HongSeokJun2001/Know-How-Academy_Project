@@ -52,6 +52,10 @@
 		border-bottom : 1px solid #eef0f4;
 	}
 	
+	.notice-table tr:last-child * {
+    	border-bottom: none;
+	}
+	
 	.notice-table input, .notice-table textarea, .notice-table a {
 		padding : 9px;
 		margin : 7px;
