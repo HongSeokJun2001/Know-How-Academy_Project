@@ -166,13 +166,14 @@ public class AdminController2 {
     @GetMapping("/notice")
     public ModelAndView selectNoticeList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) {
     	
-    	int listCount = as2.adminSelectNoticeCount();
+    	String postType = "NOTICE";
+    	int listCount = as2.adminSelectBoardCount(postType);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSelectNoticeList(pi);
+    	ArrayList<Board> list = as2.adminSelectBoardList(pi, postType);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -185,14 +186,20 @@ public class AdminController2 {
     @GetMapping("/notice/search")
     public String searchNoticeList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
+    	String postType = "NOTICE";
     	keyword = XssDefencePolicy.defence(keyword);
-    	int listCount = as2.adminSearchNoticeCount(keyword);
+    	
+    	HashMap<String, String> map = new HashMap<>();
+    	map.put("postType", postType);
+    	map.put("keyword", keyword);
+    	
+    	int listCount = as2.adminSearchBoardCount(map);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSearchNoticeList(pi, keyword);
+    	ArrayList<Board> list = as2.adminSearchBoardList(pi, map);
     	
     	model.addAttribute("list", list)
     	     .addAttribute("pi", pi)
@@ -206,7 +213,7 @@ public class AdminController2 {
     @PostMapping("/notice/visible")
     public String updateNoticeStatus(Board b) {
     	
-    	int result = as2.adminUpdateStatus(b);
+    	int result = as2.adminUpdateBoardStatus(b);
     	
     	return (result > 0) ? "success" : "fail";
     }
@@ -355,13 +362,14 @@ public class AdminController2 {
     @GetMapping("/academyNews")
     public ModelAndView selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) {
     	
-    	int listCount = as2.adminSelectNewsListCount();
+    	String postType = "NEWS";
+    	int listCount = as2.adminSelectBoardCount(postType);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSelectNewsList(pi);
+    	ArrayList<Board> list = as2.adminSelectBoardList(pi, postType);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -374,14 +382,20 @@ public class AdminController2 {
     @GetMapping("/academyNews/search")
     public String searchNewsList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
+    	String postType = "NEWS";
     	keyword = XssDefencePolicy.defence(keyword);
-    	int listCount = as2.adminSearchNewsCount(keyword);
+    	
+    	HashMap<String, String> map = new HashMap<>();
+    	map.put("postType", postType);
+    	map.put("keyword", keyword);
+    	
+    	int listCount = as2.adminSearchBoardCount(map);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSearchNewsList(pi, keyword);
+    	ArrayList<Board> list = as2.adminSearchBoardList(pi, map);
     	
     	model.addAttribute("list", list)
     	     .addAttribute("pi", pi)
@@ -395,7 +409,7 @@ public class AdminController2 {
     @PostMapping("/academyNews/visible")
     public String updateNewsStatus(Board b) {
     	
-    	int result = as2.adminUpdateStatus(b);
+    	int result = as2.adminUpdateBoardStatus(b);
     	
     	return (result > 0) ? "success" : "fail";
     }

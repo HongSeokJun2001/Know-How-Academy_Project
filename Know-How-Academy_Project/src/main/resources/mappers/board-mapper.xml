@@ -23,6 +23,8 @@
 		<result column="SAVE_NAME" property="saveName" />
 		<result column="FILE_PATH" property="filePath" />
 	</resultMap>
+
+<!-- >>>>>>>>>>>>>>>>일반/공통 게시판 매퍼>>>>>>>>>>>>>>>>>>> -->
 	
 	<!-- 메인페이지 공지사항 목록 조회용 쿼리문 -->
 	<select id="mainPageNoticeList" resultMap="boardResultSet">
@@ -93,68 +95,7 @@
 		 ORDER BY FILE_NO ASC
 	</select>
 	
-	<!-- (관리자용)공지사항 총 갯수를 구하는 쿼리문 -->
-	<select id="adminSelectNoticeCount" resultType="_int">
-		SELECT COUNT(*)
-		  FROM BOARD_POST
-		 WHERE POST_TYPE = 'NOTICE'
-	</select>
 	
-	<!-- (관리자용)공지사항 목록 조회용 쿼리문 -->
-	<select id="adminSelectNoticeList" resultMap="boardResultSet">
-		SELECT *
-		  FROM (
-			SELECT A.*, ROWNUM
-			  FROM (
-					SELECT POST_NO
-					     , TITLE
-						 , USER_NAME
-						 , B.CREATED_AT
-						 , B.STATUS
-					  FROM BOARD_POST B
-					  JOIN MEMBER ON (WRITER_NO = USER_NO)
-					 WHERE POST_TYPE = 'NOTICE'
-					 ORDER BY POST_NO
-					) A
-				 )
-		 ORDER BY ROWNUM DESC 
-	</select>
-	
-	<!-- (관리자용)공지사항 키워드 검색시 총 갯수를 구하는 쿼리문 -->
-	<select id="adminSearchNoticeCount" parameterType="string" resultType="_int">
-		SELECT COUNT(*)
-		  FROM BOARD_POST
-		 WHERE POST_TYPE = 'NOTICE'
-		   AND TITLE LIKE '%' || #{keyword} || '%'
-	</select>
-	
-	<!-- (관리자용)공지사항 키워드 검색시 목록 조회용 쿼리문 -->
-	<select id="adminSearchNoticeList" parameterType="string" resultMap="boardResultSet">
-		SELECT *
-		  FROM (
-			SELECT A.*, ROWNUM
-			  FROM (
-					SELECT POST_NO
-						 , TITLE
-						 , USER_NAME
-						 , B.CREATED_AT
-						 , B.STATUS
-					  FROM BOARD_POST B
-					  JOIN MEMBER ON (WRITER_NO = USER_NO)
-					 WHERE POST_TYPE = 'NOTICE'
-					   AND TITLE LIKE '%' || #{keyword} || '%'
-					 ORDER BY POST_NO
-					 ) A
-			      )
-		 ORDER BY ROWNUM DESC
-	</select>
-	
-	<!-- (관리자용)공지사항, 학원소식 상태 변경용 쿼리문 -->
-	<update id="adminUpdateStatus" parameterType="board">
-		UPDATE BOARD_POST
-		   SET STATUS = #{status}
-		 WHERE POST_NO = #{postNo}
-	</update>
 	
 	
 	<!-- 게시글 삭제용 쿼리문 -->
@@ -239,43 +180,45 @@
 								 , #{filePath})
 	</insert>
 	
-	<!-- (관리자용) 학원소식 총 갯수를 구하는 쿼리문 -->
-	<select id="adminSelectNewsCount" resultType="_int">
+<!-- >>>>>>>>>>>>>>>>관리자용 매퍼>>>>>>>>>>>>>>>>>>> -->
+	
+	<!-- (관리자용)공지사항, 학원소식 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSelectBoardCount" parameterType="string" resultType="_int">
 		SELECT COUNT(*)
 		  FROM BOARD_POST
-		 WHERE POST_TYPE = 'NEWS'
+		 WHERE POST_TYPE = #{postType}
 	</select>
 	
-	<!-- (관리자용) 학원소식 목록 조회용 쿼리문 -->
-	<select id="adminSelectNewsList" resultMap="boardResultSet">
+	<!-- (관리자용)공지사항, 학원소식 목록 조회용 쿼리문 -->
+	<select id="adminSelectBoardList" parameterType="string" resultMap="boardResultSet">
 		SELECT *
 		  FROM (
 			SELECT A.*, ROWNUM
 			  FROM (
 					SELECT POST_NO
-						 , TITLE
+					     , TITLE
 						 , USER_NAME
 						 , B.CREATED_AT
 						 , B.STATUS
 					  FROM BOARD_POST B
 					  JOIN MEMBER ON (WRITER_NO = USER_NO)
-					 WHERE POST_TYPE = 'NEWS'
+					 WHERE POST_TYPE = #{postType}
 					 ORDER BY POST_NO
-					 ) A
+					) A
 				 )
 		 ORDER BY ROWNUM DESC 
 	</select>
 	
-	<!-- (관리자용)학원소식 키워드 검색시 총 갯수를 구하는 쿼리문 -->
-	<select id="adminSearchNewsCount" parameterType="string" resultType="_int">
+	<!-- (관리자용)공지사항, 학원소식 키워드 검색시 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSearchBoardCount" parameterType="hashmap" resultType="_int">
 		SELECT COUNT(*)
 		  FROM BOARD_POST
-		 WHERE POST_TYPE = 'NEWS'
+		 WHERE POST_TYPE = #{postType}
 		   AND TITLE LIKE '%' || #{keyword} || '%'
 	</select>
-
-	<!-- (관리자용)학원소식 키워드 검색시 목록 조회용 쿼리문 -->
-	<select id="adminSearchNewsList" parameterType="string" resultMap="boardResultSet">
+	
+	<!-- (관리자용)공지사항 키워드 검색시 목록 조회용 쿼리문 -->
+	<select id="adminSearchBoardList" parameterType="hashmap" resultMap="boardResultSet">
 		SELECT *
 		  FROM (
 			SELECT A.*, ROWNUM
@@ -287,13 +230,20 @@
 						 , B.STATUS
 					  FROM BOARD_POST B
 					  JOIN MEMBER ON (WRITER_NO = USER_NO)
-					 WHERE POST_TYPE = 'NEWS'
+					 WHERE POST_TYPE = #{postType}
 					   AND TITLE LIKE '%' || #{keyword} || '%'
 					 ORDER BY POST_NO
 					 ) A
 			      )
 		 ORDER BY ROWNUM DESC
 	</select>
+	
+	<!-- (관리자용)공지사항, 학원소식 상태 변경용 쿼리문 -->
+	<update id="adminUpdateBoardStatus" parameterType="board">
+		UPDATE BOARD_POST
+		   SET STATUS = #{status}
+		 WHERE POST_NO = #{postNo}
+	</update>
 	
 	<!-- (관리자용)학원소식 대표이미지와 상세이미지 추가용 쿼리문 -->
 	<insert id="insertFileAttachmentList" parameterType="FileAttachment">
