@@ -117,7 +117,19 @@ public class AdminService2 {
 		
 		return ad2.adminSearchBoardList(sqlSession, pi, map);
 	}
+	
+	@Transactional
+	public int adminDeleteBoard(int postNo) {
+		
+		return ad2.adminDeleteBoard(sqlSession, postNo);
+	}
 
+	@Transactional
+	public int adminDeleteFileAttachment(int postNo) {
+		return ad2.adminDeleteFileAttachment(sqlSession, postNo);
+		
+	}
+	
 	@Transactional
 	public int adminUpdateBoardStatus(Board b) {
 		

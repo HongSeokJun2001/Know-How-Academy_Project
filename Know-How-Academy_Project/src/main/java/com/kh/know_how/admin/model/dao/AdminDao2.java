@@ -121,6 +121,16 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchBoardList", map, rowBounds);
 	}
 
+	public int adminDeleteBoard(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.adminDeleteBoard", postNo);
+	}
+	
+	public int adminDeleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.adminDeleteFileAttachment", postNo);
+	}
+	
 	public int adminUpdateBoardStatus(SqlSessionTemplate sqlSession, Board n) {
 		
 		return sqlSession.update("boardMapper.adminUpdateBoardStatus", n);

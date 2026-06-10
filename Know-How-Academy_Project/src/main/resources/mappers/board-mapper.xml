@@ -95,16 +95,6 @@
 		 ORDER BY FILE_NO ASC
 	</select>
 	
-	
-	
-	
-	<!-- 게시글 삭제용 쿼리문 -->
-	<delete id="deleteBoard" parameterType="_int">
-		DELETE
-		  FROM BOARD_POST
-		 WHERE POST_NO = #{postNo}
-	</delete>
-	
 	<!-- 게시글 등록용 쿼리문 -->
 	<insert id="insertBoard" parameterType="board">
 		INSERT INTO BOARD_POST(POST_NO
@@ -138,13 +128,6 @@
 							 , #{saveName}
 							 , #{filePath})
 	</insert>
-
-	<!-- 첨부파일 삭제용 쿼리문 -->
-	<delete id="deleteFileAttachment" parameterType="_int">
-		DELETE
-		  FROM FILE_ATTACHMENT
-		 WHERE TARGET_NO = #{postNo}
-	</delete>
 	
 	<!-- 게시판 수정용 쿼리문 -->
 	<update id="updateBoard" parameterType="board">
@@ -286,6 +269,20 @@
 		DELETE
 		  FROM FILE_ATTACHMENT
 		 WHERE FILE_NO = #{fileNo}
+	</delete>
+	
+	<!-- (관리자용)게시글 삭제용 쿼리문 -->
+	<delete id="adminDeleteBoard" parameterType="_int">
+		DELETE
+		  FROM BOARD_POST
+		 WHERE POST_NO = #{postNo}
+	</delete>
+	
+	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
+	<delete id="adminDeleteFileAttachment" parameterType="_int">
+		DELETE
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
 	</delete>
 	
 </mapper>
