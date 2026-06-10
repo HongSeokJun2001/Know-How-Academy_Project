@@ -45,16 +45,6 @@ public class BoardDao {
 	
 		return sqlSession.selectOne("boardMapper.selectFileAttachment", postNo);
 	}
-
-	public int deleteBoard(SqlSessionTemplate sqlSession, int postNo) {
-		
-		return sqlSession.delete("boardMapper.deleteBoard", postNo);
-	}
-	
-	public int deleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
-		
-		return sqlSession.delete("boardMapper.deleteFileAttachment", postNo);
-	}
 	
 	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
 		

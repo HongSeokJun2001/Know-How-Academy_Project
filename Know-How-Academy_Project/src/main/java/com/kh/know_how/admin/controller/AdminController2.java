@@ -232,10 +232,10 @@ public class AdminController2 {
 			
 			new File(savePath + fa.getSaveName()).delete();
     		
-    		result2 =  bs.deleteFileAttachment(postNo);
+    		result2 =  as2.adminDeleteFileAttachment(postNo);
 			
 		}
-    	int result1 = bs.deleteBoard(postNo);
+    	int result1 = as2.adminDeleteBoard(postNo);
     	
     	return ((result1 * result2) > 0) ? "success" : "fail";
     }
@@ -431,9 +431,9 @@ public class AdminController2 {
     			new File(savePath + fa.getSaveName()).delete();
             }
     		
-			result2 =  bs.deleteFileAttachment(postNo);
+			result2 =  as2.adminDeleteFileAttachment(postNo);
 		}
-    	int result1 = bs.deleteBoard(postNo);
+    	int result1 = as2.adminDeleteBoard(postNo);
     	
     	return ((result1 * result2) > 0) ? "success" : "fail";
     }

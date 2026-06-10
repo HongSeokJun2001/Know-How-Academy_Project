@@ -51,18 +51,6 @@ public class BoardService {
 	}
 	
 	@Transactional
-	public int deleteBoard(int postNo) {
-		
-		return boardDao.deleteBoard(sqlSession, postNo);
-	}
-
-	@Transactional
-	public int deleteFileAttachment(int postNo) {
-		return boardDao.deleteFileAttachment(sqlSession, postNo);
-		
-	}
-	
-	@Transactional
 	public int updateBoard(Board b, FileAttachment fa) {
 		
 		int result1 = boardDao.updateBoard(sqlSession, b);
