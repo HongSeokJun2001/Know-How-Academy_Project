@@ -12,6 +12,8 @@ import lombok.ToString;
 @Getter
 @ToString
 public class PageRequestDto {
+	
+	//>>>>> pageLimit, boardLimit 은 admin/common/AdminPagination 에 있음!
 
 	private int currentPage;    // 현재 페이지
     private int startRow;		// 가져올 목록번호 시작수

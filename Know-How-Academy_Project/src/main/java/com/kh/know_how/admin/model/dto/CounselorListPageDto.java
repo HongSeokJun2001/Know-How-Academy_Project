@@ -23,6 +23,6 @@ public class CounselorListPageDto {
 	
     private ArrayList<CounselorListResponseDto> counselorList;	//상담사 목록
     private PageResponseDto pageInfo;							//페이징공용DTO
-    private ArrayList<ClassListDto> classList;
+    private ArrayList<ClassListDto> classList;					//담당상담사가없는 클래스 목록
     
 }

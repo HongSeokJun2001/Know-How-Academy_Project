@@ -157,4 +157,3 @@ public class AdminDao2 {
 		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
 	}
 
-}//클래스 끝
