@@ -54,7 +54,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         Member loginUser = (Member) session.getAttribute("loginUser");
 		
         // [상황 2] 관리자(admin) 권한 검사
-        if (!"ADMIN".equals(loginUser.getRoleCode())) {  //*****vo roleCode 맞는지 확인(-)
+        if (!"ADMIN".equals(loginUser.getRoleCode())) { 
         	
         	System.out.println(" [Forbidden] 관리자 권한 없는 유저 접근 시도 - 유저번호: " + loginUser.getUserNo() + ", URI: " + requestURI);
 			

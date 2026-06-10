@@ -26,7 +26,7 @@
     #fake-header {
         width: 100%;
         height: 60px;
-        background-color: #4233C7;                  /* 팀 테마색 */
+        background-color: #4233C7;
         color: white;
 
         display: flex;
@@ -34,14 +34,48 @@
 
         padding: 0 24px;
 
-        font-size: 18px;
-        font-weight: 700;
-
         position: fixed;
         top: 0;
         left: 0;
 
         z-index: 1000;
+    }
+
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .header-user-area {
+        margin-left: auto;
+
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logout-btn {
+        height: 34px;
+        padding: 0 14px;
+
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 8px;
+
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.22);
     }
 
     /* 로고 */
@@ -155,7 +189,7 @@
         align-items: center;
         justify-content: space-between;
 
-        padding: 28px 32px;
+        padding: 14px 20px;
 
         background: #FFFFFF;
         border: 1px solid #DDD8FF;
@@ -248,10 +282,20 @@
     -->
 
     <div id="fake-header">
-        <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
-             alt="know-how-academy 마크">
-        &thinsp;
-        KNOW-HOW ACADEMY &thinsp; 관리자 페이지
+        <div class="header-title">
+            <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
+                alt="know-how-academy 마크">
+            <span>KNOW-HOW ACADEMY</span>
+            <span>관리자 페이지</span>
+        </div>
+
+        <div class="header-user-area">
+            <div class="admin-profile">name</div>
+            <span class="admin-name">관리자님</span>
+            <button type="button" class="logout-btn" onclick="logoutAdmin()">
+                로그아웃
+            </button>
+        </div>
     </div>
 
     <div id="main-container">
@@ -313,7 +357,7 @@
                 </section>
             </div>
 
-            <br><br>
+            <br>
 
             <jsp:include page="${page}.jsp" />
         </div>
@@ -324,6 +368,12 @@
 <script>
 
     const cp = "${pageContext.request.contextPath}";
+
+    function logoutAdmin() {
+        if(confirm("로그아웃 하시겠습니까?")) {
+            location.href = cp + "/admin/logout";
+        }
+    }
 
     function go(path) {
         location.href = cp + path;
@@ -346,10 +396,10 @@
     $(document).ajaxError(function(event, xhr, settings, thrownError) {
         if (xhr.status === 401) {
             alert("세션이 만료되어 로그인이 필요합니다.");
-            location.href = "/know-how/admin/login"; 
+            location.href = "cp/admin/login"; 
         } else if (xhr.status === 403) {
             alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
-            location.href = "/know-how/"; 
+            location.href = "cp/"; 
         }
     });
 
