@@ -487,7 +487,7 @@
         function selectMemoList() {
 
             $.ajax({
-                url : "/know-how/admin/student/mlist",
+                url : "${ctx}/admin/student/mlist",
                 type : "get",
                 data : {
                     userNo : ${ requestScope.counselor.userNo}
@@ -505,6 +505,13 @@
                     }
 
                     $(".memo-list").html(resultStr);
+                },
+                error : function(xhr){
+
+                    if (xhr.status !== 401 && xhr.status !== 403) {
+                        console.log("메모 목록 조회 실패!");
+                        alert("메모 목록 조회 중 오류가 발생했습니다.");
+                    }
                 }
             });
         }
@@ -515,7 +522,7 @@
             let userMemo = $(".memo-input").val();
 
             $.ajax({
-                url : "/know-how/admin/student/minsert",
+                url : "${ctx}/admin/student/minsert",
                 type : "post",
                 data : {
                     userNo : ${ requestScope.counselor.userNo },
@@ -537,8 +544,10 @@
                 },
                 error : function(xhr) {
                 
-                    console.log("메모 작성용 ajax 통신 실패!");
-                    alert("메모 작성 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.");
+                    if (xhr.status !== 401 && xhr.status !== 403) {
+                        console.log("메모 추가 실패!");
+                        alert("메모 추가 중 오류가 발생했습니다.");
+                    }
 
                 }
                     
@@ -549,7 +558,7 @@
         function deleteMemo(memoNo) {
             
             $.ajax({
-                url : "/know-how/admin/student/mdelete",
+                url : "${ctx}/admin/student/mdelete",
                 type : "post",
                 data : {
                     memoNo : memoNo
@@ -566,10 +575,13 @@
                         
                     }
                 },
-                error : function() {
-                
-                    console.log("메모 삭제용 ajax 통신 실패!");
-                    alert("메모 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.");
+                error : function(xhr) {
+                    
+                    if (xhr.status !== 401 && xhr.status !== 403) {
+                        console.log("메모 삭제 실패!");
+                        alert("메모 삭제 중 오류가 발생했습니다.");
+                    }
+                 
                 }
                     
             });	

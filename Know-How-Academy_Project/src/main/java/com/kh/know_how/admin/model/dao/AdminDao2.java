@@ -167,6 +167,5 @@ public class AdminDao2 {
 		return result;
 	}
 
-	}
+}
 
-}//클래스 끝

@@ -535,8 +535,10 @@
                     
                 },
                 error : function(){
-                    
-                    alert('목록을 불러오는데 실패했습니다.');
+                    console.log("목록 조회 시  ajax 통신 실패!");
+                    if (xhr.status !== 401 && xhr.status !== 403) {
+                        alert('목록을 불러오는데 실패했습니다.');
+                    }
                 }
             });
         }
@@ -579,10 +581,11 @@
                     console.log("상담사 초대메일 발송 ajax 통신 실패!");
                     console.log("ctx =", "${ctx}");
                     console.log("ajax url =", "${ctx}/admin/invite/mail");
-
                     console.log("에러코드 :", xhr.status);
 
-                    alert("초대 처리 중 문제가 발생했습니다. 문제가 지속될 경우 관리자에게 문의해주세요.");
+                    if (xhr.status !== 401 && xhr.status !== 403) {
+                        alert("초대 처리 중 문제가 발생했습니다. 문제가 지속될 경우 관리자에게 문의해주세요.");
+                    }
                 }
             });
         }
@@ -605,6 +608,10 @@
                     console.log("inviteNo : " + inviteNo);
                     console.log("초대 취소 ajax 통신 실패! cancelInvite");
                     console.log("에러코드 :", xhr.status);
+
+                    if (xhr.status !== 401 && xhr.status !== 403) {
+                        alert("초대링크 삭제 중 오류가 발생했습니다.");
+                    }
                 }
             });
         }
