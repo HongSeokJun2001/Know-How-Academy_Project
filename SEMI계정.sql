@@ -28,12 +28,13 @@ BEGIN
                 WRITER_NO, 
                 CREATED_AT, 
                 STATUS)
-    VALUES (SEQ_POST_NO.NEXTVAL, 
-    'POST', 
-    '자유', 
-    '자유게시판 게시글 번호 ' || i, 
+    VALUES (
+    SEQ_POST_NO.NEXTVAL, 
+    'STUDENT', 
+    '수강생', 
+    '수강생게시판 게시글 번호 ' || i, 
     '이것은 자동으로 생성된 ' || i || '번째 게시글 내용입니다.', 
-    FLOOR(DBMS_RANDOM.VALUE(1, 11)), 
+    FLOOR(DBMS_RANDOM.VALUE(7, 11)), 
     SYSDATE, 
     'Y');
   END LOOP;
@@ -59,4 +60,5 @@ COMMIT;
 
 DROP SEQUENCE SEQ_POST_NO; (자식 테이블도 같이 삭제)
 
-DROP SEQUENCE SEQ_POST_NO;
+WHERE POST_TYPE = 'NOTICE';
+UPDATE BOARD_POST SET POST_TYPE = 'post' WHERE POST_TYPE = 'POST';

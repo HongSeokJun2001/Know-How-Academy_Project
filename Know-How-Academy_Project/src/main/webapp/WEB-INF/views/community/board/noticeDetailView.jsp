@@ -102,11 +102,11 @@
             <jsp:include page="../../common/menubar.jsp" />
 
             <div class="outer">
-                <h2 align="center">자유게시판</h2>
+                <h2 align="center">공지사항</h2>
                 <div class="btn-area">
                     <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
                     <c:if test="${(not empty sessionScope.loginUser) and 
-                            (sessionScope.loginUser.userNo eq b.writerNo)}">
+                            (sessionScope.loginUser.userNo eq 1)}">
                         <!--로그인중이며, 사용자와 작성자명이 같을 경우에~~-->
                         <div class="leftBtn">
                             <a id="upBtn" class="btn btn-outline-secondary" onclick="postSubmit(1)">수정</a>
@@ -120,9 +120,9 @@
                         <script>
                             function postSubmit(num) {
                                 if (num == 1) {
-                                    $("#postForm").prop("action", "/know-how/community/board/updateForm").submit();
+                                    $("#postForm").prop("action", "/know-how/community/board/${type}/updateForm").submit();
                                 } else {
-                                    $("#postForm").prop("action", "/know-how/community/board/deleteForm").submit();
+                                    $("#postForm").prop("action", "/know-how/community/board/${type}/deleteForm").submit();
                                 }
                             }
                         </script>
@@ -131,7 +131,7 @@
                     
                 </div>
                 <div class="rightBtn1">
-                        <a href="/know-how/community/board/list" id="listBtn1" class="btn btn-outline-secondary">목록</a>
+                        <a href="/know-how/community/board/notice" id="listBtn1" class="btn btn-outline-secondary">목록</a>
                     </div>
             </div>
             <table class="table" id="content">
@@ -154,19 +154,19 @@
                     <th>첨부파일</th>
                     <td colspan="3">
                         <c:choose>
-                            <c:when test="${empty at}">
+                            <c:when test="${empty fa}">
                                 첨부파일이 없습니다.
                             </c:when>
                             <c:otherwise>
-                                <a class="fileName" download="${at.originName}"
-                                    href="/know-how/${at.filePath}${at.saveName}">${at.originName}</a>
+                                <a class="fileName" download="${fa.originName}"
+                                    href="/know-how/${fa.filePath}${fa.saveName}">${fa.originName}</a>
                             </c:otherwise>
                         </c:choose>
                     </td>
                 </tr>
             </table>
             <div class="rightBtn2">
-                <a href="/know-how/community/board/list" id="listBtn2" class="btn btn-outline-secondary">목록</a>
+                <a href="/know-how/community/board/notice" id="listBtn2" class="btn btn-outline-secondary">목록</a>
             </div>
 
             <div id="reply-area">

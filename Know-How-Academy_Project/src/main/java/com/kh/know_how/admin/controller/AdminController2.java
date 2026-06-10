@@ -232,7 +232,7 @@ public class AdminController2 {
 			
 			new File(savePath + fa.getSaveName()).delete();
     		
-    		result2 =  bs.deleteFileAttachment(postNo);
+    		result2 =  bs.admindeleteFileAttachment(postNo);
 			
 		}
     	int result1 = bs.deleteBoard(postNo);
@@ -431,7 +431,7 @@ public class AdminController2 {
     			new File(savePath + fa.getSaveName()).delete();
             }
     		
-			result2 =  bs.deleteFileAttachment(postNo);
+			result2 =  bs.admindeleteFileAttachment(postNo);
 		}
     	int result1 = bs.deleteBoard(postNo);
     	

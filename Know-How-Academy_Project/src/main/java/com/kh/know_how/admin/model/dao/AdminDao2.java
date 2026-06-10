@@ -94,7 +94,7 @@ public class AdminDao2 {
 	
 	public int adminSelectBoardCount(SqlSessionTemplate sqlSession, String postType) {
 		
-		return sqlSession.selectOne("boardMapper.adminSelectBoardCount", postType);
+		return 0; // sqlSession.selectOne("boardMapper.adminSelectBoardCount", postType);
 	}
 	
 	public ArrayList<Board> adminSelectBoardList(SqlSessionTemplate sqlSession, PageInfo pi, String postType) {
@@ -103,12 +103,12 @@ public class AdminDao2 {
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectBoardList", postType, rowBounds);
+		return null; // (ArrayList)sqlSession.selectList("boardMapper.adminSelectBoardList", postType, rowBounds);
 	}
 
 	public int adminSearchBoardCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		
-		return sqlSession.selectOne("boardMapper.adminSearchBoardCount", map);
+		return 0; // sqlSession.selectOne("boardMapper.adminSearchBoardCount", map);
 	}
 
 	public ArrayList<Board> adminSearchBoardList(SqlSessionTemplate sqlSession, PageInfo pi, HashMap<String, String> map) {
@@ -118,33 +118,33 @@ public class AdminDao2 {
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchBoardList", map, rowBounds);
+		return null; // (ArrayList)sqlSession.selectList("boardMapper.adminSearchBoardList", map, rowBounds);
 	}
 
 	public int adminUpdateBoardStatus(SqlSessionTemplate sqlSession, Board n) {
 		
-		return sqlSession.update("boardMapper.adminUpdateBoardStatus", n);
+		return 0; //sqlSession.update("boardMapper.adminUpdateBoardStatus", n);
 	}
 
 	public int insertAttachmentList(SqlSessionTemplate sqlSession, ArrayList<FileAttachment> list) {
 		
 		int result = 1;
 		
-		for(FileAttachment fa : list) {
-			result *= sqlSession.insert("boardMapper.insertFileAttachmentList", fa);
-		}
+//		for(FileAttachment fa : list) {
+//			result *= sqlSession.insert("boardMapper.insertFileAttachmentList", fa);
+//		}
 		
 		return result;
 	}
 
 	public int insertNewsFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
 		
-		return sqlSession.insert("boardMapper.insertNewsFileAttachment", fa);
+		return 0; //sqlSession.insert("boardMapper.insertNewsFileAttachment", fa);
 	}
 
 	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) {
 		
-		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
+		return 0; //sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
 	}
 
 }//클래스 끝

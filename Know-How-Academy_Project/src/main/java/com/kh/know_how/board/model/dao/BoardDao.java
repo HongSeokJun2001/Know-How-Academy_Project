@@ -25,7 +25,7 @@ public class BoardDao {
 		return (ArrayList) sqlSession.selectList("boardMapper.selectBoardList", postType, rowBounds);
 	}
 
-	public int selectListCount(SqlSessionTemplate sqlSession) {
+	public int selectListCount(SqlSessionTemplate sqlSession, String postType) {
 		return sqlSession.selectOne("boardMapper.selectListCount");
 	}
 
@@ -33,13 +33,6 @@ public class BoardDao {
 		return sqlSession.selectOne("boardMapper.selectSearchCount", map);
 	}
 
-	public int increaseCount(int postNo, SqlSessionTemplate sqlSession) {
-		return sqlSession.update("boardMapper.increaseCount", postNo);
-	}
-
-	public Board selectBoard(int postNo, SqlSessionTemplate sqlSession) {
-		return sqlSession.selectOne("boardMapper.selectBoard", postNo);
-	}
 
 	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
 		return sqlSession.insert("boardMapper.insertBoard", b);
@@ -50,11 +43,7 @@ public class BoardDao {
 		return sqlSession.insert("boardMapper.insertFileAttachment", fa);
 	}
 
-	public FileAttachment selectAttachment(SqlSessionTemplate sqlSession, int postNo) {
-
-		return sqlSession.selectOne("boardMapper.selectAttachment", postNo);
-	}
-
+	
 	public ArrayList<Category> selectCategoryList(SqlSessionTemplate sqlSession){
 		
 		return (ArrayList)sqlSession.selectList("boardMapper.selectCategoryList");
@@ -119,5 +108,15 @@ public class BoardDao {
 	public FileAttachment selectFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
 		
 		return sqlSession.selectOne("boardMapper.selectFileAttachment", postNo);
+	}
+
+	public Board selectBoardWithFile(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.selectOne("boardMapper.selectBoardWithFile", postNo);
+	}
+
+	public int increaseCount(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.update("boardMapper.increaseCount", postNo);
 	}
 }

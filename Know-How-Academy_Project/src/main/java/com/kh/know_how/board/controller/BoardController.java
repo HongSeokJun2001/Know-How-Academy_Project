@@ -34,72 +34,156 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
-	// 1. 일반 게시글 리스트 조회
-	@GetMapping("list")
-	public ModelAndView selectBoardList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
-			ModelAndView mv) {
+	/**
+	 * 공지, 자유, 수강생 통합 메서드
+	 * 
+	 * @param type        게시판 유형을 담아줄 데이터
+	 * @param currentPage
+	 * @param mv
+	 * @return
+	 */
+	@GetMapping("{type:notice|post|student}")
+	public ModelAndView selectBoardList(@PathVariable String type,
+			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
 
-		String postType ="POST";
-		int listCount = boardService.selectListCount();
+		String postType;
+		String viewName;
+
+		// 요청으로 들어온 게시판타입과 링크 대조
+		switch (type) {
+		case "notice":
+			postType = "NOTICE";
+			viewName = "community/board/noticeListView";
+			break;
+		case "student":
+			postType = "STUDENT";
+			viewName = "community/board/StudentListView";
+			break;
+		case "post":
+		default:
+			postType = "POST";
+			viewName = "community/board/postListView";
+			break;
+		}
+
+		int listCount = boardService.selectListCount(postType);
+		// 특정 게시글조회를 위한 매개변수 지정
+
 		int pageLimit = 10;
 		int boardLimit = 10;
-		
+
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		ArrayList<Board> list = boardService.selectBoardList(pi, postType);
 
 		mv.addObject("list", list);
 		mv.addObject("pi", pi);
-		mv.setViewName("community/board/boardListView");
+		mv.addObject("type", type);
+		mv.setViewName(viewName);// 위 설정된 페이지
 
 		return mv;
 	}
 
 	// 2. 검색 기능
-	@GetMapping("search")
-	public ModelAndView searchBoardList(String condition1, String condition2, String keyword,
+	@GetMapping("{type:notice|post|student}/search")
+	public ModelAndView searchBoardList(@PathVariable String type, String condition1, String keyword,
 			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
+
+		String postType;
+		String viewName;
+
+		switch (type) {
+		case "notice":
+			postType = "NOTICE";
+			viewName = "community/board/noticeListView";
+			break;
+		case "student":
+			postType = "STUDENT";
+			viewName = "community/board/StudentListView";
+			break;
+		case "post":
+		default:
+			postType = "POST";
+			viewName = "community/board/post/postListView";
+			break;
+		}
 
 		HashMap<String, String> map = new HashMap<>();
 		map.put("condition1", condition1);
-		map.put("condition2", condition2);
 		map.put("keyword", keyword);
 
 		// 검색 결과에 따른 페이징 처리가 필요하다면 여기서 로직을 추가하세요.
 		// 현재는 서비스 호출 예시만 작성했습니다.
 		int searchCount = boardService.selectSearchCount(map);
 
+		mv.setViewName("community/board/postListView");
+		
 		return mv;
 	}
 
 	// 3. 게시글 상세 조회
-	@GetMapping("detail/{postNo}")
-	public String selectBoard(@PathVariable int postNo, Model model, HttpSession session) {
+	@GetMapping("{type:notice|post|student}/detail/{postNo}")
+	public String selectBoard(@PathVariable String type, @PathVariable int postNo, Model model, HttpSession session) {
+
+		String postType;
+		String viewName;
+
+		switch (type) {
+		case "notice":
+			postType = "NOTICE";
+			viewName = "community/board/noticeDetailView";
+			break;
+		case "student":
+			postType = "STUDENT";
+			viewName = "community/board/studentDetailView";
+			break;
+		case "post":
+		default:
+			postType = "POST";
+			viewName = "community/board/postDetailView";
+		}
 
 		int result = boardService.increaseCount(postNo);
 
 		if (result > 0) {
 
-			Board b = boardService.selectBoard(postNo);
-			FileAttachment fa = boardService.selectAttachment(postNo);
-
+		Board b = boardService.selectBoardWithFile(postNo);
 			model.addAttribute("b", b);
-			model.addAttribute("fa", fa);
-
-			return "community/board/boardDetailView";
+			model.addAttribute("type", type);
+			return viewName;
 		} else {
 			return "common/errorPage";
 		}
 	}
 
-	// 4. 게시글 작성 폼 이동
-	@GetMapping("enrollForm")
-	public String enrollForm(Model model) {
+	// 4. 게시글 작성폼으로 이동
+	@GetMapping("{type:notice|post|student}/enrollForm")
+	public String enrollForm(@PathVariable String type, Model model) {
+
+		String postType;
+		String viewName;
+
+		switch (type) {
+		case "notice":
+			postType = "NOTICE";
+			viewName = "community/board/noticeEnrollForm";
+			break;
+		case "student":
+			postType = "STUDENT";
+			viewName = "community/board/studentEnrollForm";
+			break;
+		case "post":
+		default:
+			postType = "POST";
+			viewName = "community/board/postEnrollForm";
+		}
 
 		ArrayList<Category> list = boardService.selectCategoryList();
 
 		model.addAttribute("list", list);
+		model.addAttribute("postType", postType);
+		model.addAttribute("type", type);
 
-		return "community/board/boardEnrollForm";
+		return viewName;
 	}
 
 	/**
@@ -111,9 +195,26 @@ public class BoardController {
 	 * @param originalFile 첨부파일
 	 * @return
 	 */
-	@PostMapping("insert")
-	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {
-		
+	@PostMapping("/{type}/insert")
+	public String insertBoard(@PathVariable String type, Board b, HttpSession session, Model model,
+			MultipartFile originalFile) {
+
+		String postType;
+		String viewName;
+
+		switch (type) {
+		case "notice":
+			postType = "NOTICE";
+			break;
+		case "student":
+			postType = "STUDENT";
+			break;
+		case "post":
+		default:
+			postType = "POST";
+			break;
+		}
+
 		FileAttachment fa = null;
 
 		if (originalFile != null && !originalFile.isEmpty()) {
@@ -131,7 +232,8 @@ public class BoardController {
 
 		if (result > 0) {
 			session.setAttribute("alertMsg", "게시글 등록 성공");
-			return "redirect:/community/board/list";
+			return "redirect:/community/board/" + type;
+			// '/viewName' 말그대로의 주소가 되기때문직접 이번엔 설정
 		} else {
 			model.addAttribute("alertMsg", "게시글 등록 실패");
 			return "common/errorPage";
@@ -143,14 +245,11 @@ public class BoardController {
 
 		ArrayList<Category> list = boardService.selectCategoryList();
 
-		Board b = boardService.selectBoard(postNo);
-
-		FileAttachment fa = boardService.selectAttachment(postNo);
-
-		mv.addObject("b", b).
-		addObject("list", list).
-		addObject("fa", fa).
-		setViewName("community/board/boardUpdateForm");
+		Board b = boardService.selectBoardWithFile(postNo);
+		
+		mv.addObject("b", b)
+		.addObject("list", list)		
+		.setViewName("community/board/postUpdateForm");
 
 		return mv;
 	}
@@ -158,16 +257,16 @@ public class BoardController {
 	@PostMapping("update")
 	public String updateBoard(@RequestParam(defaultValue = "0") int originalFileNo, Board b, MultipartFile originalFile,
 			String originalFileSaveName, HttpSession session, Model model) {
-		
+
 		FileAttachment fa = null;
-	
+
 		if (!originalFile.getOriginalFilename().equals("")) {
 
 			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
 
 			fa = new FileAttachment();
 			fa.setOriginName(originalFile.getOriginalFilename());
-			fa.setSaveName(saveName);	
+			fa.setSaveName(saveName);
 			fa.setTargetType(b.getPostType());
 
 			if (originalFileNo != 0) {
@@ -197,23 +296,22 @@ public class BoardController {
 		}
 
 	}
-	
+
 	@PostMapping("deleteForm")
-	public String deleteBoard(@RequestParam("postNo") int postNo,
-							Model model, HttpSession session) {
-			
+	public String deleteBoard(@RequestParam("postNo") int postNo, Model model, HttpSession session) {
+
 		int result = boardService.deleteBoard(postNo);
-		
-		if(result > 0) {
-			
+
+		if (result > 0) {
+
 			session.setAttribute("alertMsg", "삭제 성공");
-			
-			return "redirect:/community/board/list";
-			
-		}else {
-			
+
+			return "redirect:/community/board/post";
+
+		} else {
+
 			model.addAttribute("errorMsg", "삭제 실패");
-			
+
 			return "common/errorPage";
 		}
 	}

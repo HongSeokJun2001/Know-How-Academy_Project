@@ -28,5 +28,7 @@ public class Board {
     
     //Board_POST 테이블에는 없는 컬럼이지만, JOIN 결과를 담기 위해 추가함
     private String userName; //USER_NAME 
+    
+    private FileAttachment fileAttachment;
 
 }

@@ -24,8 +24,8 @@ public class BoardService {
 	private BoardDao boardDao;
 
 
-	public int selectListCount() {
-		return boardDao.selectListCount(sqlSession);
+	public int selectListCount(String postType) {
+		return boardDao.selectListCount(sqlSession, postType);
 	}
 
 	public ArrayList<Board> selectBoardList(PageInfo pi, String postType) {
@@ -35,15 +35,7 @@ public class BoardService {
 	public int selectSearchCount(HashMap<String, String> map) {
 		return boardDao.selectSearchCount(map, sqlSession);
 	}
-
-	@Transactional
-	public int increaseCount(int postNo) {
-		return boardDao.increaseCount(postNo, sqlSession);
-	}
-
-	public Board selectBoard(int postNo) {
-		return boardDao.selectBoard(postNo, sqlSession);
-	}
+	
 
 	@Transactional
 	public int insertBoard(Board b, FileAttachment fa) {
@@ -65,10 +57,7 @@ public class BoardService {
 		return boardDao.selectCategoryList(sqlSession);
 	}
 
-	public FileAttachment selectAttachment(int postNo) {
 
-		return boardDao.selectAttachment(sqlSession, postNo);
-	}
 
 	public ArrayList<FileAttachment> selectFileAttachmentList(int postNo) {
 
@@ -132,6 +121,19 @@ public class BoardService {
 		
 		return boardDao.selectFileAttachment(sqlSession, postNo);
 	}
+
+	@Transactional
+	public Board selectBoardWithFile(int postNo) {
+		
+		return boardDao.selectBoardWithFile(sqlSession, postNo);
+	}
+
+	public int increaseCount(int postNo) {
+		
+		return boardDao.increaseCount(sqlSession, postNo);
+	}
+
+	
 	
 	
 

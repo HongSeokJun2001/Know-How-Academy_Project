@@ -78,7 +78,7 @@
 			<jsp:include page="../../common/menubar.jsp" />
 
 			<div class="outer">
-				<h2 align="center">자유게시글</h2>
+				<h2 align="center">공지사항</h2>
 
 				<form id="enrollForm" action="/know-how/community/board/insert" method="post" enctype="multipart/form-data">
 
@@ -86,7 +86,7 @@
 					<input type="hidden" name="postType" value="POST">
 				
 					<div class="btn-area">
-						<a id="listBtn" href="/know-how/community/board/list" class="btn btn-outline-secondary btn-hover">목록</a>
+						<a id="listBtn" href="/know-how/community/board/post" class="btn btn-outline-secondary btn-hover">목록</a>
 						<button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
 					</div>
 

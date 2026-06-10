@@ -86,7 +86,7 @@
 			<jsp:include page="../../common/menubar.jsp" />
 
 			<div class="outer">
-				<h2>자유게시판</h2>
+				<h2>공지사항</h2>
 				<br>
 				<hr>
 				<div id="search-area">
@@ -102,9 +102,9 @@
 					<br> <br>
 				</div>
 
-				<c:if test="${not empty loginUser}">
+				<c:if test="${(not empty loginUser) or (loginUser.userNo eq 1)}">
 					<div class="write-btn-area" align="right">
-						<a href="/know-how/community/board/enrollForm" type="button"
+						<a href="/know-how/community/board/${type}/enrollForm" type="button"
 							class="btn btn-outline-secondary btn-hover">글쓰기</a>
 					</div>
 				</c:if>
@@ -114,7 +114,6 @@
 					<thead>
 						<tr>
 							<th>글번호</th>
-							<th>카테고리</th>
 							<th>제목</th>
 							<th>작성자</th>
 							<th>조회수</th>
@@ -123,23 +122,7 @@
 					</thead>
 					<tbody>
 						<!--게시글 목록-->
-						<!--
-				c:choose/ c:when/ . c:otherwise/ c:forEach 들은
-				if-else 구조와 비슷하다. 
-				c:choose == if else
-				c:when == lf(){c:when은 true 일때의 상황}					 	
-				c:otherwise == if(){...}else{...} 일경우의 상황				
-					 -->
-						<!-- 
-				c:forEach var="b" items="${list}"
-				var 은 variable의 축약어 약속어다.
-				items는 Collection이나 Array(리스트, 배열 등)를 다룰 때 쓰며, 
-				단순히 숫자 1부터 10까지 반복하고 싶을 때는 items 대신 
-				begin="1" end="10"이라는 다른 약속된 속성을 사용하기도 합니다.
-				list == controller 에서 넘어온  VO/ PageInfo/ DB
-				{} == 데이터를 출력할 영역이므로 ()로 기입시 내부내용 그대로 출력하고만다.				
-				 -->
-						<c:choose>
+					<c:choose>
 							<c:when test="${empty list}">
 								<tr>
 									<td colspan="6">조회된 게시글이 없습니다.</td>
@@ -149,7 +132,6 @@
 								<c:forEach var="b" items="${list}">
 									<tr>
 										<td>${b.postNo}</td>
-										<td>${b.category}</td>
 										<td>${b.title}</td>
 										<td>${b.userName}</td>
 										<td>${b.viewCount}</td>
@@ -159,11 +141,12 @@
 							</c:otherwise>
 						</c:choose>
 						<script>
+							
 							$(function () {
 								$(".table>tbody>tr").click(function () {
-									let bno = $(this).children().eq(0).text();
-									console.log(bno);
-									location.href = "/know-how/community/board/detail/" + bno;
+									let postNo = $(this).children().eq(0).text();
+									console.log(postNo);
+									location.href = "/know-how/community/board/${type}/detail/" + postNo;
 								})
 							})
 						</script>
@@ -184,7 +167,7 @@
 											<c:when test="${empty keyword}">
 												<li class="page-item">
 													<a class="page-link"
-														href="/know-how/community/board/list?cpage=${requestScope.pi.currentPage - 1}">
+														href="/know-how/community/board/notice?cpage=${requestScope.pi.currentPage - 1}">
 														Prev</a>
 												</li>
 											</c:when>
@@ -192,7 +175,7 @@
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/search?cpage=${requestScope.pi.currentPage - 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">
+															href="/know-how/community/board/search?cpage=${requestScope.pi.currentPage - 1}&condition1=${condition1}&keyword=${keyword}">
 															Prev</a>
 													</li>
 												</c:otherwise>
@@ -212,13 +195,13 @@
 										<c:when test="${ empty keyword}">
 											<li class="page-item">
 												<a class="page-link"
-													href="/know-how/community/board/list?cpage=${p}">${p}</a>
+													href="/know-how/community/board/notice?cpage=${p}">${p}</a>
 											</li>
 										</c:when>
 										<c:otherwise>
 											<li class="page-item">
 												<a class="page-link"
-													href="/know-how/community/board/search?condition1=${condition1}&condition2=${condition2}&keyword=${keyword}&cpage=${p}">${p}</a>
+													href="/know-how/community/board/search?condition1=${condition1}&keyword=${keyword}&cpage=${p}">${p}</a>
 											</li>
 										</c:otherwise>
 									</c:choose>
@@ -239,14 +222,14 @@
 											<c:when test="${empty keyword}">
 												<li class="page-item">
 													<a class="page-link"
-														href="/know-how/community/board/list?cpage=${pi.currentPage + 1}">Next</a>
+														href="/know-how/community/board/notice?cpage=${pi.currentPage + 1}">Next</a>
 												</li>
 											</c:when>
 											<%--검색어 입력 조회 일경우--%>
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">Next</a>
+															href="/know-how/community/board/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&keyword=${keyword}">Next</a>
 													</li>
 												</c:otherwise>
 									</c:choose>

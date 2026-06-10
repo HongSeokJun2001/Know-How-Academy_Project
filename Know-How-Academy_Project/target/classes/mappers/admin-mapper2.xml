@@ -7,7 +7,11 @@
 	<!-- 1. 학생 수를 구하는 쿼리 -->
 	<select id="selectStudentListCount" resultType="_int">
 		SELECT COUNT(*)
-		  FROM STUDENT_DETAIL
+		  FROM STUDENT_DETAIL S
+		  JOIN MEMBER M USING(USER_NO)
+		 WHERE ROLE_CODE = 'STUDENT'
+		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
+		   AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 	</select>
 	
 	<!-- 2. 학생 리스트를 출력하는 쿼리 -->
@@ -15,29 +19,37 @@
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
 		SELECT SM.USER_NAME AS studentName
 		     , SM.PHONE AS phone
-		     , CM.USER_NAME AS counselorName
+		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
 		     , S.STUDENT_STATUS AS status
 		     , S.STUDENT_NO AS studentNo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
-		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
-		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		 WHERE SM.ROLE_CODE = 'STUDENT'
+		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
+		   AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		 ORDER BY STUDENT_NO DESC
 	</select>
 	
 	<!-- 3. 검색 결과의 갯수를 세오는 쿼리 -->
 	<select id="selectStudentSearchCount" parameterType="hashmap" resultType="_int">
 		SELECT COUNT(*)
-		  FROM STUDENT_DETAIL
-		  JOIN MEMBER USING(USER_NO)
+		  FROM STUDENT_DETAIL S
+		  JOIN MEMBER M USING(USER_NO)
 		 WHERE (USER_NAME LIKE '%' || #{keyword} || '%' 
 		    OR PHONE LIKE '%' || #{keyword} || '%')
+		   AND ROLE_CODE = 'STUDENT'
+		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
 		    <if test="status == 'ACTIVE'">
 		    	AND STUDENT_STATUS = 'ATTENDING'
 		    </if> 
 		    <if test="status == 'REST'">
 		    	AND STUDENT_STATUS = 'ABSENT'
+		    </if>
+		    <if test="status == ''">
+		    	AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		    </if>
 	</select>
 	
@@ -46,21 +58,26 @@
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
 		SELECT SM.USER_NAME AS studentName
 		     , SM.PHONE AS phone
-		     , CM.USER_NAME AS counselorName
+		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
 		     , S.STUDENT_STATUS AS status
-		     , SM.STUDENT_NO AS studentNo
+		     , S.STUDENT_NO AS studentNo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
-		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
-		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
+		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		  WHERE (SM.USER_NAME LIKE '%' || #{keyword} || '%' 
 		    OR SM.PHONE LIKE '%' || #{keyword} || '%')
+		   AND SM.ROLE_CODE = 'STUDENT'
+		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
 		    <if test="status == 'ACTIVE'">
 		    	AND STUDENT_STATUS = 'ATTENDING'
 		    </if> 
 		    <if test="status == 'REST'">
 		    	AND STUDENT_STATUS = 'ABSENT'
+		    </if>
+		    <if test="status == ''">
+		    	AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		    </if>
 		  ORDER BY STUDENT_NO DESC
 	</select>
@@ -68,23 +85,98 @@
 	<!-- 5. 학생 상세정보 조회하는 쿼리문 -->
 	<select id="selectStudent" parameterType="_int" 
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
-		SELECT SM.USER_NAME AS 	studentName
+		SELECT S.STUDENT_NO AS studentNo 
+			 , SM.USER_NO AS userNo
+			 , SM.USER_NAME AS studentName
 			 , SM.PHONE AS phone
 			 , SM.EMAIL AS email
 			 , SM.CREATED_AT AS createdAt
 			 , CLASS_NAME AS className
-			 , CM.USER_NAME AS counselorName
+			 , NVL(CM.USER_NAME, '미배정') AS counselorName
 			 , S.STUDENT_STATUS AS status
 			 , S.UPDATED_AT AS updatedAt
-			 , SMEMO.USER_MEMO AS studentMemo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (S.USER_NO = SM.USER_NO)
 		  JOIN CLASS CL ON (SM.CLASS_NO = CL.CLASS_NO)
-		  JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
-		  JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
-		  JOIN MEMBER_MEMO SMEMO ON (SM.USER_NO = SMEMO.USER_NO)
+		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
+		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		 WHERE S.STUDENT_NO = #{studentNo}
 	</select>
+	
+	<!-- 6. 메모를 추가하는 쿼리문 -->
+	<insert id="insertStudentMemo" parameterType="com.kh.know_how.admin.model.dto.MemoDto">
+		INSERT INTO MEMBER_MEMO(MEMO_NO
+							  , USER_NO
+							  , USER_MEMO)
+					     VALUES(SEQ_MEMO_NO.NEXTVAL
+					          , #{userNo}
+					          , #{userMemo})
+	</insert>
+	
+	<!-- 7. 메모 리스트를 조회하는 쿼리문 -->
+	<select id="selectStudentMemoList" parameterType="_int" 
+			resultType="com.kh.know_how.admin.model.dto.MemoDto">
+		SELECT USER_MEMO AS userMemo
+		     , MEMO_NO AS memoNo
+		  FROM MEMBER_MEMO
+		 WHERE USER_NO = #{userNo}
+	</select>
+	
+	<!-- 8. 메모를 삭제하는 쿼리문 -->
+	<insert id="deleteStudentMemo" parameterType="_int">
+		DELETE
+		  FROM MEMBER_MEMO
+		 WHERE MEMO_NO = #{memoNo}
+	</insert>
+	
+	<!-- 9. 휴학 처리/휴학 취소해주는 쿼리문 -->
+	<update id="updateStudentStatus" parameterType="com.kh.know_how.admin.model.dto.StudentDto">
+		UPDATE STUDENT_DETAIL
+		   SET STUDENT_STATUS = #{status}
+		 WHERE STUDENT_NO = #{studentNo}
+	</update>
+	
+	<!-- 10. 학생 가입신청 대기, 거절을 조회하는 쿼리문 -->
+	<select id="selectPendingStudentList"
+			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+		SELECT S.STUDENT_NO AS studentNo 
+			 , SM.USER_NO AS userNo
+			 , SM.USER_NAME AS studentName
+			 , SM.CREATED_AT AS createdAt
+			 , SM.STATUS AS status
+		  FROM STUDENT_DETAIL S
+		  JOIN MEMBER SM ON (S.USER_NO = SM.USER_NO)
+		 WHERE SM.STATUS = 'PENDING'
+		   AND SM.ROLE_CODE = 'STUDENT'
+		 ORDER BY 5
+	</select>
+	
+	<!-- 11. 학생 가입신청 승인 쿼리문 -->
+	<update id="updateStudentApprove" parameterType="hashmap">
+		UPDATE MEMBER
+		   SET STATUS = 'ACTIVE'
+			 , CLASS_NO = #{classNo}
+		 WHERE USER_NO = #{userNo}
+	</update>
+	
+	<!-- 12. 학생 가입신청 승인 시 학생 생성 쿼리문 -->
+	<insert id="insertStudent" parameterType="hashmap">
+		INSERT INTO STUDENT_DETAIL(STUDENT_NO
+								 , COUNSELOR_NO
+								 , STUDENT_STATUS
+								 , USER_NO)
+							VALUES(SEQ_STUDENT_NO.NEXTVAL
+								 , (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE JOIN MEMBER USING(USER_NO) WHERE CLASS_NO = #{classNo} AND CATEGORY_NO = 3)
+								 , 'ATTENDING'
+								 , #{userNo})
+	</insert>
+	
+	<!-- 13. 학생 가입신청 거절 쿼리문 -->
+	<update id="updateStudentReject" parameterType="_int">
+		UPDATE MEMBER
+		   SET STATUS = 'REJECTED'
+		 WHERE USER_NO = #{userNo}
+	</update>
 </mapper>
 	
 	
