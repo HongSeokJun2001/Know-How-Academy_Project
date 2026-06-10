@@ -233,8 +233,14 @@
     .primary-btn:hover {
         background: #F3F1FF;
     }
+    /* 테이블 잘림 방지 */
+	.table-wrap {
+		width: 100%;
+		overflow-x: auto;
+	}
 
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- 
@@ -258,8 +264,8 @@
                 메인페이지
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor/enroll" 
-                onclick="go('/admin/counselor/enroll')">
+            <div class="menu-item" data-path="/admin/counselorInvite" 
+                onclick="go('/admin/counselorInvite')">
                 상담사 등록
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 메뉴항목 수정(-)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
@@ -267,13 +273,13 @@
                 관리페이지
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-            <div class="menu-item ${page eq 'studentList' ? 'active' : ''}" data-path="/admin/studentList"
+            <div class="menu-item ${page.contains('student') ? 'active' : ''}" data-path="/admin/studentList"
                  onclick="go('/admin/studentList')">
                 학원생 관리
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor"
-                 onclick="go('/admin/counselor')">
+            <div class="menu-item" data-path="/admin/counselor/list"
+                 onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  메뉴항목 수정 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
@@ -281,9 +287,14 @@
                 설정
             </div>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  공지사항 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-            <div class="menu-item" data-path="/admin/notice"
+            <div class="menu-item  ${page.contains('Notice') ? 'active' : ''}" data-path="/admin/notice"
                  onclick="go('/admin/notice')">
                 공지사항 관리
+            </div>
+<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  학원소식 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            <div class="menu-item  ${page.contains('academyNews') ? 'active' : ''}" data-path="/admin/academyNews"
+                 onclick="go('/admin/academyNews')">
+                학원소식 관리
             </div>
         </div>
 

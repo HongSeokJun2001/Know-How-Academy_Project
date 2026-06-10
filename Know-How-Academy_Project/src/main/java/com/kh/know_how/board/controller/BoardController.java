@@ -39,12 +39,13 @@ public class BoardController {
 	public ModelAndView selectBoardList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
 			ModelAndView mv) {
 
+		String postType ="POST";
 		int listCount = boardService.selectListCount();
 		int pageLimit = 10;
 		int boardLimit = 10;
-		// System.out.println("listCount: " + listCount);
+		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-		ArrayList<Board> list = boardService.selectBoardList(pi);
+		ArrayList<Board> list = boardService.selectBoardList(pi, postType);
 
 		mv.addObject("list", list);
 		mv.addObject("pi", pi);
@@ -79,10 +80,10 @@ public class BoardController {
 		if (result > 0) {
 
 			Board b = boardService.selectBoard(postNo);
-			FileAttachment at = boardService.selectAttachment(postNo);
+			FileAttachment fa = boardService.selectAttachment(postNo);
 
 			model.addAttribute("b", b);
-			model.addAttribute("at", at);
+			model.addAttribute("fa", fa);
 
 			return "community/board/boardDetailView";
 		} else {
@@ -113,20 +114,20 @@ public class BoardController {
 	@PostMapping("insert")
 	public String insertBoard(Board b, HttpSession session, Model model, MultipartFile originalFile) {
 		
-		FileAttachment at = null;
+		FileAttachment fa = null;
 
 		if (originalFile != null && !originalFile.isEmpty()) {
 
 			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
 
-			at = new FileAttachment();
-			at.setOriginName(originalFile.getOriginalFilename());
-			at.setSaveName(saveName);
-			at.setFilePath("resources/board_upfiles/");
+			fa = new FileAttachment();
+			fa.setOriginName(originalFile.getOriginalFilename());
+			fa.setSaveName(saveName);
+			fa.setFilePath("resources/board_upfiles/");
 
 		}
 
-		int result = boardService.insertBoard(b, at);
+		int result = boardService.insertBoard(b, fa);
 
 		if (result > 0) {
 			session.setAttribute("alertMsg", "게시글 등록 성공");
@@ -144,11 +145,11 @@ public class BoardController {
 
 		Board b = boardService.selectBoard(postNo);
 
-		FileAttachment at = boardService.selectAttachment(postNo);
+		FileAttachment fa = boardService.selectAttachment(postNo);
 
 		mv.addObject("b", b).
 		addObject("list", list).
-		addObject("at", at).
+		addObject("fa", fa).
 		setViewName("community/board/boardUpdateForm");
 
 		return mv;
@@ -158,31 +159,31 @@ public class BoardController {
 	public String updateBoard(@RequestParam(defaultValue = "0") int originalFileNo, Board b, MultipartFile originalFile,
 			String originalFileSaveName, HttpSession session, Model model) {
 		
-		FileAttachment at = null;
+		FileAttachment fa = null;
 	
 		if (!originalFile.getOriginalFilename().equals("")) {
 
 			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
 
-			at = new FileAttachment();
-			at.setOriginName(originalFile.getOriginalFilename());
-			at.setSaveName(saveName);	
-			at.setTargetType(b.getPostType());
+			fa = new FileAttachment();
+			fa.setOriginName(originalFile.getOriginalFilename());
+			fa.setSaveName(saveName);	
+			fa.setTargetType(b.getPostType());
 
 			if (originalFileNo != 0) {
 
-				at.setFileNo(originalFileNo);
+				fa.setFileNo(originalFileNo);
 
 				String savePath = session.getServletContext().getRealPath("/resources/board_upfiles/");
 				new File(savePath + originalFileSaveName).delete();
 			} else {
 
-				at.setTargetNo(b.getPostNo());
-				at.setFilePath("/resources/board_upfiles/");
+				fa.setTargetNo(b.getPostNo());
+				fa.setFilePath("/resources/board_upfiles/");
 			}
 		}
 
-		int result = boardService.updateBoard(b, at);
+		int result = boardService.updateBoard(b, fa);
 
 		if (result > 0) {
 

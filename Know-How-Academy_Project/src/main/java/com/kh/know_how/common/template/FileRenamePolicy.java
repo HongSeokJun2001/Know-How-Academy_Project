@@ -10,32 +10,27 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 
 public class FileRenamePolicy {
-	
-	//MultipartFile/ HttpSession, String filePath
-	//파일명을 수정/ 업로드 후 수정 을 리턴해주는 메소드
-	public static String saveFile(MultipartFile originFile, 
-									HttpSession session, String filePath) {
+
+	public static String saveFile(MultipartFile upfile,
+								HttpSession session, String path) {
 		
-		String originName = originFile.getOriginalFilename();
+		String originName = upfile.getOriginalFilename();
 		
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		String currentTime = new SimpleDateFormat("yyyyMM")
+								.format(new Date());
 		
-		int ranNum = (int)(Math.random() * 90000 + 10000);
-		
-		String ext = originName.substring(originName.lastIndexOf("."));//.jpg
-		
-		String saveName = currentTime + ranNum + ext;
+		String saveName = currentTime + "_" + originName;
 		
 		String savePath = session.getServletContext()
-								 .getRealPath(filePath);
+						  .getRealPath(path);
 		
 		try {
-			originFile.transferTo(new File(savePath+saveName));
-		}catch(IOException e) {
+			upfile.transferTo(new File(savePath + saveName));
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
-			
-		return saveName;
+		
+		return saveName;	
 	}
 
 }

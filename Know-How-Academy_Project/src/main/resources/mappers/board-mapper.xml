@@ -51,7 +51,7 @@
 
 
 	<!-- resultSet을 활용해 페이징처리(10)적용, 게시글 목록을 조회쿼리문 -->
-	<select id="selectBoardList" parameterType="hashmap"
+	<select id="selectBoardList" parameterType="string"
 		resultMap="boardResultSet">
 		SELECT * FROM(
 		SELECT
@@ -65,7 +65,7 @@
 		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
 		<!-- 연관된 데이터 B와 (약칭)M과 조인하여 작성자명(USER_NAME) 가져오기 -->
 		WHERE B.STATUS = 'Y'<!-- Y=노출/N 숨김처리 -->
-		AND B.POST_TYPE = 'POST'
+		AND B.POST_TYPE = #{postType}
 		ORDER BY B.POST_NO DESC <!-- 오름차순?이엿나 -->
 		)
 	</select>
@@ -246,5 +246,24 @@
 		AND STATUS = 'Y'
 	</update>
 
+	
+
+	<!-- 첨부파일을 조회하는 쿼리문 -->
+	<select id="selectFileAttachment" parameterType="_int" resultMap="fileAttachmentResultSet">
+		SELECT FILE_NO
+		     , ORIGIN_NAME
+		     , SAVE_NAME
+		     , FILE_PATH
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+		 ORDER BY FILE_NO ASC
+	</select>
+
+	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
+	<delete id="admindeleteFileAttachment" parameterType="_int">
+		DELETE
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+	</delete>
 
 </mapper>

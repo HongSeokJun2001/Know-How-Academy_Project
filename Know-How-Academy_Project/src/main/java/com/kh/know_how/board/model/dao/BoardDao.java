@@ -15,14 +15,14 @@ import com.kh.know_how.common.model.vo.PageInfo;
 @Repository
 public class BoardDao {
 
-	public ArrayList<Board> selectBoardList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> selectBoardList(SqlSessionTemplate sqlSession, PageInfo pi, String postType) {
 
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
 
-		return (ArrayList) sqlSession.selectList("boardMapper.selectBoardList", null, rowBounds);
+		return (ArrayList) sqlSession.selectList("boardMapper.selectBoardList", postType, rowBounds);
 	}
 
 	public int selectListCount(SqlSessionTemplate sqlSession) {
@@ -41,13 +41,13 @@ public class BoardDao {
 		return sqlSession.selectOne("boardMapper.selectBoard", postNo);
 	}
 
-	public int insertBoard(Board b, SqlSessionTemplate sqlSession) {
+	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
 		return sqlSession.insert("boardMapper.insertBoard", b);
 	}
 
-	public int insertFileAttachment(SqlSessionTemplate sqlSession, FileAttachment at) {
+	public int insertFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
 
-		return sqlSession.insert("boardMapper.insertFileAttachment", at);
+		return sqlSession.insert("boardMapper.insertFileAttachment", fa);
 	}
 
 	public FileAttachment selectAttachment(SqlSessionTemplate sqlSession, int postNo) {
@@ -66,14 +66,14 @@ public class BoardDao {
 	}
 	
 	public int updateFileAttachment(SqlSessionTemplate sqlSession,
-									FileAttachment at) {
+									FileAttachment fa) {
 		
-		return sqlSession.update("boardMapper.updateFileAttachment", at);
+		return sqlSession.update("boardMapper.updateFileAttachment", fa);
 	}
 	
-	public int insertNewFileAttachment(SqlSessionTemplate sqlSession, FileAttachment at) {
+	public int insertNewFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
 		
-		return sqlSession.insert("boardMapper.insertNewFileAttachment",at);
+		return sqlSession.insert("boardMapper.insertNewFileAttachment",fa);
 	}
 	
 	public int deleteBoard(SqlSessionTemplate sqlSession, int postNo) {
@@ -84,12 +84,12 @@ public class BoardDao {
 	//=========================================================================
 	public ArrayList<Board> mainPageNoticeList(SqlSessionTemplate sqlSessison) {
 
-		return (ArrayList) sqlSessison.selectList("boardMapper.mainPageNoticeList");
+		return null; //(ArrayList) sqlSessison.selectList("boardMapper.mainPageNoticeList");
 	}
 
 	public int selectNewsListCount(SqlSessionTemplate sqlSession) {
 
-		return sqlSession.selectOne("boardMapper.selectNewsListCount");
+		return 0; //sqlSession.selectOne("boardMapper.selectNewsListCount");
 	}
 
 	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
@@ -98,16 +98,26 @@ public class BoardDao {
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
 
-		return (ArrayList) sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
+		return null; //(ArrayList) sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
 	}
 
 	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
-
-		return sqlSession.selectOne("boardMapper.selectNews", postNo);
+		
+		return null; // sqlSession.selectOne("boardMapper.selectNews", postNo);
 	}
 
 	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {
 
 		return (ArrayList) sqlSession.selectList("boardMapper.selectFileAttachmentList", postNo);
+	}
+
+	public int admindeleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.admindeleteFileAttachment", postNo);
+	}
+
+	public FileAttachment selectFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.selectOne("boardMapper.selectFileAttachment", postNo);
 	}
 }

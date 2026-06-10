@@ -8,11 +8,17 @@
 		<setting name="jdbcTypeForNull" value="NULL" />
 	</settings>
 	
-	<typeAliases>
-		<typeAlias type="com.kh.know_how.board.model.vo.Board" alias="board" />
-		<typeAlias type="com.kh.know_how.member.model.vo.Member" alias="member" />
-		<typeAlias type="com.kh.know_how.board.model.vo.FileAttachment" alias="fileAttachment" />
-	</typeAliases>
-	
-	
+	<!-- 
+		* typeAliases 영역
+	 -->
+	 <typeAliases>
+	 	<typeAlias type="com.kh.know_how.board.model.vo.Board" alias="board" />
+	 	<typeAlias type="com.kh.know_how.member.model.vo.Member" alias="member" />
+	 	<typeAlias type="com.kh.know_how.member.model.vo.MemberLock" alias="memberLock" />
+	 	<typeAlias type="com.kh.know_how.board.model.vo.FileAttachment" alias="fileAttachment" />
+	 	<typeAlias type="com.kh.know_how.reservation.model.vo.CounselCategory" alias="counselCategory" />
+	 	<typeAlias type="com.kh.know_how.reservation.model.vo.Reservation" alias="reservation" />
+	 	<typeAlias type="com.kh.know_how.counselor.model.vo.Counselor" alias="counselor" />
+	 </typeAliases>
+
 </configuration>

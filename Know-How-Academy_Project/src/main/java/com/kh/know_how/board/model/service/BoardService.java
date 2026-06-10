@@ -23,16 +23,13 @@ public class BoardService {
 	@Autowired
 	private BoardDao boardDao;
 
-	// 만약 sqlSession을 직접 넘기는 방식이 아니라면 아래 매개변수에서 sqlSession을 제거해야 합니다.
-	// 보통 Dao에서 SqlSessionTemplate을 주입받아 사용하므로,
-	// 아래와 같이 sqlSession 파라미터를 제거하고 호출하는 것이 일반적입니다.
 
 	public int selectListCount() {
 		return boardDao.selectListCount(sqlSession);
 	}
 
-	public ArrayList<Board> selectBoardList(PageInfo pi) {
-		return boardDao.selectBoardList(sqlSession, pi);
+	public ArrayList<Board> selectBoardList(PageInfo pi, String postType) {
+		return boardDao.selectBoardList(sqlSession, pi, postType);
 	}
 
 	public int selectSearchCount(HashMap<String, String> map) {
@@ -49,15 +46,15 @@ public class BoardService {
 	}
 
 	@Transactional
-	public int insertBoard(Board b, FileAttachment at) {
+	public int insertBoard(Board b, FileAttachment fa) {
 
-		int result1 = boardDao.insertBoard(b, sqlSession);
+		int result1 = boardDao.insertBoard(sqlSession ,b);
 
 		int result2 = 1;
 
-		if (at != null) {
+		if (fa != null) {
 
-			result2 = boardDao.insertFileAttachment(sqlSession, at);
+			result2 = boardDao.insertFileAttachment(sqlSession, fa);
 		}
 
 		return result1 * result2;
@@ -79,20 +76,20 @@ public class BoardService {
 	}
 
 	@Transactional
-	public int updateBoard(Board b, FileAttachment at) {
+	public int updateBoard(Board b, FileAttachment fa) {
 
 		int result1 = boardDao.updateBoard(sqlSession, b);
 		int result2 = 1;
 
-		if (at != null) {
+		if (fa != null) {
 
-			if (at.getFileNo() != 0) {
+			if (fa.getFileNo() != 0) {
 
-				result2 = boardDao.updateFileAttachment(sqlSession, at);
+				result2 = boardDao.updateFileAttachment(sqlSession, fa);
 
 			} else {
 
-				result2 = boardDao.insertNewFileAttachment(sqlSession, at);
+				result2 = boardDao.insertNewFileAttachment(sqlSession, fa);
 			}
 		}
 
@@ -124,5 +121,18 @@ public class BoardService {
 
 		return boardDao.selectNews(sqlSession, postNo);
 	}
+
+	@Transactional
+	public int admindeleteFileAttachment(int postNo) {
+		return boardDao.admindeleteFileAttachment(sqlSession, postNo);
+		
+	}
+
+	public FileAttachment selectFileAttachment(int postNo) {
+		
+		return boardDao.selectFileAttachment(sqlSession, postNo);
+	}
+	
+	
 
 }

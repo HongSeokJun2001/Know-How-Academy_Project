@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
-@Getter
+@NoArgsConstructor 
+@AllArgsConstructor 
+@Setter 
+@Getter 
 @ToString
 public class Member {
 	private int userNo;//	USER_NO	NUMBER	사용자번호
