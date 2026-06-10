@@ -3,6 +3,7 @@ package com.kh.know_how.admin.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
 import com.kh.know_how.common.template.XssDefencePolicy;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -211,14 +213,20 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/notice/delete")
-    public String deleteNotice(int postNo) {
+    public String deleteNotice(int postNo, HttpSession session) {
 
     	FileAttachment fa = bs.selectFileAttachment(postNo);
     	
     	int result2 = 1;
     	
     	if(fa != null) {
-			result2 =  bs.deleteFileAttachment(postNo);
+			
+			String savePath = session.getServletContext().getRealPath("/resources/upload/notice/");
+			
+			new File(savePath + fa.getSaveName()).delete();
+    		
+    		result2 =  bs.deleteFileAttachment(postNo);
+			
 		}
     	int result1 = bs.deleteBoard(postNo);
     	
@@ -247,7 +255,7 @@ public class AdminController2 {
     		fa.setTargetType("NOTICE");
     		fa.setOriginName(upfile.getOriginalFilename());
     		fa.setSaveName(saveName);
-    		fa.setFilePath("resources/upload/notice/");
+    		fa.setFilePath("/resources/upload/notice/");
     	}
     	
     	n.setPostType("NOTICE");
@@ -265,7 +273,7 @@ public class AdminController2 {
     		if(fa != null) {
     			
     			String savePath = session.getServletContext()
-    									 .getRealPath("resources/upload/notice");
+    									 .getRealPath("/resources/upload/notice");
     			
     			new File(savePath + fa.getSaveName()).delete();
     		}
@@ -311,7 +319,7 @@ public class AdminController2 {
     	
     	if(!reUpfile.getOriginalFilename().equals("")) {
     		
-    		String saveName = FileRenamePolicy.saveFile(reUpfile, session, "resources/upload/notice/");	
+    		String saveName = FileRenamePolicy.saveFile(reUpfile, session, "/resources/upload/notice/");	
     		
     		fa = new FileAttachment();
     		fa.setTargetType("NOTICE");
@@ -329,7 +337,7 @@ public class AdminController2 {
     		} else {
     			
     			fa.setTargetNo(n.getPostNo());
-    			fa.setFilePath("resources/upload/notice/");
+    			fa.setFilePath("/resources/upload/notice/");
     			
     		}
     		
@@ -394,13 +402,21 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/academyNews/delete")
-    public String deleteNews(int postNo) {
+    public String deleteNews(int postNo, HttpSession session) {
 
     	ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
     	
     	int result2 = 1;
     	
     	if(list != null) {
+    		
+    		String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
+    		
+    		for(FileAttachment fa : list) {
+
+    			new File(savePath + fa.getSaveName()).delete();
+            }
+    		
 			result2 =  bs.deleteFileAttachment(postNo);
 		}
     	int result1 = bs.deleteBoard(postNo);
@@ -432,7 +448,7 @@ public class AdminController2 {
         		fa.setTargetType("NEWS");
         		fa.setOriginName(files[i].getOriginalFilename());
         		fa.setSaveName(saveName);
-        		fa.setFilePath("resources/upload/news/");
+        		fa.setFilePath("/resources/upload/news/");
         		
         		if(i == 0) {
         			
@@ -482,6 +498,71 @@ public class AdminController2 {
     	 	 .addAttribute("page", "academyNewsUpdateForm");
     	
 		return "admin/adminLayout";
+    	
+    }
+    
+    @ResponseBody
+    @PostMapping("/academyNews/update")
+    public String updateNews(Board n ,MultipartFile[] reFiles,
+    						 @RequestParam Map<String, String> paramMap,
+    						 @RequestParam(value="deleteFileNo", required=false) String[] deleteFileNo,
+                             @RequestParam(value="deleteSaveName", required=false) String[] deleteSaveName,
+    						 HttpSession session,
+    						 Model model) {
+    	
+    	if (deleteSaveName != null) {
+            String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
+            for (String saveName : deleteSaveName) {
+            	new File(savePath + saveName).delete();
+            }
+        }
+
+    	ArrayList<FileAttachment> list = new ArrayList<>();
+    	if (reFiles != null) {
+	    	for(int i = 0; i < reFiles.length; i++) {
+	    		
+	    		if(reFiles[i] != null && !reFiles[i].getOriginalFilename().equals("")) {
+	        		
+	        		String saveName = FileRenamePolicy.saveFile(reFiles[i], session, "/resources/upload/news/");	
+	        		
+	        		FileAttachment fa = new FileAttachment();
+	        		fa.setTargetType("NEWS");
+	        		fa.setOriginName(reFiles[i].getOriginalFilename());
+	        		fa.setSaveName(saveName);
+	        		fa.setTargetNo(n.getPostNo());
+        			fa.setFilePath("/resources/upload/news/");
+        			
+        			fa.setFileLevel(i == 0 ? 1 : 2);
+        			
+        			String originalFileNo = paramMap.get("originalFileNo" + (i + 1));
+        			String originalFileSaveName = paramMap.get("originalFileSaveName" + (i + 1));
+        			
+	        		if(originalFileNo != null && !originalFileNo.equals("0") && !originalFileNo.isEmpty()) {
+	        			
+	        			int fileNo = Integer.parseInt(originalFileNo);
+	        			fa.setFileNo(fileNo);
+	        			
+	        			String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
+	        			if(originalFileSaveName != null && !originalFileSaveName.isEmpty()) {
+	        				File deleteFile = new File(savePath + originalFileSaveName);
+	        				if (deleteFile.exists()) {
+	        					deleteFile.delete();
+	        				}
+	        			}
+	        						
+	        		}
+	        		
+	        		list.add(fa);
+	        	}
+	    	}
+    	}
+    	
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	
+    	int result = as2.updateNews(n, list, deleteFileNo);
+    	
+    	return (result > 0) ? "success" : "fail";
     	
     }
     

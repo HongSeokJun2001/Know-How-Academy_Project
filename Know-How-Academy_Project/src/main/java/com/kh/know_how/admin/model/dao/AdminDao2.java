@@ -167,6 +167,14 @@ public class AdminDao2 {
 		return result;
 	}
 
+	public int insertNewsFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+		
+		return sqlSession.insert("boardMapper.insertNewsFileAttachment", fa);
+	}
+
+	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) {
+		
+		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
 	}
 
 }//클래스 끝

@@ -154,5 +154,47 @@ public class AdminService2 {
 		return result1 * result2;
 	}
 
+	@Transactional
+	public int updateNews(Board n, ArrayList<FileAttachment> list, String[] deleteFileNo) {
+		
+		int result = bd.updateBoard(sqlSession, n);
+		if (result <= 0) {
+			return 0;
+		}
+		
+		for(FileAttachment fa : list) {
+			
+			if(fa != null) {	
+				int fileResult = 0;
+				
+				if(fa.getFileNo() != 0) {
+					
+					fileResult = bd.updateFileAttachment(sqlSession, fa);
+				
+				} else {
+					
+					fileResult = ad2.insertNewsFileAttachment(sqlSession, fa);
+				}
+				
+				if(fileResult <= 0) {
+	                return  0;
+	            }
+			}
+		}
+		
+		if (deleteFileNo != null) {
+	        for (String dfno : deleteFileNo) {
+	            int fileNo = Integer.parseInt(dfno);
+	            
+	            int delResult = ad2.deleteNewsFileAttachment(sqlSession, fileNo); 
+	            
+	            if (delResult <= 0) {
+	                return 0;
+	            }
+	        }
+	    }
+		
+		return result;
+	}
 
 }//클래스 끝

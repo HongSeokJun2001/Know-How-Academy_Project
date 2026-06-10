@@ -57,13 +57,6 @@
 		border-left : 1px solid #e5e7eb;
 	}
 	
-	.news-table td {
-		text-align : center;
-	}
-	
-	.news-table tr:last-child td {
-    	width : 30%;
-	}
 	
 	.btn-update {
 		min-width : 96px;
@@ -135,7 +128,7 @@
 				<tr>
 					<th>대표이미지</th>
 					<td colspan="3" align="center">
-						<img src="/know-how/${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
+						<img src="/know-how${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
 							 width="250" height="170">
 					</td>
 				</tr>
@@ -149,20 +142,46 @@
 							<c:otherwise>
 								<c:forEach var="i" begin="1" end="${ requestScope.list.size() - 1 }" step="1">
 								
-									<img src="/know-how/${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
-										 width="150" height="110">
+									<img src="/know-how${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
+										 width="150" height="110" style="margin: 0 10px;">
 								
-								<</c:forEach>
+								</c:forEach>
 							</c:otherwise>
 						</c:choose>
 					</td>
 				</tr>
 			</table>
 		</div>
-		<br><br>
 		
 	</form>
 	
-	<br><br>
+	<script>
+		function deleteNews(postNo) {
+			if(confirm("해당 학원소식을 삭제하시겠습니까?")) {
+				$.ajax({
+					url : "/know-how/admin/academyNews/delete",
+					type : "post",
+					data : {
+						postNo : postNo
+					},
+					success(result) {
+						if(result == "success") {
+							alert("삭제가 완료되었습니다.");
+							location.href = "/know-how/admin/academyNews";
+							
+						} else {
+							
+							alert("삭제가 실패했습니다.");
+							
+						}
+					},
+					error() {
+						console.log("학원소식 삭제용 ajax 통신 실패!");
+					}
+				});
+			}
+		}
+	</script>
+	
 </body>
 </html>

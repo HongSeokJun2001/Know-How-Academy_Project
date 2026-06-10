@@ -124,7 +124,7 @@
 						<c:if test="${ not empty requestScope.fa }">
 							
 							<a download="${ requestScope.fa.originName }"
-							   href="/know-how/${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
+							   href="/know-how${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
 								${ requestScope.fa.originName }
 							</a>
 							<input type="hidden" name="originalFileNo" value="${ requestScope.fa.fileNo }">
