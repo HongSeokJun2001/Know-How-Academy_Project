@@ -3,7 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="memberMapper">
-
+     
+     <!-- member테이블 -->
 	 <resultMap id="memberResultSet" type="member">
 	     <id column="USER_NO" property="userNo" />
 	     <result column="USER_ID" property="userId" />
@@ -19,15 +20,23 @@
 	     <result column="CLASS_NO" property="classNo"/>
 	 </resultMap>
 	 
+	 <!-- member_Lock 테이블 -->
+	 <resultMap id="memberLockResultSet" type="memberLock">
+	    <id column="USER_NO" property="userNo" />
+	     <result column="FAIL_COUNT" property="failCount" />
+	     <result column="IS_LOCKED" property="isLocked"/>
+	     <result column="LOCKED_AT" property="lockedAt"/>
+	     <result column="LAST_FAIL_AT" property="lastFailAt"/>
+	 </resultMap>
+	 
 	 <!--  로그인용 쿼리문 -->
 	 <select id="loginMember" parameterType="member" 
 								  resultMap="memberResultSet">
-			<!-- 암호화 작업 전 : 아이디, 비밀번호가 모두 일치해야 조회 -->
-			SELECT * 
-			  FROM MEMBER
-			 WHERE USER_ID = #{userId}
-			   AND USER_PWD = #{userPwd}
-			   AND STATUS = 'ACTIVE'
+			<!-- 암호화 작업 후 : 아이디로만 조회 -->
+			SELECT *
+		      FROM MEMBER
+		     WHERE USER_ID = #{userId}
+		       AND STATUS = 'ACTIVE'   
 	 </select>
 	 
 	 <!-- 회원가입용 쿼리문 -->
@@ -61,6 +70,26 @@
 		   AND STATUS = 'ACTIVE'
 	</update>
 	
+	<!--  아이디찾기용 쿼리문 -->
+	 <select id="searchId" parameterType="member" 
+								  resultMap="memberResultSet">
+			SELECT *
+		      FROM MEMBER
+		     WHERE USER_NAME = #{userName}
+		       AND EMAIL  = #{email}
+		       AND STATUS = 'ACTIVE'   
+	 </select>
+	 
+	 <!--  비밀번호찾기용 쿼리문 -->
+	 <select id="searchPassword" parameterType="member" 
+								  resultMap="memberResultSet">
+			<!-- 암호화 작업 후 : 아이디로만 조회 -->
+			SELECT *
+		      FROM MEMBER
+		     WHERE USER_ID = #{userId}
+		       AND STATUS = 'ACTIVE'   
+	 </select>
+	
 	<!-- 회원 탈퇴용 쿼리문 -->
 	<update id="deleteMember" parameterType="string">
 		UPDATE MEMBER
@@ -71,7 +100,7 @@
 	</update>
 	
 	<!-- 아이디 중복 체크용 쿼리문 -->
-	<select id="idcheck" parameterType="string" resultType="_int">
+	<select id="idCheck" parameterType="string" resultType="_int">
 	      SELECT COUNT(*)
 	        FROM MEMBER
 	       WHERE USER_ID = #{checkId}

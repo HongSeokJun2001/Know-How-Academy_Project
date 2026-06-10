@@ -25,16 +25,19 @@ public class InterceptorConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		// 계정별 유무 직급체크후 접속할 url 판단
 				// ....
-		/*
+		
 		// 회원용 
 		registry.addInterceptor(loginInterceptor)
-		        .addPathPatterns("/member/myPage/myInformationSelectForm")
-		        .addPathPatterns("/member/myPage/myInformationChangeForm");
-		
+		        .addPathPatterns("/myPage/myInformationSelectForm")
+		        .addPathPatterns("/myPage/myInformationChangeForm")
+		        .addPathPatterns("/myPage/checkPasswordForm")
+		        .addPathPatterns("/myPage/memberDeleteForm");
+		        
 		// 직원용
-		registry.addInterceptor(counselorInterceptor);
+		registry.addInterceptor(counselorInterceptor)
+		        .addPathPatterns("/myPageCounselor");
 		
-		 */
+		
 		
 		//관리자페이지 인터셉터와 연결되는 곳
 		registry.addInterceptor(adminInterceptor)

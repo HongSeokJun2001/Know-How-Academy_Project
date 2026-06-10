@@ -25,7 +25,7 @@ public class ReservationService {
         return reservationDao.selectListCount(sqlSession, userNo);
 
     }
-    
+    /*
     public ArrayList<Reservation> selectReservationList(ReservationPageInfo pi) {
     	return reservationDao.selectReservationList(sqlSession, pi);
     }
@@ -33,4 +33,5 @@ public class ReservationService {
     public ArrayList<CounselCategory> selectCategoryList() {
     	return reservationDao.selectCategoryList(sqlSession);
     }
+    */
 }

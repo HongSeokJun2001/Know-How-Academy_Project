@@ -106,6 +106,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+    
+    <%-- 
+		* menubar.jsp 에 공통 코드 작업을 해볼 것!!
+		- 1회성 alert 기능
+		- script 태그 내에서는 JSP Action Tag 들이 사용 불가함!! (자바스크립트 영역이기 때문)
+	--%>
+	<c:if test="${ not empty sessionScope.alertMsg }">
+		<script>
+			
+			let alertMsg = "${ sessionScope.alertMsg }";
+			
+			alertify.alert(alertMsg, function(){ alertify.success('Ok'); });
+			
+		</script>
+		<c:remove var="alertMsg" scope="session" />
+	</c:if>
 	
     <br>
     <header>

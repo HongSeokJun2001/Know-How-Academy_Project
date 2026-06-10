@@ -26,10 +26,10 @@ public class ReservationController {
 
     @Autowired
     private ReservationService reservationService;
-
+    /*
     @GetMapping("/list")
     public ModelAndView selectReservationList(@RequestParam(value="cpage", defaultValue="1")int currentPage, ModelAndView mv, HttpSession session) {
-
+       
     	Member loginUser = (Member)session.getAttribute("loginUser");
     	
     	int userNo = 0;
@@ -75,4 +75,6 @@ public class ReservationController {
     	return "reservation/reservationEnrollForm";
     	
     }
+    */
+    
 }

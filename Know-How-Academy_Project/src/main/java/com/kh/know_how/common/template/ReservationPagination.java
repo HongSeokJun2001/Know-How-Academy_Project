@@ -3,7 +3,7 @@ package com.kh.know_how.common.template;
 import com.kh.know_how.common.model.vo.ReservationPageInfo;
 
 public class ReservationPagination {
-
+    /*
 	public static ReservationPageInfo getReservationPageInfo(int userNo, int listCount, int currentPage, int pageLimit, int reservationLimit) {
     	
     	
@@ -18,5 +18,5 @@ public class ReservationPagination {
     	return new ReservationPageInfo(userNo, listCount, currentPage, pageLimit, reservationLimit, maxPage, startPage, endPage);
     	
 	}
-	
+	*/
 }

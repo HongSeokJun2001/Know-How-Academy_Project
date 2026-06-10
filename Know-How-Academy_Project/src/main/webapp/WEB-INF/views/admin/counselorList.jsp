@@ -138,6 +138,7 @@
 	}
 
 	.search-title {
+		display: block;
 		margin-bottom: 12px;
 		font-size: 16px;
 		font-weight: 800;
@@ -217,16 +218,15 @@
 		font-size: 14px;
 		color: #6b7280;
 	}
-
-	/* 테이블 */
+	
 	.counselor-table {
 		width: 100%;
 		border-collapse: separate;
 		border-spacing: 0;
 		border: 1px solid #e5e7eb;
 		border-radius: 10px;
-		overflow: hidden;
 		font-size: 15px;
+		min-width: 1100px;
 	}
 
 	.counselor-table thead th {
@@ -363,6 +363,8 @@
 </style>
 </head>
 <body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	
 	<!-- 상담사 관리 콘텐츠 시작 -->
 	<section class="counselor-section">
 
@@ -373,168 +375,257 @@
 				<p>상담사 계정, 담당 클래스, 초대 상태를 관리합니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary">
+			<!-- 상담사등록 -->
+			<button type="button" class="btn-primary" onclick="go('/admin/counselorInvite')">
 				상담사 등록
 			</button>
 		</div>
 
-		<!-- 탭 영역 -->
+		<!-- 탭 영역 (+) -->
 		<div class="counselor-tabs">
-			<button type="button" class="tab-btn active">재직중 상담사</button>
-			<button type="button" class="tab-btn">비활성화 상담사</button>
+			<button type="button" data-status="ACTIVE" 
+					class="tab-btn ${requestScope.status eq 'ACTIVE' ? 'active' : ''}" 
+				    onclick="go('/admin/counselorList?status=ACTIVE')">
+				재직중 상담사</button>
+			<button type="button" data-status="INACTIVE" 
+					class="tab-btn ${requestScope.status eq 'INACTIVE' ? 'active' : ''}" 
+				    onclick="go('/admin/counselorList?status=INACTIVE')">
+				비활성화 상담사</button>
 		</div>
 
 		<!-- 검색 영역 -->
-		<div class="search-card">
-			<div class="search-title">검색어</div>
+		 <form action="${pageContext.request.contextPath}/admin/counselorList" method="get">
+			<input type="hidden" name="status" value="${requestScope.status}">
+			<div class="search-card">
+				<label for="counselorKeyword" class="search-title">검색어</label>
 
-			<div class="search-row">
-				<input type="text"
-					class="search-input"
-					name="keyword"
-					placeholder="상담사명 또는 이메일 검색">
+				<div class="search-row">
+					<input type="text"
+						class="search-input"
+						id="counselorKeyword"
+						name="keyword"
+						value="${requestScope.keyword}"
+						placeholder="상담사명 또는 이메일 또는 전화번호 검색">
 
-				<button type="button" class="btn-primary search-btn">
-					검색
-				</button>
+					<button type="submit" class="btn-primary search-btn">
+						검색
+					</button>
+				</div>
+				<c:if test="${not empty keyword}">
+					<div class="search-keyword">
+						검색어: <span><c:out value="${keyword}" /></span>
+						<button type="button" onclick="go('/admin/counselorList?status=${requestScope.status}')">×</button>
+					</div>
+				</c:if>
 			</div>
-
-			
-			<div class="search-keyword">
-				검색어: <span>김</span>
-				<button type="button">×</button>
-			</div>
-		</div>
+		</form>
 
 		<!-- 리스트 카드 -->
 		<div class="list-card">
 
 			<div class="list-card-header">
-				<strong>재원 12명</strong>
+				<strong>상담사 ${requestScope.pageInfo.listCount}명</strong>
 				<span>동명이인 구분을 위해 이메일과 현재 담당 정보를 함께 표시합니다.</span>
 			</div>
+			<div class="table-wrap">
+				<table class="counselor-table">
+					<thead>
+						<tr>
+							<th>상담사명</th>
+							<th>이메일</th>
+							<th>현재 담당</th>
+							<th>담당 클래스 변경</th>
+							<th>상태</th>
+							<th>관리</th>
+						</tr>
+					</thead>
 
-			<table class="counselor-table">
-				<thead>
-					<tr>
-						<th>상담사명</th>
-						<th>이메일</th>
-						<th>현재 담당</th>
-						<th>담당 클래스 변경</th>
-						<th>상태</th>
-						<th>관리</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<!-- 초대 대기 임시계정 -->
-					<tr>
-						<td>
-							<a href="#" class="name-link">김철수</a>
-						</td>
-						<td>kim***@naver.com</td>
-						<td>미배정</td>
-						<td>
-							<select class="class-select" disabled>
-								<option>비활성화</option>
-							</select>
-						</td>
-						<td>
-							<span class="status-badge waiting">초대대기</span>
-						</td>
-						<td>
-							<div class="action-group">
-								<button type="button" class="btn-danger-outline">초대삭제</button>
-								<button type="button" class="btn-outline">상세보기</button>
-							</div>
-						</td>
-					</tr>
-
-					<!-- 활성 상담사 -->
-					<tr>
-						<td>
-							<a href="#" class="name-link">김철수</a>
-						</td>
-						<td>kim2***@gmail.com</td>
-						<td>취업반B</td>
-						<td>
-							<select class="class-select">
-								<option>DB-B</option>
-								<option>미배정</option>
-							</select>
-						</td>
-						<td>
-							<span class="status-badge active">활성</span>
-						</td>
-						<td>
-							<div class="action-group">
-								<button type="button" class="btn-primary small">저장</button>
-								<button type="button" class="btn-outline">상세보기</button>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<a href="#" class="name-link">박민지</a>
-						</td>
-						<td>minji***@gmail.com</td>
-						<td>미배정</td>
-						<td>
-							<select class="class-select">
-								<option>미배정</option>
-								<option>DB-A</option>
-								<option>프론트엔드A</option>
-							</select>
-							<p class="select-help">미배정 클래스만 선택 가능합니다.</p>
-						</td>
-						<td>
-							<span class="status-badge active">활성</span>
-						</td>
-						<td>
-							<div class="action-group">
-								<button type="button" class="btn-primary small">저장</button>
-								<button type="button" class="btn-outline">상세보기</button>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<a href="#" class="name-link">이도윤</a>
-						</td>
-						<td>dyoon***@naver.com</td>
-						<td>프론트엔드A</td>
-						<td>
-							<select class="class-select">
-								<option>프론트엔드A</option>
-								<option>미배정</option>
-							</select>
-						</td>
-						<td>
-							<span class="status-badge active">활성</span>
-						</td>
-						<td>
-							<div class="action-group">
-								<button type="button" class="btn-primary small">저장</button>
-								<button type="button" class="btn-outline">상세보기</button>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+					<tbody>
+						<c:choose>
+							<c:when test="${requestScope.pageInfo.listCount eq 0}">
+								<tr>
+									
+									<th colspan="6">
+										상담사 정보가 없습니다.
+									</th>
+									
+								</tr>
+							</c:when>
+							<c:otherwise>
+								<c:forEach var="c" items="${requestScope.counselorList}">
+									<tr>
+										<td>${c.userName}</td>
+										<td>${c.email}</td>
+										<c:choose>
+											
+											<c:when test="${c.status eq 'PENDING'}">
+												<td>미배정</td>
+												<td>
+													<select class="class-select" disabled>
+														<option>비활성화</option>
+													</select>
+												</td>
+												<td>
+													<span class="status-badge waiting">초대대기</span>
+												</td>
+												<td>
+													<!-- 초대삭제 ( - ) -->
+													<div class="action-group">
+														<button type="button" class="btn-danger-outline"
+ 														        onclick="deleteInvite(${c.inviteNo})">초대삭제</button>
+													</div>
+												</td>
+											</c:when>
+											<c:when test="${c.status eq 'ACTIVE'}">
+												<td>${empty c.className ? "미배정" : c.className}</td>
+												<td>
+													<select class="class-select" id="class_${c.userNo}">
+														<option value="">미지정</option>
+														<c:forEach var="cl" items="${requestScope.classList}">
+															<option value="${cl.classNo}">${cl.className}</option>
+														</c:forEach>
+													</select>
+												</td>
+												<td>
+													<span class="status-badge active">활성</span>
+												</td>
+												<td>
+													<div class="action-group">
+														<button type="button" class="btn-primary small"
+																onclick="updateClass(${c.userNo});">저장</button>
+														<button type="button" class="btn-outline"
+																onclick="go('/admin/counselorProfile/${c.userNo}')">상세보기</button>
+													</div>
+												</td>
+											</c:when>
+											<c:when test="${c.status eq 'INACTIVE'}">
+												<td>미배정</td>
+												<td>
+													<select class="class-select" disabled>
+														<option>비활성화</option>
+													</select>
+												</td>
+												<td>
+													<span class="status-badge inactive">비활성화</span>
+												</td>
+												<td>
+													<div class="action-group">
+														<button type="button" class="btn-outline"
+																onclick="go('/admin/counselorProfile/${c.userNo}')">상세보기</button>
+													</div>
+												</td>
+											</c:when>
+										</c:choose>
+									</tr>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>	
 
 			<!-- 페이징 -->
 			<div class="pagination-area">
-				<button type="button">&lt;</button>
-				<button type="button" class="active">1</button>
-				<button type="button">2</button>
-				<button type="button">3</button>
-				<button type="button">4</button>
-				<button type="button">&gt;</button>
+				<!-- 이전 버튼 -->
+				<c:choose>
+					<c:when test="${requestScope.pageInfo.currentPage eq 1}">
+						<button type="button" disabled>&lt;</button>
+					</c:when>
+
+					<c:otherwise>
+						<button type="button"
+							onclick="location.assign('${pageContext.request.contextPath}/admin/counselorList?status=${requestScope.status}&keyword=${requestScope.keyword}&cpage=${requestScope.pageInfo.currentPage - 1}')">
+							&lt;
+						</button>
+					</c:otherwise>
+				</c:choose>
+
+
+				<!-- 페이지 번호 -->
+				<c:forEach var="p"
+					begin="${requestScope.pageInfo.startPage}"
+					end="${requestScope.pageInfo.endPage}">
+
+					<c:choose>
+						<c:when test="${requestScope.pageInfo.currentPage eq p}">
+							<button type="button" class="active">${p}</button>
+						</c:when>
+
+						<c:otherwise>
+							<button type="button"
+								onclick="location.assign('${pageContext.request.contextPath}/admin/counselorList?status=${requestScope.status}&keyword=${requestScope.keyword}&cpage=${p}')">
+								${p}
+							</button>
+						</c:otherwise>
+					</c:choose>
+
+				</c:forEach>
+
+
+				<!-- 다음 버튼 -->
+				<c:choose>
+					<c:when test="${requestScope.pageInfo.currentPage eq requestScope.pageInfo.maxPage or empty requestScope.counselorList}">
+						<button type="button" disabled>&gt;</button>
+					</c:when>
+
+					<c:otherwise>
+						<button type="button"
+							onclick="location.assign('${pageContext.request.contextPath}/admin/counselorList?status=${requestScope.status}&keyword=${requestScope.keyword}&cpage=${requestScope.pageInfo.currentPage + 1}')">
+							&gt;
+						</button>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 	</section>
 	<!-- 상담사 관리 콘텐츠 끝 -->
+	<script>
+
+		function updateClass(userNo) {
+			const classNo = $("#class_" + userNo).val();
+
+			$.ajax({
+				url: "${pageContext.request.contextPath}/admin/class/update",
+				type: "POST",
+				data: {
+					userNo: userNo,
+					classNo: classNo
+				},
+				success: function(result) {
+					if(result == "success"){
+						alert("저장되었습니다.");
+						location.reload();
+					}else {
+						alert("이미 사용 중인 클래스입니다.");
+					}
+				},
+				error: function() {
+					alert("저장 실패");
+				}
+			});
+		}
+
+		function deleteInvite(inviteNo){
+			$.ajax({
+				url: "${pageContext.request.contextPath}/admin/invite/delete",
+				type: "POST",
+				data: {
+					inviteNo: inviteNo
+				},
+				success: function(result) {
+					if(result == "success"){
+						alert("초대링크가 삭제되었습니다.");
+						location.reload();
+					}else {
+						alert("사용되거나 만료된 링크입니다.");
+					}
+				},
+				error: function() {
+					console.log("상담사 초대링크 삭제용 ajax 통신 실패!");
+					alert("삭제 실패. 다시 시도해주세요.");
+				}
+			});
+		}
+	</script>
 </body>
 </html>
