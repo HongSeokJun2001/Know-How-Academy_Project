@@ -254,8 +254,6 @@
         KNOW-HOW ACADEMY &thinsp; 관리자 페이지
     </div>
 
-    <!-- 메뉴바+알림+페이지를 감싸는 div 
-                    페이지 링크 수정(-)  -->
     <div id="main-container">
         <!-- 메뉴바 -->
         <div id="sidebar">
@@ -268,11 +266,9 @@
                 onclick="go('/admin/counselorInvite')">
                 상담사 등록
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 메뉴항목 수정(-)  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 관리페이지
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 학원생 관련 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="menu-item ${page.contains('student') ? 'active' : ''}" data-path="/admin/studentList"
                  onclick="go('/admin/studentList')">
                 학원생 관리
@@ -282,16 +278,13 @@
                  onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  메뉴항목 수정 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="sidebar-category">
                 설정
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  공지사항 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="menu-item  ${page.contains('Notice') ? 'active' : ''}" data-path="/admin/notice"
                  onclick="go('/admin/notice')">
                 공지사항 관리
             </div>
-<!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  학원소식 관리 페이지와 연결(-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             <div class="menu-item  ${page.contains('academyNews') ? 'active' : ''}" data-path="/admin/academyNews"
                  onclick="go('/admin/academyNews')">
                 학원소식 관리
@@ -313,7 +306,6 @@
                             <strong>${requestScope.alarmCount}</strong>
                             <span>건</span>
                         </div>
-   <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 신규등록 페이지와 연결 (-) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
                         <button type="button" class="primary-btn" onclick="go('/admin/student/enroll')">
                             바로 확인하기
                         </button>
@@ -328,7 +320,7 @@
     </div>
    
     
-    
+
 <script>
 
     const cp = "${pageContext.request.contextPath}";
@@ -350,6 +342,16 @@
         });
 
     };
+
+    $(document).ajaxError(function(event, xhr, settings, thrownError) {
+        if (xhr.status === 401) {
+            alert("세션이 만료되어 로그인이 필요합니다.");
+            location.href = "/know-how/admin/login"; 
+        } else if (xhr.status === 403) {
+            alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
+            location.href = "/know-how/"; 
+        }
+    });
 
 </script>
 </body>

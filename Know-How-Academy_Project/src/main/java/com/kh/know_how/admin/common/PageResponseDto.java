@@ -16,6 +16,8 @@ import lombok.ToString;
 @ToString
 public class PageResponseDto {
 	
+	//>>>>> pageLimit, boardLimit 은 admin/common/AdminPagination 에 있음!
+	
     //DB 조회
     private int listCount;    // 총게시글의갯수(DB 조회)
     //UI 에서 넘어옴

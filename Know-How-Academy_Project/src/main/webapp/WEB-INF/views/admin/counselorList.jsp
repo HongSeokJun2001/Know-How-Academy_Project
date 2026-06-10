@@ -621,6 +621,7 @@
 					}
 				},
 				error: function() {
+					console.log("상담사 초대링크 삭제용 ajax 통신 실패!");
 					alert("삭제 실패. 다시 시도해주세요.");
 				}
 			});
