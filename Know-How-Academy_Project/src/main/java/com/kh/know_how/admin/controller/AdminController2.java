@@ -611,4 +611,14 @@ public class AdminController2 {
     	}
     }
     
+    @GetMapping("/logout")
+    public String adminLogout(HttpSession session) {
+    	
+    	session.removeAttribute("loginUser");
+    	
+    	session.setAttribute("alertMsg", "로그아웃이 되었습니다.");
+    	
+    	return "admin/adminLogin";
+    }
+   
 }//컨트롤러 끝
