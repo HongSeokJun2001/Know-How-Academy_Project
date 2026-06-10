@@ -37,18 +37,26 @@ public class CounselorController {
 	return mv;
 	}
 	
-	@GetMapping("counselorMyInformationSelectForm") // 직원용 내정보 조회 페이지로 이동
-	public ModelAndView counselorMyInformationSelectForm(ModelAndView mv) {
+	@GetMapping("counselorInformationSelectForm") // 직원용 내정보 조회 페이지로 이동
+	public ModelAndView counselorInformationSelectForm(ModelAndView mv) {
 		
-		mv.setViewName("counselor/counselorMyInformationSelectForm");
+		mv.setViewName("counselor/counselorInformationSelectForm");
 		
 		return mv;
 	}
 	
-	@GetMapping("counselorMyInformationChangeForm") // 직원용 내정보 수정 페이지로 이동
-	public ModelAndView counselorMyInformationChangeForm(ModelAndView mv) {
+	@GetMapping("counselorInformationChangeForm") // 직원용 내정보 수정 페이지로 이동
+	public ModelAndView counselorInformationChangeForm(ModelAndView mv) {
 		
-		mv.setViewName("counselor/counselorMyInformationChangeForm");
+		mv.setViewName("counselor/counselorInformationChangeForm");
+		
+		return mv;
+	}
+	
+	@GetMapping("myStudentClassListForm") // 내학생리스트페이지로 이동
+	public ModelAndView myStudentClassList(ModelAndView mv) {
+		
+		mv.setViewName("counselor/myStudentClassListForm");
 		
 		return mv;
 	}

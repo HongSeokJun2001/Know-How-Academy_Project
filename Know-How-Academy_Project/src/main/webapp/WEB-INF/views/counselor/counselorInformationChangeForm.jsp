@@ -4,23 +4,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>내정보 수정</title>
+<title>Insert title here</title>
 <!-- 온라인 방식 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<style>
-	
-</style>
 </head>
 <body>
-    <jsp:include page="../common/menubar.jsp"/>
-
-    <div class="mypage-outer">
+   <jsp:include page="../common/menubar.jsp"/>
+  
+   <div class="mypage-outer">
 	
 		<br>
 		<h2 align="center">내정보수정</h2>
 		<br>
 
-		<form id="myInformationChange-form" action="/know-how/myPage/update" method="post">
+		<form id="counselorInformationChange-form" action="/know-how/myPage/update" method="post">
 			<table align="center">
 				<tr>
 					<th>&nbsp;&nbsp;&nbsp;수정할 비밀번호</th>
@@ -96,10 +93,10 @@
 		     function validateInformation() {
 	        		
 	        		// 우선 변경할 비밀번호와 변경할 비밀번호 재입력값을 변수에 담아오기
-	        		let userPwd = $("input[name=userPwd]").val();
-	        		let userPwdCheck = $("input[name=userPwdCheck]").val();
-	        		let email = $("input[name=email]").val();
-	        		let emailCheck = $("button[name=emailCheck]").val();
+	        		let userPwd = $("#counselorInformationChange-form input[name=userPwd]").val();
+	        		let userPwdCheck = $("#counselorInformationChange-form input[name=userPwdCheck]").val();
+	        		let email = $("#counselorInformationChange-form input[name=email]").val();
+	        		let emailCheck = $("#counselorInformationChange-form button[name=emailCheck]").val();
 	        		
 	        		// 두 값이 일치하면 기본이벤트를 살리고, 두 값이 일치하지 않으면 기본이벤트를 제거할 것
 	        		if(userPwd != userPwdCheck) {
@@ -111,50 +108,7 @@
 	        		
 	        		return true;
 	        	}
-		     
-		    function emailCheck() {
-				
-				let $email = $("#myInformationChange-form input[name=email]");
-			
-				$.ajax({
-					url : "/know-how/myPage/emailCheck",
-					type : "get",
-					data : { checkEmail : $emailCheck.val() },
-					success : function(result) {
-						
-						if(result == "NNNNN") {
-							// > 사용 불가한 아이디일 경우
-							
-							alert("이미 사용중인 이메일입니다.");
-							
-							// 아이디 재입력 유도
-							$email.focus();
-							
-						} else {
-							// > 사용 가능한 아이디일 경우
-							
-							if(confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")){
-								
-								// 이메일값을 확정 (다시는 수정 못하게)
-								$email.prop("readonly", true);
-								
-							} else {
-								// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
-								
-								// 아이디 재입력 유도
-								$email.focus();
-							}
-						}
-					},
-					error : function() {
-						
-						console.log("이메일 중복체크용 ajax 통신 실패!");
-					}
-				});	
-			
-		      }
-		    
-		 </script>
-		</div> 	
+		  </script>
+	</div>
 </body>
 </html>
