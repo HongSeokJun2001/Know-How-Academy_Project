@@ -498,7 +498,7 @@
                     
                     for(let i in result) {
 
-                        resultStr +=  "<div class='memo-item'>"
+                        resultStr +=  "<div'>"
                                   + "<div class='memo-text'>" + result[i].userMemo + "</div>"
                                   + "<button "+ disabled +" type='button' class='memo-delete-btn' onclick='deleteMemo("+ result[i].memoNo +");'>×</button>"
                                   + "</div>";

@@ -268,7 +268,7 @@
 
 	/* 클래스 변경 select */
 	.class-select {
-		width: 210px;
+		width: 170px;
 		height: 40px;
 		padding: 0 12px;
 		border: 1px solid #d1d5db;
@@ -469,7 +469,6 @@
 													<span class="status-badge waiting">초대대기</span>
 												</td>
 												<td>
-													<!-- 초대삭제 ( - ) -->
 													<div class="action-group">
 														<button type="button" class="btn-danger-outline"
  														        onclick="deleteInvite(${c.inviteNo})">초대삭제</button>
@@ -600,7 +599,11 @@
 					}
 				},
 				error: function() {
-					alert("저장 실패");
+
+					console.log("상담사리스트 상담사 클래스 변경 ajax 통신 실패!");
+					if (xhr.status !== 401 && xhr.status !== 403) {
+                        alert("오류가 발생했습니다.");
+                    }
 				}
 			});
 		}
@@ -621,8 +624,10 @@
 					}
 				},
 				error: function() {
-					console.log("상담사 초대링크 삭제용 ajax 통신 실패!");
-					alert("삭제 실패. 다시 시도해주세요.");
+					console.log("상담사리스트 상담사 초대링크 삭제 ajax 통신 실패!");
+					if (xhr.status !== 401 && xhr.status !== 403) {
+                        alert("오류가 발생했습니다.");
+                    }
 				}
 			});
 		}
