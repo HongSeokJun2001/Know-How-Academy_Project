@@ -98,50 +98,30 @@ public class AdminService2 {
 		return ad2.updateStudentReject(sqlSession, userNo);
 	}
 	
-	public int adminSelectNoticeCount() {
+	public int adminSelectBoardCount(String postType) {
 		
-		return ad2.adminSelectNoticeCount(sqlSession);
+		return ad2.adminSelectBoardCount(sqlSession, postType);
 	}
 	
-	public ArrayList<Board> adminSelectNoticeList(PageInfo pi) {
+	public ArrayList<Board> adminSelectBoardList(PageInfo pi, String postType) {
 		
-		return ad2.adminSelectNoticeList(sqlSession, pi);
+		return ad2.adminSelectBoardList(sqlSession, pi, postType);
 	}
 
-	public int adminSearchNoticeCount(String keyword) {
+	public int adminSearchBoardCount(HashMap<String, String> map) {
 		
-		return ad2.adminSearchNoticeCount(sqlSession, keyword);
+		return ad2.adminSearchBoardCount(sqlSession, map);
 	}
 
-	public ArrayList<Board> adminSearchNoticeList(PageInfo pi, String keyword) {
+	public ArrayList<Board> adminSearchBoardList(PageInfo pi, HashMap<String, String> map) {
 		
-		return ad2.adminSearchNoticeList(sqlSession, pi, keyword);
+		return ad2.adminSearchBoardList(sqlSession, pi, map);
 	}
 
 	@Transactional
-	public int adminUpdateStatus(Board b) {
+	public int adminUpdateBoardStatus(Board b) {
 		
-		return ad2.adminUpdateStatus(sqlSession, b);
-	}
-
-	public int adminSelectNewsListCount() {
-		
-		return ad2.adminSelectNewsCount(sqlSession);
-	}
-
-	public ArrayList<Board> adminSelectNewsList(PageInfo pi) {
-		
-		return ad2.adminSelectNewsList(sqlSession, pi);
-	}
-
-	public int adminSearchNewsCount(String keyword) {
-		
-		return ad2.adminSearchNewsCount(sqlSession, keyword);
-	}
-
-	public ArrayList<Board> adminSearchNewsList(PageInfo pi, String keyword) {
-		
-		return ad2.adminSearchNewsList(sqlSession, pi, keyword);
+		return ad2.adminUpdateBoardStatus(sqlSession, b);
 	}
 
 	@Transactional
