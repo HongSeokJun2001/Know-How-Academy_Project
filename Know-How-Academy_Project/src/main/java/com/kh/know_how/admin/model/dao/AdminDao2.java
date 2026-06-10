@@ -16,12 +16,12 @@ import com.kh.know_how.common.model.vo.PageInfo;
 @Repository
 public class AdminDao2 {
 
-	public int selectStudentListCount(SqlSessionTemplate sqlSession) {
+	public int selectStudentListCount(SqlSessionTemplate sqlSession) { // 재학, 휴학중인 학원생의 수를 불러오는 메소드
 		
 		return sqlSession.selectOne("adminMapper2.selectStudentListCount");
 	}
 
-	public ArrayList<StudentDto> selectStudentList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<StudentDto> selectStudentList(SqlSessionTemplate sqlSession, PageInfo pi) { // 재학, 휴학중인 학원생 리스트를 불러오는 메소드
 		
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
@@ -31,13 +31,12 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("adminMapper2.selectStudentList", null, rowBounds);
 	}
 
-	public int selectStudentSearchCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+	public int searchStudentCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) { // 학원생 검색 시 학원생의 수를 불러오는 메소드
 		
-		return sqlSession.selectOne("adminMapper2.selectStudentSearchCount", map);
+		return sqlSession.selectOne("adminMapper2.searchStudentCount", map);
 	}
 
-	public ArrayList<StudentDto> selectStudentList(SqlSessionTemplate sqlSession, HashMap<String, String> map,
-			PageInfo pi) {
+	public ArrayList<StudentDto> searchStudentList(SqlSessionTemplate sqlSession, HashMap<String, String> map, PageInfo pi) { // 학원생 검색 시 학원생 리스트를 불러오는 메소드
 		
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
@@ -47,57 +46,57 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("adminMapper2.searchStudentList", map, rowBounds);
 	}
 
-	public StudentDto selectStudent(SqlSessionTemplate sqlSession, int studentNo) {
+	public StudentDto selectStudent(SqlSessionTemplate sqlSession, int studentNo) { // 학원생 정보를 불러오는 메소드
 		
 		return sqlSession.selectOne("adminMapper2.selectStudent", studentNo);
 	}
 
-	public int insertStudentMemo(SqlSessionTemplate sqlSession, MemoDto m) {
+	public int insertStudentMemo(SqlSessionTemplate sqlSession, MemoDto m) { // 학원생의 메모를 추가하는 메소드
 		
 		return sqlSession.insert("adminMapper2.insertStudentMemo", m);
 	}
 
-	public ArrayList<MemoDto> selectStudentMemoList(SqlSessionTemplate sqlSession, int userNo) {
+	public ArrayList<MemoDto> selectStudentMemoList(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 메모 리스트를 불러오는 메소드
 		
 		return (ArrayList)sqlSession.selectList("adminMapper2.selectStudentMemoList", userNo);
 	}
 
-	public int deleteStudentNo(SqlSessionTemplate sqlSession, int memoNo) {
+	public int deleteStudentMemo(SqlSessionTemplate sqlSession, int memoNo) { // 학원생의 메모를 지우는 메소드
 		
 		return sqlSession.delete("adminMapper2.deleteStudentMemo", memoNo);
 	}
 
-	public int updateStudentStatus(SqlSessionTemplate sqlSession, StudentDto s) {
+	public int updateStudentStatus(SqlSessionTemplate sqlSession, StudentDto s) { // 학원생의 재학/휴학 처리 해주는 메소드
 		
 		return sqlSession.update("adminMapper2.updateStudentStatus", s);
 	}
 
-	public ArrayList<StudentDto> selectPendingStudentList(SqlSessionTemplate sqlSession) {
+	public ArrayList<StudentDto> selectPendingStudentList(SqlSessionTemplate sqlSession) { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
 		return (ArrayList)sqlSession.selectList("adminMapper2.selectPendingStudentList");
 	}
 
-	public int updateStudentApprove(SqlSessionTemplate sqlSession, HashMap<String, Integer> map) {
+	public int updateStudentApprove(SqlSessionTemplate sqlSession, HashMap<String, Integer> map) { // 학원생의 가입을 승인하는 메소드
 		
 		return sqlSession.update("adminMapper2.updateStudentApprove", map);
 	}
 
-	public int insertStudent(SqlSessionTemplate sqlSession, HashMap<String, Integer> map) {
+	public int insertStudent(SqlSessionTemplate sqlSession, HashMap<String, Integer> map) { // 학원생의 가입 승인 시 학생의 데이터를 추가하는 메소드
 		
 		return sqlSession.insert("adminMapper2.insertStudent", map);
 	}
 
-	public int updateStudentReject(SqlSessionTemplate sqlSession, int userNo) {
+	public int updateStudentReject(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 거절하는 메소드
 		
 		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
 	}
 	
-	public int adminSelectBoardCount(SqlSessionTemplate sqlSession, String postType) {
+	public int adminSelectBoardCount(SqlSessionTemplate sqlSession, String postType) { // 공지사항, 학원소식의 리스트의 개수를 불러오는 메소드
 		
 		return sqlSession.selectOne("boardMapper.adminSelectBoardCount", postType);
 	}
 	
-	public ArrayList<Board> adminSelectBoardList(SqlSessionTemplate sqlSession, PageInfo pi, String postType) {
+	public ArrayList<Board> adminSelectBoardList(SqlSessionTemplate sqlSession, PageInfo pi, String postType) { // 공지사항, 학원소식의 리스트를 불러오는 메소드
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
@@ -106,12 +105,12 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectBoardList", postType, rowBounds);
 	}
 
-	public int adminSearchBoardCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+	public int adminSearchBoardCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) { // 공지사항, 학원소식 검색 시 리스트의 개수를 불러오는 메소드
 		
 		return sqlSession.selectOne("boardMapper.adminSearchBoardCount", map);
 	}
 
-	public ArrayList<Board> adminSearchBoardList(SqlSessionTemplate sqlSession, PageInfo pi, HashMap<String, String> map) {
+	public ArrayList<Board> adminSearchBoardList(SqlSessionTemplate sqlSession, PageInfo pi, HashMap<String, String> map) { // 공지사항, 학원소식 검색 시 리스트를 불러오는 메소드 
 		
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
@@ -121,22 +120,22 @@ public class AdminDao2 {
 		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchBoardList", map, rowBounds);
 	}
 
-	public int adminDeleteBoard(SqlSessionTemplate sqlSession, int postNo) {
+	public int adminDeleteBoard(SqlSessionTemplate sqlSession, int postNo) { // 공지사항, 학원소식 삭제해주는 메소드
 		
 		return sqlSession.delete("boardMapper.adminDeleteBoard", postNo);
 	}
 	
-	public int adminDeleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+	public int adminDeleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) { // 공지사항, 학원소식 삭제 시 파일 정보도 같이 삭제해주는 메소드
 		
 		return sqlSession.delete("boardMapper.adminDeleteFileAttachment", postNo);
 	}
 	
-	public int adminUpdateBoardStatus(SqlSessionTemplate sqlSession, Board n) {
+	public int adminUpdateBoardStatus(SqlSessionTemplate sqlSession, Board n) { // 공지사항, 학원소식 노출/숨김 처리 해주는 메소드
 		
 		return sqlSession.update("boardMapper.adminUpdateBoardStatus", n);
 	}
 
-	public int insertAttachmentList(SqlSessionTemplate sqlSession, ArrayList<FileAttachment> list) {
+	public int insertAttachmentList(SqlSessionTemplate sqlSession, ArrayList<FileAttachment> list) { // 학원소식 추가 시 이미지를 추가할 때 쓰는 메소드
 		
 		int result = 1;
 		
@@ -147,14 +146,14 @@ public class AdminDao2 {
 		return result;
 	}
 
-	public int insertNewsFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+	public int insertNewsFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) { // 학원소식 수정 시 이미지를 추가할 때 쓰는 메소드
 		
 		return sqlSession.insert("boardMapper.insertNewsFileAttachment", fa);
 	}
 
-	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) {
+	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) { // 학원소식 수정 시 이미지 제거할 때 쓰는 메소드
 		
 		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
 	}
 
-}
+} // 클래스 끝

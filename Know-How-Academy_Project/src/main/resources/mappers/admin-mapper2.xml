@@ -34,7 +34,7 @@
 	</select>
 	
 	<!-- 3. 검색 결과의 갯수를 세오는 쿼리 -->
-	<select id="selectStudentSearchCount" parameterType="hashmap" resultType="_int">
+	<select id="searchStudentCount" parameterType="hashmap" resultType="_int">
 		SELECT COUNT(*)
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER M USING(USER_NO)

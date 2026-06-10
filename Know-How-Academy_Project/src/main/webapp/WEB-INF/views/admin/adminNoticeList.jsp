@@ -361,7 +361,7 @@
 					} 
 					console.log(postNo);
 					$.ajax({
-						url : "/know-how/admin/notice/visible",
+						url : "/know-how/admin/board/visible",
 						type : "post",
 						data : {
 							status : status,
