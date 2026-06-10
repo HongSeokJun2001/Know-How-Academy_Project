@@ -121,24 +121,24 @@
 				<tr>
 					<th>대표이미지</th>
 					<td colspan="3">
-						<img id="titleImg" width="250" height="170" alt="대표이미지">
+						<img id="titleImg" width="250" height="170">
 					</td>
 				</tr>
 				<tr>
 					<th>상세이미지</th>
 					<td>
-						<img id="contentImg1" width="150" height="110" alt="상세이미지">
+						<img id="contentImg1" width="150" height="110">
 					</td>
 					<td>
-						<img id="contentImg2" width="150" height="110" alt="상세이미지">
+						<img id="contentImg2" width="150" height="110">
 					</td>
 					<td>
-						<img id="contentImg3" width="150" height="110" alt="상세이미지">
+						<img id="contentImg3" width="150" height="110">
 					</td>
 				</tr>
 			</table>
 			<div id="file-area">
-				<input type="file" accept="image/*" id="file1" name="files" onchange="loadImg(this, 1)" required>
+				<input type="file" accept="image/*" id="file1" name="files" onchange="loadImg(this, 1)">
 				<input type="file" accept="image/*" id="file2" name="files" onchange="loadImg(this, 2)">
 				<input type="file" accept="image/*" id="file3" name="files" onchange="loadImg(this, 3)">
 				<input type="file" accept="image/*" id="file4" name="files" onchange="loadImg(this, 4)">
@@ -224,6 +224,13 @@
 	    $("#enrollForm").on("submit", function(event) {
 	        event.preventDefault();
 	        
+	        let titleImgSrc = $("#titleImg").attr("src");
+	        
+	        if (!titleImgSrc || titleImgSrc === "" || titleImgSrc === "null") {
+	            alert("대표 이미지는 무조건 있어야 합니다! 이미지를 등록해 주세요.");
+	            return false;
+	        }
+	        
 	        let formData = new FormData(this);
 	        
 	        $.ajax({
@@ -235,7 +242,7 @@
 	            success(result) {
 					if(result == "success") {
 						
-						alert("학원소식이 등록되었습니다.")
+						alert("학원소식이 등록되었습니다.");
 						
 						location.href = "/know-how/admin/academyNews";
 						

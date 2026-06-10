@@ -134,7 +134,7 @@
 							</c:when>
 							<c:otherwise>
 								<a download="${ requestScope.fa.originName }"
-								   href="/know-how/${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
+								   href="/know-how${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
 									${ requestScope.fa.originName }   
 								</a>
 							</c:otherwise>

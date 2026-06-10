@@ -303,7 +303,7 @@ public class MemberController {
 			// 1회성 알림 문구로 잘못입력했다고 알려주기
 			session.setAttribute("alertMsg", "잘못된 비밀번호입니다. 다시 입력해주세요.");
 			
-			return "redirect:/";
+			return "redirect:/member/checkPasswordForm";
 		}
 		
 	}
@@ -311,11 +311,8 @@ public class MemberController {
 	@PostMapping("memberDeleteForm/delete")
 	public String deleteMember(String userPwd, HttpSession session, Model model) {
 		     
-		    Member loginUser = (Member)(session.getAttribute("loginUser"));
+		        Member loginUser = (Member)(session.getAttribute("loginUser"));
 		    
-		    if(bCryptPasswordEncoder.matches(userPwd, loginUser.getUserPwd())) {
-				// > 평문과 암호문 비밀번호가 맞아 떨어질 경우
-				
 				// 회원 탈퇴 서비스 요청 후 결과 받기
 				int result = memberService.deleteMember(loginUser.getUserId());
 				
@@ -338,21 +335,11 @@ public class MemberController {
 					
 					return "common/errorPage";
 				}
-				
-			} else {
-				// > 평문과 암호문 비밀번호가 다를 경우
-				//   (현재 비밀번호를 잘못 입력한 경우)
-				
-				// 1회성 알림 문구로 잘못 입력했음을 알려주고, 마이페이지로 url 재요청
-				session.setAttribute("alertMsg", "잘못된 비밀번호입니다. 다시 입력해주세요.");
-				
-				return "redirect:/member/myPage";
-			}
 		
 	}
 	
 	@PostMapping("searchId")
-	public String searchId(String userName, String email) {
+	public String searchId(String userName, String email,  HttpSession session) {
 		
 		Member m = new Member();
 		m.setUserName(userName);
@@ -362,15 +349,15 @@ public class MemberController {
 		int result = memberService.searchId(m);
 		
 		if(result > 0) {
-			// > 비밀번호가 일치할 경우
+			// 이름,이메일이 일치할 경우
 			
-			
+			session.setAttribute("alertMsg", "요청하신회원님의 아이디는 ${sessionScope.userId}입니다.");
 			return "redirect:/";
 			
 		} else {
-			// > 비밀번호가 일치하지않을 경우
+			// 이름,이메일이 일치하지않을 경우
 			
-			
+			session.setAttribute("alertMsg", "비밀번호가 확인되었습니다.");
 			return "common/errorPage";
 		}
 		

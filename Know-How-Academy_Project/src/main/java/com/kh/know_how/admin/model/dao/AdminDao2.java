@@ -92,68 +92,48 @@ public class AdminDao2 {
 		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
 	}
 	
-	public int adminSelectNoticeCount(SqlSessionTemplate sqlSession) {
+	public int adminSelectBoardCount(SqlSessionTemplate sqlSession, String postType) {
 		
-		return sqlSession.selectOne("boardMapper.adminSelectNoticeCount");
+		return sqlSession.selectOne("boardMapper.adminSelectBoardCount", postType);
 	}
 	
-	public ArrayList<Board> adminSelectNoticeList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> adminSelectBoardList(SqlSessionTemplate sqlSession, PageInfo pi, String postType) {
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNoticeList", null, rowBounds);
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectBoardList", postType, rowBounds);
 	}
 
-	public int adminSearchNoticeCount(SqlSessionTemplate sqlSession, String keyword) {
+	public int adminSearchBoardCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		
-		return sqlSession.selectOne("boardMapper.adminSearchNoticeCount", keyword);
+		return sqlSession.selectOne("boardMapper.adminSearchBoardCount", map);
 	}
 
-	public ArrayList<Board> adminSearchNoticeList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
-		
-		int limit = pi.getBoardLimit();
-		int offset = (pi.getCurrentPage() - 1) * limit;
-		
-		RowBounds rowBounds = new RowBounds(offset, limit);
-		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNoticeList", keyword, rowBounds);
-	}
-
-	public int adminUpdateStatus(SqlSessionTemplate sqlSession, Board n) {
-		
-		return sqlSession.update("boardMapper.adminUpdateStatus", n);
-	}
-
-	public int adminSelectNewsCount(SqlSessionTemplate sqlSession) {
-		
-		return sqlSession.selectOne("boardMapper.adminSelectNewsCount");
-	}
-
-	public ArrayList<Board> adminSelectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
-
-		int limit = pi.getBoardLimit();
-		int offset = (pi.getCurrentPage() - 1) * limit;
-		
-		RowBounds rowBounds = new RowBounds(offset, limit);
-		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSelectNewsList", null, rowBounds);
-	}
-
-	public int adminSearchNewsCount(SqlSessionTemplate sqlSession, String keyword) {
-		
-		return sqlSession.selectOne("boardMapper.adminSearchNewsCount", keyword);
-	}
-
-	public ArrayList<Board> adminSearchNewsList(SqlSessionTemplate sqlSession, PageInfo pi, String keyword) {
+	public ArrayList<Board> adminSearchBoardList(SqlSessionTemplate sqlSession, PageInfo pi, HashMap<String, String> map) {
 		
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchNewsList", keyword, rowBounds);
+		return (ArrayList)sqlSession.selectList("boardMapper.adminSearchBoardList", map, rowBounds);
+	}
+
+	public int adminDeleteBoard(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.adminDeleteBoard", postNo);
+	}
+	
+	public int adminDeleteFileAttachment(SqlSessionTemplate sqlSession, int postNo) {
+		
+		return sqlSession.delete("boardMapper.adminDeleteFileAttachment", postNo);
+	}
+	
+	public int adminUpdateBoardStatus(SqlSessionTemplate sqlSession, Board n) {
+		
+		return sqlSession.update("boardMapper.adminUpdateBoardStatus", n);
 	}
 
 	public int insertAttachmentList(SqlSessionTemplate sqlSession, ArrayList<FileAttachment> list) {
@@ -167,5 +147,13 @@ public class AdminDao2 {
 		return result;
 	}
 
-}
+	public int insertNewsFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+		
+		return sqlSession.insert("boardMapper.insertNewsFileAttachment", fa);
+	}
+
+	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) {
+		
+		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
+	}
 

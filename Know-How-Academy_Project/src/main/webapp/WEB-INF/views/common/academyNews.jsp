@@ -65,9 +65,9 @@
 							<c:forEach var="i" begin="1" end="${ requestScope.list.size() - 1 }" step="1">
 							
 								<img src="/know-how/${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
-									 width="200" height="160">
+									 width="200" height="160" style="margin: 0 10px;">
 							
-							<</c:forEach>
+							</c:forEach>
 						</c:otherwise>
 					</c:choose>
 				</td>

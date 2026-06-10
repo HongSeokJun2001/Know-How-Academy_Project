@@ -3,6 +3,7 @@ package com.kh.know_how.admin.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
 import com.kh.know_how.common.template.XssDefencePolicy;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -164,13 +166,14 @@ public class AdminController2 {
     @GetMapping("/notice")
     public ModelAndView selectNoticeList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) {
     	
-    	int listCount = as2.adminSelectNoticeCount();
+    	String postType = "NOTICE";
+    	int listCount = as2.adminSelectBoardCount(postType);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSelectNoticeList(pi);
+    	ArrayList<Board> list = as2.adminSelectBoardList(pi, postType);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -183,14 +186,20 @@ public class AdminController2 {
     @GetMapping("/notice/search")
     public String searchNoticeList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
+    	String postType = "NOTICE";
     	keyword = XssDefencePolicy.defence(keyword);
-    	int listCount = as2.adminSearchNoticeCount(keyword);
+    	
+    	HashMap<String, String> map = new HashMap<>();
+    	map.put("postType", postType);
+    	map.put("keyword", keyword);
+    	
+    	int listCount = as2.adminSearchBoardCount(map);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSearchNoticeList(pi, keyword);
+    	ArrayList<Board> list = as2.adminSearchBoardList(pi, map);
     	
     	model.addAttribute("list", list)
     	     .addAttribute("pi", pi)
@@ -204,23 +213,29 @@ public class AdminController2 {
     @PostMapping("/notice/visible")
     public String updateNoticeStatus(Board b) {
     	
-    	int result = as2.adminUpdateStatus(b);
+    	int result = as2.adminUpdateBoardStatus(b);
     	
     	return (result > 0) ? "success" : "fail";
     }
     
     @ResponseBody
     @PostMapping("/notice/delete")
-    public String deleteNotice(int postNo) {
+    public String deleteNotice(int postNo, HttpSession session) {
 
     	FileAttachment fa = bs.selectFileAttachment(postNo);
     	
     	int result2 = 1;
     	
     	if(fa != null) {
-			result2 =  bs.deleteFileAttachment(postNo);
+			
+			String savePath = session.getServletContext().getRealPath("/resources/upload/notice/");
+			
+			new File(savePath + fa.getSaveName()).delete();
+    		
+    		result2 =  as2.adminDeleteFileAttachment(postNo);
+			
 		}
-    	int result1 = bs.deleteBoard(postNo);
+    	int result1 = as2.adminDeleteBoard(postNo);
     	
     	return ((result1 * result2) > 0) ? "success" : "fail";
     }
@@ -247,7 +262,7 @@ public class AdminController2 {
     		fa.setTargetType("NOTICE");
     		fa.setOriginName(upfile.getOriginalFilename());
     		fa.setSaveName(saveName);
-    		fa.setFilePath("resources/upload/notice/");
+    		fa.setFilePath("/resources/upload/notice/");
     	}
     	
     	n.setPostType("NOTICE");
@@ -265,7 +280,7 @@ public class AdminController2 {
     		if(fa != null) {
     			
     			String savePath = session.getServletContext()
-    									 .getRealPath("resources/upload/notice");
+    									 .getRealPath("/resources/upload/notice");
     			
     			new File(savePath + fa.getSaveName()).delete();
     		}
@@ -311,7 +326,7 @@ public class AdminController2 {
     	
     	if(!reUpfile.getOriginalFilename().equals("")) {
     		
-    		String saveName = FileRenamePolicy.saveFile(reUpfile, session, "resources/upload/notice/");	
+    		String saveName = FileRenamePolicy.saveFile(reUpfile, session, "/resources/upload/notice/");	
     		
     		fa = new FileAttachment();
     		fa.setTargetType("NOTICE");
@@ -329,7 +344,7 @@ public class AdminController2 {
     		} else {
     			
     			fa.setTargetNo(n.getPostNo());
-    			fa.setFilePath("resources/upload/notice/");
+    			fa.setFilePath("/resources/upload/notice/");
     			
     		}
     		
@@ -347,13 +362,14 @@ public class AdminController2 {
     @GetMapping("/academyNews")
     public ModelAndView selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) {
     	
-    	int listCount = as2.adminSelectNewsListCount();
+    	String postType = "NEWS";
+    	int listCount = as2.adminSelectBoardCount(postType);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSelectNewsList(pi);
+    	ArrayList<Board> list = as2.adminSelectBoardList(pi, postType);
     	
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
@@ -366,14 +382,20 @@ public class AdminController2 {
     @GetMapping("/academyNews/search")
     public String searchNewsList(String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) {
     	
+    	String postType = "NEWS";
     	keyword = XssDefencePolicy.defence(keyword);
-    	int listCount = as2.adminSearchNewsCount(keyword);
+    	
+    	HashMap<String, String> map = new HashMap<>();
+    	map.put("postType", postType);
+    	map.put("keyword", keyword);
+    	
+    	int listCount = as2.adminSearchBoardCount(map);
     	int pageLimit = 10;
     	int boardLimit = 10;
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<Board> list = as2.adminSearchNewsList(pi, keyword);
+    	ArrayList<Board> list = as2.adminSearchBoardList(pi, map);
     	
     	model.addAttribute("list", list)
     	     .addAttribute("pi", pi)
@@ -387,23 +409,31 @@ public class AdminController2 {
     @PostMapping("/academyNews/visible")
     public String updateNewsStatus(Board b) {
     	
-    	int result = as2.adminUpdateStatus(b);
+    	int result = as2.adminUpdateBoardStatus(b);
     	
     	return (result > 0) ? "success" : "fail";
     }
     
     @ResponseBody
     @PostMapping("/academyNews/delete")
-    public String deleteNews(int postNo) {
+    public String deleteNews(int postNo, HttpSession session) {
 
     	ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
     	
     	int result2 = 1;
     	
     	if(list != null) {
-			result2 =  bs.deleteFileAttachment(postNo);
+    		
+    		String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
+    		
+    		for(FileAttachment fa : list) {
+
+    			new File(savePath + fa.getSaveName()).delete();
+            }
+    		
+			result2 =  as2.adminDeleteFileAttachment(postNo);
 		}
-    	int result1 = bs.deleteBoard(postNo);
+    	int result1 = as2.adminDeleteBoard(postNo);
     	
     	return ((result1 * result2) > 0) ? "success" : "fail";
     }
@@ -432,7 +462,7 @@ public class AdminController2 {
         		fa.setTargetType("NEWS");
         		fa.setOriginName(files[i].getOriginalFilename());
         		fa.setSaveName(saveName);
-        		fa.setFilePath("resources/upload/news/");
+        		fa.setFilePath("/resources/upload/news/");
         		
         		if(i == 0) {
         			
@@ -482,6 +512,71 @@ public class AdminController2 {
     	 	 .addAttribute("page", "academyNewsUpdateForm");
     	
 		return "admin/adminLayout";
+    	
+    }
+    
+    @ResponseBody
+    @PostMapping("/academyNews/update")
+    public String updateNews(Board n ,MultipartFile[] reFiles,
+    						 @RequestParam Map<String, String> paramMap,
+    						 @RequestParam(value="deleteFileNo", required=false) String[] deleteFileNo,
+                             @RequestParam(value="deleteSaveName", required=false) String[] deleteSaveName,
+    						 HttpSession session,
+    						 Model model) {
+    	
+    	if (deleteSaveName != null) {
+            String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
+            for (String saveName : deleteSaveName) {
+            	new File(savePath + saveName).delete();
+            }
+        }
+
+    	ArrayList<FileAttachment> list = new ArrayList<>();
+    	if (reFiles != null) {
+	    	for(int i = 0; i < reFiles.length; i++) {
+	    		
+	    		if(reFiles[i] != null && !reFiles[i].getOriginalFilename().equals("")) {
+	        		
+	        		String saveName = FileRenamePolicy.saveFile(reFiles[i], session, "/resources/upload/news/");	
+	        		
+	        		FileAttachment fa = new FileAttachment();
+	        		fa.setTargetType("NEWS");
+	        		fa.setOriginName(reFiles[i].getOriginalFilename());
+	        		fa.setSaveName(saveName);
+	        		fa.setTargetNo(n.getPostNo());
+        			fa.setFilePath("/resources/upload/news/");
+        			
+        			fa.setFileLevel(i == 0 ? 1 : 2);
+        			
+        			String originalFileNo = paramMap.get("originalFileNo" + (i + 1));
+        			String originalFileSaveName = paramMap.get("originalFileSaveName" + (i + 1));
+        			
+	        		if(originalFileNo != null && !originalFileNo.equals("0") && !originalFileNo.isEmpty()) {
+	        			
+	        			int fileNo = Integer.parseInt(originalFileNo);
+	        			fa.setFileNo(fileNo);
+	        			
+	        			String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
+	        			if(originalFileSaveName != null && !originalFileSaveName.isEmpty()) {
+	        				File deleteFile = new File(savePath + originalFileSaveName);
+	        				if (deleteFile.exists()) {
+	        					deleteFile.delete();
+	        				}
+	        			}
+	        						
+	        		}
+	        		
+	        		list.add(fa);
+	        	}
+	    	}
+    	}
+    	
+    	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
+    	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	
+    	int result = as2.updateNews(n, list, deleteFileNo);
+    	
+    	return (result > 0) ? "success" : "fail";
     	
     }
     
