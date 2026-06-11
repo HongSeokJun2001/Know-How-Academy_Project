@@ -13,12 +13,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.common.template.XssDefencePolicy;
 import com.kh.know_how.member.model.service.MemberService;
 import com.kh.know_how.member.model.vo.Member;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,7 +50,8 @@ public class MemberController {
 	}
 	
 	@PostMapping("login")
-	public String loginMember(Member m, Model model, String saveId, 
+	public String loginMember(Member m, Model model, String saveId, MemberLock ml,
+			                  int failCount, 
 			                  HttpSession session, HttpServletResponse response) {
 		
 		// XSS 공격 방지
@@ -86,44 +89,71 @@ public class MemberController {
 			// 암호화 작업
 			// Service 요청 후 결과 받기
 			Member loginUser = memberService.loginMember(m);
-			
+			ml.setUserNo(loginUser.getUserNo());
+			ml.setFailCount(failCount);
+			MemberLock loginUserLock = memberService.loginLockMember(ml);
 			// 암호화 작업 후 비밀알아내기
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
 			
-			if((loginUser != null) && 
-			   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))) {
-				// > 로그인 성공일 경우
-				
-				// 로그인한 회원의 정보를 마찬가지로 session 에 담아야함!! (loginUser 키값으로)
-				session.setAttribute("loginUser", loginUser);
-				
-				String roleCode = loginUser.getRoleCode(); 
-				
-				if("STUDENT".equals(roleCode)) {
-					// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
-					session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
-					
-					return "redirect:/myPage";
-				} else if("COUNSELOR".equals(roleCode)) {
-					// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
-					session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
-					
-					return "redirect:/myPageCounselor";
-				} else {
-					// > 관리자 계정일때
-					session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
-					
-					return "redirect:/";
-				}
-				
-			} else {
-				// > 로그인 실패일 경우
-				
+			if(!"N".equals(loginUserLock.getIsLocked())) {
+			    // 계정이 잠겨있을때
 				// 에러 문구를 담아서 에러페이지로 포워딩
-				model.addAttribute("errorMsg", "로그인에 실패했습니다.");
+				session.setAttribute("errorMsg", "로그인5회이상실패로 계정이 잠겼습니다."
+						            + "관리자에게문의하세요");
 				
 				return "common/errorPage";
+				
+			} else {
+				if((loginUser != null) && 
+					   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))) {
+						// > 로그인 성공일 경우
+					    
+					     failCount = memberService.resetFailCount(ml);
+						// 로그인한 회원의 정보를 마찬가지로 session 에 담아야함!! (loginUser 키값으로)
+						session.setAttribute("loginUser", loginUser);
+						
+						String roleCode = loginUser.getRoleCode(); 
+						
+						if("STUDENT".equals(roleCode)) {
+							// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+							session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+							
+							return "redirect:/myPage";
+						} else if("COUNSELOR".equals(roleCode)) {
+							// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+							session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+							
+							return "redirect:/myPageCounselor";
+						} else {
+							// > 관리자 계정일때
+							session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
+							
+							return "redirect:/";
+						}
+						
+					} else {
+						// > 로그인 실패일 경우
+						
+						failCount += 1;
+						int result = memberService.increaseFailCount(failCount);
+						// 에러 문구를 담아서 에러페이지로 포워딩
+						session.setAttribute("alertMsg", "로그인에실패했습니다"
+								                       + "(" + result 
+								                       + "/ 5 " + "실패횟수)");
+						
+						if(result >= 5) {
+						    String isLocked = "Y";
+							result = memberService.lockAccount(isLocked);
+							session.setAttribute("alertMsg", "계정이 잠겼습니다.");
+							
+							return "redirect:/myPage";
+						} else {
+							
+							return "common/errorPage";
+						}
+							
+					 }
 			}	
 				
 	}
@@ -419,7 +449,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("searchId")
-	public String searchId(Member m, String userName, String email,  HttpSession session) {
+	public String searchId(Member m, String userName, String email, HttpSession session) {
 		
 		// XSS 공격 방지
 		String replaceUserName 

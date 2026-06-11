@@ -34,7 +34,7 @@
 								  resultMap="memberResultSet">
 			<!-- 암호화 작업 후 : 아이디로만 조회 -->
 			SELECT *
-		      FROM MEMBER
+		      FROM MEMBER 
 		     WHERE USER_ID = #{userId}
 		       AND STATUS = 'ACTIVE'   
 	 </select>
@@ -112,5 +112,57 @@
 	      SELECT COUNT(*)
 	        FROM MEMBER
 	       WHERE EMAIL = #{checkEmail}
-	</select>		   
+	</select>
+	
+<!-- ___________________________________________________________ -->
+	
+	
+	<!--  로그인용 쿼리문 -->
+	 <select id="loginLockMember" parameterType="memberLock" 
+								  resultMap="memberLockResultSet">
+			
+		    SELECT *
+		      FROM MEMBER_LOCK
+		     WHERE USER_NO = #{userNo} 
+		       AND IS_LOCKED = 'N'
+		        
+	 </select>
+
+	<!-- 회원가입시 잠금데이터용 쿼리문 -->
+	<insert  id="insertMemberLock" parameterType="memberLock">
+	    INSERT INTO MEMBER_LOCK(USER_NO
+                              , FAIL_COUNT
+		                      , IS_LOCKED
+		                      , LOCKED_AT
+		                      , LAST_FAIL_AT)
+		                 VALUES(#{userNo}
+		                      , #{failCount}
+		                      , #{isLocked}
+		                      , #{lockedAt}
+		                      , #{lastFailAt})
+	</insert>
+	
+	<!-- 로그인실패시 실패횟수증가 쿼리문 -->
+	<update  id="increaseFailCount" parameterType="int">
+	    UPDATE MEMBER_LOCK
+		   SET FAIL_COUNT = #{failCount} 
+		     , LAST_FAIL_AT = SYSDATE
+		 WHERE USER_NO = #{userNo}
+	</update>
+	
+	<!-- 5회 이상이면 계점잠금 쿼리문 -->
+	<update id="lockAccount" parameterType="String">
+	    UPDATE MEMBER_LOCK
+	       SET IS_LOCKED = 'Y',
+	           LOCKED_AT = SYSDATE
+	     WHERE USER_NO = #{userNo}
+    </update>
+    
+    <!-- 로그인성공시 실패횟수 초기화 -->
+    <update id="resetFailCount" parameterType="int">
+	    UPDATE MEMBER_LOCK
+	       SET FAIL_COUNT = 0,
+	           IS_LOCKED = 'N'
+	     WHERE USER_NO = #{userNo}
+</update>		   
 </mapper>

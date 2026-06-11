@@ -90,8 +90,9 @@
 								                      onclick="searchPasswordPage();">비밀번호 찾기</button>					  
 						<br><br>
 						</div>
-					 
-					
+						       
+					            <input type="hidden" name="failCount" value="0">
+					            
 					</form>
 					
 					<script>  
