@@ -4,6 +4,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.know_how.member.model.vo.Member;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 @Repository
 public class MemberDao {
@@ -52,5 +53,28 @@ public class MemberDao {
 		
 		return sqlSession.selectOne("memberMapper.emailCheck", checkEmail);
 	}
+
+	public MemberLock loginLockMember(SqlSessionTemplate sqlSession, MemberLock ml) {
+		
+		return sqlSession.selectOne("memberMapper.loginLockMember", ml);
+	}
 	
+    public int increaseFailCount(SqlSessionTemplate sqlSession, int failCount) {
+		
+		return sqlSession.update("memberMapper.increaseFailCount", failCount);
+	}
+
+	public int lockAccount(SqlSessionTemplate sqlSession, String isLocked) {
+		
+		return sqlSession.update("memberMapper.lockAccount", isLocked);
+	}
+
+	public int resetFailCount(SqlSessionTemplate sqlSession, MemberLock ml) {
+		
+		return sqlSession.update("memberMapper.resetFailCount", ml);
+	}
 }
+    
+    
+    
+    

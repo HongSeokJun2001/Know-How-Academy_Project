@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.know_how.member.model.dao.MemberDao;
 import com.kh.know_how.member.model.vo.Member;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 @Service 
 public class MemberService {
@@ -65,6 +66,32 @@ public class MemberService {
 		
 		return memberDao.emailCheck(sqlSession, checkEmail);
 	}
+
+	public MemberLock loginLockMember(MemberLock ml) {
+		
+		return memberDao.loginLockMember(sqlSession, ml);
+	}
+	
+	@Transactional
+	public int increaseFailCount(int failCount) {
+		
+		return memberDao.increaseFailCount(sqlSession, failCount);
+	}
+	
+	@Transactional
+	public int lockAccount(String isLocked) {
+		
+		return memberDao.lockAccount(sqlSession, isLocked);
+	}
+	
+	@Transactional
+	public int resetFailCount(MemberLock ml) {
+		
+		return memberDao.resetFailCount(sqlSession, ml);
+	}
+    
+   
+	
 	
 	
 	
