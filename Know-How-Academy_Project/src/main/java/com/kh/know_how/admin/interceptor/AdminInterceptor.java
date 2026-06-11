@@ -20,7 +20,8 @@ public class AdminInterceptor implements HandlerInterceptor {
 	private AdminService as;
 
 	// [메소드부]
-	/*
+	
+
 	// 1. 전처리: 관리자 권한 체크
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -73,7 +74,6 @@ public class AdminInterceptor implements HandlerInterceptor {
         return true; // 로그인한 관리자라면 통과
     }
     
-*/
 	
     // 2. 후처리: 알람
 	@Override

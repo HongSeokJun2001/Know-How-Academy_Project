@@ -21,16 +21,16 @@ public class BoardService {
 	@Autowired
 	private BoardDao boardDao;
 	
-	public ArrayList<Board> mainPageNoticeList() {
+	public ArrayList<Board> mainPageNoticeList() { // 메인페이지에 나오는 공지사항 리스트를 불러오는 메소드
 		
 		return boardDao.mainPageNoticeList(sqlSession);
 	}
 
-	public int selectNewsListCount() {
+	public int selectNewsListCount() { // 메인페이지에 나오는 학원소식 리스트를 불러오는 메소드
 		return boardDao.selectNewsListCount(sqlSession);
 	}
 
-	public ArrayList<Board> selectNewsList(PageInfo pi) {
+	public ArrayList<Board> selectNewsList(PageInfo pi) { // 학원소식의 상세정보를 불러오는 메소드
 		
 		return boardDao.selectNewsList(sqlSession, pi);
 	}

@@ -30,7 +30,7 @@ public class NoticeController {
 	
 	@ResponseBody
 	@GetMapping("/mainnoticelist")
-	public ArrayList<Board> mainPageNoticeList() {
+	public ArrayList<Board> mainPageNoticeList() { // 메인페이지에 나오는 공지사항 리스트를 불러오는 메소드
 		
 		return boardService.mainPageNoticeList();
 		

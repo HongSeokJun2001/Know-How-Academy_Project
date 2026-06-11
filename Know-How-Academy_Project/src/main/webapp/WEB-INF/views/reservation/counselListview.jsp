@@ -5,11 +5,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>예약 리스트</title>
+<title>상담목록</title>
 <style>
 	.outer {
 		width : 1000px;
 		margin : auto;
+		min-height: 600px; 
 		padding-bottom: 50px; 
 	}
 
@@ -47,15 +48,9 @@
     <div class="outer">
 
         <br>
-        <h2 align="center">예약리스트</h2>
+        <h2 align="center" style="font-weight: bold;">상담목록</h2>
         <br>
 
-
-		<c:if test="${ not empty sessionScope.loginUser }">
-			<div style="width:90%; margin : auto; text-align : right; margin-bottom : 10px;">
-				<a href="${ pageContext.request.contextPath }/reservation/counselorList" class="btn btn-success">상담 신청</a>
-			</div>
-		</c:if>
         <table class="list-area table table-hover">
             <thead>
                 <tr>
@@ -67,17 +62,13 @@
                 </tr>
             </thead>
             <tbody>
-
 			    <c:choose>
-			
 			        <c:when test="${empty list}">
 			            <tr>
-			                <td colspan="5">조회된 예약이 없습니다.</td>
+			                <td colspan="5">조회된 완료 상담이 없습니다.</td>
 			            </tr>
 			        </c:when>
-			
 			        <c:otherwise>
-			
 			            <c:forEach var="r" items="${list}" varStatus="status">
 			                <tr class="data-row" data-rno="${ r.reservationNo }">
 			                    <td>${requestScope.pi.listCount - ((requestScope.pi.currentPage - 1) * requestScope.pi.reservationLimit) - status.index}</td>
@@ -85,34 +76,13 @@
 			                    <td>${r.counselorName}</td>
 			                    <td>${r.categoryName}</td>
 			                    <td>
-			                        <c:choose>
-										<c:when test="${ r.reservationStatus eq 'APPLIED' }">
-											<span class="badge bg-warning text-dark">예약대기</span>
-										</c:when>
-										<c:when test="${ r.reservationStatus eq 'CANCELED' }">
-											<span class="badge bg-danger">예약취소</span>
-										</c:when>
-										<c:when test="${ r.reservationStatus eq 'RESERVED' }">
-											<span class="badge bg-success">예약완료</span>
-										</c:when>
-										<c:when test="${ r.reservationStatus eq 'COMPLETED' }">
-											<span class="badge bg-primary">상담완료</span>
-										</c:when>
-										<c:when test="${ r.reservationStatus eq 'REJECTED' }">
-											<span class="badge bg-danger">상담반려</span>
-										</c:when>
-										<c:otherwise>${ r.reservationStatus }</c:otherwise>
-									</c:choose>
+									<span class="badge bg-primary">상담완료</span>
 			                    </td>
 			                </tr>
 			            </c:forEach>
-			
 			        </c:otherwise>
-			
 			    </c:choose>
-
 			</tbody>
-
         </table>
         
         <script>
@@ -126,7 +96,6 @@
         
         <div class="paging-area">
         	<ul class="pagination justify-content-center">
-        		
         		<c:choose>
         			<c:when test="${ requestScope.pi.currentPage eq 1 }">
         				<li class="page-item disabled">
@@ -134,13 +103,9 @@
         				</li>
         			</c:when>
         			<c:otherwise>
-        				<c:choose>
-        					<c:when test="${ empty requestScope.condition }">
-	        					<li class="page-item">
-	        						<a class="page-link" href="${ pageContext.request.contextPath }/reservation/list?cpage=${ requestScope.pi.currentPage - 1 }">이전</a>
-	        					</li>
-        					</c:when>
-        				</c:choose>      				        				
+	        			<li class="page-item">
+	        				<a class="page-link" href="/know-how/counselor/list?cpage=${ requestScope.pi.currentPage - 1 }">이전</a>
+	        			</li>
         			</c:otherwise>
         		</c:choose>
         		
@@ -152,13 +117,9 @@
 	        				</li>
 	        			</c:when>
 	        			<c:otherwise>
-	        				<c:choose>
-	        					<c:when test="${ empty requestScope.condition }">
-	        						<li class="page-item">
-	        							<a class="page-link" href="${ pageContext.request.contextPath }/reservation/list?cpage=${ p }">${ p }</a>
-	        						</li>
-	        					</c:when>
-	        				</c:choose>
+	        				<li class="page-item">
+	        					<a class="page-link" href="/know-how/counselor/list?cpage=${ p }">${ p }</a>
+	        				</li>
 	        			</c:otherwise>
 	        		</c:choose>       			
         		</c:forEach>
@@ -170,19 +131,13 @@
         				</li>
         			</c:when>
         			<c:otherwise>
-        				<c:choose>
-        					<c:when test="${ empty requestScope.condition }">
-        						<li class="page-item">
-        							<a class="page-link" href="${ pageContext.request.contextPath }/reservation/list?cpage=${ requestScope.pi.currentPage + 1 }">다음</a>
-        						</li>
-        					</c:when>
-        				</c:choose>
+        				<li class="page-item">
+        					<a class="page-link" href="/know-how/counselor/list?cpage=${ requestScope.pi.currentPage + 1 }">다음</a>
+        				</li>
         			</c:otherwise>
         		</c:choose>
-        		
         	</ul>
         </div>
-        
     </div>
 
     <jsp:include page="../common/footer.jsp"/>

@@ -108,6 +108,10 @@
 		<script>
 			
 			let alertMsg = "${ sessionScope.alertMsg }";
+			
+			// alert(alertMsg);
+			alertify.alert(alertMsg, function(){ alertify.success('Ok'); });
+		
 		</script>
 		<c:remove var="alertMsg" scope="session" />
 	</c:if>
@@ -128,7 +132,7 @@
             <a href="#">상담</a>
             <ul>
                 <li><a href="/know-how/reservation/list">예약리스트</a></li>
-                <li><a href="/know-how/counselor/list">상담목록</a></li>
+                <li><a href="/know-how/reservation/counselor/list">상담목록</a></li>
             </ul>
         </div>
         <div class="menu">
@@ -139,7 +143,7 @@
                 <li><a href="/know-how/community/student/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/know-how/myPage">마이페이지</a></div>
+        <div class="menu"><a href="/know-how/myPage">로그인</a></div>
     </div>
     </c:when>
     <c:when test="${ sessionScope.loginUser.roleCode eq 'STUDENT' }">
@@ -200,5 +204,13 @@
 			);
 		});
 	</script>
+	
+	<c:if test="${ not empty sessionScope.alertMsg }">
+		<script>
+		let alertMsg = "${ sessionScope.alertMsg }";
+		alertify.alert(alertMsg, function() {alertify.success('OK');});
+		</script>
+	</c:if>
+	<c:remove var="alertMsg" scope="session"/>
 </body>
 </html>

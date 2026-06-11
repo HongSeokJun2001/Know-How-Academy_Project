@@ -36,17 +36,21 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		// 직원용
 		registry.addInterceptor(counselorInterceptor)
 		        .addPathPatterns("/myPageCounselor")
-		        //상담사회원가입용페이지 예외처리
+		        .addPathPatterns("/myPageCounselor/counselorInformationSelectForm")
+		        .addPathPatterns("/myPageCounselor/counselorInformationChangeForm")
+		        .addPathPatterns("/myPageCounselor/myStudentClassList")
+				//상담사회원가입용페이지 예외처리
 				.excludePathPatterns(
 		                "/myPageCounselor/counselor/signup",
 		                "/myPageCounselor/counselor/signup/**");
+		
 		
 		
 		//관리자페이지 인터셉터와 연결되는 곳
 		registry.addInterceptor(adminInterceptor)
         .addPathPatterns("/admin/**")
         .excludePathPatterns(
-                "/admin/loginForm",  //*** 로그인관련페이지 생성되면 주소 확인 후 수정하기(-)
+                "/admin/loginForm", 
                 "/admin/login",
                 "/admin/logout",
                 "/resources/**",

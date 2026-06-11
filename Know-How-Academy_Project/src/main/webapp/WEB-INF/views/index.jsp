@@ -167,7 +167,7 @@
 							
 							resultList += "<div class='thumbnail' align='center'>"
 									   + "<input type='hidden' value='" + result.list[i].postNo + "'>"
-									   + "<img src='/know-how/" + result.list[i].titleImg + "' width='100px' height='100px'>"
+									   + "<img src='/know-how" + result.list[i].titleImg + "' width='100px' height='100px'>"
 						    		   + "<p>"
 									   + newsTitle + "<br>"
 									   + result.list[i].createdAt.substring(0, 10)

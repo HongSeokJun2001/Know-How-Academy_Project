@@ -28,6 +28,13 @@ public class Reservation {
 	private Date updatedAt;				//	  UPDATED_AT DATE DEFAULT SYSDATE,
 	private int counselNo;				//	  COUNSEL_NO NUMBER NOT NULL,
 	
+	private int userNo;
 	private String counselorName;
 	private String categoryName;
+	
+	private String phone;
+	private String email;
+	
+	private String studentName;
+	private String className;
 }
