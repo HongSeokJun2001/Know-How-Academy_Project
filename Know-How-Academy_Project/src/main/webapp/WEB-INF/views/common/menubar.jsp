@@ -132,7 +132,7 @@
             <a href="#">상담</a>
             <ul>
                 <li><a href="/know-how/reservation/list">예약리스트</a></li>
-                <li><a href="/know-how/counselor/list">상담목록</a></li>
+                <li><a href="/know-how/reservation/counselor/list">상담목록</a></li>
             </ul>
         </div>
         <div class="menu">
@@ -204,5 +204,13 @@
 			);
 		});
 	</script>
+	
+	<c:if test="${ not empty sessionScope.alertMsg }">
+		<script>
+		let alertMsg = "${ sessionScope.alertMsg }";
+		alertify.alert(alertMsg, function() {alertify.success('OK');});
+		</script>
+	</c:if>
+	<c:remove var="alertMsg" scope="session"/>
 </body>
 </html>
