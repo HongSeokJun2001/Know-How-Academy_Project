@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
 import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
+import com.kh.know_how.counselor.model.vo.CounselorProfilImg;
 import com.kh.know_how.counselor.model.vo.CounselorProfile;
 import com.kh.know_how.member.model.vo.Member;
 
@@ -40,6 +42,8 @@ public class AdminService {
 	private SqlSessionTemplate sqlSession;
 	@Autowired
 	private MailService mailService;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	//메소드부
 	@Transactional(readOnly = true)
@@ -255,13 +259,22 @@ public class AdminService {
 	}
 
 	@Transactional
-	public int signupCounselor(Member member, CounselorInviteCompleteDto inviteInfoDto, CounselorProfile profile) {
+	public int signupCounselor(Member member, CounselorInviteCompleteDto inviteInfoDto, CounselorProfile profile, CounselorProfilImg cp) {
 		
 		//XSS 
 		member.setUserId(AdminXssDefencePolicy.defence(member.getUserId()));
-		member.setUserPwd(AdminXssDefencePolicy.defence(member.getUserPwd()));
-		member.setPhone(AdminXssDefencePolicy.defence(member.getPhone()));
-		member.setAddress(AdminXssDefencePolicy.defence(member.getAddress()));
+		if(member.getPhone() != null && !member.getPhone().isBlank()) {
+			member.setPhone(AdminXssDefencePolicy.defence(member.getPhone()));
+		}
+		if(member.getAddress() != null && !member.getPhone().isBlank()) {
+			member.setAddress(AdminXssDefencePolicy.defence(member.getAddress()));
+		}
+		if(profile.getBio() != null && !profile.getBio().isBlank()) {
+			profile.setBio(AdminXssDefencePolicy.defence(profile.getBio()));
+		}
+		
+		//암호화
+		member.setUserPwd(bCryptPasswordEncoder.encode(member.getUserPwd()));
 		
 		//정보주입후 회원가입처리
 		member.setUserName(inviteInfoDto.getInviteName());   
@@ -273,8 +286,19 @@ public class AdminService {
 		inviteInfoDto.setUserNo(member.getUserNo());
 		int profileResult = ad.insertCounselorProfile(sqlSession, profile);
 		int inviteResult = ad.updateCounselorInviteInfo(sqlSession, inviteInfoDto);
+		int imgResult = 1;
+		if(cp != null) {
+			cp.setUserNo(member.getUserNo());
+			//xss 후 insert
+			cp.setOriginName(AdminXssDefencePolicy.defence(cp.getOriginName()));
+			imgResult = ad.insertCounselorProfileImg(sqlSession, cp);
+		}
 		
-		return memberResult*profileResult*inviteResult;
+		if(imgResult == 0) {
+			throw new RuntimeException("상담사 프로필 사진 정보 저장 실패");
+		}
+		
+		return memberResult*profileResult*inviteResult*imgResult;
 	} 
 	
 

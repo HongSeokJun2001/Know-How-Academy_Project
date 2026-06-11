@@ -170,7 +170,8 @@
 </head>
 <body>
 
-     <form class="signup-card" action="${contextPath}/counselor/signup" method="post" enctype="multipart/form-data">
+     <form class="signup-card" action="${contextPath}/counselor/signup" method="post" 
+           id="enroll-form" enctype="multipart/form-data">
 
         <div class="signup-top-line"></div>
 
@@ -184,7 +185,7 @@
             <label for="userId">아이디</label>
             <div class="input-row">
                 <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" required>
-                <button type="button" class="sub-btn">중복검사</button>
+                <button type="button" class="sub-btn" onclick="idCheck();">중복검사</button>
             </div>
             <div class="helper-text">영문자로 시작하는 8~16자의 영문자 또는 숫자를 입력해 주세요.</div>
         </div>
@@ -199,14 +200,14 @@
         <!-- 비밀번호 확인 -->
         <div class="form-group">
             <label for="userPwdCheck">비밀번호 확인</label>
-            <input type="password" id="userPwdCheck" name="userPwdCheck" placeholder="비밀번호를 다시 입력하세요" required>
+            <input type="password" id="userPwdCheck" placeholder="비밀번호를 다시 입력하세요" required>
             <div class="helper-text">비밀번호를 한 번 더 입력해 주세요.</div>
         </div>
 
         <!-- 전화번호 -->
         <div class="form-group">
             <label for="phone">전화번호</label>
-            <input type="text" id="phone" name="phone" placeholder="010-0000-0000" required>
+            <input type="text" id="phone" name="phone" placeholder="010-0000-0000">
         </div>
 
         <!-- 주소 -->
@@ -217,9 +218,9 @@
 
         <!-- 프로필 이미지 -->
         <div class="form-group padding">
-            <label for="profileImgPath">프로필 이미지</label>
+            <label for="profileImg">프로필 이미지</label>
             <div class="file-box">
-                <input type="file" id="profileImgPath" name="profileImgPath" accept="image/*">
+                <input type="file" id="profileImg" name="profileImg" accept="image/*">
                 <span>JPG, PNG 파일을 업로드해 주세요.</span>
 
                 <img id="profilePreview" class="profile-preview" alt="프로필 이미지 미리보기">
@@ -232,15 +233,16 @@
             <textarea id="bio" name="bio" maxlength="100" placeholder="학생들에게 보여줄 프로필 소개글을 적어주세요. (최대 100자)"></textarea>
         </div>
 
-        <button type="submit" class="main-btn">가입 완료</button>
+        <button type="button" class="main-btn" onclick="requestEnrollForm();">가입 완료</button>
 
     </form>
 	
 	<script>
-	    const userIdRegex = /^[A-Za-z][A-Za-z0-9]{8,16}$/
+	    const userIdRegex = /^[A-Za-z][A-Za-z0-9]{7,15}$/
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+]).{8,20}$/
 		 $(document).ready(function () {
-            $("#profileImgPath").on("change", function () {
+
+            $("#profileImg").on("change", function () {
                 const file = this.files[0];
                 const $preview = $("#profilePreview");
 
@@ -252,177 +254,89 @@
                 $preview.attr("src", URL.createObjectURL(file));
                 $preview.show();
             });
-
-            $('#userId').on("blur", function () {
-                $('#userIdErrorMessage').text(!userIdRegex.test($(this).val()) ? "영문자로 시작해야 하며 8~16자의 영문자, 숫자를 사용해야합니다." : "");
-            });
-            $("#userPwd").on("blur", function () {
-                $('#userPwdErrorMessage').text(!passwordRegex.test($(this).val()) ? "8~20자의 영문 대/소문자, 숫자, 특수문자를 사용해야합니다." : "");
-            })
-            $('#userPwdCheck').on("blur", function () {
-                $('#userPwdCheckErrorMessage').text($(this).val() !== $("#userPwd").val() ? "비밀번호와 비밀번호 확인이 일치하지 않습니다" : "");
-            })
 	         
 	     })
 	     
 		function idCheck() {
-			
-			let $userId = $("#enroll-form input[name=userId]");
-		
-			$.ajax({
-				url : "/know-how/myPage/memberEnrollForm/idCheck",
-				type : "get",
-				data : { checkId : $userId.val() },
-				success : function(result) {
-					
-					if(result == "NNNNN") {
-						// > 사용 불가한 아이디일 경우
-						
-						alert("이미 사용중이거나 탈퇴한 회원의 아이디입니다.");
-						
-						// 아이디 재입력 유도
-						$userId.focus();
-						
-					} else {
-						// > 사용 가능한 아이디일 경우
-						
-						if(confirm("사용 가능한 아이디입니다. 사용하시겠습니까?")){
-							// > 사용하겠다고 의사를 밝힌 경우 (확인 버튼 클릭 시)
-							
-							// 아이디값을 확정 (다시는 수정 못하게)
-							$userId.prop("readonly", true);
-							
-						} else {
-							// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
-							
-							// 아이디 재입력 유도
-							$userId.focus();
-						}
-					}
-				},
-				error : function() {
-					
-					console.log("아이디 중복체크용 ajax 통신 실패!");
-				}
-			});
-			
-		}
-		
-        function validateMail() {
-			
-        	let $email = $("#enroll-form input[id=email]");
-			let $sendMail = $("#enroll-form button[id=sendMail]");
-			let $checkNo = $("#enroll-form input[id=checkNo]");
-			let $valiadateMail = $("#enroll-form button[id=validateMail]");
-        	
-			// 이메일주소와 인증 번호를 서버로 다시 보내서 대조 작업
-			$.ajax({
-				url : "/know-how/myPage/validateMail",
-				type : "post", 
-				data : {
-					email : $email.val(),
-					checkNo : $checkNo.val()
-				}, 
-				success : function(result) {
-					
-					if(result == "success") {
-						// > 대조 성공일 경우
-						
-						alert("본인 인증에 성공했습니다.");
-					
-						// 인증 관련 요소들도 다시 disabled (readonly) 상태로 되돌려놓기
-						$checkNo.prop("readonly", true);
-						$validateMail.prop("disabled", true);
-						
-					} else {
-						// > 대조 실패일 경우
-						
-						alert("본인 인증에 실패했습니다. 다시 진행해 주세요.");
-						
-						// 인증 관련 요소들도 다시 disabled 상태로 되돌려놓기
-						// > 특히, 이미 입력한 인증번호를 초기화까지 시켜줘야함
-						$checkNo.prop("disabled", true).val("");
-						$validateMail.prop("disabled", true);
-						
-						// 이메일 관련 요소들도 다시 활성화 상태로 되돌리기
-						// > 마찬가지로 이미 입력했던 이메일 주소도 초기화 해줘야함
-						$email.prop("disabled", false).val("");
-						$sendMail.prop("disabled", false);
-						
-					}
-					
-				},
-				error : function() {
-					
-					console.log("인증번호 대조용 ajax 통신 실패!");
-				}
-			});
-		}
-	
-		function sendMail() {
-			
-			let $email = $("#enroll-form input[id=email]");
-			let $sendMail = $("#enroll-form button[id=sendMail]");
-			let $checkNo = $("#enroll-form input[id=checkNo]");
-			let $valiadateMail = $("#enroll-form button[id=validateMail]");
-			
-			// 인증 번호를 이메일로 전송할 수 있도록 요청
-			$.ajax({
-				url : "/know-how/myPage/sendMail",
-				type : "post",
-				data : {
-					email : $email.val() 
-				},
-				success : function(result) {
-					
-					alert(result);
-					
-					// 인증번호 발급 후 이메일 관련 요소들은 비활성화
-					$email.prop("readonly", true);
-					$sendMail.prop("readonly", true);
-					
-					// 인증 관련 요소들은 활성화
-					$checkNo.prop("disabled", false);
-					$validateMail.prop("disabled", false);
-					
-				},
-				error : function() {
-					
-					console.log("인증메일 발송용 ajax 통신 실패!");
-				}
-			});
-		}
-		
-		function requestEnrollForm() {
-			
-			let $userId = $("#enroll-form input[name=userId]");
-			let $userPwd = $("#enroll-form input[name=userPwd]");
-			let $userName = $("#enroll-form input[name=userName]");
-			let $email = $("#enroll-form input[name=email]");
-			let $address = $("#enroll-form input[name=address]");
-			let $phone = $("#enroll-form input[name=phone]");
-			
+    
+            let $userId = $("#enroll-form input[name=userId]");
+
+            if (!userIdRegex.test($userId.val())) {
+                alert("아이디는 영문자로 시작하는 8~16자의 영문자 또는 숫자여야 합니다.");
+                $userId.focus();
+                return;
+            }
+
             $.ajax({
-                url: "/know-how/myPage/memberEnrollForm/insert",
-                type: "POST",
-                data: {
-                	userId : $userId.val(),
-                	userPwd : $userPwd.val(),
-                	userName : $userName.val(),
-                	email : $email.val(),
-                	address : $address.val(),
-                	phone : $pnone.val()
-                },
-                success: function() {
-                	
-                    alert("회원가입이 완료되었습니다.");
+                url: "/know-how/myPage/memberEnrollForm/idCheck",
+                type: "get",
+                data: { checkId: $userId.val() },
+                success: function(result) {
                     
+                    if (result == "NNNNN") {
+                        alert("이미 사용중이거나 탈퇴한 회원의 아이디입니다.");
+                        $userId.focus();
+                    } else {
+                        if (confirm("사용 가능한 아이디입니다. 사용하시겠습니까?")) {
+                            $userId.prop("readonly", true);
+                        } else {
+                            $userId.focus();
+                        }
+                    }
                 },
                 error: function() {
-                	
-                    console.log("회원가입 발송용 ajax 통신 실패!");
+                    console.log("아이디 중복체크용 ajax 통신 실패!");
                 }
-            })
+            });
+        }
+
+		function requestEnrollForm() {
+
+            if (!$("#userId").prop("readonly")) {
+                alert("아이디 중복검사를 진행해 주세요.");
+                $("#userId").focus();
+                return;
+            }
+
+            if (!userIdRegex.test($("#userId").val())) {
+                alert("아이디 형식을 확인해 주세요.");
+                $("#userId").focus();
+                return;
+            }
+
+            if (!passwordRegex.test($("#userPwd").val())) {
+                alert("비밀번호 형식을 확인해 주세요.");
+                $("#userPwd").focus();
+                return;
+            }
+
+            if ($("#userPwd").val() !== $("#userPwdCheck").val()) {
+                alert("비밀번호 확인이 일치하지 않습니다.");
+                $("#userPwdCheck").focus();
+                return;
+            }
+
+            const formData = new FormData($("#enroll-form")[0]);
+
+            $.ajax({
+                url: "/know-how/myPageCounselor/counselor/signup/process",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(message) {
+                    if (message != "imgFail") {
+                        alert(message);
+                        location.href = "/know-how/";
+                    } else {
+                        alert("서버가 혼잡합니다. 잠시 후 다시 시도해주세요.");
+                    }
+                },
+                error: function() {
+                    console.log("회원가입 발송용 ajax 통신 실패!");
+                    alert("회원가입 처리 중 오류가 발생했습니다.");
+                }
+            });
         }
 		
 	</script>
