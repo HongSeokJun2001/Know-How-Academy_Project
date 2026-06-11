@@ -142,7 +142,7 @@
 
     .helper-text {
         margin-top: 6px;
-        margin-left: 7px;
+        margin-left: 14px;
         font-size: 12px;
         color: #888;
         text-align: left;
