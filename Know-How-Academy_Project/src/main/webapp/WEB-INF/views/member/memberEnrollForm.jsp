@@ -47,7 +47,7 @@
 				<tr>
 					<th>* 비밀번호</th>
 					<td>
-						<input type="password" name="userPwd" maxlength="20" placeholder="8~20자리 영문자/숫자" required>
+						<input type="password" name="userPwd" maxlength="20" placeholder="8~20자리 영문자/숫자" autocomplete="new-password" required>
 						<div class="errorMessage" id="userPwdErrorMessage"></div>
 					</td>
 					<td></td>

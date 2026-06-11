@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>KNOW-HOW ACADEMY 관리자 페이지</title>
 <style>
     /* 1. 기본 초기화 (브라우저 기본 여백 제거) */
     * {

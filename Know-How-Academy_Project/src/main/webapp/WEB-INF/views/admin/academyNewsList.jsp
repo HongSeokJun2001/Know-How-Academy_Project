@@ -109,7 +109,7 @@
 	    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
 	}
 	
-	.table {
+	table {
 	    width: 100%;
 	    border-collapse: separate;
 	    border-spacing: 0;
@@ -120,7 +120,7 @@
 	    text-align: center;
 	}
 	
-	.table thead th {
+	table thead th {
 	    height: 54px;
 	    padding: 0 18px;
 	    background-color: #fafafa;
@@ -128,27 +128,27 @@
 	    border-bottom: 1px solid #e5e7eb;
 	}
 	
-	.table tbody td {
+	table tbody td {
 	    padding: 16px 18px;
 	    border-bottom: 1px solid #eef0f4;
 	    vertical-align: middle;
 	}
 	
-	.table tbody tr:last-child td {
+	table tbody tr:last-child td {
 	    border-bottom: none;
 	}
 	
-	.table tbody tr:hover {
+	table tbody tr:hover {
 	    background-color: #fafaff;
 	}
 	
-	.link {
+	a {
 	    color: #4233c7;
 	    font-weight: 800;
 	    text-decoration: none;
 	}
 	
-	.link:hover {
+	a:hover {
 	    color: #2f2499;
 	}
 	
@@ -287,7 +287,7 @@
 
 		<div class="card">
 
-			<table class="table">
+			<table>
 				<thead>
 					<tr>
 						<th>번호</th>
@@ -312,7 +312,7 @@
 							<c:forEach var="n" items="${ requestScope.list }">
 								<tr>
 									<td>${ n.rowNum }</td>
-									<td><a href="/know-how/admin/academyNews/detail/${ n.postNo }" class="link">${ n.title }</a></td>
+									<td><a href="/know-how/admin/academyNews/detail/${ n.postNo }">${ n.title }</a></td>
 									<td>${ n.postWriter }</td>
 									<td>${ n.createdAt }</td>
 									<td>

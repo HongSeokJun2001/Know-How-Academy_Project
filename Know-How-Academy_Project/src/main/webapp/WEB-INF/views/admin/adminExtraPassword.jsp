@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>로그인</title>
+<title>임시 비밀번호 발급</title>
 <style>
 	 * {
         margin: 0;
@@ -50,7 +50,7 @@
 
 	.card {
         width: 800px;
-        height: 450px;
+        height: 550px;
 		margin : 250px auto;
 		padding : 40px;
         background-color : #fff;
@@ -86,7 +86,7 @@
         margin-left: 8px;
     }
 
-    #loginBtn {
+    .card button {
         background-color: rgb(40, 40, 241);
         color: white;
         border: none;
@@ -101,10 +101,6 @@
         text-decoration: none;
         font-size: 12px;
     }
-    
-    .visible {
-    	font-size : 10px;
-    }
 
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -118,7 +114,7 @@
     </div>
 
 	<div class="card">
-        <form id="loginForm">
+        <form id="extraPasswordForm">
 			<h1>Know-how Academy</h1>
 	        <br><br>
 	        <table>
@@ -127,64 +123,68 @@
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="text" name="userId" id="userId" required>
+	                    <input type="text" id="userId" name="userId" required>
 	                    <p>아이디를 입력해주세요.</p>
 	                </td>
 	            </tr>
 	            <tr>
-	                <th>비밀번호</th>
+	                <th>이름</th>
 	            </tr>
 	            <tr>
 	                <td>
-	                	<div>
-	                		<input type="password" name="userPwd" id="userPwd" required>
-	                	</div>
-	                    <p>비밀번호를 입력해주세요.</p>
+	                    <input type="text" id="userName" name="userName" required>
+	                    <p>이름을 입력해주세요.</p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <th>이메일</th>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="email" id="email" name="email" required>
+	                    <p>이메일을 입력해주세요.</p>
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
 	                    <br>
-	                    <button type="button" id="loginBtn">로그인</button>
+	                    <button type="button" id="extraPassword" name="extraPassword">완료</button>
 	                </td>
 	            </tr>
 	       </table>
 	       <br>
        </form>
-       <a>가입 문의하기</a> | <a href="/know-how/admin/findIdForm">아이디 찾기</a> | <a href="/know-how/admin/extraPasswordForm">임시 비밀번호 발급</a>
+       <a>가입 문의하기</a> | <a href="/know-how/admin/loginForm">로그인하기</a> | <a href="/know-how/admin/findIdForm">아이디 찾기</a>
 	</div>
 	<script>
 		$(function () {
-		    $("#loginBtn").click(function () {
-				
-		    	if($("#loginForm")[0].checkValidity() === false){
-					$("#loginForm")[0].reportValidity();
-					return;
-				}
-
-		        let formData = $("#loginForm").serialize();
-		        $.ajax({
-		            url: "/know-how/admin/login",
-		            type: "POST",
-		            contentType: "application/x-www-form-urlencoded",
-		            data: formData,
-		            success: function (result) {
-		            	alert(result);	            	
-		            	
-		            	window.location.href = "/know-how/admin/index";
-		            },
-		            error: function () {
-		                console.log("관리자 로그인용 ajax 통신 실패!!");
-		            }
-		        });
-		    });
+		  $("#extraPassword").click(function () {
+			  
+		    let userId = $("#userId").val();
+		    let userName = $("#userName").val();
+		    let email = $("#email").val();
+	
+		    if($("#extraPasswordForm")[0].checkValidity() === false){
+			   $("#extraPasswordForm")[0].reportValidity();
+			   return;
+			}
 		    
-		    $("#loginForm input").on("keypress", function(e) {
-	            if (e.keyCode === 13) {
-	                e.preventDefault();
-	                $("#loginBtn").click();
-	            }
-	        });
+		    $.ajax({
+		      url: "/know-how/admin/extraPassword",
+		      type: "POST",
+		      data: {
+		        "userId" : userId,
+		        "userName" : userName, 
+		        "email" : email
+		      },
+		      success: function (result) {
+		        alert(result);
+		      },
+		      error: function () {
+		        console.log("임시 비밀번호 발급용 ajax 통신 오류!");
+		      },
+		    })
+		  });
 		});
 	</script>
 </body>
