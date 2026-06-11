@@ -63,14 +63,17 @@
 			</thead>
 			<tbody>
 				<c:choose>
+					<%--Case1. 완료된 상담 목록이 비어있을 때 --%>
 					<c:when test="${ empty list }">
 						<tr>
 							<td colspan="5">완료된 상담 내역이 없습니다.</td>
 						</tr>
 					</c:when>
+					<%--Case2. 완료된 상담 목록이 존재할 떄 --%>
 					<c:otherwise>
 						<c:forEach var="r" items="${list}" varStatus="status">
 							<tr class="data-row" data-rno="${ r.reservationNo }">
+								<!-- 총 게시글 수 - ((현재페이지 - 1) * 페이징당 보여줄 개수) - 루프인덱스 수 -->
 								<td>${ requestScope.pi.listCount - ((requestScope.pi.currentPage - 1) * requestScope.pi.reservationLimit) - status.index}</td>
 								<td>${ r.consultDate }</td>
 								<td>${ r.studentName }</td>
@@ -88,7 +91,9 @@
 		<script>
 			$(function() {
 				$(".list-area>tbody>tr.data-row").click(function() {
+					// 클릭한 행에서 예약번호(rno) 추출 (.attr 활용)
 					let rno = $(this).attr("data-rno");
+					// 상담사 전용 상세 조회 페이지로 이동
 					location.href = "${pageContext.request.contextPath}/reservation/counselorDetail/" + rno;
 				});
 			});
@@ -96,6 +101,7 @@
 		
 		<div class="paging-area">
 			<ul class="pagination justify-content-center">
+				<!-- 이전 버튼 -->
 				<c:choose>
 					<c:when test="${ requestScope.pi.currentPage eq 1 }">
 						<li class="page-item disabled">
@@ -109,6 +115,7 @@
 					</c:otherwise>
 				</c:choose>
 				
+				<!-- 페이지 번호 출력 -->
 				<c:forEach var="p" begin="${ requestScope.pi.startPage }" end="${ requestScope.pi.endPage }" step="1">
 					<c:choose>
 						<c:when test="${ requestScope.pi.currentPage eq p }">
@@ -124,6 +131,7 @@
 					</c:choose>
 				</c:forEach>
 				
+				<!-- 다음 버튼 -->
 				<c:choose>
 					<c:when test="${ requestScope.pi.currentPage eq requestScope.pi.maxPage }">
 						<li class="page-item disabled">

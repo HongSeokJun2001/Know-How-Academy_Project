@@ -29,12 +29,13 @@ public class LoginIntercepter implements HandlerInterceptor {
 			
 	        // 세션이 없거나 로그인 정보가 없으면 차단
 	        if (session == null || session.getAttribute("loginUser") == null) {
-	            response.sendRedirect(request.getContextPath() + "/myPage");
+	        	request.getSession().setAttribute("alertMsg", "로그인이 필요한 서비스입니다.");
+	        	response.sendRedirect(request.getContextPath() + "/myPage");
 	            return false;
 	        }
 	        
-	        // 회원/학생(student) 권한 검사
-	        if (!"STUDENT".equals(loginUser.getRoleCode())) {
+	        // 회원/학생(student), 상담사 권한 검사
+	        if (!"STUDENT".equals(loginUser.getRoleCode()) && !"COUNSELOR".equals(loginUser.getRoleCode())) {
 	        	// redirect 후 보여줄 메시지
 	            request.getSession().setAttribute("alertMsg", "로그인 후 이용 가능한 서비스입니다.");
 	           
