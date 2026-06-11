@@ -3,21 +3,22 @@ package com.kh.know_how.admin.model.dao;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.kh.know_how.admin.common.PageResponseDto;
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.ClassListDto;
 import com.kh.know_how.admin.model.dto.CounselCategoryDto;
+import com.kh.know_how.admin.model.dto.CounselorInviteCompleteDto;
 import com.kh.know_how.admin.model.dto.CounselorInviteDto;
 import com.kh.know_how.admin.model.dto.CounselorInviteListDto;
 import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
 import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
+import com.kh.know_how.counselor.model.vo.CounselorProfile;
+import com.kh.know_how.member.model.vo.Member;
 
 @Repository
 public class AdminDao {
@@ -116,6 +117,26 @@ public class AdminDao {
 	public ArrayList<CounselorInviteListDto> selectInviteList(SqlSessionTemplate sqlSession) {
 		
 		return (ArrayList)sqlSession.selectList("adminMapper.selectInviteList");
+	}
+
+	public CounselorInviteCompleteDto getCounselorInfo(SqlSessionTemplate sqlSession, String token) {
+		
+		return sqlSession.selectOne("adminMapper.getCounselorInfo",token);
+	}
+
+	public int insertCounselorMember(SqlSessionTemplate sqlSession, Member member) {
+		
+		return sqlSession.insert("adminMapper.insertCounselorMember", member);
+	}
+
+	public int insertCounselorProfile(SqlSessionTemplate sqlSession, CounselorProfile profile) {
+		
+		return sqlSession.insert("adminMapper.insertCounselorProfile", profile);
+	}
+
+	public int updateCounselorInviteInfo(SqlSessionTemplate sqlSession, CounselorInviteCompleteDto inviteInfoDto) {
+		
+		return sqlSession.update("adminMapper.updateCounselorInviteInfo", inviteInfoDto);
 	}
 
 
