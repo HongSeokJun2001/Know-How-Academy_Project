@@ -45,7 +45,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Ajax request unauthorized");
 	        } else {
 	            // 일반 요청이면 로그인 페이지로 리다이렉트
-	            response.sendRedirect(request.getContextPath() + "/admin/loginForm");//****컨트롤러매핑에맞춰수정필요(-)
+	            response.sendRedirect(request.getContextPath() + "/admin/loginForm");
 	        }
 	        return false;
 	    }
@@ -64,7 +64,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         	} else {
         	// 일반 요청일경우 로그인 페이지로 연결
             request.getSession().setAttribute("alertMsg", "관리자 권한이 필요합니다. 로그인 후 다시 시도해주세요.");
-            response.sendRedirect(request.getContextPath() + "/admin/loginForm");//****컨트롤러매핑에맞춰수정필요(-)
+            response.sendRedirect(request.getContextPath() + "/admin/loginForm");
             //http://localhost:8002/know_how -> request.getContextPath() 값은 /know_how
             }
             

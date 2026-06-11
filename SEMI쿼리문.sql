@@ -69,4 +69,46 @@ SELECT COUNT(*)
  
  
 ----------------------------------------------------------------------------
+ -- 계정잠금 로그인용 쿼리문
+SELECT *
+  FROM MEMBER_LOCK
+  LEFT JOIN MEMBER M
+    ON USER_ID = M.USER_ID
+ WHERE USER_NO = ?
+   AND IS_LOCKED = 'N'
+   
+-- 회원가입시 잠금데이터용 쿼리문
+INSERT INTO MEMBER_LOCK(USER_NO
+                      , FAIL_COUNT
+                      , IS_LOCKED
+                      , LOCKED_AT
+                      , LAST_FAIL_AT)
+                 VALUES(?
+                      , ?
+                      , ?
+                      , ?
+                      , ?)
+                      
+-- 로그인실패시 실패횟수증가 쿼리문 -->
+UPDATE MEMBER_LOCK
+   SET FAIL_COUNT = ? 
+     , LAST_FAIL_AT = SYSDATE
+ WHERE USER_NO = ?
+	
+	
+-- 5회 이상이면 계점잠금 쿼리문 -->
+UPDATE MEMBER_LOCK
+   SET IS_LOCKED = 'Y'
+     , LOCKED_AT = SYSDATE
+ WHERE USER_NO = ?
+
+
+-- 로그인성공시 실패횟수 초기화 -->
+UPDATE MEMBER_LOCK
+   SET FAIL_COUNT = 0
+     , IS_LOCKED = 'N'
+ WHERE USER_NO = ?
+		   
+ 
+ 
  

@@ -19,6 +19,7 @@ public class CounselorInviteDto {
 	
 	private String counselorName;
 	private String email;
-	private int inviteToken;
+	private String inviteToken;
+	private String inviteUrl;
 
 }

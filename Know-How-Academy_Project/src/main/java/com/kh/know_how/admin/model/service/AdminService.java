@@ -3,6 +3,7 @@ package com.kh.know_how.admin.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.know_how.admin.common.AdminPagination;
+import com.kh.know_how.admin.common.AdminXssDefencePolicy;
 import com.kh.know_how.admin.common.PageResponseDto;
 import com.kh.know_how.admin.mail.MailService;
 import com.kh.know_how.admin.model.dao.AdminDao;
@@ -17,6 +19,7 @@ import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.ClassListDto;
 import com.kh.know_how.admin.model.dto.CounselCategoryDto;
+import com.kh.know_how.admin.model.dto.CounselorInviteCompleteDto;
 import com.kh.know_how.admin.model.dto.CounselorInviteDto;
 import com.kh.know_how.admin.model.dto.CounselorInviteListDto;
 import com.kh.know_how.admin.model.dto.CounselorListPageDto;
@@ -24,16 +27,17 @@ import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
 import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
-import com.kh.know_how.common.template.XssDefencePolicy;
+import com.kh.know_how.counselor.model.vo.CounselorProfile;
+import com.kh.know_how.member.model.vo.Member;
 
 @Service
 public class AdminService {
 	
 	//필드부
 	@Autowired
-	AdminDao ad;
+	private AdminDao ad;
 	@Autowired
-	SqlSessionTemplate sqlSession;
+	private SqlSessionTemplate sqlSession;
 	@Autowired
 	private MailService mailService;
 	
@@ -91,10 +95,9 @@ public class AdminService {
 		
 		//검색어 XSS
 		String keyword = counselorSearchRequestDto.getKeyword();
-		if(null != keyword && !keyword.isBlank()) {
-			counselorSearchRequestDto.setKeyword(XssDefencePolicy.defence(keyword));
+		if((keyword != null) && !keyword.isBlank()) {
+			counselorSearchRequestDto.setKeyword(AdminXssDefencePolicy.defence(keyword));
 		}
-		
 		//전체페이지조회
 		int listCount = ad.selectlistCount(sqlSession,counselorSearchRequestDto);
 		//페이징처리용 자료
@@ -158,7 +161,7 @@ public class AdminService {
 		int	clearNo = 1;
 		if("ACTIVE".equals(status)) {
 			clearNo = ad.clearStudentCounselorNo(sqlSession, userNo);
-		} // 0행이어도 정상. 담당 학생이 없을 뿐.
+		} // 담당 학생이 없으면 0
           // SQL 에러면 예외 터지고 트랜잭션 롤백.
 		
 		
@@ -183,8 +186,8 @@ public class AdminService {
 			return resultValidate;
 		}
 		
-		counselorInvite.setEmail(XssDefencePolicy.defence(keyword));
-		
+		counselorInvite.setCounselorName(AdminXssDefencePolicy.defence(counselorInvite.getCounselorName()));
+		counselorInvite.setEmail(AdminXssDefencePolicy.defence(keyword));
 		
 		//이메일중복검사
 		int resultEmail = ad.existsByEmail(sqlSession, keyword);
@@ -196,7 +199,7 @@ public class AdminService {
 		if(resultEmail == 0) {
 			
 			//토큰생성 + 초대DB저장
-			counselorInvite.setInviteToken((int)(Math.random() * 900000 + 100000));
+			counselorInvite.setInviteToken(UUID.randomUUID().toString());
 			int resultInfo = ad.insertCounselorInvite(sqlSession, counselorInvite);
 			if(resultInfo == 0) {
 				System.out.println(">>> INSERT_FAIL");
@@ -211,6 +214,8 @@ public class AdminService {
 		        //java.lang.RuntimeException: MAIL_FAIL
 		    }
 		}
+		
+		
 		
 		return "SUCCESS";
 	}
@@ -236,10 +241,40 @@ public class AdminService {
 		
 		return "SUCCESS";
 	}
-
+	
+	@Transactional(readOnly = true)
 	public ArrayList<CounselorInviteListDto> selectInviteList() {
 		
 		return ad.selectInviteList(sqlSession);
+	}
+
+	@Transactional(readOnly = true)
+	public CounselorInviteCompleteDto getCounselorInfo(String token) {
+		
+		return ad.getCounselorInfo(sqlSession,token);
+	}
+
+	@Transactional
+	public int signupCounselor(Member member, CounselorInviteCompleteDto inviteInfoDto, CounselorProfile profile) {
+		
+		//XSS 
+		member.setUserId(AdminXssDefencePolicy.defence(member.getUserId()));
+		member.setUserPwd(AdminXssDefencePolicy.defence(member.getUserPwd()));
+		member.setPhone(AdminXssDefencePolicy.defence(member.getPhone()));
+		member.setAddress(AdminXssDefencePolicy.defence(member.getAddress()));
+		
+		//정보주입후 회원가입처리
+		member.setUserName(inviteInfoDto.getInviteName());   
+		member.setEmail(inviteInfoDto.getInviteEmail());  
+		int memberResult = ad.insertCounselorMember(sqlSession, member);
+		
+		//생성된 useNo 주입 후 회원가입처리
+		profile.setUserNo(member.getUserNo());
+		inviteInfoDto.setUserNo(member.getUserNo());
+		int profileResult = ad.insertCounselorProfile(sqlSession, profile);
+		int inviteResult = ad.updateCounselorInviteInfo(sqlSession, inviteInfoDto);
+		
+		return memberResult*profileResult*inviteResult;
 	} 
 	
 
