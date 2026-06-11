@@ -145,7 +145,7 @@
             </tr>
        </table>
        <br>
-       <a href="/know-how/admin/signup">가입 문의하기</a> | <a href="/know-how/admin/findId">아이디 찾기</a> | <a href="/know-how/admin/findPassword">비밀번호 찾기</a>
+       <a>가입 문의하기</a> | <a href="/know-how/admin/findId">아이디 찾기</a> | <a href="/know-how/admin/findPassword">비밀번호 찾기</a>
 	</form>
 	<script>
 		$(window).ready(function () {
