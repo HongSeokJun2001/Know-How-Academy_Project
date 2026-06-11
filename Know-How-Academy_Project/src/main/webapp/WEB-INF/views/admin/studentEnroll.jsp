@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-    /* 1. 기본 스타일 세팅 (기존 대시보드와 일치감 형성) */
     * {
         margin: 0;
         padding: 0;
@@ -18,8 +17,7 @@
         background-color: #F8F9FA;
     }
 
-    /* 2. 가입 승인 컨테이너 스타일 */
-    .approval-container {
+    .card {
         background-color: #ffffff;
         border-radius: 12px;
         padding: 30px;
@@ -28,31 +26,35 @@
         max-width: 1200px;
         margin: 0 auto;
     }
-    .approval-title {
+    
+    h2 {
         font-size: 20px;
         font-weight: bold;
         margin-bottom: 20px;
         color: #2C2A38;
     }
-    .approval-table {
+    
+    table {
         width: 100%;
         border-collapse: collapse;
         text-align: center;
     }
-    .approval-table th {
+    
+    table th {
         padding: 15px;
         border-bottom: 2px solid #F3F1FF;
         color: #6F6D80;
-        font-weight: 600;
         font-size: 15px;
     }
-    .approval-table td {
-        padding: 15px;
+    
+    table td {
+    	padding: 15px 0;
         border-bottom: 1px solid #EAE9F5;
-        vertical-align: middle;
+        text-align : center;
         color: #5C5B6E;
         font-size: 15px;
     }
+    
     .class-select {
         padding: 6px 12px;
         border-radius: 6px;
@@ -63,7 +65,8 @@
         background-color: #F8F7FF;
         cursor: pointer;
     }
-    .status-badge {
+    
+    .status-pending {
         background-color: #F8F9FA;
         color: #9291A5;
         padding: 5px 12px;
@@ -72,8 +75,19 @@
         font-weight: 700;
         border: 1px solid #EAE9F5;
     }
+    
+    .status-rejected {
+        background-color: #ffc6af;
+        color: #ff3c00;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        border: 1px solid #ff3c00;
+    }
+    
     .btn-approve {
-        background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        background-color: #4233C7;
         color: white;
         border: none;
         padding: 8px 16px;
@@ -85,7 +99,7 @@
     }
     .btn-approve:hover { background-color: #3225A3; }
     
-    .btn-reject {
+    .btn-rejected {
         background-color: #E84118;
         color: white;
         border: none;
@@ -95,18 +109,16 @@
         font-weight: 700;
         transition: background 0.2s;
     }
-    .btn-reject:hover { background-color: #C23616; }
+    .btn-rejected:hover { background-color: #C23616; }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
 
-<div class="content-area">
-
-    <div class="approval-container">
-        <h2 class="approval-title">신규 가입 신청 목록</h2>
+    <div class="card">
+        <h2>신규 가입 신청 목록</h2>
         
-        <table class="approval-table">
+        <table>
             <thead>
                 <tr>
                     <th>이름</th>
@@ -134,11 +146,19 @@
 			                        </select>
 			                    </td>
 			                    <td>${ s.createdAt }</td>
-				                <td><span class="status-badge">대기</span></td>
-			                    <td>
-			                        <button type="button" class="btn-approve" onclick="approveStudent(${ s.userNo }, '${ s.studentName }')">승인</button>
-			                        <button type="button" class="btn-reject" onclick="rejectStudent(${ s.userNo }, '${ s.studentName }')">거절</button>
-			                    </td>
+			                    <c:choose>
+			                    	<c:when test="${ s.status eq 'PENDING'}">
+			                    		<td><span class="status-pending">대기</span></td>
+			                    		<td>
+					                        <button type="button" class="btn-approve" onclick="approveStudent(${ s.userNo }, '${ s.studentName }')">승인</button>
+					                        <button type="button" class="btn-rejected" onclick="rejectStudent(${ s.userNo }, '${ s.studentName }')">거절</button>
+					                    </td>
+			                    	</c:when>
+			                  		<c:otherwise>
+			                  			<td><span class="status-rejected">거절</span></td>
+			                  			<td><td>
+			                  		</c:otherwise>
+			                    </c:choose>
 			                </tr>
 		            	</c:forEach>
 	            	</c:when>
@@ -151,8 +171,6 @@
             </tbody>
         </table>
     </div>
-
-</div>
 
 <script>
     function approveStudent(userNo, studentName) {

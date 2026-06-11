@@ -33,7 +33,7 @@
 		box-shadow : 0 4px 14px rgba(17, 12, 39, 0.06); 
 	}
 	
-	.table {
+	table {
 		width : 100%;
 		border-collapse : separate;
 		border-spacing : 0;
@@ -43,7 +43,7 @@
 		font-size : 18px;
 	}
 	
-	.table th {
+	table th {
 		width: 10%;
 		height : 54px;
 		background-color : #fafafa;
@@ -53,23 +53,23 @@
 		text-align: center;
 	}
 	
-	.table td {
+	table td {
 		width : 90%;
 		border-bottom : 1px solid #eef0f4;
 	}
 	
-	.table tr:last-child * {
+	table tr:last-child * {
     	border-bottom: none;
 	}
 	
-	.table input, .table textarea {
+	table input, textarea {
 		padding : 9px;
 		margin : 7px;
 		width : 99%;
 		border : none;
 	}
 	
-	.table textarea {
+	textarea {
 		height : 300px;
 		resize : none;
 	}
@@ -107,7 +107,7 @@
 		</div>
 		
 		<div class="card">
-			<table class="table">
+			<table>
 				<tr>
 					<th>제목</th>
 					<td>

@@ -80,7 +80,7 @@
 			<div id="content">
 				<div id="content_1">
 					<h4 align="center"><b>공지사항</b></h1>
-					<a href="/know-how/notice/list">더보기&gt;</a>
+					<a href="/know-how/community/notice/list">더보기&gt;</a>
 					<table class="table table-hover"></table>
 				</div>
 				<div id="content_2">
@@ -111,7 +111,7 @@
 						for(let i in result) {
 							
 							resultStr += "<tr>"
-									   +		"<td>" + result[i].title + "<input type='hidden' name='noticeNo' value='"+ result[i].noticeNo +"'></td>"
+									   +		"<td>" + result[i].title + "<input type='hidden' name='noticeNo' value='"+ result[i].postNo +"'></td>"
 									   +		"<td>" + result[i].viewCount + "</td>"
 									   + "</tr>";
 						}

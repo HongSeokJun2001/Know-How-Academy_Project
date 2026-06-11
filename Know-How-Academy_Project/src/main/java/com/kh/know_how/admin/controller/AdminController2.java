@@ -2,10 +2,13 @@ package com.kh.know_how.admin.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,6 +52,11 @@ public class AdminController2 {
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private JavaMailSender mailSender; 
+	
+	private Map<String, String> certNoList = Collections.synchronizedMap(new HashMap<>());
 	
 	//메소드부    
     @GetMapping("/studentList")
@@ -579,7 +587,7 @@ public class AdminController2 {
     }
     
     @GetMapping("/loginForm")
-    public String adminLoginForm(Model model) { // 관리자 페이지 접속 시 관리자 로그인 페이지로 나오게 해주는 메소드
+    public String adminLoginForm() { // 관리자 페이지 접속 시 관리자 로그인 페이지로 나오게 해주는 메소드
     	
     	return "admin/adminLogin";
     }
@@ -587,6 +595,9 @@ public class AdminController2 {
     @ResponseBody
     @PostMapping("/login")
     public String adminLogin(Member m, HttpSession session) { // 관리자만 로그인해주는 메소드
+    	
+    	m.setUserId(XssDefencePolicy.defence(m.getUserId()));
+    	m.setUserPwd(XssDefencePolicy.defence(m.getUserPwd()));
     	
     	Member loginUser = ms.loginMember(m);
     	
@@ -599,26 +610,108 @@ public class AdminController2 {
     		
     		if("ADMIN".equals(loginUser.getRoleCode())) {
     			
-    			return "success";
+    			return "성공적으로 로그인이 되었습니다.";
     			
     		} else {
     			
-    			return "fail";
+    			return "관리자가 아니기 때문에 로그인할 수 없습니다.";
     		}
     	} else {
 			
-			return "not found";
+			return "아이디 또는 비밀번호를 잘못 입력했습니다.";
     	}
     }
     
     @GetMapping("/logout")
-    public String adminLogout(HttpSession session) {
+    public String adminLogout(HttpSession session) { // 관리자 페이지 로그아웃해주는 메소드
     	
     	session.removeAttribute("loginUser");
     	
-    	session.setAttribute("alertMsg", "로그아웃이 되었습니다.");
-    	
     	return "admin/adminLogin";
+    }
+    
+    @GetMapping("/findIdForm")
+    public String adminFindIdForm() { // 관리자 페이지 접속 시 관리자 로그인 페이지로 나오게 해주는 메소드
+    	
+    	return "admin/adminFindId";
+    }
+    
+    @GetMapping("/extraPasswordForm")
+    public String adminFindPasswordForm() { // 관리자 페이지 접속 시 관리자 로그인 페이지로 나오게 해주는 메소드
+    	
+    	return "admin/adminExtraPassword";
+    }
+    
+    @ResponseBody
+    @PostMapping("/findId")
+    public String adminFindId(Member m) { // 관리자만 로그인해주는 메소드
+    	
+    	m.setUserName(XssDefencePolicy.defence(m.getUserName()));
+    	m.setEmail(XssDefencePolicy.defence(m.getEmail()));
+    	
+    	Member findId = ms.searchId(m);
+    	
+    	if(findId != null) {
+    		
+    		if("ADMIN".equals(findId.getRoleCode())) {
+    			
+    			return m.getUserName() + "님의 아이디는 " + findId.getUserId() + "입니다.";
+    			
+    		} else {
+    			
+    			return "일반 회원의 정보입니다. 관리자의 정보를 입력해주세요.";
+    		}
+    	} else {
+			
+			return "등록 되지 않은 회원입니다.";
+    	}
+    }
+   
+    @ResponseBody
+    @PostMapping("/extraPassword")
+    public String adminFindPassword(Member m) { // 관리자만 로그인해주는 메소드
+    	
+    	m.setUserId(XssDefencePolicy.defence(m.getUserId()));
+    	m.setUserName(XssDefencePolicy.defence(m.getUserName()));
+    	m.setEmail(XssDefencePolicy.defence(m.getEmail()));
+    	
+    	Member extra = ms.searchPassword(m);
+    	
+    	if(extra != null) {
+    		
+    		if("ADMIN".equals(extra.getRoleCode())) {
+    			
+    			int random = (int)(Math.random() * 90000000 + 10000000);
+    			
+    			String encPwd = bCryptPasswordEncoder.encode(String.valueOf(random));
+    			extra.setUserPwd(encPwd);
+    			int result = ms.updateMember(extra);
+    			
+    			if(result > 0) {
+    				SimpleMailMessage message = new SimpleMailMessage();
+        			
+        			// 메세지 정보 담기 : 제목, 내용, 받는사람
+        			message.setSubject("know-how academy 임시 비밀번호입니다.");
+        			message.setText("임시 비밀번호 : " + random + "\n임시 비밀번호로 로그인 후 비밀번호 변경을 권장드립니다.");
+        			message.setTo(m.getEmail());
+        			
+        			System.out.println(random + ", " + encPwd);
+        			
+        			mailSender.send(message);
+        			
+        			return m.getUserName() + "님의 이메일에 임시 비밀번호를 보냈습니다.\n로그인 후 비밀번호 변경을 권장드립니다.";
+    			} else {
+    				return "임시 비밀번호를 보내지 못했습니다.";
+    			}
+    			
+    		} else {
+    			
+    			return "일반 회원의 정보입니다. 관리자의 정보를 입력해주세요.";
+    		}
+    	} else {
+			
+			return "등록 되지 않은 회원입니다.";
+    	}
     }
    
 }//컨트롤러 끝

@@ -49,6 +49,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 "/admin/loginForm",  //*** 로그인관련페이지 생성되면 주소 확인 후 수정하기(-)
                 "/admin/login",
                 "/admin/logout",
+                "/admin/findIdForm",
+                "/admin/findId",
+                "/admin/extraPasswordForm",
+                "/admin/extraPassword",
                 "/resources/**",
                 "/css/**",
                 "/js/**",
