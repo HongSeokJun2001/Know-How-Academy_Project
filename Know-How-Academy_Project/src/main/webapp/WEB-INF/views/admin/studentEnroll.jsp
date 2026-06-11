@@ -16,7 +16,6 @@
 
     body {
         background-color: #F8F9FA;
-        padding: 32px;
     }
 
     /* 2. 가입 승인 컨테이너 스타일 */

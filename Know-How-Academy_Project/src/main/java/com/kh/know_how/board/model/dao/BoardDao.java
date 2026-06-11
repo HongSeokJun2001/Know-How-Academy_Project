@@ -12,17 +12,17 @@ import com.kh.know_how.common.model.vo.PageInfo;
 
 @Repository
 public class BoardDao {
-	public ArrayList<Board> mainPageNoticeList(SqlSessionTemplate sqlSessison) {
+	public ArrayList<Board> mainPageNoticeList(SqlSessionTemplate sqlSessison) { // 메인페이지에 나오는 공지사항 리스트를 불러오는 메소드
 		
 		return (ArrayList)sqlSessison.selectList("boardMapper.mainPageNoticeList");
 	}
 
-	public int selectNewsListCount(SqlSessionTemplate sqlSession) {
+	public int selectNewsListCount(SqlSessionTemplate sqlSession) { // 학원소식의 갯수를 불러오는 리스트
 
 		return sqlSession.selectOne("boardMapper.selectNewsListCount");
 	}
 
-	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) { // 메인페이지에 나오는 학원소식 리스트를 불러오는 메소드
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 		
@@ -31,7 +31,7 @@ public class BoardDao {
 		return (ArrayList)sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
 	}
 
-	public Board selectBoard(SqlSessionTemplate sqlSession, int postNo) {
+	public Board selectBoard(SqlSessionTemplate sqlSession, int postNo) { // 학원소식의 상세정보를 불러오는 메소드
 		
 		return sqlSession.selectOne("boardMapper.selectBoard", postNo);
 	}

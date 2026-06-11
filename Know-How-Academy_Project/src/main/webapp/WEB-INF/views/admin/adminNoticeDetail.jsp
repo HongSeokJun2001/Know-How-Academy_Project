@@ -7,19 +7,26 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	.notice-section {
+	.section {
 	    width : 100%;
 	    padding : 0px 40px 80px;
 	    box-sizing : border-box;
 	}
-	.notice-title-area {
+	.title-area {
 		display : flex;
 		justify-content : space-between;
 		align-items: flex-end;
 		margin-bottom : 28px;
 	}
 	
-	.notice-card {
+	.title-area h2 {
+	    margin: 0;
+	    font-size: 32px;
+	    font-weight: 800;
+	    color: #2c2f3f;
+	}
+	
+	.card {
 		padding : 28px;
 		background-color : #fff;
 		border : 1px solid #e5e7ed;
@@ -27,7 +34,7 @@
 		box-shadow : 0 4px 14px rgba(17, 12, 39, 0.06); 
 	}
 	
-	.notice-table {
+	.table {
 		width : 100%;
 		border-collapse : separate;
 		border-spacing : 0;
@@ -37,24 +44,51 @@
 		font-size : 18px;
 	}
 	
-	.notice-table th {
+	.table th {
 		width: 10%;
+		height : 54px;
 		background-color : #fafafa;
 		text-align: center;
 		vertical-align: middle !important;
 		border-right : 1px solid #e5e7eb;
 	}
 	
-	.notice-table tr:not(:nth-child(2)) td {
+	.table tr>* {
+		border-bottom : 1px solid #e5e7eb;
+	}
+	
+	.table tr:last-child>* {
+		border-bottom : none;
+	}
+	
+	.table td {
+		padding : 9px;
+	}
+	
+	.table tr:not(:nth-child(2)) td {
 		width : 90%;
 	}
 	
-	.notice-table tr:nth-child(2) td {
+	.table tr:nth-child(2) td {
 		width : 40%;	
 	}
 	
-	.notice-table tr:nth-child(2) th:last-of-type {
+	.table tr:nth-child(2) th:last-of-type {
 		border-left : 1px solid #e5e7eb;
+	}
+	
+	.table p {
+		height : 300px;
+	}
+	
+	.link {
+	    color: #4233c7;
+	    font-weight: 800;
+	    text-decoration: none;
+	}
+	
+	.link:hover {
+	    color: #2f2499;
 	}
 	
 	.btn-update {
@@ -68,6 +102,7 @@
 		font-weight: 700;
 		cursor: pointer;
 	}
+	
 	.btn-delete {
 		min-width : 96px;
 		height : 42px;
@@ -82,17 +117,14 @@
 	}
 	
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<form class="notice-session" id="postForm" action="/know-how/admin/notice/updateForm" method="POST">
+	<form class="section" id="postForm" action="/know-how/admin/notice/updateForm" method="POST">
 	
 		<input type="hidden" name="postNo" value="${ requestScope.n.postNo }">
 		
-		<div class="notice-title-area">
+		<div class="title-area">
 			<h2>공지사항</h2>
 			
 			<div>
@@ -105,8 +137,8 @@
 			</div>
 		</div>
 		
-		<div class="notice-card">
-			<table class="notice-table table">
+		<div class="card">
+			<table class="table">
 				<tr>
 					<th>제목</th>
 					<td colspan="3">${ requestScope.n.title }</td>
@@ -120,7 +152,7 @@
 				<tr>
 					<th>내용</th>
 					<td colspan="3">
-						<p style="height : 300px;">
+						<p>
 							${ requestScope.n.content }
 						</p>
 					</td>
@@ -134,7 +166,7 @@
 							</c:when>
 							<c:otherwise>
 								<a download="${ requestScope.fa.originName }"
-								   href="/know-how${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
+								   href="/know-how${ requestScope.fa.filePath }${ requestScope.fa.saveName }" class="link">
 									${ requestScope.fa.originName }   
 								</a>
 							</c:otherwise>

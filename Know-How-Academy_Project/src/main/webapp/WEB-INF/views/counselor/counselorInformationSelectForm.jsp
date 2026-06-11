@@ -4,18 +4,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>내정보 조회</title>
-<style>
-  
-</style>
+<title>Insert title here</title>
 </head>
 <body>
-   <jsp:include page="../common/menubar.jsp"/>
+    <jsp:include page="../common/menubar.jsp"/>
    
     <div class="mypage-outer">
   
     <%-- 상담예약 페이지로 요청을 보냄--%>
-    <div id="myInformationSelect-form">
+    <div id="counselorInformationSelect-form">
                                               
       <table class="myinformation" align="center">
         <thead>
@@ -23,9 +20,7 @@
           <th><h2 align="left">내정보</h2></th>
           <td></td>
           <th></th>
-          <td align="right"><button type="button"
-						            class="btn btn-danger btn-sm"
-						            onclick="checkPasswordPage();">탈퇴</button>
+          <td>
           </td>
         </tr>
         </thead>
@@ -64,7 +59,7 @@
               <b>${ sessionScope.loginUser.email }</b>
            </td>
            <th colspan="5">
-               <button type="button" onclick="reservationListPage();" class="btn btn-primary btn-sm">상담신청</button>
+               <button type="button" onclick="myStudentClassListPage();" class="btn btn-primary btn-sm">우리반 학생목록</button>
            </th>
            <td></td>
         </tr>
@@ -90,20 +85,12 @@
     </div>
     
     <script>
-		function checkPasswordPage() {
-			
-		    // 비밀번호확인 페이지로 이동
-		    location.href = "/know-how/myPage/checkPasswordForm";
-		    // GET 방식
-		}
-	
-		function reservationListPage() {
+		function myStudentClassListPage() {
 			
 		    // 상담예약 페이지로 이동
-		    location.href = "/know-how/reservation/list";
+		    location.href = "/know-how/myPageCounselor/myStudentClassListForm";
 		    // GET 방식
 		}
 	</script>
-
 </body>
 </html>

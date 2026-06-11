@@ -21,7 +21,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 
 	// [메소드부]
 	
-	/*  ------------------------------로그인 전처리 --> 로그인페이지 생성되면 되살리기(-) 레이아웃함수속 로그인컨트롤러 주소 맞나 확인(-)
+
 	// 1. 전처리: 관리자 권한 체크
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -54,7 +54,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         Member loginUser = (Member) session.getAttribute("loginUser");
 		
         // [상황 2] 관리자(admin) 권한 검사
-        if (!"ADMIN".equals(loginUser.getRoleCode())) {  //*****vo roleCode 맞는지 확인(-)
+        if (!"ADMIN".equals(loginUser.getRoleCode())) { 
         	
         	System.out.println(" [Forbidden] 관리자 권한 없는 유저 접근 시도 - 유저번호: " + loginUser.getUserNo() + ", URI: " + requestURI);
 			
@@ -74,7 +74,6 @@ public class AdminInterceptor implements HandlerInterceptor {
         return true; // 로그인한 관리자라면 통과
     }
     
-    ----------------------------------------------------------------------------- */
 	
     // 2. 후처리: 알람
 	@Override

@@ -40,12 +40,33 @@ UPDATE MEMBER
    SET STATUS = 'INACTIVE'
      , UPDATED_AT = SYSDATE
  WHERE USER_ID = ?
-   AND STATUS = 'ACTIVE'                 
-                  
+   AND STATUS = 'ACTIVE' 
+   
+--  아이디찾기용 쿼리문 
+SELECT *
+  FROM MEMBER
+ WHERE EMAIL  = ?
+   AND USER_NAME = ?
+   AND STATUS = 'ACTIVE'   
+	
+--  비밀번호찾기용 쿼리문 
+SELECT *
+  FROM MEMBER
+ WHERE USER_ID = ?
+   AND USER_NAME = ?
+   AND EMAIL = ?
+   AND STATUS = 'ACTIVE'   
+	              
 -- 아이디 중복 체크용 쿼리문
 SELECT COUNT(*)
   FROM MEMBER
  WHERE USER_ID = ?
+ 
+-- 이메일 중복 체크용 쿼리문
+SELECT COUNT(*)
+  FROM MEMBER
+ WHERE EMAIL = ? 
+ 
  
 ----------------------------------------------------------------------------
  

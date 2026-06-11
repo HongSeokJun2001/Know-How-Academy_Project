@@ -39,7 +39,7 @@ public class BoardController {
 	
 	@ResponseBody
 	@GetMapping("news/list")
-	public Map<String, Object> selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage) {
+	public Map<String, Object> selectNewsList(@RequestParam(value="cpage", defaultValue="1") int currentPage) { // 메인페이지에서 학원소식 리스트를 보여주는 메소드
 		int listCount = boardService.selectNewsListCount();
 		int boardLimit = 4;
 		int pageLimit = 1;

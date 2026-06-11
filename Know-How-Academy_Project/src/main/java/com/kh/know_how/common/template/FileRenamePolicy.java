@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 public class FileRenamePolicy {
 
 	public static String saveFile(MultipartFile upfile,
-								HttpSession session, String path) {
+								HttpSession session, String path) { // 저장파일명을 만들어주는 메소드
 		
 		String originName = upfile.getOriginalFilename();
 		

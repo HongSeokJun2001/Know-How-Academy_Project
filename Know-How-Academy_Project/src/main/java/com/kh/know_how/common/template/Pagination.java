@@ -5,7 +5,7 @@ import com.kh.know_how.common.model.vo.PageInfo;
 public class Pagination {
 
 	public static PageInfo getPageInfo(int listCount, int currentPage,
-									   int pageLimit, int boardLimit) {
+									   int pageLimit, int boardLimit) { // 페이징처리 해주는 메소드
 		int maxPage = (int)Math.ceil((double)listCount / boardLimit);
 		int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
 		int endPage = startPage + pageLimit - 1;

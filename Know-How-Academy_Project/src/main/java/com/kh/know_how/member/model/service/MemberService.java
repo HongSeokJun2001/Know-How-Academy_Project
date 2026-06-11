@@ -40,12 +40,12 @@ public class MemberService {
 		return memberDao.updatePwd(sqlSession, m);
 	}
 	
-	public int searchId(Member m) {
+	public Member searchId(Member m) {
 		
 		return memberDao.searchId(sqlSession, m);
 	}
 	
-	public int searchPassword(Member m) {
+	public Member searchPassword(Member m) {
 		
 		return memberDao.searchPassword(sqlSession, m);
 	}
@@ -59,6 +59,11 @@ public class MemberService {
 	public int idCheck(String checkId) {
 		
 		return memberDao.idCheck(sqlSession, checkId);
+	}
+	
+    public int emailCheck(String checkEmail) {
+		
+		return memberDao.emailCheck(sqlSession, checkEmail);
 	}
 	
 	

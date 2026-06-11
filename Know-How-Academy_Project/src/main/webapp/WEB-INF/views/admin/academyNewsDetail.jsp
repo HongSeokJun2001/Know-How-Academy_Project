@@ -7,19 +7,27 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	.news-section {
+	.section {
 	    width : 100%;
 	    padding : 0px 40px 80px;
 	    box-sizing : border-box;
 	}
-	.news-title-area {
+	
+	.title-area {
 		display : flex;
 		justify-content : space-between;
 		align-items: flex-end;
 		margin-bottom : 28px;
 	}
 	
-	.news-card {
+	.title-area h2 {
+	    margin: 0;
+	    font-size: 32px;
+	    font-weight: 800;
+	    color: #2c2f3f;
+	}
+	
+	.card {
 		padding : 28px;
 		background-color : #fff;
 		border : 1px solid #e5e7ed;
@@ -27,7 +35,7 @@
 		box-shadow : 0 4px 14px rgba(17, 12, 39, 0.06); 
 	}
 	
-	.news-table {
+	.table {
 		width : 100%;
 		border-collapse : separate;
 		border-spacing : 0;
@@ -37,26 +45,46 @@
 		font-size : 18px;
 	}
 	
-	.news-table th {
+	.table th {
 		width: 10%;
+		height : 54px;
 		background-color : #fafafa;
 		text-align: center;
 		vertical-align: middle !important;
 		border-right : 1px solid #e5e7eb;
 	}
 	
-	.news-table tr:not(:nth-child(2)) td {
+	.table tr>* {
+		border-bottom : 1px solid #e5e7eb;
+	}
+	
+	.table tr:last-child>* {
+		border-bottom : none;
+	}
+	
+	.table tr:not(:nth-child(2)) td {
 		width : 90%;
 	}
 	
-	.news-table tr:nth-child(2) td {
+	.table tr:nth-child(2) td {
 		width : 40%;	
 	}
 	
-	.news-table tr:nth-child(2) th:last-of-type {
+	.table tr:nth-child(2) th:last-of-type {
 		border-left : 1px solid #e5e7eb;
 	}
 	
+	.table tr:not(:nth-child(4), :last-child) td {
+		padding : 9px;
+	}
+	
+	.table tr:nth-child(4) td, .table tr:last-child td {
+		text-align : center;
+	}
+	
+	.table p {
+		height : 300px;
+	}
 	
 	.btn-update {
 		min-width : 96px;
@@ -69,6 +97,7 @@
 		font-weight: 700;
 		cursor: pointer;
 	}
+	
 	.btn-delete {
 		min-width : 96px;
 		height : 42px;
@@ -82,17 +111,14 @@
 		cursor: pointer;
 	}
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<form class="news-session" id="postForm" action="/know-how/admin/academyNews/updateForm" method="POST">
+	<form class="section" id="postForm" action="/know-how/admin/academyNews/updateForm" method="POST">
 		
 		<input type="hidden" name="postNo" value="${ requestScope.n.postNo }">
 		
-		<div class="news-title-area">
+		<div class="title-area">
 			<h2>학원소식</h2>
 			
 			<div>
@@ -105,8 +131,8 @@
 			</div>
 		</div>
 		
-		<div class="news-card">
-			<table class="news-table table">
+		<div class="card">
+			<table class="table">
 				<tr>
 					<th>제목</th>
 					<td colspan="3">${ requestScope.n.title }</td>
@@ -120,21 +146,21 @@
 				<tr>
 					<th>내용</th>
 					<td colspan="3">
-						<p style="height : 300px;">
+						<p>
 							${ requestScope.n.content }
 						</p>
 					</td>
 				</tr>
 				<tr>
 					<th>대표이미지</th>
-					<td colspan="3" align="center">
+					<td colspan="3">
 						<img src="/know-how${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
 							 width="250" height="170">
 					</td>
 				</tr>
 				<tr>
 					<th>상세이미지</th>
-					<td colspan="3" align="center">
+					<td colspan="3">
 						<c:choose>
 							<c:when test="${ requestScope.list.size() eq 1 }">
 								상세이미지가 존재하지 않습니다.
