@@ -35,6 +35,22 @@ public class MemberService {
 	}
 	
 	@Transactional
+	public int updatePwd(Member m) {
+		
+		return memberDao.updatePwd(sqlSession, m);
+	}
+	
+	public Member searchId(Member m) {
+		
+		return memberDao.searchId(sqlSession, m);
+	}
+	
+	public Member searchPassword(Member m) {
+		
+		return memberDao.searchPassword(sqlSession, m);
+	}
+	
+	@Transactional
 	public int deleteMember(String userId) {
 		
 		return memberDao.deleteMember(sqlSession, userId);
@@ -44,6 +60,13 @@ public class MemberService {
 		
 		return memberDao.idCheck(sqlSession, checkId);
 	}
+	
+    public int emailCheck(String checkEmail) {
+		
+		return memberDao.emailCheck(sqlSession, checkEmail);
+	}
+	
+	
 	
 	
 }

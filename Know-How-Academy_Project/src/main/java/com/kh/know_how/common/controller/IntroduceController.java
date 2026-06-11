@@ -11,7 +11,7 @@ public class IntroduceController {
 	 * @return
 	 */
 	@GetMapping("/introduce")
-	public String introduce() {
+	public String introduce() { // 교육원 소개 페이지를 불러오는 메소드
 		
 		return "common/academyIntroduce";
 		

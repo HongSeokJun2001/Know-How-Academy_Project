@@ -162,15 +162,14 @@
     border-spacing: 0;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
-    overflow: hidden;
     font-size: 15px;
+	min-width: 1100px;
 }
 
 .student-table thead th {
     height: 54px;
     padding: 0 18px;
     background-color: #fafafa;
-    color: #2c2f3f;
     font-weight: 800;
     text-align: left;
     border-bottom: 1px solid #e5e7eb;
@@ -178,7 +177,6 @@
 
 .student-table tbody td {
     padding: 16px 18px;
-    color: #374151;
     border-bottom: 1px solid #eef0f4;
     vertical-align: middle;
 }
@@ -189,17 +187,6 @@
 
 .student-table tbody tr:hover {
     background-color: #fafaff;
-}
-
-.student-name-link {
-    color: #4233c7;
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.student-name-link:hover {
-    color: #2f2499;
 }
 
 /* 상태 배지 */
@@ -308,7 +295,7 @@
 				<p>재원중, 휴원 상태의 학원생 정보를 조회하고 관리합니다.</p>
 			</div>
 
-			<button type="button" class="btn-primary">
+			<button type="button" class="btn-primary" onclick="go('/admin/student/enroll')">
 				가입 승인 관리
 			</button>
 		</div>
@@ -319,7 +306,7 @@
 				<div class="search-top-row">
 					<div class="search-field">
 						<label for="studentKeyword">검색어</label>
-						<input type="text"
+						<input type="search"
 							id="studentKeyword"
 							name="keyword"
 							class="student-search-input"
@@ -383,70 +370,61 @@
 					}
 				});
 			</script>
+			<div class="table-wrap">
+				<table class="student-table">
+					<thead>
+						<tr>
+							<th>이름</th>
+							<th>연락처</th>
+							<th>담당 상담사</th>
+							<th>등록일</th>
+							<th>현재 상태</th>
+							<th>관리</th>
+						</tr>
+					</thead>
 
-			<table class="student-table">
-				<thead>
-					<tr>
-						<th>이름</th>
-						<th>연락처</th>
-						<th>담당 상담사</th>
-						<th>등록일</th>
-						<th>현재 상태</th>
-						<th>관리</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					<c:choose>
-						<c:when test="${ empty requestScope.list }">
-							<tr>
-								<th colspan="6">
-									학생 정보가 없습니다.
-								</th>
-							</tr>
-						</c:when>
-						<c:otherwise>
-							<tr id="emptyRow" style="display: none;">
-						        <th colspan="6">
-						            학생 정보가 없습니다.
-						        </th>
-						    </tr>	
-							<c:forEach var="s" items="${ requestScope.list }">
+					<tbody>
+						<c:choose>
+							<c:when test="${ empty requestScope.list }">
 								<tr>
-									<td>
-										<a href="#" class="student-name-link">${ s.studentName }</a>
-									</td>
-									<td>${ s.phone }</td>
-									<td>${ s.counselorName }</td>
-									<td>${ s.createdAt }</td>
-									<td>
-										<c:choose>
-											<c:when test="${ s.status eq 'ATTENDING' }">
-												<span class="student-status active">재학</span>
-											</c:when>
-											<c:otherwise>
-												<span class="student-status rest">휴학</span>
-											</c:otherwise>
-										</c:choose>
-									</td>
-									<td>
-										<button type="button" class="btn-outline small" onclick="studentDetail(${ s.studentNo })">상세보기</button>
-										<input type="hidden" value="${ s.studentNo }">
-									</td>
+									<th colspan="6">
+										학생 정보가 없습니다.
+									</th>
 								</tr>
-							</c:forEach>
-						</c:otherwise>
-					</c:choose>
-				</tbody>
-			</table>
-			
-			<script>
-				function studentDetail(sno) {
-					
-					location.href = "/know-how/admin/studentDetails/" + sno;
-						
-				}
-			</script>	
+							</c:when>
+							<c:otherwise>
+								<tr id="emptyRow" style="display: none;">
+									<th colspan="6">
+										학생 정보가 없습니다.
+									</th>
+								</tr>	
+								<c:forEach var="s" items="${ requestScope.list }">
+									<tr>
+										<td>${ s.studentName }</td>
+										<td>${ s.phone }</td>
+										<td>${ s.counselorName }</td>
+										<td>${ s.createdAt }</td>
+										<td>
+											<c:choose>
+												<c:when test="${ s.status eq 'ATTENDING' }">
+													<span class="student-status active">재학</span>
+												</c:when>
+												<c:otherwise>
+													<span class="student-status rest">휴학</span>
+												</c:otherwise>
+											</c:choose>
+										</td>
+										<td>
+											<button type="button" class="btn-outline small" onclick="go('/admin/studentDetails/${ s.studentNo }')">상세보기</button>
+											<input type="hidden" value="${ s.studentNo }">
+										</td>
+									</tr>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>	
 
 			<!-- 페이징 -->
 			<div class="pagination-area">
@@ -458,10 +436,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.condition }">
-								<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 							</c:otherwise>
 							
 						</c:choose>
@@ -478,10 +456,10 @@
 						
 							<c:choose>
 								<c:when test="${ empty requestScope.status }">
-									<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/studentList?cpage=${ p }')">${ p }</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+									<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
 								</c:otherwise>
 							</c:choose>
 							
@@ -498,10 +476,10 @@
 					
 						<c:choose>
 							<c:when test="${ empty requestScope.status }">
-								<button type="button" onclick="location.assign('/know-how/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="location.assign('/know-how/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 							</c:otherwise>
 						</c:choose>
 					</c:otherwise>

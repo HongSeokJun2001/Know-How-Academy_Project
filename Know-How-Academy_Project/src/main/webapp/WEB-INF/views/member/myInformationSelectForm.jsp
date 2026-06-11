@@ -15,7 +15,7 @@
     <div class="mypage-outer">
   
     <%-- 상담예약 페이지로 요청을 보냄--%>
-    <form id="myInformationSelect-form" action="/know-how/reservation/reservationListview" method="post">
+    <div id="myInformationSelect-form">
                                               
       <table class="myinformation" align="center">
         <thead>
@@ -24,8 +24,8 @@
           <td></td>
           <th></th>
           <td align="right"><button type="button"
-						            class="btn btn-primary btn-sm"
-						            onclick="memberDelectPage();">탈퇴</button>
+						            class="btn btn-danger btn-sm"
+						            onclick="checkPasswordPage();">탈퇴</button>
           </td>
         </tr>
         </thead>
@@ -64,7 +64,7 @@
               <b>${ sessionScope.loginUser.email }</b>
            </td>
            <th colspan="5">
-               <button type="submit" class="btn btn-primary btn-sm">상담신청</button>
+               <button type="button" onclick="reservationListPage();" class="btn btn-primary btn-sm">상담신청</button>
            </th>
            <td></td>
         </tr>
@@ -86,23 +86,21 @@
         </tr>
         </tbody>
       </table>
-     </form>
+     </div>
     </div>
     
     <script>
-		function memberDelectPage() {
+		function checkPasswordPage() {
 			
-		    // 회원탈퇴 페이지로 이동
-		    location.href = "/know-how/member/myPage/memberDelectForm";
+		    // 비밀번호확인 페이지로 이동
+		    location.href = "/know-how/myPage/checkPasswordForm";
 		    // GET 방식
 		}
-	</script>
-    
-    <script>
+	
 		function reservationListPage() {
 			
 		    // 상담예약 페이지로 이동
-		    location.href = "/know-how/reservation/reservationListview";
+		    location.href = "/know-how/reservation/list";
 		    // GET 방식
 		}
 	</script>

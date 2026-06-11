@@ -363,6 +363,13 @@
                 </thead>
 
                 <tbody>
+                    <c:if test="${empty requestScope.waitingList}">
+                        <tr>
+                            <td colspan="5">
+                                <span>조회된 정보가 없습니다.</span>
+                            </td>
+                        </tr>
+                    </c:if>
                     <c:forEach var="w" items="${requestScope.waitingList}">
                         <tr>
                             <td class="${w.elapsedDays gt 3 ? 'text-danger' : ''}">
@@ -404,6 +411,13 @@
                 </thead>
 
                 <tbody>
+                    <c:if test="${empty requestScope.reservationList}">
+                        <tr>
+                            <td colspan="4">
+                                <span>조회된 정보가 없습니다.</span>
+                            </td>
+                        </tr>
+                    </c:if>
                     <c:forEach var="t" items="${requestScope.reservationList}">
                         <tr>
                             <td>${t.reservationTime}</td>
@@ -435,6 +449,19 @@
             </div>
             
             <div class="bar-chart">
+                <c:if test="${empty requestScope.dashboard}">
+                        <span>조회된 정보가 없습니다.</span>
+                        <c:forEach var="cl" items="${requestScope.counselCategory}">
+                            <div class="bar-row">
+                                <div class="bar-label">${cl.categoryName}상담</div>
+                                <div class="bar-track">
+                                    <div class="bar-fill category-${cl.categoryName}" style="width: 0%;">
+                                        <span>0건</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:if>
                 <c:forEach var="d" items="${requestScope.dashboard}">
                     <div class="bar-row">
                         <div class="bar-label">${d.categoryName}상담</div>
@@ -446,12 +473,14 @@
                     </div>
                 </c:forEach>
             </div>
-
-            <br><br>
+<br>
             <div class="chart-footer">
 
                 <div class="info-card trend-card">
                     <div class="info-title">🔥 전월 대비</div>
+                    <c:if test="${empty requestScope.dashboard}">
+                        <span>조회된 정보가 없습니다.</span>
+                    </c:if>
                     <c:forEach var="d" items="${requestScope.dashboard}">
                         <c:choose>
                             <c:when test="${d.currCount - d.prevCount gt 0 }">
@@ -471,7 +500,10 @@
                 </div>
 
                 <div class="info-card rate-card">
-                    <div class="info-title">✅ 신청율</div>
+                    <div class="info-title">✅ 신청률</div>
+                    <c:if test="${empty requestScope.dashboard}">
+                        <span>조회된 정보가 없습니다.</span>
+                    </c:if>
                     <c:forEach var="d" items="${requestScope.dashboard}">
                         <div class="info-row">
                             <span>${d.categoryName}상담</span>

@@ -50,7 +50,7 @@
 			<tr>
 				<th>대표이미지</th>
 				<td colspan="3" align="center">
-					<img src="/know-how/${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
+					<img src="/know-how${ requestScope.list[0].filePath }${ requestScope.list[0].saveName }" alt="대표이미지"
 						 width="500" height="300">
 				</td>
 			</tr>
@@ -64,10 +64,10 @@
 						<c:otherwise>
 							<c:forEach var="i" begin="1" end="${ requestScope.list.size() - 1 }" step="1">
 							
-								<img src="/know-how/${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
-									 width="200" height="160">
+								<img src="/know-how${ requestScope.list[i].filePath }${ requestScope.list[i].saveName }" alt="상세이미지"
+									 width="200" height="160" style="margin: 0 10px;">
 							
-							<</c:forEach>
+							</c:forEach>
 						</c:otherwise>
 					</c:choose>
 				</td>

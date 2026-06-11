@@ -17,13 +17,13 @@
 	<select id="selectWaitingList" 
 			resultType="com.kh.know_how.admin.model.dto.AdminCounselWaitingDto">
 			
-		SELECT TO_CHAR(C.CREATED_AT, 'MM-DD') 	AS createdAt
-		     , SM.USER_NAME 					AS studentName
-		     , CC.CATEGORY_NAME 				AS categoryName
-		     , CL.CLASS_NAME 					AS className
-		     , CM.USER_NAME 					AS counselorName
-		     , TRUNC(SYSDATE - C.CREATED_AT) 	AS elapsedDays
-		     , C.CATEGORY_NO					AS categoryNo
+		SELECT TO_CHAR(C.CREATED_AT, 'MM-DD') 		AS createdAt
+		     , SM.USER_NAME 						AS studentName
+		     , CC.CATEGORY_NAME 					AS categoryName
+		     , CL.CLASS_NAME 						AS className
+		     , CM.USER_NAME 						AS counselorName
+		     , TRUNC(SYSDATE - C.CREATED_AT) 		AS elapsedDays
+		     , C.CATEGORY_NO						AS categoryNo
 		     
 		  FROM COUNSEL_RESERVATION 	C
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
@@ -85,7 +85,7 @@
  	<!-- 5. 금일 상담일정 목록 개수 조회 -->
  	<select id="todayReservationCount" resultType="_int">
  		SELECT COUNT(*)
-		  FROM COUNSEL_RESERVATION C
+		  FROM COUNSEL_RESERVATION 	C
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
 		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
 		 WHERE C.RESERVATION_STATUS = 'RESERVED'
@@ -119,13 +119,219 @@
 		                              ) OVER(), 0
 		                 )* 100 , 1)  AS rate
 		
-		  FROM COUNSEL_RESERVATION  C
-		  LEFT JOIN COUNSEL_CATEGORY     CC      ON C.CATEGORY_NO = CC.CATEGORY_NO
+		  FROM COUNSEL_RESERVATION  	C
+		  LEFT JOIN COUNSEL_CATEGORY    CC 	ON 	C.CATEGORY_NO = CC.CATEGORY_NO
 		 GROUP BY C.CATEGORY_NO, CC.CATEGORY_NAME
 		 ORDER BY C.CATEGORY_NO
 	 </select>
+	 <!-- 7. 상담 카테고리 목록 조회 -->
+	 <select id="selectCounselCategory" resultType="com.kh.know_how.admin.model.dto.CounselCategoryDto">
+	 	SELECT CATEGORY_NO AS categoryNo 
+	 	     , CATEGORY_NAME AS categoryName
+	 	  FROM COUNSEL_CATEGORY
+	 </select>
 	 
+	 <!-- 8.상담사 리스트 전체목록 개수 조회 -->
+	 <select id="selectlistCount" parameterType="com.kh.know_how.admin.model.dto.CounselorSearchRequestDto"
+	 							  resultType="_int">
+		 SELECT COUNT(*)
+	       FROM COUNSELOR_INVITE				CI 
+	       LEFT JOIN MEMBER 			    	CM  ON 	CM.USER_NO = CI.USER_NO
+	      <choose>
+	      	<when test="status == 'ACTIVE'">
+	     WHERE (CI.INVITE_STATUS = 'PENDING'
+	        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
+	       	</when>
+	       	<when test="status == 'INACTIVE'">
+	     WHERE CI.INVITE_STATUS = 'USED'
+	       AND CM.STATUS = 'INACTIVE' 
+	       	</when>
+	       </choose>
+			<if test="keyword != null and keyword != ''">
+				AND (
+					NVL(CM.USER_NAME, CI.INVITE_NAME) LIKE '%' || #{keyword} || '%'
+					OR NVL(CM.EMAIL, CI.INVITE_EMAIL) LIKE '%' || #{keyword} || '%'
+					OR CM.PHONE LIKE '%' || #{keyword} || '%'
+				)
+			</if>
+	 </select>
 	 
+	<!-- 9.상담사리스트 조회  -->
+	<!-- 
+		계정 활성/비활성 기준은 MEMBER.STATUS 기준으로 조회
+		COUNSELOR.STATUS는 현재 가입/입력 로직에서 동일하게 관리된다는 전제로 사용하지 않음
+	 -->
+	<select id="selectcounselorList" 
+	 		 parameterType="com.kh.know_how.admin.model.dto.CounselorSearchRequestDto"
+	 		 resultType="com.kh.know_how.admin.model.dto.CounselorListResponseDto">
+		SELECT *
+		  FROM (
+		        SELECT ROWNUM AS RNUM, P.* 
+		          FROM (
+		                SELECT CI.USER_NO           AS userNo
+		                     , CI.INVITE_NO         AS inviteNo		                
+		                     , NVL(CM.USER_NAME, CI.INVITE_NAME)   	AS userName
+		                     , NVL(CM.EMAIL, CI.INVITE_EMAIL)       AS email
+		                     , CL.CLASS_NAME        AS className
+		                     , NVL(CM.STATUS, CI.INVITE_STATUS)     AS status
+		                     , CC.CATEGORY_NAME     AS categoryName                    
+		                     
+		                  FROM COUNSELOR_INVITE         CI 
+		                  LEFT JOIN MEMBER 			    CM  ON 	CM.USER_NO = CI.USER_NO
+		                  LEFT JOIN COUNSELOR_PROFILE 	C 	ON 	CM.USER_NO = C.USER_NO
+		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
+		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = C.CATEGORY_NO
+		                  <choose>
+					      	<when test="status == 'ACTIVE'">
+					     WHERE (CI.INVITE_STATUS = 'PENDING'
+					        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
+					       	</when>
+					       	<when test="status == 'INACTIVE'">
+					     WHERE CI.INVITE_STATUS = 'USED'
+					       AND CM.STATUS = 'INACTIVE' 
+					       	</when>
+					       </choose>
+		                   <if test="keyword != null and keyword != ''">
+			               	AND (
+									NVL(CM.USER_NAME, CI.INVITE_NAME) LIKE '%' || #{keyword} || '%'
+									OR NVL(CM.EMAIL, CI.INVITE_EMAIL) LIKE '%' || #{keyword} || '%'
+									OR CM.PHONE     LIKE '%' || #{keyword} || '%'
+			               	)
+		                   </if>
+		                 ORDER BY CI.USER_NO NULLS FIRST, CM.USER_NAME
+		                 )P
+		        )
+		 WHERE RNUM BETWEEN #{pageRequest.startRow} AND #{pageRequest.endRow}
+	</select>
+	<!-- 10. 담임이 지정되지 않은 클래스 목록 조회 -->
+	<select id="selectClassList" resultType="com.kh.know_how.admin.model.dto.ClassListDto">
+		SELECT CL.CLASS_NO 		AS classNo
+ 		 	 , CL.CLASS_NAME 	AS className
+		  FROM CLASS  CL
+		 WHERE CL.STATUS = 'Y'
+		   AND NOT EXISTS (
+							SELECT 1
+							  FROM MEMBER M
+							 WHERE M.ROLE_CODE = 'COUNSELOR'
+							   AND M.STATUS = 'ACTIVE'
+							   AND M.CLASS_NO = CL.CLASS_NO 
+						)
+		 ORDER BY CL.CLASS_NO
+	</select>
+	
+ 	<!-- 11.상담사 클래스 변경 쿼리 -->
+	 <update id="updateCounselorClass" parameterType="map">
+	    UPDATE MEMBER M
+	       SET M.CLASS_NO = #{classNo}
+	         , M.UPDATED_AT = SYSDATE
+	     WHERE M.USER_NO = #{userNo}
+	       AND M.ROLE_CODE = 'COUNSELOR'
+	       AND NOT EXISTS (
+				           SELECT 1
+				             FROM MEMBER M2
+				            WHERE M2.ROLE_CODE = 'COUNSELOR'
+				              AND M2.STATUS = 'ACTIVE'
+				              AND M2.CLASS_NO = #{classNo}
+				              AND M2.USER_NO != #{userNo}
+	      			 	)
+	 </update>
+	 
+ 	 <!-- 12. 상담사 기본프로필을 조회하는 쿼리 -->
+	 <select id="selectCounselorProfile" parameterType="_int"
+	 		 resultType="com.kh.know_how.admin.model.dto.CounselorProfileDTO">
+		 SELECT M.USER_NO           		AS userNo
+		      , M.USER_ID           		AS userId
+		      , NVL(C.PROFILE_IMG_PATH, '/resources/image/default-profile.png')  AS imgPath
+		      , M.STATUS            		AS status
+		      , NVL(CL.CLASS_NAME, '미지정')	AS className
+		      , M.USER_NAME           		AS userName
+		      , M.PHONE               		AS phone
+		      , M.EMAIL               		AS email
+		      , (
+		            SELECT COUNT(*)
+		              FROM MEMBER SM
+		             WHERE SM.CLASS_NO = M.CLASS_NO
+		               AND SM.ROLE_CODE = 'STUDENT'
+		        ) AS studentCount
+		        
+		  FROM MEMBER M
+		  LEFT JOIN COUNSELOR_PROFILE C ON M.USER_NO = C.USER_NO
+		  LEFT JOIN CLASS CL ON M.CLASS_NO = CL.CLASS_NO
+		 WHERE M.USER_NO = #{value}
+	 	  
+	 </select>
+	 
+ 	 <!-- 13. 휴직/재직상태 변경을 하는 쿼리 -->
+	 <update id="updateCounselorStatus" parameterType="map">
+		 UPDATE MEMBER
+		 	SET UPDATED_AT = SYSDATE
+		 <choose>
+		 	<when test="status == 'INACTIVE'">
+		      , STATUS = 'ACTIVE'
+		 	</when>
+		 	<when test="status == 'ACTIVE'">
+		      , STATUS = 'INACTIVE'
+		      , CLASS_NO = NULL
+		    </when>
+		 </choose>
+		  WHERE USER_NO = #{userNo}
+	 </update>
+	 
+	 <!-- 14. 상담사 초대링크를 비활성화하는 쿼리 -->
+	 <update id="deleteCounselorInvite" parameterType="_int">
+	 	UPDATE COUNSELOR_INVITE
+	 	   SET INVITE_STATUS = 'CANCELED'
+	 	 WHERE INVITE_NO = #{value} 
+	 	   AND INVITE_STATUS = 'PENDING' 
+	 </update>
+	 
+	 <!-- 15. 상담사 클래스 변경 시 기존 학생테이블의 상담사번호를 null 처리해주는 쿼리 -->
+	 <update id="clearStudentCounselorNo" parameterType="_int">
+	 	UPDATE STUDENT_DETAIL
+	 	   SET COUNSELOR_NO = NULL
+	 	 WHERE COUNSELOR_NO = (SELECT COUNSEL_NO 
+	 	 						 FROM COUNSELOR_PROFILE 
+	 	 						WHERE USER_NO = #{value})
+	 </update>
+	 
+	 <!-- 16. 상담사 클래스 변경 시 학생들의 정보에 상담사번호를 추가하는 쿼리 -->
+	 <update id="updateStudentCounselorNoByClassNo" parameterType="map">
+	 	UPDATE STUDENT_DETAIL SD 
+	 	   SET COUNSELOR_NO = (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE WHERE USER_NO = #{userNo})
+	 	 WHERE SD.USER_NO IN (SELECT M.USER_NO FROM MEMBER M WHERE ROLE_CODE = 'STUDENT' AND CLASS_NO = #{classNo})
+	 </update>
+	 
+	 <!-- 17. 초대메일 중복체크 -->
+	 <select id="existsByEmail" parameterType="string" resultType="_int">
+	 	SELECT COUNT(*)
+	 	  FROM DUAL
+	 	 WHERE EXISTS (SELECT 1 FROM MEMBER WHERE EMAIL = #{value})
+	 	    OR EXISTS (SELECT 1 
+	 	    			 FROM COUNSELOR_INVITE 
+	 	    			WHERE INVITE_EMAIL = #{value} 
+	 	    			  AND INVITE_STATUS = 'PENDING')
+	 </select>
+	 
+	 <!-- 18. 초대메일 발송 전 초대정보 DB 저장 -->
+	 <insert id="insertCounselorInvite" parameterType="com.kh.know_how.admin.model.dto.CounselorInviteDto">
+	 	INSERT INTO COUNSELOR_INVITE (INVITE_NO, INVITE_NAME, INVITE_EMAIL, INVITE_TOKEN) 
+    						   VALUES(SEQ_INVITE_NO.NEXTVAL, #{counselorName}, #{email}, #{inviteToken})
+	 </insert>
+	 
+	 <!-- 19. 초대내역 조회 -->
+	 <select id="selectInviteList" resultType="com.kh.know_how.admin.model.dto.CounselorInviteListDto">
+	 	SELECT CI.INVITE_NO			AS inviteNo
+	 		 , CI.INVITE_NAME		AS inviteName
+	 	     , CI.INVITE_EMAIL		AS inviteEmail
+	 	     , CI.INVITE_SENT_AT	AS inviteSentAt
+	 	     , DECODE(CI.INVITE_STATUS, 'USED', M.STATUS, 
+	 	     							CI.INVITE_STATUS)	AS inviteStatus
+	 	     , CI.USER_NO			AS userNo
+	 	  FROM COUNSELOR_INVITE CI
+	 	  LEFT JOIN MEMBER M ON (CI.USER_NO = M.USER_NO)
+	 	 ORDER BY INVITE_SENT_AT DESC
+	 </select>
+	 	  
 </mapper>
 	
 	

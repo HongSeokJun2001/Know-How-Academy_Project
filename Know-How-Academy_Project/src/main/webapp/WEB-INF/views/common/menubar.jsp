@@ -64,15 +64,7 @@
         #logo_link {
             display: inline-block
         }
-        #img_area{
-	    .mypage-outer {
-		width : 800px;
-		border : 1px dotted black;
-		margin : auto;
-		margin-top : 50px;
-		margin-bottom : 50px;
-	    }
-        img{
+        #img_area img{
             width: 300px;
             display: block;
         }
@@ -108,6 +100,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+    <%-- 
+		- 1회성 alert 기능
+		- script 태그 내에서는 JSP Action Tag 들이 사용 불가함!! (자바스크립트 영역이기 때문)
+	--%>
+	<c:if test="${ not empty sessionScope.alertMsg }">
+		<script>
+			
+			let alertMsg = "${ sessionScope.alertMsg }";
+			
+			// alert(alertMsg);
+			alertify.alert(alertMsg, function(){ alertify.success('Ok'); });
+		
+		</script>
+		<c:remove var="alertMsg" scope="session" />
+	</c:if>
 	
     <br>
     <header>
@@ -116,7 +123,9 @@
         </a>
     </header>
     <br>
-
+    <c:choose>
+		
+	<c:when test="${empty sessionScope.loginUser}"> 
     <div class="nav-area" align="center">
         <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
         <div class="menu">    
@@ -134,9 +143,52 @@
                 <li><a href="/know-how/community/student/list">수강생게시판</a></li>
             </ul>
         </div>
-        <div class="menu"><a href="/know-how/member/myPage">마이페이지</a></div>
+        <div class="menu"><a href="/know-how/myPage">로그인</a></div>
     </div>
-
+    </c:when>
+    <c:when test="${ sessionScope.loginUser.roleCode eq 'STUDENT' }">
+    <div class="nav-area" align="center">
+        <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
+        <div class="menu">    
+            <a href="#">상담</a>
+            <ul>
+                <li><a href="/know-how/reservation/list">예약리스트</a></li>
+                <li><a href="/know-how/counselor/list">상담목록</a></li>
+            </ul>
+        </div>
+        <div class="menu">
+            <a href="#">커뮤니티</a>
+            <ul>
+                <li><a href="/know-how/community/notice/list">공지사항</a></li>
+                <li><a href="/know-how/community/board/list">일반게시판</a></li>
+                <li><a href="/know-how/community/student/list">수강생게시판</a></li>
+            </ul>
+        </div>
+        <div class="menu"><a href="/know-how/myPage">마이페이지</a></div>
+    </div>
+    </c:when>
+    <c:otherwise>
+    <div class="nav-area" align="center">
+        <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
+        <div class="menu">    
+            <a href="#">상담</a>
+            <ul>
+                <li><a href="/know-how/reservation/list">예약리스트</a></li>
+                <li><a href="/know-how/counselor/list">상담목록</a></li>
+            </ul>
+        </div>
+        <div class="menu">
+            <a href="#">커뮤니티</a>
+            <ul>
+                <li><a href="/know-how/community/notice/list">공지사항</a></li>
+                <li><a href="/know-how/community/board/list">일반게시판</a></li>
+                <li><a href="/know-how/community/student/list">수강생게시판</a></li>
+            </ul>
+        </div>
+        <div class="menu"><a href="/know-how/myPageCounselor">마이페이지</a></div>
+    </div>
+    </c:otherwise>
+    </c:choose>
 <script>
 		$(document).ready(function() {
 			// .menu 영역에 마우스를 올리거나 뗐을 때 동작
