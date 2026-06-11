@@ -53,10 +53,13 @@
             margin-top : 50px;
 	    }
 	    .mypage-outer {
-	        width : 1200px;
-            border : 1px dotted black;
-            margin : auto;
-            margin-top : 50px;
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 1000px;
+           margin: auto;
 	    }
         header {
             text-align: center;
