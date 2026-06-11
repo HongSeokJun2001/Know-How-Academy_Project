@@ -20,8 +20,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	private AdminService as;
 
 	// [메소드부]
-	
-	/*  ------------------------------로그인 전처리 --> 로그인페이지 생성되면 되살리기(-) 레이아웃함수속 로그인컨트롤러 주소 맞나 확인(-)
+	/*
 	// 1. 전처리: 관리자 권한 체크
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -45,7 +44,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 	            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Ajax request unauthorized");
 	        } else {
 	            // 일반 요청이면 로그인 페이지로 리다이렉트
-	            response.sendRedirect(request.getContextPath() + "/admin/loginForm");//****컨트롤러매핑에맞춰수정필요(-)
+	            response.sendRedirect(request.getContextPath() + "/admin/loginForm");
 	        }
 	        return false;
 	    }
@@ -64,7 +63,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         	} else {
         	// 일반 요청일경우 로그인 페이지로 연결
             request.getSession().setAttribute("alertMsg", "관리자 권한이 필요합니다. 로그인 후 다시 시도해주세요.");
-            response.sendRedirect(request.getContextPath() + "/admin/loginForm");//****컨트롤러매핑에맞춰수정필요(-)
+            response.sendRedirect(request.getContextPath() + "/admin/loginForm");
             //http://localhost:8002/know_how -> request.getContextPath() 값은 /know_how
             }
             
@@ -74,7 +73,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         return true; // 로그인한 관리자라면 통과
     }
     
-    ----------------------------------------------------------------------------- */
+*/
 	
     // 2. 후처리: 알람
 	@Override

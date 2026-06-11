@@ -572,7 +572,7 @@
                     if(result.status === "SUCCESS"){
                         $("#counselorName").val("");
                         $("#counselorEmail").val("");
-
+                        
                         //목록재조회
                         selectInviteList();
                     }
