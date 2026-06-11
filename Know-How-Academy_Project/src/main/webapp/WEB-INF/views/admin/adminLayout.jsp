@@ -333,6 +333,10 @@
                  onclick="go('/admin/academyNews')">
                 학원소식 관리
             </div>
+            <div class="menu-item" data-path="/admin/memberLocked"
+                 onclick="go('/admin/memberLocked')">
+                계정잠금 관리
+            </div>
         </div>
 
         <div id="content-area">

@@ -12,6 +12,7 @@ import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 @Repository
 public class AdminDao2 {
@@ -154,6 +155,16 @@ public class AdminDao2 {
 	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) { // 학원소식 수정 시 이미지 제거할 때 쓰는 메소드
 		
 		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
+	}
+
+	public ArrayList<MemberLock> selectLockingMemberList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectLockingMemberList");
+	}
+
+	public int updateMemberUnlock(SqlSessionTemplate sqlSession, int userNo) {
+		
+		return sqlSession.update("memberMapper.updateMemberUnlock", userNo);
 	}
 
 } // 클래스 끝

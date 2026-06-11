@@ -23,6 +23,8 @@
 	 <!-- member_Lock 테이블 -->
 	 <resultMap id="memberLockResultSet" type="memberLock">
 	    <id column="USER_NO" property="userNo" />
+	     <result column="USER_NAME" property="userName" />
+	     <result column="ROLE_CODE" property="roleCode" />
 	     <result column="FAIL_COUNT" property="failCount" />
 	     <result column="IS_LOCKED" property="isLocked"/>
 	     <result column="LOCKED_AT" property="lockedAt"/>
@@ -112,5 +114,24 @@
 	      SELECT COUNT(*)
 	        FROM MEMBER
 	       WHERE EMAIL = #{checkEmail}
-	</select>		   
+	</select>
+	
+	<!-- 계정 잠긴 유저들 조회용 쿼리문 -->
+	<select id="selectLockingMemberList" resultMap="memberLockResultSet">
+		SELECT USER_NAME
+			 , ROLE_CODE
+			 , FAIL_COUNT
+			 , LOCKED_AT
+			 , USER_NO
+		  FROM MEMBER M
+		  JOIN MEMBER_LOCK L USING (USER_NO)
+		 WHERE IS_LOCKED = 'Y'
+	</select>
+	
+	<!-- 계정 잠금 해제용 쿼리문 -->
+	<update id="updateMemberUnlock" parameterType="_int">
+		UPDATE MEMBER_LOCK
+		   SET IS_LOCKED = 'N'
+		 WHERE USER_NO = #{userNo}
+	</update>
 </mapper>
