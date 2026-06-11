@@ -18,6 +18,9 @@
 	 	<typeAlias type="com.kh.know_how.board.model.vo.Board" alias="board" />
 	 	<typeAlias type="com.kh.know_how.member.model.vo.Member" alias="member" />
 	 	<typeAlias type="com.kh.know_how.board.model.vo.FileAttachment" alias="fileAttachment" />
+	 	<typeAlias type="com.kh.know_how.reservation.model.vo.Reservation" alias="reservation"/>
+	 	<typeAlias type="com.kh.know_how.reservation.model.vo.CounselCategory" alias="category"/>
+	 	<typeAlias type="com.kh.know_how.reservation.model.vo.CounselLog" alias="counselLog"/>
 	 </typeAliases>
 	 
 </configuration>
