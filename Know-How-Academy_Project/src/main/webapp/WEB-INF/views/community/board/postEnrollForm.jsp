@@ -84,7 +84,7 @@
 						method="post" enctype="multipart/form-data">
 
 					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">					
-					<input type="hidden" name="postType" value=${type}>
+					<input type="hidden" name="postType" value="${type}"">
 				
 					<div class="btn-area">
 						<a id="listBtn" href="/know-how/community/board/post" class="btn btn-outline-secondary btn-hover">목록</a>

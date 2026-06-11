@@ -19,6 +19,7 @@
 	 	<typeAlias type="com.kh.know_how.reservation.model.vo.CounselCategory" alias="counselCategory" />
 	 	<typeAlias type="com.kh.know_how.reservation.model.vo.Reservation" alias="reservation" />
 	 	<typeAlias type="com.kh.know_how.counselor.model.vo.Counselor" alias="counselor" />
+	 	<typeAlias type="com.kh.know_how.board.model.vo.PostComment" alias="postComment" />
 	 </typeAliases>
 
 </configuration>

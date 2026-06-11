@@ -80,13 +80,14 @@
 			<div class="outer">
 				<h2 align="center">공지사항</h2>
 
-				<form id="enrollForm" action="/know-how/community/board/insert" method="post" enctype="multipart/form-data">
+				<form id="enrollForm" action="/know-how/community/board/${type}/insert" method="post" 
+				enctype="multipart/form-data">
 
 					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">					
-					<input type="hidden" name="postType" value="POST">
+					<input type="hidden" name="postType" value="${type}">
 				
 					<div class="btn-area">
-						<a id="listBtn" href="/know-how/community/board/post" class="btn btn-outline-secondary btn-hover">목록</a>
+						<a id="listBtn" href="/know-how/community/board/notice" class="btn btn-outline-secondary btn-hover">목록</a>
 						<button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
 					</div>
 

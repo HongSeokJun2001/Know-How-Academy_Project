@@ -6,7 +6,7 @@
         <head>
             <meta charset="UTF-8">
             <title>Insert title here</title>
-            <style>               
+            <style>
                 /* 레이아웃 공통 설정 */
                 .outer {
                     border: none !important;
@@ -37,16 +37,26 @@
                 }
 
                 /* 버튼 영역 */
-                .btn-area, .rightBtn1, .rightBtn2{
+
+                .top-area {
+                    width: 940px;
+                    margin: 0 auto 10px auto;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .bottom-area {
                     width: 940px;
                     margin: 0 auto;
                     display: flex;
-                     justify-content: flex-end;
-                    align-items: center;
+                    justify-content: flex-end;
                 }
-                
-                .rightBtn2 {
-                    margin-top: 10px;
+
+                #leftBtn {
+                    display: flex;
+                    gap: 5px;
+
                 }
 
                 /* 댓글 영역 */
@@ -103,78 +113,78 @@
 
             <div class="outer">
                 <h2 align="center">공지사항</h2>
-                <div class="btn-area">
-                    <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
-                    <c:if test="${(not empty sessionScope.loginUser) and 
+                <div class="top-area">
+                    <div id="leftBtn">
+                        <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
+                        <c:if test="${(not empty sessionScope.loginUser) and 
                             (sessionScope.loginUser.userNo eq 1)}">
-                        <!--로그인중이며, 사용자와 작성자명이 같을 경우에~~-->
-                        <div class="leftBtn">
+                            <!--로그인중이며, 사용자와 작성자명이 같을 경우에~~-->
+
                             <a id="upBtn" class="btn btn-outline-secondary" onclick="postSubmit(1)">수정</a>
                             <a id="delBtn" class="btn btn-outline-secondary" onclick="postSubmit(2)">삭제</a>
-                        </div>
-                        <!--삭제하기위한 정보를 post 방식으로 전송-->
-                        <form id="postForm" method="post">
-                            <input type="hidden" name="postNo" value="${b.postNo}">
-                        </form>
-                        <!--수정과 삭제에 대한 실행작성-->
-                        <script>
-                            function postSubmit(num) {
-                                if (num == 1) {
-                                    $("#postForm").prop("action", "/know-how/community/board/${type}/updateForm").submit();
-                                } else {
-                                    $("#postForm").prop("action", "/know-how/community/board/${type}/deleteForm").submit();
+
+                            <!--삭제하기위한 정보를 post 방식으로 전송-->
+                            <form id="postForm" method="post">
+                                <input type="hidden" name="postNo" value="${b.postNo}">
+                            </form>
+                            <!--수정과 삭제에 대한 실행작성-->
+                            <script>
+                                function postSubmit(num) {
+                                    if (num == 1) {
+                                        $("#postForm").prop("action", "/know-how/community/board/${type}/updateForm").submit();
+                                    } else {
+                                        $("#postForm").prop("action", "/know-how/community/board/${type}/deleteForm").submit();
+                                    }
                                 }
-                            }
-                        </script>
-                    </c:if>
-
-                    
-                </div>
-                <div class="rightBtn1">
-                        <a href="/know-how/community/board/notice" id="listBtn1" class="btn btn-outline-secondary">목록</a>
+                            </script>
+                        </c:if>
                     </div>
-            </div>
-            <table class="table" id="content">
-                <tr>
-                    <th>제목</th>
-                    <td colspan="3">${b.title}</td>
-                </tr>
-                <tr>
-                    <th>작성자</th>
-                    <td>${b.userName}</td>
-                    <th>작성일</th>
-                    <td>${b.createdAt}</td>
-                </tr>
-                <tr>
-                    <th>내용</th>
-                    <td id="content-body" colspan="3">${b.content}</td>
-                </tr>
-                <tr>
-                    <!-- 첨부파일의 있고없고의 따른 경우 -->
-                    <th>첨부파일</th>
-                    <td colspan="3">
-                        <c:choose>
-                            <c:when test="${empty fa}">
-                                첨부파일이 없습니다.
-                            </c:when>
-                            <c:otherwise>
-                                <a class="fileName" download="${fa.originName}"
-                                    href="/know-how/${fa.filePath}${fa.saveName}">${fa.originName}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </tr>
-            </table>
-            <div class="rightBtn2">
-                <a href="/know-how/community/board/notice" id="listBtn2" class="btn btn-outline-secondary">목록</a>
-            </div>
+                    <div class="rightBtn">
+                        <a href="/know-how/community/board/notice" class="btn btn-outline-secondary">목록</a>
+                    </div>
+                </div>
 
-            <div id="reply-area">
-                <textarea id="replyContent"></textarea>
-                <button type="submit" class="btn btn-outline-secondary" id="reply-btn">댓글 작성</button>
-            </div>
-            </div>
+                <table class="table" id="content">
+                    <tr>
+                        <th>제목</th>
+                        <td colspan="3">${b.title}</td>
+                    </tr>
+                    <tr>
+                        <th>작성자</th>
+                        <td>${b.userName}</td>
+                        <th>작성일</th>
+                        <td>${b.createdAt}</td>
+                    </tr>
+                    <tr>
+                        <th>내용</th>
+                        <td id="content-body" colspan="3">${b.content}</td>
+                    </tr>
+                    <tr>
+                        <!-- 첨부파일의 있고없고의 따른 경우 -->
+                        <th>첨부파일</th>
+                        <td colspan="3">
+                            <c:choose>
+                                <c:when test="${empty fa}">
+                                    첨부파일이 없습니다.
+                                </c:when>
+                                <c:otherwise>
+                                    <a class="fileName" download="${fa.originName}"
+                                        href="/know-how/${fa.filePath}${fa.saveName}">${fa.originName}</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                </table>
+                <div class="bottom-area">
+                    <a id="rightBtn2" href="/know-how/community/board/notice" class="btn btn-outline-secondary">목록</a>
+                </div>
 
+                <div id="reply-area">
+                    <textarea id="replyContent"></textarea>
+                    <button type="submit" class="btn btn-outline-secondary" id="reply-btn">댓글 작성</button>
+                </div>
+            </div>
+            </div>
 
 
 

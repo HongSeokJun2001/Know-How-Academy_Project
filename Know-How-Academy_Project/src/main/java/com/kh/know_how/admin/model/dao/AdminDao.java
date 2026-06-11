@@ -12,6 +12,8 @@ import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
 import com.kh.know_how.admin.model.dto.ClassListDto;
 import com.kh.know_how.admin.model.dto.CounselCategoryDto;
+import com.kh.know_how.admin.model.dto.CounselorInviteDto;
+import com.kh.know_how.admin.model.dto.CounselorInviteListDto;
 import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
 import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
@@ -89,6 +91,31 @@ public class AdminDao {
 	public int updateCounselorInvite(SqlSessionTemplate sqlSession, int inviteNo) {
 		
 		return sqlSession.update("adminMapper.deleteCounselorInvite",inviteNo);
+	}
+
+	public int clearStudentCounselorNo(SqlSessionTemplate sqlSession, int userNo) {
+		
+		return sqlSession.update("adminMapper.clearStudentCounselorNo",userNo);
+	}
+
+	public int updateStudentCounselorNoByClassNo(SqlSessionTemplate sqlSession, Map<String, Integer> param) {
+		
+		return sqlSession.update("adminMapper.updateStudentCounselorNoByClassNo", param);
+	}
+
+	public int existsByEmail(SqlSessionTemplate sqlSession, String email) {
+		
+		return sqlSession.selectOne("adminMapper.existsByEmail", email);
+	}
+
+	public int insertCounselorInvite(SqlSessionTemplate sqlSession, CounselorInviteDto counselorInvite) {
+		
+		return sqlSession.insert("adminMapper.insertCounselorInvite",counselorInvite);
+	}
+
+	public ArrayList<CounselorInviteListDto> selectInviteList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("adminMapper.selectInviteList");
 	}
 
 

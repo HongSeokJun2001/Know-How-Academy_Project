@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
+import com.kh.know_how.board.model.vo.PostComment;
 import com.kh.know_how.common.model.vo.PageInfo; // 페이징 처리용
 
 @Service
@@ -23,7 +24,6 @@ public class BoardService {
 	@Autowired
 	private BoardDao boardDao;
 
-
 	public int selectListCount(String postType) {
 		return boardDao.selectListCount(sqlSession, postType);
 	}
@@ -32,19 +32,25 @@ public class BoardService {
 		return boardDao.selectBoardList(sqlSession, pi, postType);
 	}
 
+	public Board selectBoard(int postNo) {
+
+		return boardDao.selectBoard(sqlSession, postNo);
+	}
+
 	public int selectSearchCount(HashMap<String, String> map) {
 		return boardDao.selectSearchCount(map, sqlSession);
 	}
-	
 
 	@Transactional
 	public int insertBoard(Board b, FileAttachment fa) {
 
-		int result1 = boardDao.insertBoard(sqlSession ,b);
+		// 1. 게시글 등록
+		int result1 = boardDao.insertBoard(sqlSession, b);
 
 		int result2 = 1;
-
 		if (fa != null) {
+
+			fa.setTargetNo(b.getPostNo());
 
 			result2 = boardDao.insertFileAttachment(sqlSession, fa);
 		}
@@ -56,8 +62,6 @@ public class BoardService {
 
 		return boardDao.selectCategoryList(sqlSession);
 	}
-
-
 
 	public ArrayList<FileAttachment> selectFileAttachmentList(int postNo) {
 
@@ -84,14 +88,13 @@ public class BoardService {
 
 		return result1 * result2;
 	}
-	
+
 	@Transactional
 	public int deleteBoard(int postNo) {
-		
-		return boardDao.deleteBoard(sqlSession,postNo);
+
+		return boardDao.deleteBoard(sqlSession, postNo);
 	}
 
-//====================================================
 	public ArrayList<Board> mainPageNoticeList() {
 
 		return boardDao.mainPageNoticeList(sqlSession);
@@ -114,27 +117,22 @@ public class BoardService {
 	@Transactional
 	public int admindeleteFileAttachment(int postNo) {
 		return boardDao.admindeleteFileAttachment(sqlSession, postNo);
-		
+
 	}
 
 	public FileAttachment selectFileAttachment(int postNo) {
-		
+
 		return boardDao.selectFileAttachment(sqlSession, postNo);
 	}
 
-	@Transactional
-	public Board selectBoardWithFile(int postNo) {
-		
-		return boardDao.selectBoardWithFile(sqlSession, postNo);
-	}
-
 	public int increaseCount(int postNo) {
-		
+
 		return boardDao.increaseCount(sqlSession, postNo);
 	}
 
-	
-	
-	
+	public ArrayList<PostComment> selectCommentList(int postNo) {
+				
+		return boardDao.selectCommentList(sqlSession, postNo);
+	}
 
 }

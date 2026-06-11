@@ -18,8 +18,9 @@
 		<result column="STATUS" property="status" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="USER_NAME" property="userName" />
-		
-		<association property="fileAttachment" javaType="fileAttachment">
+
+		<association property="fileAttachment"
+			javaType="fileAttachment">
 			<id column="FILE_NO" property="fileNo" />
 			<result column="ORIGIN_NAME" property="originName" />
 			<result column="SAVE_NAME" property="saveName" />
@@ -28,8 +29,12 @@
 	</resultMap>
 
 	<resultMap id="fileAttachmentResultSet" type="fileAttachment">
+		<id column="FILE_NO" property="fileNo" />
 		<result column="TARGET_NO" property="targetNo" />
 		<result column="TARGET_TYPE" property="targetType" />
+		<result column="ORIGIN_NAME" property="originName" />
+		<result column="SAVE_NAME" property="saveName" />
+		<result column="FILE_PATH" property="filePath" />
 		<result column="CREATED_AT" property="createdAt" />
 		<result column="UPDATED_AT" property="updatedAt" />
 		<result column="STATUS" property="status" />
@@ -51,10 +56,18 @@
 		<result column="CLASS_NO" property="classNo" />
 	</resultMap>
 
+	<resultMap id="commentResultSet" type="postComment">
+		<result column="COMMENT_NO" property="commentNo" />
+    <result column="POST_NO" property="postNo" />
+    <result column="WRITER_NO" property="writerNo" />
+    <result column="CONTENT" property="content" />
+    <result column="CREATED_AT" property="createdAt" />
+    <result column="UPDATED_AT" property="updatedAt" />
+    <result column="STATUS" property="status" />
+	</resultMap>
 
-
-
-	<!-- resultSet을 활용해 페이징처리(10)적용, 게시글 목록을 조회쿼리문 -->
+	<!-- 게시글 통합관리 -->
+	<!-- 게시글 노출갯수 -->
 	<select id="selectBoardList" parameterType="string"
 		resultMap="boardResultSet">
 		SELECT * FROM(
@@ -70,7 +83,7 @@
 		<!-- 연관된 데이터 B와 (약칭)M과 조인하여 작성자명(USER_NAME) 가져오기 -->
 		WHERE B.STATUS = 'Y'<!-- Y=노출/N 숨김처리 -->
 		AND B.POST_TYPE = #{postType}
-		ORDER BY B.POST_NO DESC <!-- 오름차순?이엿나 -->
+		ORDER BY B.POST_NO DESC
 		)
 	</select>
 
@@ -79,7 +92,7 @@
 		SELECT COUNT(*)
 		FROM
 		BOARD_POST
-		WHERE POST_TYPE = 'POST'
+		WHERE POST_TYPE = #{postType}
 		AND STATUS = 'Y'
 	</select>
 
@@ -110,8 +123,12 @@
 	</select>
 
 
-	<!-- 자유(A)게시글 등록용 쿼리문 -->
+	<!-- 게시글 등록용 쿼리문 -->
 	<insert id="insertBoard" parameterType="board">
+		<selectKey keyProperty="postNo" resultType="_int"
+			order="BEFORE">
+			SELECT SEQ_POST_NO.NEXTVAL FROM DUAL
+		</selectKey>
 		INSERT INTO
 		BOARD_POST(POST_NO,
 		POST_TYPE,
@@ -122,7 +139,7 @@
 		CREATED_AT,
 		CATEGORY,
 		STATUS)
-		VALUES(SEQ_POST_NO.NEXTVAL,
+		VALUES(#{postNo},
 		#{postType},
 		#{title},
 		#{content},
@@ -133,30 +150,23 @@
 		'Y')
 	</insert>
 
-	<select id="selectBoardWithFile" parameterType="_int"
+	<select id="selectBoard" parameterType="_int"
 		resultMap="boardResultSet">
 		SELECT B.POST_NO,
-           B.TITLE,
-           B.POST_TYPE,
-           B.WRITER_NO,
-           M.USER_NAME,
-           B.CREATED_AT,
-           B.CONTENT,
-           F.FILE_NO,
-           F.ORIGIN_NAME,
-           F.SAVE_NAME,
-           F.FILE_PATH
-    FROM BOARD_POST B
-    JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
-    LEFT JOIN (SELECT * FROM (SELECT FILE_NO, TARGET_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH,
-                   ROW_NUMBER() OVER(PARTITION BY TARGET_NO ORDER BY FILE_NO DESC) as rn
-            FROM FILE_ATTACHMENT
-        ) WHERE rn = 1
-    ) F ON (B.POST_NO = F.TARGET_NO)
-    WHERE B.POST_NO = #{postNo}
-      AND B.STATUS = 'Y'
+		B.TITLE,
+		B.POST_TYPE,
+		B.WRITER_NO,
+		M.USER_NAME,
+		B.CREATED_AT,
+		B.CONTENT
+		FROM BOARD_POST B
+		JOIN MEMBER M ON
+		(B.WRITER_NO = M.USER_NO)
+		WHERE POST_NO = #{postNo}
+		AND B.STATUS = 'Y'
 	</select>
-	
+
+
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD_POST
 		SET
@@ -167,6 +177,8 @@
 
 	<!-- 첨부파일 등록용 쿼리문 -->
 	<insert id="insertFileAttachment" parameterType="fileAttachment">
+
+
 		INSERT INTO
 		FILE_ATTACHMENT(FILE_NO,
 		TARGET_NO,
@@ -174,16 +186,16 @@
 		ORIGIN_NAME,
 		SAVE_NAME,
 		FILE_PATH)
-		VALUES(SEQ_FNO.NEXTVAL,
-		SEQ_POST_NO.CURRVAL,
-		'POST',
+		VALUES(SEQ_POST_NO.NEXTVAL,
+		#{targetNo},
+		#{targetType},
 		#{originName},
 		#{saveName},
 		#{filePath})
 	</insert>
 
 	<!-- 공지,자유,수강생 카테고리 전체 조회용 쿼리문 -->
-	<select id="selectCategoryList" parameterType="String"
+	<select id="selectCategoryList" parameterType="string"
 		resultMap="boardResultSet">
 		SELECT *
 		FROM
@@ -249,20 +261,36 @@
 	<!-- 첨부파일을 조회하는 쿼리문 -->
 	<select id="selectFileAttachment" parameterType="_int"
 		resultMap="fileAttachmentResultSet">
+		SELECT * FROM (
 		SELECT FILE_NO
 		, ORIGIN_NAME
 		, SAVE_NAME
-		, FILE_PATH
+		,
+		FILE_PATH
 		FROM FILE_ATTACHMENT
 		WHERE TARGET_NO = #{postNo}
-		ORDER BY FILE_NO ASC
+		ORDER BY
+		FILE_NO DESC
+		)
+		WHERE ROWNUM = 1
 	</select>
 
 	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
 	<delete id="admindeleteFileAttachment" parameterType="_int">
 		DELETE
-		FROM FILE_ATTACHMENT
+		FROM
+		FILE_ATTACHMENT
 		WHERE TARGET_NO = #{postNo}
 	</delete>
+
+	<select id="selectCommentList" parameterType="_int"
+			resultMap="commentResultSet">
+		SELECT COMMENT_NO,
+				WRITER_NO,
+				CONTENT,
+				CREATED_AT,
+				UPDATED_AT,	
+				STATUS
+	</select>
 
 </mapper>

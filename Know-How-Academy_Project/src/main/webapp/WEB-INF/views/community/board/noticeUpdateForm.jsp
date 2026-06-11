@@ -69,15 +69,14 @@
             <jsp:include page="../../common/menubar.jsp" />
 
             <div class="outer">
-                <h2 align="center">자유게시글 수정</h2>
+                <h2 align="center">공지사항 수정</h2>
 
-                <form id="updateForm" action="/know-how/community/board/${type}/update" method="post" 
-                                        enctype="multipart/form-data">
+                <form id="updateForm" action="/know-how/community/board/${type}/update" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="postNo" value="${b.postNo}">
-					<input type="hidden" name="postType" value="POST">
+					<input type="hidden" name="postType" value="NOTICE">
 
                     <div class="btn-area">
-                        <a id="listBtn" href="/know-how/community/board/post" class="btn btn-outline-secondary btn-hover">목록</a>
+                        <a id="listBtn" href="/know-how/community/board/notice" class="btn btn-outline-secondary btn-hover">목록</a>
                         <button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
                     </div>
 
@@ -97,10 +96,10 @@
                                 <!--기존의 파일이 이미 있을 경우-->
                                 <c:if test="${ not empty requestScope.at}">
                                     <a download="${fa.originName}" href="/know-how/${fa.filePath}${fa.saveName}">
-                                        ${fa.originName}
+                                        ${at.originName}
                                     </a>
                                     <!--DB의 어떤 데이터를 지울지 말지를 알아야하기에 기존 파일번호보내기-->
-                                    <input type="hidden" name="fileNo" value="${at.fileNo}">
+                                    <input type="hidden" name="fileNo" value="${fa.fileNo}">
                                     <!--DB 데이터 변경후 서버폴더에 남아있는 파일을 지우기 위해 저장파일명 보내기 -->
                                     <input type="hidden" name="saveName" value="${fa.saveName}">
                                 </c:if>
