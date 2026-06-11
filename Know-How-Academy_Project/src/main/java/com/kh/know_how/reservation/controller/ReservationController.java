@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.common.model.vo.ReservationPageInfo;
 import com.kh.know_how.common.template.ReservationPagination;
+import com.kh.know_how.common.template.XssDefencePolicy;
 import com.kh.know_how.member.model.vo.Member;
 import com.kh.know_how.reservation.model.service.ReservationService;
 import com.kh.know_how.reservation.model.vo.CounselLog;
@@ -144,6 +145,12 @@ public class ReservationController {
     public String insertReservation(Reservation r, HttpSession session, Model model) {
     	Member loginUser = (Member)session.getAttribute("loginUser");
     	
+    	//XSS 공격 방지
+    	if(r.getInquiryContent() != null) {
+    		String replaceContent = XssDefencePolicy.defence(r.getInquiryContent());
+    		r.setInquiryContent(replaceContent);
+    	}
+    	
     	r.setUserNo(loginUser.getUserNo());
     	int result = reservationService.insertReservation(r);
     	
@@ -224,6 +231,13 @@ public class ReservationController {
      */
     @PostMapping("update")
     public String updateReservation(Reservation r, HttpSession session, Model model) {
+    	
+    	//XSS 공격 방지
+    	if(r.getInquiryContent() != null) {
+    		String replaceContent = XssDefencePolicy.defence(r.getInquiryContent());
+    		r.setInquiryContent(replaceContent);
+    	}
+    	
     	int result = reservationService.updateReservation(r);
     	
     	if(result > 0) {
@@ -378,6 +392,13 @@ public class ReservationController {
      */
     @PostMapping("insertLog")
     public String insertCounselorLog(CounselLog log, HttpSession session, Model model) {
+    	
+    	//XSS 공격 방지
+    	if(log.getContent() != null) {
+    		String replaceContent = XssDefencePolicy.defence(log.getContent());
+    		log.setContent(replaceContent);
+    	}
+    	
     	int result = reservationService.insertCounselorLog(log);
     	
     	if(result > 0) {
@@ -398,6 +419,13 @@ public class ReservationController {
      */
     @PostMapping("updateLog")
     public String updateCounselorLog(CounselLog log, HttpSession session, Model model) {
+    	
+    	//XSS 공격 방지
+    	if(log.getContent() != null) {
+    		String replaceContent = XssDefencePolicy.defence(log.getContent());
+    		log.setContent(replaceContent);
+    	}
+    	
     	int result = reservationService.updateCounselorLog(log);
     	
     	if(result > 0) {

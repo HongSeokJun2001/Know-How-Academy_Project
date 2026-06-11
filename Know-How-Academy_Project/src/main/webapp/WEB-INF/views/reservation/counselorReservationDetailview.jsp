@@ -144,24 +144,30 @@
 			
 			<div class="action-btn-group">
 				<c:choose>
+					<%--관리자나 강사 계정인 경우 : 학생 전체 상담 목록으로 보냄 --%>
 					<c:when test="${sessionScope.loginUser.roleCode eq 'ADMIN' or sessionScope.loginUser.roleCode eq 'INSTRUCTOR'}">
 						<button type="button" class="btn-custom btn-list" onclick="location.href='${ pageContext.request.contextPath }/reservation/list'">목록으로</button>
 					</c:when>
-					
+					<%--일반 상담사 계정인 경우 상태별 스위칭 버튼 및 상담사 전용 목록 --%>
 					<c:otherwise>
+						<%--대기 상태(APPLIED) : 승인 및 거절 버튼 활성화 --%>
 						<c:if test="${ r.reservationStatus eq 'APPLIED' }">
 							<button type="button" class="btn-custom btn-approve" onclick="statusChange('approve');">승인</button>
 							<button type="button" class="btn-custom btn-reject" onclick="statusChange('reject');">거절</button>
 						</c:if>
+						<%--승인 완료 상태(RESERVED) : 최종 상담 완료 처리 버튼 활성화 --%>
 						<c:if test="${ r.reservationStatus eq 'RESERVED' }">
 							<button type="button" class="btn-custom btn-complete" onclick="statusChange('complete');">상담완료</button>
 						</c:if>
+						<%--상담 완료 상태(COMPLETED) : 일지 존재 여부에 따라 수정/삭제 혹은 새로 작성 버튼 분기 --%>
 						<c:if test="${ r.reservationStatus eq 'COMPLETED' }">
 							<c:choose>
+							<%--일지가 이미 작성되어 존재할 때 : 수정/삭제 지원 --%>
 								<c:when test="${ not empty log and not empty log.content }">
 									<button type="button" class="btn-custom btn-complete" onclick="location.href='${pageContext.request.contextPath}/reservation/logForm?rno=${ r.reservationNo }'">수정</button>
 									<button type="button" class="btn-custom btn-delete" onclick="deleteLogAction()">삭제</button>
 								</c:when>
+								<%--일지가 아직 비어있을 떄 : 일지 작성 폼으로 연동 --%>
 								<c:otherwise>
 									<button type="button" class="btn-custom btn-log" onclick="location.href='${pageContext.request.contextPath}/reservation/logForm?rno=${ r.reservationNo }'">상담일지 작성하러 가기</button>
 								</c:otherwise>
@@ -225,7 +231,7 @@
 					<div class="textarea-box">${ r.inquiryContent }</div>
 				</td>
 			</tr>
-			
+			<%--상담 완료 상태, 일지 데이터가 채워져 있을 때만 화면 하단에 추가 노출 --%>
 			<c:if test="${ not empty log and not empty log.content }">
 				<tr>
 					<th>상담일지</th>

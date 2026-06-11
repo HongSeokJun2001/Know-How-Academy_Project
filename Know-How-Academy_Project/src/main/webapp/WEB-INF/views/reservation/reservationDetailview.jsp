@@ -119,6 +119,12 @@
 			<h2 style="margin: 0; font-weight: bold;">상담신청</h2>
 			
 			<div class="action-btn-group">
+				<%--
+					학생 본인 검증 및 상태 제어
+					- 로그인 상태여야 함 (not empty loginUser)
+					- 로그인한 유저의 이름과 신청서의 학생명이 일치해야 함 (userName eq r.studentName)
+					- 상담이 이미 최종 '완료'된 상태가 아니어야 함 (r.reservationStatus ne 'COMPLETED')
+				 --%>
 				<c:if test="${ (not empty sessionScope.loginUser) and (sessionScope.loginUser.userName eq r.studentName) and (r.reservationStatus ne 'COMPLETED') }">
 					<a class="btn-custom btn-modify" onclick="postFormSubmit(1);">수정</a>
 					<a class="btn-custom btn-delete" onclick="postFormSubmit(2);">삭제</a>
@@ -126,6 +132,7 @@
 				<a class="btn-custom btn-list" onclick="location.href='${pageContext.request.contextPath}/reservation/list'">목록으로</a>
 			</div>
 			
+			<%-- 버튼 노출 조건과 동일한 권한 체크 --%>
 			<c:if test="${ (not empty sessionScope.loginUser) and (sessionScope.loginUser.userName eq r.studentName) and (r.reservationStatus ne 'COMPLETED') }">
 				<form id="postForm" action="" method="post">
 					<input type="hidden" name="rno" value="${ r.reservationNo }">
@@ -197,6 +204,7 @@
 	    			<div class="textarea-box">${r.inquiryContent}</div>
 	    		</td>
 	    	</tr>
+	    	<%-- 상담사가 상담일지를 작성 후, 학생 화면 하단에도 자동으로 일지 공개 --%>
 	    	<c:if test="${ not empty log and not empty log.content }">
 	    		<tr>
 	    			<th>상담일지</th>

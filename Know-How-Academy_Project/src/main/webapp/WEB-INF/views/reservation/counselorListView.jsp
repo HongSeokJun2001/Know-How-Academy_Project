@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,11 +62,13 @@
             </thead>
             <tbody>
 			    <c:choose>
+			    	<%--Case1. 조회된 상담사가 아무도 없을 때 --%>
 			        <c:when test="${empty counselorList}">
 			            <tr>
 			                <td colspan="5" class="empty-cell">현재 재직중인 상담사가 없습니다.</td>
 			            </tr>
 			        </c:when>
+			        <%--Case. 재직 중인 상담사가 존재할 떄 --%>
 			        <c:otherwise>
 			            <c:forEach var="c" items="${counselorList}">
 			                <tr>
@@ -75,6 +77,7 @@
 			                    <td>${c.phone}</td>
 			                    <td>${c.email}</td>
 			                    <td>
+			                    	<!-- 클릭 시 counselNo를 쿼리스트링에 실어서 신청서 작성 폼으로 이동 -->
 			                    	<a href="${pageContext.request.contextPath}/reservation/reservationEnrollForm?counselNo=${c.counselNo}" class="btn btn-success btn-sm">신청</a>
 			                    </td>
 			                </tr>
