@@ -28,14 +28,14 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updatePwd", m);
 	}
     
-    public int searchId(SqlSessionTemplate sqlSession, Member m) {
+    public Member searchId(SqlSessionTemplate sqlSession, Member m) {
 		
-		return sqlSession.insert("memberMapper.searchId", m);
+		return sqlSession.selectOne("memberMapper.searchId", m);
 	}
     
-    public int searchPassword(SqlSessionTemplate sqlSession, Member m) {
+    public Member searchPassword(SqlSessionTemplate sqlSession, Member m) {
 		
-		return sqlSession.insert("memberMapper.searchPassword", m);
+		return sqlSession.selectOne("memberMapper.searchPassword", m);
 	}
     
     public int deleteMember(SqlSessionTemplate sqlSession, String userId) {
@@ -46,6 +46,11 @@ public class MemberDao {
 	public int idCheck(SqlSessionTemplate sqlSession, String checkId) {
 		
 		return sqlSession.selectOne("memberMapper.idCheck", checkId);
+	}
+	
+    public int emailCheck(SqlSessionTemplate sqlSession, String checkEmail) {
+		
+		return sqlSession.selectOne("memberMapper.emailCheck", checkEmail);
 	}
 	
 }

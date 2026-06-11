@@ -29,13 +29,13 @@
 			  <tr align="center">
 			    <th>
 					<button type="button" class="btn btn-secondary btn-sm"
-										  onclick="counselorMyInformationSelectPage();">내정보 조회</button>					  
+										  onclick="counselorInformationSelectPage();">내 정보 조회</button>					  
 			    </th>
 			 </tr>
 			 <tr align="center">
 				<th>
 				    <button type="button" class="btn btn-secondary btn-sm"
-						                  onclick="counselorMyInformationChangePage();">내정보 수정</button>
+						                  onclick="counselorInformationChangePage();">내 정보 수정</button>
 			   </th>
 			 </tr>
 			 <tr>
@@ -50,17 +50,17 @@
 		</table> 
 		
 		<script>
-		function counselorMyInformationSelectPage() {
+		function counselorInformationSelectPage() {
 			
 			// 내정보 조회 페이지로 이동
-			location.href = "/know-how/myPageCounselor/counselorMyInformationSelectForm";
+			location.href = "/know-how/myPageCounselor/counselorInformationSelectForm";
 			// GET 방식
 		}
 	    
-		function counselorMyInformationChangePage() {
+		function counselorInformationChangePage() {
 			
 			// 내정보 수정 페이지로 이동
-			location.href = "/know-how/myPageCounselor/counselorMyInformationChangeForm";
+			location.href = "/know-how/myPageCounselor/counselorInformationChangeForm";
 			// GET 방식
 		}
 	    

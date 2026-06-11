@@ -35,7 +35,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		        
 		// 직원용
 		registry.addInterceptor(counselorInterceptor)
-		        .addPathPatterns("/myPageCounselor");
+		        .addPathPatterns("/myPageCounselor")
+		        .addPathPatterns("/myPageCounselor/counselorInformationSelectForm")
+		        .addPathPatterns("/myPageCounselor/counselorInformationChangeForm")
+		        .addPathPatterns("/myPageCounselor/myStudentClassList");
 		
 		
 		

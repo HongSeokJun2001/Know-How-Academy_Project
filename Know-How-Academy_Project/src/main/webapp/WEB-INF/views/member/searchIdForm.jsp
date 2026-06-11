@@ -25,7 +25,7 @@
     <jsp:include page="../common/menubar.jsp"/>
 
 
-    <form id="searchId-form" action="/know-how/myPage/searchIdForm" method="post"> 
+    <form id="searchId-form" action="/know-how/myPage/searchId" method="post"> 
 		            
         <br><br>
              
@@ -36,13 +36,13 @@
 			<tr>
 			    <th>이름</th>
 				<td>
-					<input type="text" name="userName">
+					<input type="text" name="userName" id="userId">
 				</td>
 			</tr>
 			<tr>
 			    <th>이메일</th>
 				<td>
-					<input type="email" name="email">
+					<input type="email" name="email" id="email">
 				</td>
 			</tr>
 			<tr>
