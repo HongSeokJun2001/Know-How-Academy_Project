@@ -172,7 +172,8 @@
 							    <button type="button" class="btn-loginPage"
 							                onclick="searchPasswordPage();">비밀번호 찾기</button>
 						 	</th>	
-				            <th> <input type="hidden" name="failCount" value="0"></th>
+				            <th>
+				            </th>
 						  </tr>
 						</tbody>
 	                   </table>

@@ -25,7 +25,7 @@
            padding: 30px;
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
-           max-width: 700px;
+           max-width: 600px;
            margin: auto;
 	    }
 	.changePage-title {
@@ -95,60 +95,69 @@
 </head>
 <body>
    <jsp:include page="../common/menubar.jsp"/>
-  
+   
+   <br><br>
+   
    <div class="mypage-outer">
 	
 		<br>
-		<h2 align="center">내정보수정</h2>
+		<h2 align="center" class="changePage-title">내정보수정</h2>
 		<br>
 
 		<form id="counselorInformationChange-form" action="/know-how/myPage/update" method="post">
 			<table class="changePage-table">
 			  <thead>
 				<tr>
-					<th>&nbsp;&nbsp;&nbsp;수정할 비밀번호</th>
+					<th></th>
 					<th>
+					    <label for="password">수정할 비밀번호 </label>
 						<input type="password" class="changePage-input" name="userPwd" id="userPwd" maxlength="16" placeholder="8~20자리 영문자/숫자" >
 					    <div class="errorMessage" id="newUserPwdErrorMessage"></div>
 					</th>
 					<th></th>
 				</tr>
 				<tr>
-					<th>수정할 비밀번호 확인</th>
+					<th></th>
 					<th>
+					    <label for="password">수정할 비밀번호 재확인</label>
 						<input type="password" class="changePage-input" id="userPwdCheck" name="userPwdCheck" maxlength="20" >
 						<div class="errorMessage" id="newUserPwdCheckErrorMessage"></div>
 					</th>
 					<th></th>
 				</tr>
 				<tr>
-					<th>&nbsp;&nbsp;&nbsp;수정할 이름</th>
+					<th></th>
 					<th>
+					    <label for="userName">수정할 이름</label>
 						<input type="text" class="changePage-input" name="userName" id="userName" maxlength="6" >
 					</th>
 					<th></th>
 				</tr>
 			
 				<tr>
-					<th>&nbsp;&nbsp;&nbsp;수정할 이메일</th>
+					<th></th>
 					<th>
+					    <label for="email">수정할 이메일</label>
 						<input type="email" class="changePage-input" name="email" id="email">
+						<button type="button" onclick="emailCheck();"
+								class="btn btn-secondary btn-sm">이메일 중복확인</button>
 					</th>
 					<th>
-                        <button type="button" onclick="emailCheck();"
-								class="btn btn-secondary btn-sm">이메일 중복확인</button>
+                        
                     </th>
 				</tr>
 				<tr>
-					<th>&nbsp;&nbsp;&nbsp;수정할 주소</th>
+					<th></th>
 					<th>
+					    <label for="address">수정할 주소</label>
 						<input type="text" class="changePage-input" name="address" id="address">
 					</th>
 					<th></th>
 				</tr>
                 <tr>
-					<th>&nbsp;&nbsp;&nbsp;수정할 전화번호</th>
+					<th></th>
 					<th>
+					    <label for="password">수정할 전화번호</label>
 						<input type="text" class="changePage-input" name="phone" id="phone" placeholder="-제외하고 입력">
 					</th>
 					<th></th>

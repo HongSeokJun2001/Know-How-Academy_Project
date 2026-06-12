@@ -234,10 +234,8 @@
 					console.log("아이디 중복체크용 ajax 통신 실패!");
 				}
 			});
-
 		}
-
-		function emailCheck() {
+			function emailCheck() {
 				
 			let $email = $("#enroll-form input[name=email]");
 			

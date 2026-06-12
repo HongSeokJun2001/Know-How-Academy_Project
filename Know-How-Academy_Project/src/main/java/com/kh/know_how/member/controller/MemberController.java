@@ -50,22 +50,21 @@ public class MemberController {
 	}
 	
 	@PostMapping("login")
-	public String loginMember(Member m, Model model, String saveId, MemberLock ml,
-			                  int failCount, 
+	public String loginMember(Member m, Model model, String saveId,
 			                  HttpSession session, HttpServletResponse response) {
 		
 		// XSS 공격 방지
-		String replaceUserId 
+		String replaceUserId
 			= XssDefencePolicy.defence(m.getUserId());
 		
-		String replaceUserPwd 
+		String replaceUserPwd
 			= XssDefencePolicy.defence(m.getUserPwd());
 		
-		// 치환된 결과를 각 필드로 
+		// 치환된 결과를 각 필드로
 		m.setUserId(replaceUserId);
 		m.setUserPwd(replaceUserPwd);
 		
-		// 아이디 저장 기능 
+		// 아이디 저장 기능
 		// 2. 아이디 저장 여부에 따른 쿠키 생성
 			if((saveId != null) && (saveId.equals("y"))) {
 				// > 아이디를 저장하고 싶은 경우
@@ -78,7 +77,7 @@ public class MemberController {
 				
 			} else {
 				// > 아이디를 저장하지 않을 경우
-				//   아이디값을 갖고 있던 "쿠키" 를 삭제
+				//   아이디값을 갖고 있던 "쿠키" 를 삭제
 				Cookie cookie = new Cookie("saveId", m.getUserId());
 				cookie.setMaxAge(0);
 				cookie.setPath("/know-how/");
@@ -88,77 +87,108 @@ public class MemberController {
 			
 			// 암호화 작업
 			// Service 요청 후 결과 받기
+			
+			
+			// [1.로그인관련] 멤버테이블 '재직/재학'중인 멤버 조회
 			Member loginUser = memberService.loginMember(m);
-			ml.setUserNo(loginUser.getUserNo());
-			ml.setFailCount(failCount);
-			MemberLock loginUserLock = memberService.loginLockMember(ml);
 			// 암호화 작업 후 비밀알아내기
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
 			
-			if(!"N".equals(loginUserLock.getIsLocked())) {
-			    // 계정이 잠겨있을때
+			// [결과 확인용 로그]
+			System.out.println("Member 테이블에 존재하는 회원여부 : " + loginUser);
+			
+			
+			// [2.계정락관련] 조회 성공시 계정락 테이블 조회 (UI에서 넘어온 user UserNo 주입)
+			MemberLock ml = new MemberLock();
+			ml.setUserNo(loginUser.getUserNo());
+			
+			// 해당 유저의 계정락 테이블 조회 : 계정장금시 IS_LOCKED 상태값 'Y' 아닐경우 'N'
+			MemberLock loginUserLock = memberService.loginLockMember(ml);
+			// 계정락된 사람의 결과 (loginUserLock 이 null 이면 청정유저)
+			
+			//-----첫번째 if 문시작
+			if(loginUserLock != null && "Y".equals(loginUserLock.getIsLocked())) {
+				
+				// 계정이 잠겨있을때
 				// 에러 문구를 담아서 에러페이지로 포워딩
 				session.setAttribute("errorMsg", "로그인5회이상실패로 계정이 잠겼습니다."
-						            + "관리자에게문의하세요");
+						               + "관리자에게문의하세요");
+				// [결과 확인용 로그]
+				System.out.println("계정락 케이스");
 				
 				return "common/errorPage";
 				
-			} else {
-				if((loginUser != null) && 
-					   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))) {
-						// > 로그인 성공일 경우
-					    
-					     failCount = memberService.resetFailCount(ml);
-						// 로그인한 회원의 정보를 마찬가지로 session 에 담아야함!! (loginUser 키값으로)
-						session.setAttribute("loginUser", loginUser);
-						
-						String roleCode = loginUser.getRoleCode(); 
-						
-						if("STUDENT".equals(roleCode)) {
-							// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
-							session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
-							
-							return "redirect:/myPage";
-						} else if("COUNSELOR".equals(roleCode)) {
-							// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
-							session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
-							
-							return "redirect:/myPageCounselor";
-						} else {
-							// > 관리자 계정일때
-							session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
-							
-							return "redirect:/";
-						}
-						
-					} else {
-						// > 로그인 실패일 경우
-						
-						failCount += 1;
-
-						loginUserLock.setFailCount(failCount);
-						int result = memberService.increaseFailCount(loginUserLock);
-						// 에러 문구를 담아서 에러페이지로 포워딩
-						session.setAttribute("alertMsg", "로그인에실패했습니다"
-								                       + "(" + result 
-								                       + "/ 5 " + "실패횟수)");
-						
-						if(result >= 5) {
-						    String isLocked = "Y";
-							result = memberService.lockAccount(isLocked);
-							session.setAttribute("alertMsg", "계정이 잠겼습니다.");
-							
-							return "redirect:/myPage";
-						} else {
-							
-							return "common/errorPage";
-						}
-							
-					 }
-			}	
+			}else if((loginUser != null) &&
+					   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))){
 				
-	}
+				
+				// > 로그인 성공일 경우
+				// [결과 확인용 로그]
+				System.out.println("로그인성공케이스");
+				
+				// 로그인한 회원의 정보를 마찬가지로 session 에 담아야함!! (loginUser 키값으로)
+				session.setAttribute("loginUser", loginUser);
+				
+				// 실패횟수 초기화 (청정유저 제외)
+				int result = 1;
+				if(loginUserLock != null) {
+					result = memberService.resetFailCount(ml);
+				}
+				// 초기화 성공시 화면으로 리턴
+				if(result>0) {
+					String roleCode = loginUser.getRoleCode();
+					
+					if("STUDENT".equals(roleCode)) {
+						// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+						session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+						
+						return "redirect:/myPage";
+					} else if("COUNSELOR".equals(roleCode)) {
+						// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+						session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+						
+						return "redirect:/myPageCounselor";
+					} else {
+						// > 관리자 계정일때
+						session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
+						
+						return "redirect:/";
+					}
+					
+				} else {
+					// result == 0, 초기화 update 문 오류
+					session.setAttribute("alertMsg", "서버가 혼잡합니다. 잠시 후 다시 시도해주세요.");
+					
+					return "redirect:/";
+				}
+				
+			} else {
+				// 비밀번호 오류가 몇번 있는 회원
+				int failCount = loginUserLock.getFailCount();
+				
+				failCount += 1;
+				loginUserLock.setFailCount(failCount);
+				int result = memberService.increaseFailCount(loginUserLock);
+				// 에러 문구를 담아서 에러페이지로 포워딩
+				session.setAttribute("alertMsg", "로그인에실패했습니다"
+						                         + "(" + result
+						                         + "/ 5 " + "실패횟수)");
+				
+				if(result >= 5) {
+				    String isLocked = "Y";
+					result = memberService.lockAccount(isLocked);
+					session.setAttribute("alertMsg", "계정이 잠겼습니다.");
+					
+					return "redirect:/myPage";
+				} else {
+					
+					return "common/errorPage";
+				}
+			}//첫번째 if 문 끝
+		}
+
+				
 	
 	@GetMapping("logout")
 	public String logoutMember(HttpSession session) {
@@ -524,17 +554,16 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("memberEnrollForm/idCheck")
 	public String ajaxIdCheck(Member m,String checkId) {
-		/*
+		
 		// XSS 공격 방지
-		String replaceUserId 
+		String replaceCheckId 
 			= XssDefencePolicy.defence(m.getUserId());
 		
 		// 치환된 결과를 각 필드로 
-		m.setUserId(replaceUserId);
-			*/
+		m.setUserId(replaceCheckId);
+		
 		// Service로 넘기면서 요청 후 결과 받기
 		int count = memberService.idCheck(checkId);
-		
 		
 		return (count > 0) ? "NNNNN" : "NNNNY";
 	}
@@ -542,14 +571,14 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("emailCheck")
 	public String ajaxEmailCheck(Member m,String checkEmail) {
-		/*
+		
 		// XSS 공격 방지
-		String replaceUserId 
+		String replaceCheckEmail 
 			= XssDefencePolicy.defence(m.getEmail());
 		
 		// 치환된 결과를 각 필드로 
-		m.setUserId(replaceUserId);
-				*/
+		m.setUserId(replaceCheckEmail);
+			
 		// Service로 넘기면서 요청 후 결과 받기
 		int count = memberService.emailCheck(checkEmail);
 		

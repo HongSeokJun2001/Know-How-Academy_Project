@@ -118,18 +118,18 @@
         
         <tbody>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;아이디</th>
+           <th><label for="userId">아이디</label></th>
            <th>
                <b>${ sessionScope.loginUser.userId }</b>  
            </th>
-           <th>&nbsp;&nbsp;&nbsp;기간</th>
+           <th><label for="createdAt">기간</label></th>
            <th>
                <b>${ sessionScope.loginUser.createdAt }</b>
            </th>
            <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;이름</th>
+           <th><label for="userName">이름</label></th>
            <th>
               <b>${ sessionScope.loginUser.userName }</b> 
            </th>
@@ -139,7 +139,7 @@
            </td>
         </tr>
         <tr>
-            <th>&nbsp;&nbsp;&nbsp;휴대폰번호</th>
+            <th><label for="phone">휴대전화</label></th>
             <th>
               <b>${ sessionScope.loginUser.phone }</b>
             </th>
@@ -147,7 +147,7 @@
             <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;이메일</th>
+           <th><label for="email">이메일</label></th>
            <th>
               <b>${ sessionScope.loginUser.email }</b>
            </th>
@@ -157,16 +157,16 @@
            <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;반</th>
+           <th><label for="class">반</label></th>
            <td>
-             <b>${ sessionScope.loginUser.email }</b>
+             <b>${ sessionScope.loginUser.classNo } 반</b>
            </td>
            <th></th>
            <th></th>
            <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;주소</th>
+           <th><label for="userId">주소</label></th>
            <th>
              <b>${ sessionScope.loginUser.address }</b>
            </th>
@@ -193,6 +193,82 @@
 		    location.href = "/know-how/reservation/list";
 		    // GET 방식
 		}
+		
+        function sendMail() {
+			
+			// 인증 번호를 이메일로 전송할 수 있도록 요청
+			$.ajax({
+				url : "/know-how/myPage/sendMail",
+				type : "post",
+				data : {
+					email : $("#email").val()
+				},
+				success : function(result) {
+					
+					alert(result);
+					
+					// 인증번호 발급 후 이메일 관련 요소들은 비활성화
+					$("#email").prop("readonly", true);
+					$("#sendMail").prop("disabled", true);
+					
+					// 인증 관련 요소들은 활성화
+					$("#checkNo").prop("disabled", false);
+					$("#validateMail").prop("disabled", false);
+					
+				},
+				error : function() {
+					
+					console.log("인증메일 발송용 ajax 통신 실패!");
+				}
+			});
+		}
+        function validateMail() {
+			
+			// 이메일주소와 인증 번호를 서버로 다시 보내서 대조 작업
+			$.ajax({
+				url : "/know-how/myPage/validate",
+				type : "post", 
+				data : {
+					email : $("#email").val(),
+					checkNo : $("#checkNo").val()
+				}, 
+				success : function(result) {
+					
+					if(result == "success") {
+						// > 대조 성공일 경우
+						
+						alert("본인 인증에 성공했습니다.");
+						
+						// 인증 관련 요소들도 다시 disabled (readonly) 상태로 되돌려놓기
+						$("#checkNo").prop("readonly", true);
+						$("#validateMail").prop("disabled", true);
+						
+					} else {
+						// > 대조 실패일 경우
+						
+						alert("본인 인증에 실패했습니다. 다시 진행해 주세요.");
+						
+						// 인증 관련 요소들도 다시 disabled 상태로 되돌려놓기
+						// > 특히, 이미 입력한 인증번호를 초기화까지 시켜줘야함
+						$("#checkNo").prop("disabled", true).val("");
+						$("#validate").prop("disabled", true);
+						
+						// 이메일 관련 요소들도 다시 활성화 상태로 되돌리기
+						// > 마찬가지로 이미 입력했던 이메일 주소도 초기화 해줘야함
+						$("#email").prop("disabled", false).val("");
+						$("#sendMail").prop("disabled", false);
+						
+					}
+					
+				},
+				error : function() {
+					
+					console.log("인증번호 대조용 ajax 통신 실패!");
+				}
+			});
+		}
+	
+		
 	</script>
 
 </body>
