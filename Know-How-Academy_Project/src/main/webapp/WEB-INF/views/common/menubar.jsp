@@ -113,12 +113,14 @@
 			let alertMsg = "${ sessionScope.alertMsg }";
 			
 			// alert(alertMsg);
-			alertify.alert(alertMsg, function(){ alertify.success('Ok'); });
+			alertify.alert(alertMsg);
 		
 		</script>
 		<c:remove var="alertMsg" scope="session" />
-	</c:if>
-	
+	</c:if>	
+	<script>
+		alertify.defaults.glossary.title = '시스템';
+	</script>
     <br>
     <header>
         <a href="/know-how" id="logo_link">
