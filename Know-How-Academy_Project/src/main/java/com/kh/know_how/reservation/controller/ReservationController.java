@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.common.model.vo.ReservationPageInfo;
@@ -126,7 +127,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @GetMapping("reservationEnrollForm")
+    @GetMapping("/reservationEnrollForm")
     public String reservationEnrollForm(@RequestParam("counselNo") int counselNo, Model model) {
     	Reservation selectedCounselor = reservationService.selectOneCounselor(counselNo);
     	
@@ -145,7 +146,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("insert")
+    @PostMapping("/insert")
     public String insertReservation(Reservation r, @RequestParam("consultTime") String consultTime, HttpSession session, Model model) {
     	Member loginUser = (Member)session.getAttribute("loginUser");
     	
@@ -179,7 +180,7 @@ public class ReservationController {
      * @param mv
      * @return
      */
-    @GetMapping("detail/{rno}")
+    @GetMapping("/detail/{rno}")
     public ModelAndView selectReservationDetail(@PathVariable("rno") int rno, ModelAndView mv) {
     	Reservation r = reservationService.selectReservationDetail(rno);
     	
@@ -204,7 +205,7 @@ public class ReservationController {
      * @param session
      * @return
      */
-    @PostMapping("delete")
+    @PostMapping("/delete")
     public String deleteReservation(@RequestParam("rno") int reservationNo, Model model, HttpSession session) {
     	int result = reservationService.deleteReservation(reservationNo);
     	
@@ -223,7 +224,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("updateForm")
+    @PostMapping("/updateForm")
     public String reservationUpdateForm(@RequestParam("rno") int rno, Model model) {
     	Reservation r = reservationService.selectReservationDetail(rno);
     	
@@ -238,7 +239,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("update")
+    @PostMapping("/update")
     public String updateReservation(Reservation r, @RequestParam("consultTime") String consultTime, HttpSession session, Model model) {
     	
     	//XSS 공격 방지
@@ -302,7 +303,7 @@ public class ReservationController {
      * @param mv
      * @return
      */
-    @GetMapping("counselorDetail/{rno}")
+    @GetMapping("/counselorDetail/{rno}")
     public ModelAndView selectCounselorReservationDetail(@PathVariable("rno") int rno, ModelAndView mv) {
     	Reservation r = reservationService.selectReservationDetail(rno);
     	
@@ -326,7 +327,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("approve")
+    @PostMapping("/approve")
     public String approveReservation(@RequestParam("rno") int reservationNo, HttpSession session, Model model) {
     	int result = reservationService.approveReservation(reservationNo);
     	
@@ -346,7 +347,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("reject")
+    @PostMapping("/reject")
     public String rejectReservation(@RequestParam("rno") int reservationNo, HttpSession session, Model model) {
     	int result = reservationService.rejectReservation(reservationNo);
     	
@@ -365,8 +366,8 @@ public class ReservationController {
      * @param reservationNo
      * @return 성공 시 "success", 실패 시 "fail" 문스프링 문자열 응답
      */
-    @org.springframework.web.bind.annotation.ResponseBody // 💡 핵심: 페이지 이동을 막고 브라우저에 직접 데이터를 응답함
-    @PostMapping("complete")
+    @ResponseBody // 💡 핵심: 페이지 이동을 막고 브라우저에 직접 데이터를 응답함
+    @PostMapping("/complete")
     public String completeReservation(@RequestParam("rno") int reservationNo) {
     	
     	// AJAX 통신이므로 세션 알림창(alertMsg)이나 Model을 통한 에러페이지 이동은 제거합니다.
@@ -385,7 +386,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @GetMapping("logForm")
+    @GetMapping("/logForm")
     public String counselorLogEnrollForm(@RequestParam("rno") int rno, Model model) {
     	Reservation r = reservationService.selectReservationDetail(rno);
     	CounselLog log = reservationService.selectCounselorLog(rno);
@@ -403,7 +404,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("insertLog")
+    @PostMapping("/insertLog")
     public String insertCounselorLog(CounselLog log, HttpSession session, Model model) {
     	
     	//XSS 공격 방지
@@ -430,7 +431,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("updateLog")
+    @PostMapping("/updateLog")
     public String updateCounselorLog(CounselLog log, HttpSession session, Model model) {
     	
     	//XSS 공격 방지
@@ -457,7 +458,7 @@ public class ReservationController {
      * @param model
      * @return
      */
-    @PostMapping("deleteLog")
+    @PostMapping("/deleteLog")
     public String deleteCounselorLog(@RequestParam("rno") int reservationNo, HttpSession session, Model model) {
     	int result = reservationService.deleteCounselorLog(reservationNo);
     	
