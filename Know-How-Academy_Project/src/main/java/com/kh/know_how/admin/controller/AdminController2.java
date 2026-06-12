@@ -2,10 +2,13 @@ package com.kh.know_how.admin.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +33,7 @@ import com.kh.know_how.common.template.Pagination;
 import com.kh.know_how.common.template.XssDefencePolicy;
 import com.kh.know_how.member.model.service.MemberService;
 import com.kh.know_how.member.model.vo.Member;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -49,6 +53,11 @@ public class AdminController2 {
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private JavaMailSender mailSender; 
+	
+	private Map<String, String> certNoList = Collections.synchronizedMap(new HashMap<>());
 	
 	//메소드부    
     @GetMapping("/studentList")
@@ -108,9 +117,8 @@ public class AdminController2 {
     public String insertStudentMemo(MemoDto m) { // 학원생의 메모를 추가하는 메소드
     	
     	m.setUserMemo(XssDefencePolicy.defence(m.getUserMemo()));
-    	int result = as2.insertStudentMemo(m);
-    	
-    	return (result > 0) ? "success" : "fail"; 
+
+    	return (as2.insertStudentMemo(m) > 0) ? "success" : "fail"; 
     }
     
     @ResponseBody
@@ -124,18 +132,14 @@ public class AdminController2 {
     @PostMapping("/student/mdelete")
     public String deleteStudentMemo(int memoNo) { // 학원생의 메모를 제거하는 메소드
     	
-    	int result = as2.deleteStudentMemo(memoNo);
-    	
-    	return (result > 0) ? "success" : "fail"; 
+    	return (as2.deleteStudentMemo(memoNo) > 0) ? "success" : "fail"; 
     }
     
     @ResponseBody
     @PostMapping("/student/rest")
     public String updateStudentStatus(StudentDto s) { // 학원생의 휴학/재학 처리하는 메소드
     	
-    	int result = as2.updateStudentStatus(s);
-
-    	return (result > 0) ? "success" : "fail"; 
+    	return (as2.updateStudentStatus(s) > 0) ? "success" : "fail"; 
     }
     
     @GetMapping("/student/enroll")
@@ -155,19 +159,15 @@ public class AdminController2 {
     	HashMap<String, Integer> map = new HashMap<>();
 		map.put("userNo", userNo);
 		map.put("classNo", classNo);
-		
-    	int result = as2.updateStudentApprove(map);
     	
-    	return (result > 0) ? "success" : "fail"; 
+    	return (as2.updateStudentApprove(map) > 0) ? "success" : "fail"; 
     }
 
     @ResponseBody
     @PostMapping("/student/reject")
     public String updateStudentReject(int userNo) { // 학원생의 가입을 거절하는 메소드
 		
-    	int result = as2.updateStudentReject(userNo);
-    	
-    	return (result > 0) ? "success" : "fail"; 
+    	return (as2.updateStudentReject(userNo) > 0) ? "success" : "fail"; 
     }
     
     @GetMapping("/notice")
@@ -233,9 +233,8 @@ public class AdminController2 {
     		result2 =  as2.adminDeleteFileAttachment(postNo);
 			
 		}
-    	int result1 = as2.adminDeleteBoard(postNo);
     	
-    	return ((result1 * result2) > 0) ? "success" : "fail";
+    	return ((as2.adminDeleteBoard(postNo) * result2) > 0) ? "success" : "fail";
     }
     
     @GetMapping("/notice/enrollForm")
@@ -351,9 +350,7 @@ public class AdminController2 {
     	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
     	n.setContent(XssDefencePolicy.defence(n.getContent()));
     	
-    	int result = bs.updateBoard(n, fa);
-    	
-    	return (result > 0) ? "success" : "fail";
+    	return (bs.updateBoard(n, fa) > 0) ? "success" : "fail";
     	
     }
     
@@ -422,9 +419,8 @@ public class AdminController2 {
     		
 			result2 =  as2.adminDeleteFileAttachment(postNo);
 		}
-    	int result1 = as2.adminDeleteBoard(postNo);
     	
-    	return ((result1 * result2) > 0) ? "success" : "fail";
+    	return ((as2.adminDeleteBoard(postNo) * result2) > 0) ? "success" : "fail";
     }
     
     @GetMapping("/academyNews/enrollForm")
@@ -573,13 +569,11 @@ public class AdminController2 {
     @PostMapping("/board/visible")
     public String updateNoticeStatus(Board b) { // 공지사항, 학원소식의 노출/숨김 처리하는 메소드
     	
-    	int result = as2.adminUpdateBoardStatus(b);
-    	
-    	return (result > 0) ? "success" : "fail";
+    	return (as2.adminUpdateBoardStatus(b) > 0) ? "success" : "fail";
     }
     
     @GetMapping("/loginForm")
-    public String adminLoginForm(Model model) { // 관리자 페이지 접속 시 관리자 로그인 페이지로 나오게 해주는 메소드
+    public String adminLoginForm() { // 관리자 페이지 접속 시 관리자 로그인 페이지로 나오게 해주는 메소드
     	
     	return "admin/adminLogin";
     }
@@ -587,6 +581,9 @@ public class AdminController2 {
     @ResponseBody
     @PostMapping("/login")
     public String adminLogin(Member m, HttpSession session) { // 관리자만 로그인해주는 메소드
+    	
+    	m.setUserId(XssDefencePolicy.defence(m.getUserId()));
+    	m.setUserPwd(XssDefencePolicy.defence(m.getUserPwd()));
     	
     	Member loginUser = ms.loginMember(m);
     	
@@ -599,26 +596,125 @@ public class AdminController2 {
     		
     		if("ADMIN".equals(loginUser.getRoleCode())) {
     			
-    			return "success";
+    			return "성공적으로 로그인이 되었습니다.";
     			
     		} else {
     			
-    			return "fail";
+    			return "관리자가 아니기 때문에 로그인할 수 없습니다.";
     		}
     	} else {
 			
-			return "not found";
+			return "아이디 또는 비밀번호를 잘못 입력했습니다.";
     	}
     }
     
     @GetMapping("/logout")
-    public String adminLogout(HttpSession session) {
+    public String adminLogout(HttpSession session) { // 관리자 페이지 로그아웃해주는 메소드
     	
     	session.removeAttribute("loginUser");
     	
-    	session.setAttribute("alertMsg", "로그아웃이 되었습니다.");
-    	
     	return "admin/adminLogin";
+    }
+    
+    @GetMapping("/findIdForm")
+    public String adminFindIdForm() { // 관리자 전용 아디디 찾기 페이지를 불러오는 메소드
+    	
+    	return "admin/adminFindId";
+    }
+    
+    @GetMapping("/extraPasswordForm")
+    public String adminFindPasswordForm() { // 관리자 전용 임시 비밀번호 발급 페이지를 불러오는 메소드
+    	
+    	return "admin/adminExtraPassword";
+    }
+    
+    @ResponseBody
+    @PostMapping("/findId")
+    public String adminFindId(Member m) { // 관리자 아이디 알려주는 메소드
+    	
+    	m.setUserName(XssDefencePolicy.defence(m.getUserName()));
+    	m.setEmail(XssDefencePolicy.defence(m.getEmail()));
+    	
+    	Member findId = ms.searchId(m);
+    	
+    	if(findId != null) {
+    		
+    		if("ADMIN".equals(findId.getRoleCode())) {
+    			
+    			return m.getUserName() + "님의 아이디는 " + findId.getUserId() + "입니다.";
+    			
+    		} else {
+    			
+    			return "일반 회원의 정보입니다. 관리자의 정보를 입력해주세요.";
+    		}
+    	} else {
+			
+			return "등록 되지 않은 회원입니다.";
+    	}
+    }
+   
+    @ResponseBody
+    @PostMapping("/extraPassword")
+    public String adminFindPassword(Member m) { // 관리자 임시 비밀번호를 이메일로 발급해주는 기능 
+    	
+    	m.setUserId(XssDefencePolicy.defence(m.getUserId()));
+    	m.setUserName(XssDefencePolicy.defence(m.getUserName()));
+    	m.setEmail(XssDefencePolicy.defence(m.getEmail()));
+    	
+    	Member extra = ms.searchPassword(m);
+    	
+    	if(extra != null) {
+    		
+    		if("ADMIN".equals(extra.getRoleCode())) {
+    			
+    			int random = (int)(Math.random() * 90000000 + 10000000);
+    			
+    			String encPwd = bCryptPasswordEncoder.encode(String.valueOf(random));
+    			extra.setUserPwd(encPwd);
+    			int result = ms.updateMember(extra);
+    			
+    			if(result > 0) {
+    				SimpleMailMessage message = new SimpleMailMessage();
+        			
+        			// 메세지 정보 담기 : 제목, 내용, 받는사람
+        			message.setSubject("know-how academy 임시 비밀번호입니다.");
+        			message.setText("임시 비밀번호 : " + random + "\n임시 비밀번호로 로그인 후 비밀번호 변경을 권장드립니다.");
+        			message.setTo(m.getEmail());
+        			
+        			System.out.println(random + ", " + encPwd);
+        			
+        			mailSender.send(message);
+        			
+        			return m.getUserName() + "님의 이메일에 임시 비밀번호를 보냈습니다.\n로그인 후 비밀번호 변경을 권장드립니다.";
+    			} else {
+    				return "임시 비밀번호를 보내지 못했습니다.";
+    			}
+    			
+    		} else {
+    			
+    			return "일반 회원의 정보입니다. 관리자의 정보를 입력해주세요.";
+    		}
+    	} else {
+			
+			return "등록 되지 않은 회원입니다.";
+    	}
+    }
+    
+    @GetMapping("/memberLocked")
+    public String selectLockingMemberList(Model model) { // 계정이 잠긴 유저 리스트를 불러오는 메소드
+    	
+    	ArrayList<MemberLock> list = as2.selectLockingMemberList();
+    	model.addAttribute("list", list)
+    		 .addAttribute("page", "memberUnlock");
+    	
+    	return "admin/adminLayout";
+    }
+    
+    @ResponseBody
+    @PostMapping("/memberUnlock")
+    public String updateMemberUnlock(int userNo) { // 계정을 잠금해제할 수 있는 메소드
+    	 	
+    	return (as2.updateMemberUnlock(userNo) > 0) ? "success" : "fail";
     }
    
 }//컨트롤러 끝

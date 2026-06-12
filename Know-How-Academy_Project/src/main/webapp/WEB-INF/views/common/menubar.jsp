@@ -53,10 +53,13 @@
             margin-top : 50px;
 	    }
 	    .mypage-outer {
-	        width : 1200px;
-            border : 1px dotted black;
-            margin : auto;
-            margin-top : 50px;
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 1000px;
+           margin: auto;
 	    }
         header {
             text-align: center;
@@ -153,7 +156,7 @@
             <a href="#">상담</a>
             <ul>
                 <li><a href="/know-how/reservation/list">예약리스트</a></li>
-                <li><a href="/know-how/counselor/list">상담목록</a></li>
+                <li><a href="/know-how/reservation/counselor/list">상담목록</a></li>
             </ul>
         </div>
         <div class="menu">
@@ -174,7 +177,7 @@
             <a href="#">상담</a>
             <ul>
                 <li><a href="/know-how/reservation/list">예약리스트</a></li>
-                <li><a href="/know-how/counselor/list">상담목록</a></li>
+                <li><a href="/know-how/reservation/counselor/list">상담목록</a></li>
             </ul>
         </div>
         <div class="menu">

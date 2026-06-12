@@ -63,14 +63,17 @@
             </thead>
             <tbody>
 			    <c:choose>
+			    	<%--Case 1: 조회된 상담 내역이 없을 떄 --%>
 			        <c:when test="${empty list}">
 			            <tr>
 			                <td colspan="5">조회된 완료 상담이 없습니다.</td>
 			            </tr>
 			        </c:when>
+			        <%--Case 2: 조회된 상담 내역이 존재할 때 --%>
 			        <c:otherwise>
 			            <c:forEach var="r" items="${list}" varStatus="status">
 			                <tr class="data-row" data-rno="${ r.reservationNo }">
+			                	<!-- 총 게시글 수 - ((현재페이지 - 1) * 페이징당 보여줄 개수) - 루프인덱스 수 -->
 			                    <td>${requestScope.pi.listCount - ((requestScope.pi.currentPage - 1) * requestScope.pi.reservationLimit) - status.index}</td>
 			                    <td>${r.consultDate}</td>
 			                    <td>${r.counselorName}</td>
@@ -88,7 +91,9 @@
         <script>
         	$(function() {
         		$(".list-area>tbody>tr.data-row").click(function() {
+        			// 클릭한 행의 data-rno 속성에서 예약번호 추출 (.attr 을 통해 'data-rno' 속성의 값을 가져옴')
         			let rno = $(this).attr("data-rno");
+        			//해당 상담의 상세 페이지로 경로 이동
         			location.href = "${pageContext.request.contextPath}/reservation/detail/" + rno;
         		});
         	});
@@ -96,6 +101,7 @@
         
         <div class="paging-area">
         	<ul class="pagination justify-content-center">
+        		<!-- 이전 버튼 -->
         		<c:choose>
         			<c:when test="${ requestScope.pi.currentPage eq 1 }">
         				<li class="page-item disabled">
@@ -104,11 +110,12 @@
         			</c:when>
         			<c:otherwise>
 	        			<li class="page-item">
-	        				<a class="page-link" href="/know-how/counselor/list?cpage=${ requestScope.pi.currentPage - 1 }">이전</a>
+	        				<a class="page-link" href="/know-how/reservation/counselor/list?cpage=${ requestScope.pi.currentPage - 1 }">이전</a>
 	        			</li>
         			</c:otherwise>
         		</c:choose>
         		
+        		<!-- 페이지 번호 출력 -->
         		<c:forEach var="p" begin="${ requestScope.pi.startPage }" end="${ requestScope.pi.endPage }" step="1">
 	        		<c:choose>
 	        			<c:when test="${ requestScope.pi.currentPage eq p }">
@@ -118,12 +125,13 @@
 	        			</c:when>
 	        			<c:otherwise>
 	        				<li class="page-item">
-	        					<a class="page-link" href="/know-how/counselor/list?cpage=${ p }">${ p }</a>
+	        					<a class="page-link" href="/know-how/reservation/counselor/list?cpage=${ p }">${ p }</a>
 	        				</li>
 	        			</c:otherwise>
 	        		</c:choose>       			
         		</c:forEach>
         		
+        		<!-- 다음 버튼 -->
         		<c:choose>
         			<c:when test="${ requestScope.pi.currentPage eq requestScope.pi.maxPage }">
         				<li class="page-item disabled">
@@ -132,7 +140,7 @@
         			</c:when>
         			<c:otherwise>
         				<li class="page-item">
-        					<a class="page-link" href="/know-how/counselor/list?cpage=${ requestScope.pi.currentPage + 1 }">다음</a>
+        					<a class="page-link" href="/know-how/reservation/counselor/list?cpage=${ requestScope.pi.currentPage + 1 }">다음</a>
         				</li>
         			</c:otherwise>
         		</c:choose>

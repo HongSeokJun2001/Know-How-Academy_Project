@@ -145,9 +145,11 @@
 				
 				<div class="action-btn-group">
 					<c:choose>
+						<%--기존에 작성된 상딤일지 내용이 있다면 '수정' 버튼 노출 --%>
 						<c:when test="${ not empty log and not empty log.content }">
 							<button type="button" class="btn-custom btn-modify" onclick="logAction('update');">수정</button>
 						</c:when>
+						<%--기존 상담일지가 없다면 '등록' 버튼 노출 --%>
 						<c:otherwise>
 							<button type="button" class="btn-custom btn-insert" onclick="logAction('insert');">등록</button>
 						</c:otherwise>
@@ -164,6 +166,7 @@
 					</td>
 					<th>반</th>
 					<td>
+						<%--삼항 연산자를 이용해 소속 학급이 없을 경우 '미지정' 처리 --%>
 						<span class="data-text">${ r.className != null ? r.className : '미지정'}</span>
 					</td>
 				</tr>
@@ -223,9 +226,6 @@
 						<div class="textarea-box-read">${ r.inquiryContent }</div>
 					</td>
 				</tr>
-				<c:if test="${ not empty log and not empty log.content }">
-				
-				</c:if>
 				<tr>
 					<th>상담일지</th>
 					<td colspan="3">

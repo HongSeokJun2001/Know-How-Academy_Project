@@ -47,6 +47,11 @@
 	<jsp:include page="../common/menubar.jsp"/>
 	
 	<c:choose>
+		<%--
+			로그인 유저의 권한별로 페이징 주소 동적 분기 처리
+			- 관리자/강사 : 전체 예약 리스트 조회
+			- 상담사 : 본인에게 배정된 예약 리스트 조회 
+		--%>
 		<c:when test="${sessionScope.loginUser.roleCode eq 'ADMIN' or sessionScope.loginUser.roleCode eq 'INSTRUCTOR'}">
 			<c:set var="pageUrl" value="list" />
 		</c:when>
@@ -72,14 +77,17 @@
 			</thead>
 			<tbody>
 				<c:choose>
+				<%--Case1. 신청 혹은 배정된 상담 예약 내역이 비어있을 때 --%>
 					<c:when test="${ empty list }">
 						<tr>
 							<td colspan="5">신청된 상담 예약이 없습니다.</td>
 						</tr>
 					</c:when>
+					<%--Case2. 상담 예약 내역이 존재할 떄 --%>
 					<c:otherwise>
 						<c:forEach var="r" items="${list}" varStatus="status">
 							<tr class="data-row" data-rno="${ r.reservationNo }">
+								<!-- 총 게시글 수 - ((현재페이지 - 1) * 페이징당 보여줄 개수) - 루프인덱스 수 -->
 								<td>${ requestScope.pi.listCount - ((requestScope.pi.currentPage - 1) * requestScope.pi.reservationLimit) - status.index}</td>
 								<td>${ r.consultDate }</td>
 								<td>${ r.studentName }</td>
@@ -115,7 +123,9 @@
 		<script>
 			$(function() {
 				$(".list-area>tbody>tr.data-row").click(function() {
+					//클릭한 행에서 예약 번호(rno) 추출 (.attr 활용)
 					let rno = $(this).attr("data-rno");
+					//상담사 전용 상세 보기 화면으로 이동
 					location.href = "${pageContext.request.contextPath}/reservation/counselorDetail/" + rno;
 				});
 			});
@@ -124,6 +134,7 @@
 		<div class="paging-area">
 			<ul class="pagination justify-content-center">
 				<c:choose>
+					<%--이전 버튼 --%>
 					<c:when test="${ requestScope.pi.currentPage eq 1 }">
 						<li class="page-item disabled">
 							<a class="page-link">이전</a>
@@ -136,6 +147,7 @@
 					</c:otherwise>
 				</c:choose>
 				
+				<%--페이지 버튼 --%>
 				<c:forEach var="p" begin="${ requestScope.pi.startPage }" end="${ requestScope.pi.endPage }" step="1">
 					<c:choose>
 						<c:when test="${ requestScope.pi.currentPage eq p }">
@@ -151,6 +163,7 @@
 					</c:choose>
 				</c:forEach>
 				
+				<%-- 다음 버튼 --%>
 				<c:choose>
 					<c:when test="${ requestScope.pi.currentPage eq requestScope.pi.maxPage }">
 						<li class="page-item disabled">

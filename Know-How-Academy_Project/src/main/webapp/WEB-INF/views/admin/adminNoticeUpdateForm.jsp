@@ -44,7 +44,7 @@
 		font-size : 18px;
 	}
 	
-	.table th {
+	table th {
 		width: 10%;
 		height : 54px;
 		background-color : #fafafa;
@@ -54,33 +54,33 @@
 		text-align: center;
 	}
 	
-	.table td {
+	table td {
 		width : 90%;
 		border-bottom : 1px solid #eef0f4;
 	}
 	
-	.table tr:last-child * {
+	table tr:last-child * {
     	border-bottom: none;
 	}
 	
-	.table input, .table textarea, .table a {
+	table input, textarea, a {
 		padding : 9px;
 		margin : 7px;
 		width : 99%;
 		border : none;
 	}
 	
-	.link {
+	a {
 	    color: #4233c7;
 	    font-weight: 800;
 	    text-decoration: none;
 	}
 	
-	.link:hover {
+	a:hover {
 	    color: #2f2499;
 	}
 	
-	.table textarea {
+	textarea {
 		height : 300px;
 		resize : none;
 	}
@@ -137,7 +137,7 @@
 						<c:if test="${ not empty requestScope.fa }">
 							
 							<a download="${ requestScope.fa.originName }"
-							   href="/know-how${ requestScope.fa.filePath }${ requestScope.fa.saveName }" class="link">
+							   href="/know-how${ requestScope.fa.filePath }${ requestScope.fa.saveName }">
 								${ requestScope.fa.originName }
 							</a>
 							<input type="hidden" name="originalFileNo" value="${ requestScope.fa.fileNo }">

@@ -225,6 +225,7 @@
 	<update id="adminUpdateBoardStatus" parameterType="board">
 		UPDATE BOARD_POST
 		   SET STATUS = #{status}
+		     , UPDATED_AT = SYSDATE
 		 WHERE POST_NO = #{postNo}
 	</update>
 	

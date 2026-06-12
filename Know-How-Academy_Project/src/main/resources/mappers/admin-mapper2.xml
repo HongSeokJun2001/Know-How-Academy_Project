@@ -133,22 +133,21 @@
 	<update id="updateStudentStatus" parameterType="com.kh.know_how.admin.model.dto.StudentDto">
 		UPDATE STUDENT_DETAIL
 		   SET STUDENT_STATUS = #{status}
+		     , UPDATED_AT = SYSDATE
 		 WHERE STUDENT_NO = #{studentNo}
 	</update>
 	
 	<!-- 10. 학생 가입신청 대기, 거절을 조회하는 쿼리문 -->
 	<select id="selectPendingStudentList"
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
-		SELECT S.STUDENT_NO AS studentNo 
-			 , SM.USER_NO AS userNo
-			 , SM.USER_NAME AS studentName
-			 , SM.CREATED_AT AS createdAt
-			 , SM.STATUS AS status
-		  FROM STUDENT_DETAIL S
-		  JOIN MEMBER SM ON (S.USER_NO = SM.USER_NO)
-		 WHERE SM.STATUS = 'PENDING'
-		   AND SM.ROLE_CODE = 'STUDENT'
-		 ORDER BY 5
+		SELECT USER_NO AS userNo
+			 , USER_NAME AS studentName
+			 , CREATED_AT AS createdAt
+			 , STATUS AS status
+		  FROM MEMBER
+		 WHERE STATUS IN ('PENDING', 'REJECTED')
+		   AND ROLE_CODE = 'STUDENT'
+		 ORDER BY 4
 	</select>
 	
 	<!-- 11. 학생 가입신청 승인 쿼리문 -->
@@ -156,6 +155,7 @@
 		UPDATE MEMBER
 		   SET STATUS = 'ACTIVE'
 			 , CLASS_NO = #{classNo}
+			 , UPDATED_AT = SYSDATE
 		 WHERE USER_NO = #{userNo}
 	</update>
 	
@@ -175,6 +175,7 @@
 	<update id="updateStudentReject" parameterType="_int">
 		UPDATE MEMBER
 		   SET STATUS = 'REJECTED'
+		   	 , UPDATED_AT = SYSDATE
 		 WHERE USER_NO = #{userNo}
 	</update>
 </mapper>

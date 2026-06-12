@@ -13,7 +13,6 @@
     box-sizing: border-box;
 }
 
-/* 제목 영역 */
 .detail-title-area {
     display: flex;
     justify-content: space-between;
@@ -34,7 +33,6 @@
     color: #6b7280;
 }
 
-/* 상단 프로필 카드 */
 .profile-summary-card {
     display: flex;
     justify-content: space-between;
@@ -87,7 +85,6 @@
     color: #c4c7d0;
 }
 
-/* 카드 2단 */
 .detail-card-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -137,7 +134,6 @@
     font-weight: 800;
 }
 
-/* 메모 카드 */
 .memo-card {
     padding: 28px 32px;
     margin-bottom: 28px;
@@ -220,7 +216,6 @@
     box-shadow: 0 0 0 3px rgba(66, 51, 199, 0.12);
 }
 
-/* 상태 배지 */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -248,7 +243,6 @@
     color: #c47a00;
 }
 
-/* 버튼 */
 .btn-primary {
     min-width: 96px;
     height: 42px;
@@ -325,7 +319,6 @@
     background-color: #107a32;
 }
 
-/* 하단 버튼 */
 .detail-bottom-actions {
     display: flex;
     justify-content: space-between;
@@ -335,10 +328,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <!-- 상담사 상세조회 콘텐츠 시작 -->
+
     <section class="counselor-detail-section">
 
-        <!-- 페이지 제목 -->
         <div class="detail-title-area">
             <div>
                 <h2>학원생 상세조회</h2>
@@ -348,7 +340,6 @@
             <button type="button" class="btn-outline" onclick="location.assign('/know-how/admin/studentList') ">목록으로</button>
         </div>
 
-        <!-- 상단 프로필 요약 카드 -->
         <div class="profile-summary-card">
 
             <div class="profile-left">
@@ -374,10 +365,8 @@
 			</c:choose>
         </div>
 
-        <!-- 정보 카드 2단 -->
         <div class="detail-card-grid">
 
-            <!-- 학생 인적사항 -->
             <div class="detail-card">
                 <div class="detail-card-title">
                     학생 인적사항
@@ -404,7 +393,6 @@
                 </div>
             </div>
 
-            <!-- 수강 정보 -->
             <div class="detail-card">
                 <div class="detail-card-title">
                     수강 정보
@@ -442,7 +430,6 @@
             </div>
         </div>
 
-        <!-- 메모 기록 카드 -->
         <div class="memo-card">
             <div class="memo-card-header">
                 <div>
@@ -584,6 +571,5 @@
 			
 		</script>
     </section>
-    <!-- 학생 상세조회 콘텐츠 끝 -->
 </body>
 </html>

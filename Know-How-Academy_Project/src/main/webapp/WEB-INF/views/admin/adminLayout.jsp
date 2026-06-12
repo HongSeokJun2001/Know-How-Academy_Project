@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>KNOW-HOW ACADEMY 관리자 페이지</title>
 <style>
     /* 1. 기본 초기화 (브라우저 기본 여백 제거) */
     * {
@@ -332,6 +332,10 @@
             <div class="menu-item  ${page.contains('academyNews') ? 'active' : ''}" data-path="/admin/academyNews"
                  onclick="go('/admin/academyNews')">
                 학원소식 관리
+            </div>
+            <div class="menu-item" data-path="/admin/memberLocked"
+                 onclick="go('/admin/memberLocked')">
+                계정잠금 관리
             </div>
         </div>
 

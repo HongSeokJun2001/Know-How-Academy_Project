@@ -31,7 +31,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		        .addPathPatterns("/myPage/myInformationSelectForm")
 		        .addPathPatterns("/myPage/myInformationChangeForm")
 		        .addPathPatterns("/myPage/checkPasswordForm")
-		        .addPathPatterns("/myPage/memberDeleteForm");
+		        .addPathPatterns("/myPage/memberDeleteForm")
+		        .addPathPatterns("/reservation/list")
+		        .addPathPatterns("/reservation/counselor/list")
+		        .addPathPatterns("/reservation/counselorList");
+				
 		        
 		// 직원용
 		registry.addInterceptor(counselorInterceptor)
@@ -53,6 +57,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 "/admin/loginForm", 
                 "/admin/login",
                 "/admin/logout",
+                "/admin/findIdForm",
+                "/admin/findId",
+                "/admin/extraPasswordForm",
+                "/admin/extraPassword",
                 "/resources/**",
                 "/css/**",
                 "/js/**",
