@@ -23,7 +23,7 @@
            padding: 30px;
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
-           max-width: 700px;
+           max-width: 800px;
            margin: auto;
 	    }
 	.selectPage-title {
@@ -39,23 +39,23 @@
     }
 	.selectPage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 500;
-        font-size: 15px;
+        font-size: 20px;
     }
     .selectPage-table td {
-        border-bottom: 2px solid black;
         vertical-align: middle;
-        color: #5C5B6E;
-        font-size: 15px;
+        color: black;
+        font-size: 17px;
     }
-	/* 입력창 */
-	.selectPage-input {
-	    height: 30px;
-	    width: 300px;
-	    padding: 10px;
-	    margin-bottom: 10px;
-	}
+    .selectPage-tableTd {
+        border-bottom: 2px solid black;
+    }
+    .selectPage-tableTh {
+        border-bottom: 2px solid black;
+        background-color: lightgray;
+    }
+
 	
 	/* 버튼 */
 	.btn-reserVationPage {
@@ -67,7 +67,7 @@
         cursor: pointer;
         font-weight: 600;
         transition: background 0.2s;
-        height: 40px;
+        height: 50px;
         width: 200px;
         margin: auto;
 	}
@@ -96,8 +96,8 @@
    <br><br>
     <div class="selectForm-outer">
     
-    <br><br>
-    <h2 align="left" class="selectPage-title">내정보</h2>
+    <br>
+    <h2 align="center" class="selectPage-title">내 정보 조회</h2>
      <br>
      
     <%-- 상담예약 페이지로 요청을 보냄--%>
@@ -107,71 +107,81 @@
         <thead>
         <tr>
           <th></th>
-          <th></th>
+          <td></td>
           <th></th>
           <th align="right"><button type="button"
 						            class="btn-selectPageCheck"
 						            onclick="checkPasswordPage();">탈퇴</button>
           </th>
+          <td></td>
+        </tr>
+        <tr>
+            <th><br></th>
+        </tr>
+        <tr>
+            <td class="selectPage-tableTd"></td>
+            <td class="selectPage-tableTd"></td>
+            <td class="selectPage-tableTd"></td>
+            <td class="selectPage-tableTd"></td>
+            <td class="selectPage-tableTd"></td>
         </tr>
         </thead>
         
         <tbody>
         <tr>
-           <th><label for="userId">아이디</label></th>
-           <th>
-               <b>${ sessionScope.loginUser.userId }</b>  
-           </th>
-           <th><label for="createdAt">기간</label></th>
-           <th>
-               <b>${ sessionScope.loginUser.createdAt }</b>
-           </th>
+           <th class="selectPage-tableTh"><label for="userId">아이디</label></th>
+           <td class="selectPage-tableTd">
+               <label>${ sessionScope.loginUser.userId }</label>  
+           </td>
+           <th class="selectPage-tableTh"><label for="createdAt">기간</label></th>
+           <td class="selectPage-tableTd">
+               <label>${ sessionScope.loginUser.createdAt }</label>
+           </td>
            <td></td>
         </tr>
         <tr>
-           <th><label for="userName">이름</label></th>
-           <th>
-              <b>${ sessionScope.loginUser.userName }</b> 
-           </th>
-           <th></th>
-           <th></th>
-           <td>   
+           <th class="selectPage-tableTh"><label for="userName">이름</label></th>
+           <td class="selectPage-tableTd">
+              <label>${ sessionScope.loginUser.userName }</label> 
            </td>
+           <th></th>
+           <td></td>
+           <td></td>
         </tr>
         <tr>
-            <th><label for="phone">휴대전화</label></th>
-            <th>
-              <b>${ sessionScope.loginUser.phone }</b>
-            </th>
+            <th class="selectPage-tableTh"><label for="phone">휴대전화</label></th>
+            <td class="selectPage-tableTd">
+              <label>${ sessionScope.loginUser.phone }</label>
+            </td>
             <th colspan="5">상담신청하고 싶다면?</th>
             <td></td>
         </tr>
         <tr>
-           <th><label for="email">이메일</label></th>
-           <th>
-              <b>${ sessionScope.loginUser.email }</b>
-           </th>
+           <th class="selectPage-tableTh"><label for="email">이메일</label></th>
+           <td class="selectPage-tableTd">
+              <label>${ sessionScope.loginUser.email }</label>
+           </td>
            <th colspan="5">
                <button type="button" onclick="reservationListPage();" class="btn-reserVationPage">상담신청</button>
            </th>
            <td></td>
         </tr>
         <tr>
-           <th><label for="class">반</label></th>
-           <td>
-             <b>${ sessionScope.loginUser.classNo } 반</b>
+           <th class="selectPage-tableTh"><label for="class">반</label></th>
+           <td class="selectPage-tableTd">
+             <label>${ sessionScope.loginUser.classNo } 반</label>
            </td>
            <th></th>
-           <th></th>
+           <td></td>
            <td></td>
         </tr>
         <tr>
-           <th><label for="userId">주소</label></th>
-           <th>
-             <b>${ sessionScope.loginUser.address }</b>
-           </th>
+           <th class="selectPage-tableTh"><label for="userId">주소</label></th>
+           <td class="selectPage-tableTd">
+             <label>${ sessionScope.loginUser.address }</label>
+           </td>
            <th></th>
-           <th></th>
+           <td></td>
            <td></td>
         </tr>
         </tbody>
