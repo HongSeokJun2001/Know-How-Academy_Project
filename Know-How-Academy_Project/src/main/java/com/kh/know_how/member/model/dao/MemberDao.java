@@ -19,11 +19,6 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.insertMember", m);
 	}
 	
-	public int insertMemberLock(SqlSessionTemplate sqlSession) {
-		
-		return sqlSession.update("memberMapper.insertMemberLock");
-	}
-	
     public int updateMember(SqlSessionTemplate sqlSession, Member m) {
 		
 		return sqlSession.update("memberMapper.updateMember", m);
@@ -64,9 +59,9 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.loginLockMember", ml);
 	}
 	
-    public int increaseFailCount(SqlSessionTemplate sqlSession, MemberLock loginUserLock) {
+    public int increaseFailCount(SqlSessionTemplate sqlSession, int failCount) {
 		
-		return sqlSession.update("memberMapper.increaseFailCount", loginUserLock);
+		return sqlSession.update("memberMapper.increaseFailCount", failCount);
 	}
 
 	public int lockAccount(SqlSessionTemplate sqlSession, String isLocked) {
@@ -78,7 +73,6 @@ public class MemberDao {
 		
 		return sqlSession.update("memberMapper.resetFailCount", ml);
 	}
-
 }
     
     

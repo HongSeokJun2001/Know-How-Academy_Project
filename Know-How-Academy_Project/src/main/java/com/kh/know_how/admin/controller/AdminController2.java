@@ -170,13 +170,6 @@ public class AdminController2 {
     	return (as2.updateStudentReject(userNo) > 0) ? "success" : "fail"; 
     }
     
-    @ResponseBody
-    @PostMapping("/student/delete")
-    public String deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
-		
-    	return (as2.deleteStudent(userNo) > 0) ? "success" : "fail"; 
-    }
-    
     @GetMapping("/notice")
     public ModelAndView selectNoticeList(@RequestParam(value="cpage", defaultValue="1") int currentPage, ModelAndView mv) { // 공지사항 리스트를 불러오는 메소드
     	

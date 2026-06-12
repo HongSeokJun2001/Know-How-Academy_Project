@@ -26,7 +26,7 @@ public class MemberService {
 	@Transactional
 	public int insertMember(Member m) {
 		
-		return memberDao.insertMember(sqlSession, m) * memberDao.insertMemberLock(sqlSession);
+		return memberDao.insertMember(sqlSession, m);
 	}
 	
 	@Transactional
@@ -73,9 +73,9 @@ public class MemberService {
 	}
 	
 	@Transactional
-	public int increaseFailCount(MemberLock loginUserLock) {
+	public int increaseFailCount(int failCount) {
 		
-		return memberDao.increaseFailCount(sqlSession, loginUserLock);
+		return memberDao.increaseFailCount(sqlSession, failCount);
 	}
 	
 	@Transactional
