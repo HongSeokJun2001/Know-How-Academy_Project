@@ -18,9 +18,9 @@ public class MemberService {
 	@Autowired
 	private MemberDao memberDao;
 	
-	public Member loginMember(Member m) {
+	public Member loginMember(String userId) {
 		
-		return memberDao.loginMember(sqlSession,m);
+		return memberDao.loginMember(sqlSession, userId);
 	}
 	
 	@Transactional
@@ -67,9 +67,9 @@ public class MemberService {
 		return memberDao.emailCheck(sqlSession, checkEmail);
 	}
 
-	public MemberLock loginLockMember(MemberLock ml) {
-		
-		return memberDao.loginLockMember(sqlSession, ml);
+	public MemberLock loginLockMember(int userNo) {
+
+		return memberDao.loginLockMember(sqlSession, userNo);
 	}
 	
 	@Transactional
@@ -79,9 +79,9 @@ public class MemberService {
 	}
 	
 	@Transactional
-	public int lockAccount(String isLocked) {
+	public int lockAccount(int userNo) {
 		
-		return memberDao.lockAccount(sqlSession, isLocked);
+		return memberDao.lockAccount(sqlSession, userNo);
 	}
 	
 	@Transactional

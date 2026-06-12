@@ -592,7 +592,7 @@ public class AdminController2 {
     	m.setUserId(XssDefencePolicy.defence(m.getUserId()));
     	m.setUserPwd(XssDefencePolicy.defence(m.getUserPwd()));
     	
-    	Member loginUser = ms.loginMember(m);
+    	Member loginUser = ms.loginMember(m.getUserId());
     	
     	String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 		System.out.println("암호문 : " + encPwd);
