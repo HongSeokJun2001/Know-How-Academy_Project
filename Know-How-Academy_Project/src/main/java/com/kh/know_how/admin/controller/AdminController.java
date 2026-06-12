@@ -110,10 +110,17 @@ public class AdminController {
     @PostMapping("/class/update")
     public String updateCounselorClass(int userNo, Integer classNo) {
     	
-        // 상담사 담당 클래스 변경
-		int result = as.updateCounselorClass(userNo, classNo);
+    	try {
+    		// 상담사 담당 클래스 변경
+    		as.updateCounselorClass(userNo, classNo);
+    		
+		} catch (Exception e) {
+			System.out.println("클래스변경중 Exception 발생");
+			return  "fail";
+		}
+        
 		
-        return (result > 0) ? "success" : "fail";
+        return "success";
     }
 
     

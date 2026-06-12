@@ -373,6 +373,17 @@
 
     const cp = "${pageContext.request.contextPath}";
 
+    $(document).ajaxError(function(event, xhr, settings, thrownError) {
+        if (xhr.status === 401) {
+            alert("세션이 만료되어 로그인이 필요합니다.");
+            location.href = "cp/admin/login"; 
+        } else if (xhr.status === 403) {
+            alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
+            location.href = "cp/"; 
+        }
+    });
+    
+
     function logoutAdmin() {
         if(confirm("로그아웃 하시겠습니까?")) {
             location.href = cp + "/admin/logout";
@@ -397,15 +408,7 @@
 
     };
 
-    $(document).ajaxError(function(event, xhr, settings, thrownError) {
-        if (xhr.status === 401) {
-            alert("세션이 만료되어 로그인이 필요합니다.");
-            location.href = "cp/admin/login"; 
-        } else if (xhr.status === 403) {
-            alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
-            location.href = "cp/"; 
-        }
-    });
+    
 
 </script>
 </body>

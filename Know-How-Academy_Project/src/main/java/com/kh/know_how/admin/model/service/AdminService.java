@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.admin.common.AdminPagination;
 import com.kh.know_how.admin.common.AdminXssDefencePolicy;
 import com.kh.know_how.admin.common.PageResponseDto;
-import com.kh.know_how.admin.mail.MailService;
 import com.kh.know_how.admin.model.dao.AdminDao;
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
@@ -117,7 +116,7 @@ public class AdminService {
 	}
 	
 	@Transactional
-	public int updateCounselorClass(int userNo, Integer classNo) {
+	public void updateCounselorClass(int userNo, Integer classNo) {
 		
 		//1.상담사 클래스
 		Map<String, Integer> param = new HashMap<>();
@@ -127,20 +126,12 @@ public class AdminService {
 		
 		//2.학생테이블 상담사번호 변경
 		//2-1 classNo NOT NULL - classNo가 같은 학생의 상담사번호 NULL로 UPDATE
-		int clearNo = 1;
-		int updateStudent =1;
-		if(classNo != null) {
-			clearNo = ad.clearStudentCounselorNo(sqlSession, userNo);
-			//2-2 classNo가 같은 학생의 상담사번호 userNo로 UPDATE
-			updateStudent = ad.updateStudentCounselorNoByClassNo(sqlSession, param);
+		ad.clearStudentCounselorNo(sqlSession, userNo);
+		//2-2 classNo가 같은 학생의 상담사번호 userNo로 UPDATE
+		if (classNo != null) {
+		    ad.updateStudentCounselorNoByClassNo(sqlSession, param);
 		}
 		
-		
-		
-//		System.out.println(">>> [클래스변경] "+ counselorClass + clearNo + updateStudent);
-		
-		//결과가 모두 참인지 확인 후 리턴
-		return counselorClass * clearNo * updateStudent;
 	}
 
 	@Transactional(readOnly = true)
