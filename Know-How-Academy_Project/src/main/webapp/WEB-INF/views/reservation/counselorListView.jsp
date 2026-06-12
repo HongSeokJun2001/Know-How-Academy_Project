@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,10 +75,22 @@
 			                <tr>
 			                    <td>${c.categoryName}</td>
 			                    <td class="counselor-name">${c.counselorName}</td>
-			                    <td>${c.phone}</td>
+			                    
+			                    <td>
+			                        <c:choose>
+			                            <%-- 번호가 정상적으로 존재하고, 일반적인 휴대폰 번호(11자리) 길이일 때 분할 처리 --%>
+			                            <c:when test="${not empty c.phone and fn:length(c.phone) eq 11}">
+			                                ${fn:substring(c.phone, 0, 3)}-${fn:substring(c.phone, 3, 7)}-${fn:substring(c.phone, 7, 11)}
+			                            </c:when>
+			                            <%-- 혹시 자릿수가 다르거나 비어있다면 원본 데이터 노출 --%>
+			                            <c:otherwise>
+			                                ${c.phone}
+			                            </c:otherwise>
+			                        </c:choose>
+			                    </td>
+			                    
 			                    <td>${c.email}</td>
 			                    <td>
-			                    	<!-- 클릭 시 counselNo를 쿼리스트링에 실어서 신청서 작성 폼으로 이동 -->
 			                    	<a href="${pageContext.request.contextPath}/reservation/reservationEnrollForm?counselNo=${c.counselNo}" class="btn btn-success btn-sm">신청</a>
 			                    </td>
 			                </tr>

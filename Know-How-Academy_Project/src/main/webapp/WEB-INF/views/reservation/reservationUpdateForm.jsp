@@ -105,6 +105,24 @@
 		resize: none; 
 		outline: none;
 	}
+	
+	#detail-table .badge {
+		font-size : 13px;
+		padding : 6px 12px;
+		font-weight : bold;
+		color: #ffffff !important; 
+		
+		text-shadow: 
+			-1.5px -1.5px 0 #000,  
+			 1.5px -1.5px 0 #000,
+			-1.5px  1.5px 0 #000,
+			 1.5px  1.5px 0 #000,
+			 0px    1.5px 0 #000,
+			 0px   -1.5px 0 #000,
+			 1.5px  0px   0 #000,
+			-1.5px  0px   0 #000;
+	}
+	
 </style>
 </head>
 <body>
@@ -138,11 +156,34 @@
 		    	</tr>
 		    	<tr>
 		    		<th>상담일자</th>
-		    		<td><input type="date" name="consultDate" class="form-control-edit" value="${r.consultDate}" required></td>
+		    		<td>
+		    			<div style="display: flex; align-items: center; gap: 10px;">
+		    				<input type="date" name="consultDate" class="form-control-edit" value="${r.consultDate}" required>
+		    				<input type="time" name="consultTime" id="consultTime" class="form-control-edit" style="width: 150px;" required>
+		    			</div>
+		    		</td>
 		    		<th>상담상태</th>
 		    		<td>
-		    			<input type="text" class="form-control-readonly" style="font-weight: bold;" 
-		    				value="<c:choose><c:when test="${r.reservationStatus eq 'APPLIED'}">예약대기</c:when><c:when test="${r.reservationStatus eq 'CANCELED'}">예약반려</c:when><c:when test="${r.reservationStatus eq 'RESERVED'}">예약완료</c:when><c:when test="${r.reservationStatus eq 'COMPLETED'}">상담완료</c:when><c:otherwise>${r.reservationStatus}</c:otherwise></c:choose>" readonly>
+		    			<span class="data-text" style="font-weight: bold; padding-left: 5px; display: inline-block; vertical-align: middle;">
+				            <c:choose>
+				                <c:when test="${ r.reservationStatus eq 'APPLIED' }">
+				                    <span class="badge bg-warning text-dark">예약대기</span>
+				                </c:when>
+				                <c:when test="${ r.reservationStatus eq 'CANCELED' }">
+				                    <span class="badge bg-danger">예약취소</span>
+				                </c:when>
+				                <c:when test="${ r.reservationStatus eq 'RESERVED' }">
+				                    <span class="badge bg-success">예약완료</span>
+				                </c:when>
+				                <c:when test="${ r.reservationStatus eq 'COMPLETED' }">
+				                    <span class="badge bg-primary">상담완료</span>
+				                </c:when>
+				                <c:when test="${ r.reservationStatus eq 'REJECTED' }">
+				                    <span class="badge bg-danger">상담반려</span>
+				                </c:when>
+				                <c:otherwise>${ r.reservationStatus }</c:otherwise>
+				            </c:choose>
+				        </span>
 		    		</td>
 		    	</tr>
 		    	<tr>

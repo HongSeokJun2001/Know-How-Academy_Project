@@ -130,7 +130,11 @@ public class ReservationController {
     public String reservationEnrollForm(@RequestParam("counselNo") int counselNo, Model model) {
     	Reservation selectedCounselor = reservationService.selectOneCounselor(counselNo);
     	
+    	// 해당 상담사의 기존 예약 완료. 대기 날짜 목록 조회
+    	ArrayList<String> reservedDates = reservationService.selectReservedDates(counselNo);
+    	
     	model.addAttribute("selectedCounselor", selectedCounselor);
+    	model.addAttribute("reservedDates", reservedDates);
     	return "reservation/reservationEnrollForm";   	
     }
 
@@ -142,13 +146,18 @@ public class ReservationController {
      * @return
      */
     @PostMapping("insert")
-    public String insertReservation(Reservation r, HttpSession session, Model model) {
+    public String insertReservation(Reservation r, @RequestParam("consultTime") String consultTime, HttpSession session, Model model) {
     	Member loginUser = (Member)session.getAttribute("loginUser");
     	
     	//XSS 공격 방지
     	if(r.getInquiryContent() != null) {
     		String replaceContent = XssDefencePolicy.defence(r.getInquiryContent());
     		r.setInquiryContent(replaceContent);
+    	}
+    	
+    	if(r.getConsultDate() != null && !consultTime.isEmpty()) {
+    		String fullDateTime = r.getConsultDate() + " " + consultTime;
+    		r.setConsultDate(fullDateTime);
     	}
     	
     	r.setUserNo(loginUser.getUserNo());
@@ -230,7 +239,7 @@ public class ReservationController {
      * @return
      */
     @PostMapping("update")
-    public String updateReservation(Reservation r, HttpSession session, Model model) {
+    public String updateReservation(Reservation r, @RequestParam("consultTime") String consultTime, HttpSession session, Model model) {
     	
     	//XSS 공격 방지
     	if(r.getInquiryContent() != null) {
@@ -238,6 +247,10 @@ public class ReservationController {
     		r.setInquiryContent(replaceContent);
     	}
     	
+    	if(r.getConsultDate() != null && consultTime != null && !consultTime.isEmpty()) {
+    		String fullDateTime = r.getConsultDate() + " " + consultTime;
+    		r.setConsultDate(fullDateTime);
+    	}
     	int result = reservationService.updateReservation(r);
     	
     	if(result > 0) {
@@ -348,21 +361,21 @@ public class ReservationController {
     
     /**
      * [상담사] 상담 완료 상태 변경 처리 ('RESERVED' -> 'COMPLETED')
+     * 💡 AJAX 비동기 처리를 위해 @ResponseBody 어노테이션을 추가하고 반환 타입을 String(응답 데이터)으로 변경합니다.
      * @param reservationNo
-     * @param session
-     * @param model
-     * @return
+     * @return 성공 시 "success", 실패 시 "fail" 문스프링 문자열 응답
      */
+    @org.springframework.web.bind.annotation.ResponseBody // 💡 핵심: 페이지 이동을 막고 브라우저에 직접 데이터를 응답함
     @PostMapping("complete")
-    public String completeReservation(@RequestParam("rno") int reservationNo, HttpSession session, Model model) {
+    public String completeReservation(@RequestParam("rno") int reservationNo) {
+    	
+    	// AJAX 통신이므로 세션 알림창(alertMsg)이나 Model을 통한 에러페이지 이동은 제거합니다.
     	int result = reservationService.completeReservation(reservationNo);
     	
     	if(result > 0) {
-    		session.setAttribute("alertMsg", "상담 완료 처리가 되었습니다.");
-    		return "redirect:/reservation/counselorDetail/" + reservationNo;
+    		return "success"; // 💡 브라우저(JS)의 success: function(result) 안으로 "success"라는 글자가 들어감
     	} else {
-    		model.addAttribute("errorMsg", "상담 완료 처리에 실패했습니다.");
-    		return "common/errorPage";
+    		return "fail";
     	}
     }
     
