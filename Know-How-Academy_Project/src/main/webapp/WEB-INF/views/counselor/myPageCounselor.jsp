@@ -5,48 +5,143 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+    * {
+        margin: auto;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Pretendard', -apple-system, sans-serif;
+    }
+
+    body {
+        background-color: #F8F9FA;
+        padding: 32px;
+    }
+    .mypagelogin-outer {
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 600px;
+           margin: auto;
+	    }
+	.loginPage-title {
+	    font-size: 36px;
+	    font-weight: bold;
+	    margin-bottom: 10px;
+	    color: #2C2A38;
+	}
+	.loginPage-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+    }
+	.loginPage-table th {
+        padding: 5px;
+        color: #6F6D80;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    .loginPage-table td {
+        padding: 15px;
+        border-bottom: 2px solid black;
+        vertical-align: middle;
+        color: #5C5B6E;
+        font-size: 15px;
+    }
+	/* 입력창 */
+	.loginPage-input {
+	    height: 40px;
+	    width: 300px;
+	    padding: 10px;
+	    margin-bottom: 10px;
+	}
+	
+	/* 아이디 저장 */
+	.save-id {
+	    font-size: 14px;
+	    height: 20px;
+	    width: 20px;
+	}
+	
+	/* 버튼 */
+	.btn-loginPage {
+	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+        height: 50px;
+        width: 150px;
+        margin: auto;
+	}
+	
+	.btn-loginPage:hover {
+	    background-color: #3225A3;
+	}
+</style>
 </head>
 <body>
     <jsp:include page="../common/menubar.jsp"/>
     
     <br><br>
-    
-    <div class="mypage-outer">
+     <h2 align="center">마이페이지</h2>
+     <br>
+     
+    <div class="mypagelogin-outer">
 	 <!-- 직원계정 로그인 시 -->	
-
+       
        <div id="user-info">	    
-		 <table id="login-page" align="center">
-		      <tr align="center">
-				  <h2 align="center">마이페이지</h2>
-			  <td>
-                  <h3><b>${ sessionScope.loginUser.userName }</b> 님 환영합니다.</h3>
-			  </td>
-				<br><br>
+		 <table class="loginPage-table">
+		    <thead>
+		      <tr>
+		          <th></th>
+				  <th>
+	                  <h3><b>${ sessionScope.loginUser.userName }</b> 님 환영합니다.</h3>
+				  </th>
+				  <th></th>
 			  </tr>
+			 </thead>
+			 <tbody>
 			  <tr>
 				 <th></th>
+				 <th></th>
+				 <th></th>
 			  </tr>
-			  <tr align="center">
+			  <tr>
+			   <th></th>
 			    <th>
-					<button type="button" class="btn btn-secondary btn-sm"
-										  onclick="counselorInformationSelectPage();">내 정보 조회</button>					  
+					<button type="button" class="btn-loginPage"
+							onclick="counselorInformationSelectPage();">내 정보 조회</button>					  
 			    </th>
-			 </tr>
-			 <tr align="center">
-				<th>
-				    <button type="button" class="btn btn-secondary btn-sm"
-						                  onclick="counselorInformationChangePage();">내 정보 수정</button>
-			   </th>
+			    <th></th>
 			 </tr>
 			 <tr>
-				<th>--------------------------------------------</th>
+			    <th></th>
+				<th>
+				    <button type="button" class="btn-loginPage"
+						    onclick="counselorInformationChangePage();">내 정보 수정</button>
+			    </th>
+			    <th></th>
 			 </tr>
-			 <tr align="center">
+			 <tr>
+				<th></th>
+				<td></td>
+				<th></th>
+			 </tr>
+			 <tr>
+			   <th></th>
 			   <th>
-			       <button type="button" class="btn btn-secondary btn-sm" 
+			       <button type="button" class="btn-loginPage" 
 			               onclick="logout();">로그아웃</button>             
 			   </th>
+			   <th></th>
 			 </tr>
+			 </tbody> 
 		</table> 
 		
 		<script>
