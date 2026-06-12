@@ -367,8 +367,8 @@
 	        FROM DUAL
 	    </selectKey>
 	
-	    INSERT INTO MEMBER(USER_NO, USER_ID, USER_PWD, USER_NAME, PHONE, EMAIL, ADDRESS, ROLE_CODE)
-	    VALUES( #{userNo}, #{userId}, #{userPwd}, #{userName}, #{phone}, #{email}, #{address}, 'COUNSELOR')
+	    INSERT INTO MEMBER(USER_NO, USER_ID, USER_PWD, USER_NAME, PHONE, EMAIL, ADDRESS, ROLE_CODE, STATUS)
+	    VALUES( #{userNo}, #{userId}, #{userPwd}, #{userName}, #{phone}, #{email}, #{address}, 'COUNSELOR', 'ACTIVE')
 	 </insert>
 	 
 	 <!-- 22. 상담사 회원가입용 쿼리(profile) -->
