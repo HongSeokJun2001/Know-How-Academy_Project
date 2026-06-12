@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -90,36 +89,37 @@ public class MemberController {
 			
 			
 			// [1.로그인관련] 멤버테이블 '재직/재학'중인 멤버 조회
-			Member loginUser = memberService.loginMember(m);
+			Member loginUser = memberService.loginMember(m.getUserId());
 			// 암호화 작업 후 비밀알아내기
+			if(loginUser == null) {
+				model.addAttribute("errorMsg", "아이디가 존재하지 않습니다.");
+					
+				return "common/errorPage";
+			}
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
 			
 			// [결과 확인용 로그]
 			System.out.println("Member 테이블에 존재하는 회원여부 : " + loginUser);
 			
-			
-			// [2.계정락관련] 조회 성공시 계정락 테이블 조회 (UI에서 넘어온 user UserNo 주입)
-			MemberLock ml = new MemberLock();
-			ml.setUserNo(loginUser.getUserNo());
-			
+			// [2.계정락관련] 조회 성공시 계정락 테이블 조회
 			// 해당 유저의 계정락 테이블 조회 : 계정장금시 IS_LOCKED 상태값 'Y' 아닐경우 'N'
-			MemberLock loginUserLock = memberService.loginLockMember(ml);
+			MemberLock loginUserLock = memberService.loginLockMember(loginUser.getUserNo());
 			// 계정락된 사람의 결과 (loginUserLock 이 null 이면 청정유저)
-			
+
 			//-----첫번째 if 문시작
 			if(loginUserLock != null && "Y".equals(loginUserLock.getIsLocked())) {
 				
 				// 계정이 잠겨있을때
 				// 에러 문구를 담아서 에러페이지로 포워딩
 				session.setAttribute("errorMsg", "로그인5회이상실패로 계정이 잠겼습니다."
-						               + "관리자에게문의하세요");
+						               + "관리자에게문의하세요.");
 				// [결과 확인용 로그]
 				System.out.println("계정락 케이스");
 				
 				return "common/errorPage";
 				
-			}else if((loginUser != null) &&
+			} else if((loginUser != null) &&
 					   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))){
 				
 				
@@ -133,7 +133,7 @@ public class MemberController {
 				// 실패횟수 초기화 (청정유저 제외)
 				int result = 1;
 				if(loginUserLock != null) {
-					result = memberService.resetFailCount(ml);
+					result = memberService.resetFailCount(loginUserLock);
 				}
 				// 초기화 성공시 화면으로 리턴
 				if(result>0) {
@@ -165,27 +165,38 @@ public class MemberController {
 				
 			} else {
 				// 비밀번호 오류가 몇번 있는 회원
+				if(loginUserLock == null) {
+					model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
+					
+					return "common/errorPage";
+				}
 				int failCount = loginUserLock.getFailCount();
 				
 				failCount += 1;
 				loginUserLock.setFailCount(failCount);
 				int result = memberService.increaseFailCount(loginUserLock);
 				// 에러 문구를 담아서 에러페이지로 포워딩
-				session.setAttribute("alertMsg", "로그인에실패했습니다"
-						                         + "(" + result
-						                         + "/ 5 " + "실패횟수)");
-				
-				if(result >= 5) {
-				    String isLocked = "Y";
-					result = memberService.lockAccount(isLocked);
-					session.setAttribute("alertMsg", "계정이 잠겼습니다.");
+				if(result > 0) {
+					session.setAttribute("alertMsg", "로그인에실패했습니다. (" + failCount + "/ 5 실패횟수)");
+
+					if(failCount >= 5) {
+
+						result = memberService.lockAccount(loginUserLock.getUserNo());
+						session.setAttribute("alertMsg", "계정이 잠겼습니다.");
+						
+						return "redirect:/myPage";
+					} else {
+						
+						return "common/errorPage";
+					}
 					
-					return "redirect:/myPage";
 				} else {
+					model.addAttribute("errorMsg", "로그인 실패 횟수가 기록되지 않습니다. 관리자에게 문의해주세요.");
 					
 					return "common/errorPage";
 				}
-			}//첫번째 if 문 끝
+			} 
+
 		}
 
 				
@@ -345,7 +356,7 @@ public class MemberController {
 		if(result > 0) {
 			// 회원 정보 변경에 성공했을 경우
 			
-			Member updateMem = memberService.loginMember(m);
+			Member updateMem = memberService.loginMember(m.getUserId());
 			
 			session.setAttribute("loginUser", updateMem);
 			
@@ -394,7 +405,7 @@ public class MemberController {
 				// 현재 로그인한 회원의 정보가 조금이라도 변경되었다면 
 				// 무조건 그 갱신된 정보를 다시 불러와서 세션에 덮어씌워야함!!
 				// > 기존의 로그인용 서비스 재활용하기
-				Member updateMem = memberService.loginMember(m);
+				Member updateMem = memberService.loginMember(m.getUserId());
 				
 				session.setAttribute("loginUser", updateMem);
 				// > 동일한 키값으로 한번 더 추가를 하면 밸류가 덮어씌워짐!!
@@ -553,14 +564,10 @@ public class MemberController {
 	//-------------------------------------------------------
 	@ResponseBody
 	@GetMapping("memberEnrollForm/idCheck")
-	public String ajaxIdCheck(Member m,String checkId) {
+	public String ajaxIdCheck(String checkId) {
 		
 		// XSS 공격 방지
-		String replaceCheckId 
-			= XssDefencePolicy.defence(m.getUserId());
-		
-		// 치환된 결과를 각 필드로 
-		m.setUserId(replaceCheckId);
+		checkId = XssDefencePolicy.defence(checkId);
 		
 		// Service로 넘기면서 요청 후 결과 받기
 		int count = memberService.idCheck(checkId);
@@ -570,14 +577,10 @@ public class MemberController {
 	
 	@ResponseBody
 	@GetMapping("emailCheck")
-	public String ajaxEmailCheck(Member m,String checkEmail) {
+	public String ajaxEmailCheck(String checkEmail) {
 		
 		// XSS 공격 방지
-		String replaceCheckEmail 
-			= XssDefencePolicy.defence(m.getEmail());
-		
-		// 치환된 결과를 각 필드로 
-		m.setUserId(replaceCheckEmail);
+		checkEmail = XssDefencePolicy.defence(checkEmail);
 			
 		// Service로 넘기면서 요청 후 결과 받기
 		int count = memberService.emailCheck(checkEmail);
