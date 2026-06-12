@@ -328,8 +328,10 @@
                     if (message != "imgFail") {
                         alert(message);
                         location.href = "/know-how/";
-                    } else {
+                    } else if(message === 'RuntimeException'){
                         alert("서버가 혼잡합니다. 잠시 후 다시 시도해주세요.");
+                    } else {
+                        alert("이미지 파일 저장에 실패했습니다. 잠시 후 다시 시도해주세요.");
                     }
                 },
                 error: function() {
