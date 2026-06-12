@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions"  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -80,6 +81,16 @@
         font-size: 15px;
         color: #6b7280;
     }
+
+	a {
+	    color: #4233c7;
+	    font-weight: 800;
+	    text-decoration: none;
+	}
+	
+	a:hover {
+	    color: #2f2499;
+	}
 
     .summary-dot {
         color: #c4c7d0;
@@ -388,12 +399,12 @@
 
                 <div class="info-row">
                     <span class="info-label">연락처</span>
-                    <span class="info-value">${ requestScope.s.phone }</span>
+                    <span class="info-value">${ requestScope.s.phone } </span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">이메일</span>
-                    <span class="info-value">${ requestScope.s.email }</span>
+                    <span class="info-value"><a href="mailto:${ requestScope.s.email }">${ requestScope.s.email }</a></span>
                 </div>
 
                 <div class="info-row">
