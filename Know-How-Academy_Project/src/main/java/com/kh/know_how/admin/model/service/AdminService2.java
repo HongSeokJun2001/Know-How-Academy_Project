@@ -15,6 +15,7 @@ import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 @Service
 public class AdminService2 {
@@ -77,6 +78,12 @@ public class AdminService2 {
 	
 		return ad2.updateStudentStatus(sqlSession, s);
 	}
+	
+	@Transactional
+	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
+		
+		return ad2.deleteStudent(sqlSession, userNo);
+	}
 
 	public ArrayList<StudentDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
@@ -86,10 +93,7 @@ public class AdminService2 {
 	@Transactional
 	public int updateStudentApprove(HashMap<String, Integer> map) { // 학원생의 가입을 승인하는 메소드
 
-		int result1 = ad2.updateStudentApprove(sqlSession, map);
-		int result2 = ad2.insertStudent(sqlSession, map);
-		
-		return result1*result2;
+		return ad2.updateStudentApprove(sqlSession, map) * ad2.insertStudent(sqlSession, map);
 	}
 	
 	@Transactional
@@ -139,11 +143,7 @@ public class AdminService2 {
 	@Transactional
 	public int insertNews(Board n, ArrayList<FileAttachment> list) { // 학원소식을 추가하는 메소드
 		
-		int result1 = bd.insertBoard(sqlSession, n);
-		
-		int result2 = ad2.insertAttachmentList(sqlSession, list);
-		
-		return result1 * result2;
+		return bd.insertBoard(sqlSession, n) * ad2.insertAttachmentList(sqlSession, list);
 	}
 
 	@Transactional
@@ -187,6 +187,16 @@ public class AdminService2 {
 	    }
 		
 		return result;
+	}
+
+	public ArrayList<MemberLock> selectLockingMemberList() { // 계정이 잠긴 유저 리스트를 불러오는 메소드
+		
+		return ad2.selectLockingMemberList(sqlSession);
+	}
+
+	public int updateMemberUnlock(int userNo) {
+		
+		return ad2.updateMemberUnlock(sqlSession, userNo);
 	}
 
 }//클래스 끝

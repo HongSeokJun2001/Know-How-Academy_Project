@@ -1,6 +1,5 @@
 package com.kh.know_how.admin.controller;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
 import com.kh.know_how.admin.model.service.AdminService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -36,7 +36,7 @@ public class AdminController {
 	
 	//필드부
 	@Autowired
-	AdminService as;
+	private AdminService as;
 	
 	
 	//메소드부
@@ -90,16 +90,18 @@ public class AdminController {
 		counselorSearchRequestDto.getPageRequest().setCurrentPage(currentPage);
     		
 	    //상담사 목록 조회
+		
+			
     	CounselorListPageDto counselorList = as.selectcounselorList(counselorSearchRequestDto);
-	    	
+    	
     	model.addAttribute("status", counselorSearchRequestDto.getStatus());
     	model.addAttribute("keyword", counselorSearchRequestDto.getKeyword());
     	model.addAttribute("pageInfo", counselorList.getPageInfo());
     	model.addAttribute("classList", counselorList.getClassList());
     	model.addAttribute("counselorList", counselorList.getCounselorList());
-    	model.addAttribute("page", "counselorList");
-    	
-    	return "admin/adminLayout";
+		model.addAttribute("page", "counselorList");
+		
+		return "admin/adminLayout";
     } 
     
     
@@ -159,7 +161,7 @@ public class AdminController {
     	return result > 0 ? "success" : "fail";
     }
     
-    //----------- 상담사 등록 메소드
+    //----------- 상담사 등록 페이지 연결 메소드
     @GetMapping("/counselorInvite")
     public String counselorInvite(Model model) {
     	
@@ -168,9 +170,27 @@ public class AdminController {
         return "admin/adminLayout";
     }
     
+    //----------- 상담사 초대메일 속 url을 작성하는 메소드
+    public String counselorInviteMailContent(HttpServletRequest request) {
+    	
+    	String baseUrl =
+    	        request.getScheme() + "://" +
+    	        request.getServerName() +
+    	        ":" +
+    	        request.getServerPort() +
+    	        request.getContextPath();
+
+    	String inviteUrl = baseUrl + "/myPageCounselor/counselor/signup?token=";
+    	
+    	return inviteUrl;
+    }
+    
+    //----------- 상담사 초대메일 전송 메소드
     @ResponseBody
     @PostMapping("/invite/mail")
-    public Map inviteCounselor(CounselorInviteDto counselorInvite) {
+    public Map inviteCounselor(HttpServletRequest request, CounselorInviteDto counselorInvite) {
+    	
+    	counselorInvite.setInviteUrl(counselorInviteMailContent(request));
     	
     	Map<String,String> message = new HashMap<>();
     	
@@ -196,15 +216,23 @@ public class AdminController {
 						        	  message.put("status", result);
     		}
     		
+		} catch (IllegalArgumentException e) {
+			// 컨트롤러에서 에러처리를 담당하므로 Ajax success 함수로 전달됨
+			
+			System.out.println(">>> [메일 발송 오류] " + e.getMessage());
+			message.put("message", e.getMessage());
+			message.put("status", "MAIL_FAIL");
+			
 		} catch (RuntimeException e) {
+			
 			System.out.println(">>> [메일 발송 오류] " + e.getMessage());
 			message.put("message", "메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.");
 			message.put("status", "MAIL_FAIL");
 		}
     	
+    	
     	return message;
     }
-    
     
     @GetMapping("/invite/list")
     public String selectInviteList(Model model) {

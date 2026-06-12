@@ -108,7 +108,22 @@ UPDATE MEMBER_LOCK
    SET FAIL_COUNT = 0
      , IS_LOCKED = 'N'
  WHERE USER_NO = ?
-		   
+ 
+ ---------------------------------------
+ 
+ -- 반의 총갯수를 구하는 쿼리문
+ SELECT *
+   FROM CLASS
+   WHERE CLASS_NO
+   AND STATUS = 'N'
+   
+-- 페이징 처리가된 반의 목록을 조회하는 쿼리문 
+SELECT CLASS_NO
+     , CLASS_NAME
+     , STATUS
+  FROM CLASS
+ WHERE CLASS_NO
+   AND STATUS = 'Y'
  
  
  

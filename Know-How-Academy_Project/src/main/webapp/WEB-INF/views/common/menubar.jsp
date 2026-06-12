@@ -53,10 +53,13 @@
             margin-top : 50px;
 	    }
 	    .mypage-outer {
-	        width : 1200px;
-            border : 1px dotted black;
-            margin : auto;
-            margin-top : 50px;
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 1000px;
+           margin: auto;
 	    }
         header {
             text-align: center;
@@ -110,12 +113,14 @@
 			let alertMsg = "${ sessionScope.alertMsg }";
 			
 			// alert(alertMsg);
-			alertify.alert(alertMsg, function(){ alertify.success('Ok'); });
+			alertify.alert(alertMsg);
 		
 		</script>
 		<c:remove var="alertMsg" scope="session" />
-	</c:if>
-	
+	</c:if>	
+	<script>
+		alertify.defaults.glossary.title = '시스템';
+	</script>
     <br>
     <header>
         <a href="/know-how" id="logo_link">

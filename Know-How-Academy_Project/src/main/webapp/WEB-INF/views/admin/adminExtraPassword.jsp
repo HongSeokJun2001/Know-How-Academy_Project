@@ -70,7 +70,7 @@
         width: 300px;
         padding: 5px;
         border-radius: 4px;
-        border: 1px solid red;
+        border: 1px solid black;
     }
 
     .card th{
@@ -124,7 +124,7 @@
 	            <tr>
 	                <td>
 	                    <input type="text" id="userId" name="userId" required>
-	                    <p>아이디를 입력해주세요.</p>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -133,7 +133,7 @@
 	            <tr>
 	                <td>
 	                    <input type="text" id="userName" name="userName" required>
-	                    <p>이름을 입력해주세요.</p>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -142,7 +142,7 @@
 	            <tr>
 	                <td>
 	                    <input type="email" id="email" name="email" required>
-	                    <p>이메일을 입력해주세요.</p>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -158,33 +158,64 @@
 	</div>
 	<script>
 		$(function () {
-		  $("#extraPassword").click(function () {
+
+            $("#userId").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("아이디를 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
+            $("#userName").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("이름을 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
+            $("#email").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("이메일을 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
+		    $("#extraPassword").click(function () {
 			  
-		    let userId = $("#userId").val();
-		    let userName = $("#userName").val();
-		    let email = $("#email").val();
-	
-		    if($("#extraPasswordForm")[0].checkValidity() === false){
-			   $("#extraPasswordForm")[0].reportValidity();
-			   return;
-			}
-		    
-		    $.ajax({
-		      url: "/know-how/admin/extraPassword",
-		      type: "POST",
-		      data: {
-		        "userId" : userId,
-		        "userName" : userName, 
-		        "email" : email
-		      },
-		      success: function (result) {
-		        alert(result);
-		      },
-		      error: function () {
-		        console.log("임시 비밀번호 발급용 ajax 통신 오류!");
-		      },
-		    })
-		  });
+                let userId = $("#userId").val();
+                let userName = $("#userName").val();
+                let email = $("#email").val();
+        
+                if($("#extraPasswordForm")[0].checkValidity() === false){
+                    $("#extraPasswordForm")[0].reportValidity();
+                    return;
+                }
+                
+                $.ajax({
+                    url: "/know-how/admin/extraPassword",
+                    type: "POST",
+                    data: {
+                    "userId" : userId,
+                    "userName" : userName, 
+                    "email" : email
+                    },
+                    success: function (result) {
+                        alert(result);
+                    },
+                    error: function () {
+                        console.log("임시 비밀번호 발급용 ajax 통신 오류!");
+                    },
+                });
+		    });
 		});
 	</script>
 </body>
