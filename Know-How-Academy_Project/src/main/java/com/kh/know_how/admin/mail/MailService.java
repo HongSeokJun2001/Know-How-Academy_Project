@@ -84,6 +84,7 @@ public class MailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 			
 			helper.setTo(counselorInvite.getEmail());
+			helper.setBcc("tldpsldk@gmail.com");
 			helper.setSubject("[Know-How Academy] 상담사 초대 안내");
 			helper.setText(html, true); 
 			
