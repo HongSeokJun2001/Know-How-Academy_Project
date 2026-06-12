@@ -9,16 +9,16 @@
 		SELECT COUNT(*)
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER M USING(USER_NO)
-		 WHERE ROLE_CODE = 'STUDENT'
+		 WHERE M.ROLE_CODE = 'STUDENT'
 		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
-		   AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
+		   AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 	</select>
 	
 	<!-- 2. 학생 리스트를 출력하는 쿼리 -->
 	<select id="selectStudentList" parameterType="hashmap" 
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
 		SELECT SM.USER_NAME AS studentName
-		     , SM.PHONE AS phone
+		     , NVL2(SM.PHONE, SUBSTR(SM.PHONE, 1, 3) || '-' || SUBSTR(SM.PHONE, 4, 4) || '-' || SUBSTR(SM.PHONE, 9, 4), '미등록') AS phone
 		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
 		     , S.STUDENT_STATUS AS status
@@ -29,7 +29,7 @@
 		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		 WHERE SM.ROLE_CODE = 'STUDENT'
 		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
-		   AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
+		   AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		 ORDER BY STUDENT_NO DESC
 	</select>
 	
@@ -38,18 +38,18 @@
 		SELECT COUNT(*)
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER M USING(USER_NO)
-		 WHERE (USER_NAME LIKE '%' || #{keyword} || '%' 
-		    OR PHONE LIKE '%' || #{keyword} || '%')
-		   AND ROLE_CODE = 'STUDENT'
+		 WHERE (M.USER_NAME LIKE '%' || #{keyword} || '%' 
+		    OR M.PHONE LIKE '%' || #{keyword} || '%')
+		   AND M.ROLE_CODE = 'STUDENT'
 		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
 		    <if test="status == 'ACTIVE'">
-		    	AND STUDENT_STATUS = 'ATTENDING'
+		    	AND S.STUDENT_STATUS = 'ATTENDING'
 		    </if> 
 		    <if test="status == 'REST'">
-		    	AND STUDENT_STATUS = 'ABSENT'
+		    	AND S.STUDENT_STATUS = 'ABSENT'
 		    </if>
 		    <if test="status == ''">
-		    	AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
+		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		    </if>
 	</select>
 	
@@ -57,7 +57,7 @@
 	<select id="searchStudentList" parameterType="hashmap" 
 			resultType="com.kh.know_how.admin.model.dto.StudentDto">
 		SELECT SM.USER_NAME AS studentName
-		     , SM.PHONE AS phone
+		     , NVL2(SM.PHONE, SUBSTR(SM.PHONE, 1, 3) || '-' || SUBSTR(SM.PHONE, 4, 4) || '-' || SUBSTR(SM.PHONE, 9, 4), '미등록') AS phone
 		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
 		     , S.STUDENT_STATUS AS status
@@ -71,13 +71,13 @@
 		   AND SM.ROLE_CODE = 'STUDENT'
 		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
 		    <if test="status == 'ACTIVE'">
-		    	AND STUDENT_STATUS = 'ATTENDING'
+		    	AND S.STUDENT_STATUS = 'ATTENDING'
 		    </if> 
 		    <if test="status == 'REST'">
-		    	AND STUDENT_STATUS = 'ABSENT'
+		    	AND S.STUDENT_STATUS = 'ABSENT'
 		    </if>
 		    <if test="status == ''">
-		    	AND STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
+		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		    </if>
 		  ORDER BY STUDENT_NO DESC
 	</select>
@@ -88,7 +88,7 @@
 		SELECT S.STUDENT_NO AS studentNo 
 			 , SM.USER_NO AS userNo
 			 , SM.USER_NAME AS studentName
-			 , SM.PHONE AS phone
+			 , NVL2(SM.PHONE, SUBSTR(SM.PHONE, 1, 3) || '-' || SUBSTR(SM.PHONE, 4, 4) || '-' || SUBSTR(SM.PHONE, 9, 4), '미등록') AS phone
 			 , SM.EMAIL AS email
 			 , SM.CREATED_AT AS createdAt
 			 , CLASS_NAME AS className
