@@ -27,6 +27,15 @@
            max-width: 600px;
            margin: auto;
 	    }
+	.mypagelogout-outer {
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 600px;
+           max-height: 700px;
+	    }    
 	.loginPage-title {
 	    font-size: 36px;
 	    font-weight: bold;
@@ -78,6 +87,19 @@
         transition: background 0.2s;
         height: 50px;
         width: 150px;
+        margin: auto;
+	}
+	.btn-logoutPage {
+	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+        height: 50px;
+        width: 120px;
         margin: auto;
 	}
 	
@@ -150,7 +172,7 @@
 							    <button type="button" class="btn-loginPage"
 							                onclick="searchPasswordPage();">비밀번호 찾기</button>
 						 	</th>	
-				            <th></th>
+				            <th> <input type="hidden" name="failCount" value="0"></th>
 						  </tr>
 						</tbody>
 	                   </table>
@@ -185,7 +207,7 @@
 					    <br><br>
 					    <h2 align="center">마이페이지</h2>
 					    <br>
-					  <table class="mypagelogin-outer" >
+					  <table class="loginPage-table" >
 					     <thead>
 					      <tr>
 							<th></th>
@@ -204,7 +226,7 @@
 						  <tr>
 						    <th></th>
 						    <th>
-								<button type="button" class="btn-loginPage"
+								<button type="button" class="btn-logoutPage"
 													  onclick="myInformationSelectPage();">내정보 조회</button>					  
 						    </th>
 						    <th></th>
@@ -212,7 +234,7 @@
 						 <tr>
 						    <th></th>
 							<th>
-							    <button type="button" class="btn-loginPage"
+							    <button type="button" class="btn-logoutPage"
 									                  onclick="myInformationChangePage();">내정보 수정</button>
 						   </th>
 						   <th></th>
@@ -225,7 +247,7 @@
 						 <tr>
 						   <th></th>
 						   <th>
-						       <button type="button" class="btn-loginPage" 
+						       <button type="button" class="btn-logoutPage" 
 						               onclick="logout();">로그아웃</button>             
 						   </th>
 						   <th></th>

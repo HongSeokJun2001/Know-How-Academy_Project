@@ -142,7 +142,7 @@
 				<tr>
 					<th>&nbsp;&nbsp;&nbsp;수정할 주소</th>
 					<th>
-						<input type="text" name="address" id="address">
+						<input type="text" class="changePage-input" name="address" id="address">
 					</th>
 					<th></th>
 				</tr>

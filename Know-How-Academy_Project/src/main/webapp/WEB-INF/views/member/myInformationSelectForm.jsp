@@ -93,11 +93,13 @@
 </head>
 <body>
    <jsp:include page="../common/menubar.jsp"/>
-   
+   <br><br>
     <div class="selectForm-outer">
+    
     <br><br>
     <h2 align="left" class="selectPage-title">내정보</h2>
      <br>
+     
     <%-- 상담예약 페이지로 요청을 보냄--%>
     <div id="myInformationSelect-form">
                                               
