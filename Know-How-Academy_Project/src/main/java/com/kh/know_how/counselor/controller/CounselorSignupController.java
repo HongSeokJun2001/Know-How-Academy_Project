@@ -35,8 +35,13 @@ public class CounselorSignupController {
     	
     	CounselorInviteCompleteDto inviteInfoDto = as.getCounselorInfo(token);
     	
-    	session.setAttribute("inviteInfoDto",inviteInfoDto);
-    	model.addAttribute("inviteInfoDto",inviteInfoDto);
+    	if(inviteInfoDto != null) {
+	    	session.setAttribute("inviteInfoDto",inviteInfoDto);
+	    	model.addAttribute("inviteInfoDto",inviteInfoDto);
+    	}else {
+    		model.addAttribute("errorMsg", "사용되거나 만료된 링크입니다.");
+    		return "common/errorPage";
+    	}
     	
     	return "counselor/counselorEnrollForm";
     }
@@ -69,6 +74,7 @@ public class CounselorSignupController {
     			profile.setProfileImgPath(changeName);
     			if("1".equals(changeName)) {
     				message = "imgFail";
+    				return message;
     			}
         		cp.setOriginName(file.getOriginalFilename());
         		cp.setSaveName(changeName);
@@ -92,7 +98,7 @@ public class CounselorSignupController {
 			message = "올바르지 않은 접근입니다.";
 		} catch (RuntimeException e) {
 			System.out.println(">>> [상담사 회원가입 오류2] " + e.getMessage());
-			message = "imgFail";
+			message = "RuntimeException";
 		}
     	return message;
     }
