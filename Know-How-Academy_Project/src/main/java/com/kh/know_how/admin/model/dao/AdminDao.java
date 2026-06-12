@@ -17,6 +17,7 @@ import com.kh.know_how.admin.model.dto.CounselorListResponseDto;
 import com.kh.know_how.admin.model.dto.CounselorProfileDTO;
 import com.kh.know_how.admin.model.dto.CounselorSearchRequestDto;
 import com.kh.know_how.admin.model.dto.TodayReservationDto;
+import com.kh.know_how.counselor.model.vo.CounselorProfilImg;
 import com.kh.know_how.counselor.model.vo.CounselorProfile;
 import com.kh.know_how.member.model.vo.Member;
 
@@ -137,6 +138,11 @@ public class AdminDao {
 	public int updateCounselorInviteInfo(SqlSessionTemplate sqlSession, CounselorInviteCompleteDto inviteInfoDto) {
 		
 		return sqlSession.update("adminMapper.updateCounselorInviteInfo", inviteInfoDto);
+	}
+
+	public int insertCounselorProfileImg(SqlSessionTemplate sqlSession, CounselorProfilImg cp) {
+		
+		return sqlSession.insert("adminMapper.insertCounselorProfileImg", cp);
 	}
 
 

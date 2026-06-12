@@ -139,8 +139,8 @@
 	       LEFT JOIN MEMBER 			    	CM  ON 	CM.USER_NO = CI.USER_NO
 	      <choose>
 	      	<when test="status == 'ACTIVE'">
-	     WHERE (CI.INVITE_STATUS = 'PENDING'
-	        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
+	     WHERE ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+			OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 	       	</when>
 	       	<when test="status == 'INACTIVE'">
 	     WHERE CI.INVITE_STATUS = 'USED'
@@ -198,7 +198,9 @@
 									OR CM.PHONE     LIKE '%' || #{keyword} || '%'
 			               	)
 		                   </if>
-		                 ORDER BY CI.USER_NO NULLS FIRST, CM.USER_NAME
+		                 ORDER BY CI.USER_NO NULLS FIRST
+		                        , CASE WHEN CL.CLASS_NAME IS NULL THEN 0 ELSE 1 END
+		                        , CM.USER_NAME
 		                 )P
 		        )
 		 WHERE RNUM BETWEEN #{pageRequest.startRow} AND #{pageRequest.endRow}
@@ -323,7 +325,7 @@
     				VALUES(SEQ_INVITE_NO.NEXTVAL, #{counselorName}, #{email}, #{inviteToken})
 	 </insert>
 	 
-	 <!-- 19. 초대내역 조회 -->
+	 <!-- 19. 최근 2일간 초대내역 조회 -->
 	 <select id="selectInviteList" resultType="com.kh.know_how.admin.model.dto.CounselorInviteListDto">
 	 	SELECT CI.INVITE_NO			AS inviteNo
 	 		 , CI.INVITE_NAME		AS inviteName
@@ -337,6 +339,7 @@
 	 	     , CI.USER_NO			AS userNo
 	 	  FROM COUNSELOR_INVITE CI
 	 	  LEFT JOIN MEMBER M ON (CI.USER_NO = M.USER_NO)
+	 	 WHERE INVITE_SENT_AT > SYSDATE -2
 	 	 ORDER BY INVITE_SENT_AT DESC
 	 </select>
 	 
@@ -369,7 +372,7 @@
 	 <!-- 22. 상담사 회원가입용 쿼리(profile) -->
 	 <insert id="insertCounselorProfile" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfile">
 	 	INSERT INTO COUNSELOR_PROFILE(COUNSEL_NO, PROFILE_IMG_PATH, BIO, STATUS, USER_NO)
-	    VALUES( SEQ_COUNSEL_NO, #{profileImgPath}, #{bio}, 'ACTIVE', 'COUNSELOR', #{userNo})
+	    VALUES( SEQ_COUNSEL_NO.NEXTVAL, #{profileImgPath}, #{bio}, 'ACTIVE', #{userNo})
 	 </insert>
 	 
 	 <!-- 23. 상담사 회원가입용 쿼리(invite) -->
@@ -381,6 +384,12 @@
 	 	   AND INVITE_NAME = #{inviteName}
 	 	   AND INVITE_EMAIL = #{inviteEmail}
 	 </update>
+	 
+	 <!-- 24. 상담사 회원가입용 쿼리(CounselorProfilImg) -->
+	 <insert id="insertCounselorProfileImg" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfilImg">
+	 	INSERT INTO COUNSELOR_PROFIL_IMG(PROFILE_NO, USER_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH)
+	 				   VALUES(SEQ_PROFILE_NO, #{userNo}, #{originName}, #{saveName}, #{filePath})
+	 </insert>
 	 
 	 	  
 </mapper>
