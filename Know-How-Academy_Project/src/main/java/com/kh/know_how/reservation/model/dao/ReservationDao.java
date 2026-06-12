@@ -85,6 +85,10 @@ public class ReservationDao {
 		return sqlSession.selectOne("reservationMapper.selectOneCounselor", counselNo);
 	}
 	
+	public ArrayList<String> selectReservedDates(SqlSessionTemplate sqlSession, int counselNo) {
+		return (ArrayList)sqlSession.selectList("reservationMapper.selectReservedDates", counselNo);
+	}
+	
 	/**
 	 * [공통] 특정 상담 예약 신청서 내역 상세 조회
 	 * @param sqlSession
