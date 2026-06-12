@@ -146,8 +146,7 @@
 					<th>
 						<input type="email" class="enrollPage-input" name="email" required>
 					</th>
-					<th><button type="button" onclick="emailCheck();"
-								class="btn-enrollPageCheck" required>이메일중복확인</button>
+					<th><button type="button" onclick="emailCheck();" class="btn-enrollPageCheck" required>이메일중복확인</button>
 					</th>
 				</tr>
 				<tr>
@@ -228,7 +227,7 @@
 					console.log("아이디 중복체크용 ajax 통신 실패!");
 				}
 			});
-			
+		}
 			function emailCheck() {
 				
 				let $email = $("#enroll-form input[name=email]");
@@ -236,7 +235,7 @@
 				$.ajax({
 					url : "/know-how/myPage/emailCheck",
 					type : "get",
-					data : { checkEmail : $emailCheck.val() },
+					data : { checkEmail : $email.val() },
 					success : function(result) {
 						
 						if(result == "NNNNN") {
