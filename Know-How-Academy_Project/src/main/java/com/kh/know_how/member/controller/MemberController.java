@@ -136,7 +136,9 @@ public class MemberController {
 						// > 로그인 실패일 경우
 						
 						failCount += 1;
-						int result = memberService.increaseFailCount(failCount);
+
+						loginUserLock.setFailCount(failCount);
+						int result = memberService.increaseFailCount(loginUserLock);
 						// 에러 문구를 담아서 에러페이지로 포워딩
 						session.setAttribute("alertMsg", "로그인에실패했습니다"
 								                       + "(" + result 

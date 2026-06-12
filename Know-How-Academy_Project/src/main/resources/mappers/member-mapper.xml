@@ -149,21 +149,17 @@
 	 </select>
 
 	<!-- 회원가입시 잠금데이터용 쿼리문 -->
-	<insert  id="insertMemberLock" parameterType="memberLock">
+	<insert  id="insertMemberLock">
 	    INSERT INTO MEMBER_LOCK(USER_NO
-                              , FAIL_COUNT
-		                      , IS_LOCKED
 		                      , LOCKED_AT
 		                      , LAST_FAIL_AT)
-		                 VALUES(#{userNo}
-		                      , #{failCount}
-		                      , #{isLocked}
-		                      , #{lockedAt}
-		                      , #{lastFailAt})
+		                 VALUES(SEQ_USER_NO.CURRVAL
+		                      , NULL
+		                      , NULL)
 	</insert>
 	
 	<!-- 로그인실패시 실패횟수증가 쿼리문 -->
-	<update  id="increaseFailCount" parameterType="int">
+	<update  id="increaseFailCount" parameterType="memberLock">
 	    UPDATE MEMBER_LOCK
 		   SET FAIL_COUNT = #{failCount} 
 		     , LAST_FAIL_AT = SYSDATE
@@ -171,7 +167,7 @@
 	</update>
 	
 	<!-- 5회 이상이면 계점잠금 쿼리문 -->
-	<update id="lockAccount" parameterType="String">
+	<update id="lockAccount" parameterType="string">
 	    UPDATE MEMBER_LOCK
 	       SET IS_LOCKED = 'Y',
 	           LOCKED_AT = SYSDATE
@@ -179,10 +175,11 @@
     </update>
     
     <!-- 로그인성공시 실패횟수 초기화 -->
-    <update id="resetFailCount" parameterType="int">
+    <update id="resetFailCount" parameterType="_int">
 	    UPDATE MEMBER_LOCK
 	       SET FAIL_COUNT = 0,
 	           IS_LOCKED = 'N'
 	     WHERE USER_NO = #{userNo}
-</update>		   
+	</update>
+
 </mapper>
