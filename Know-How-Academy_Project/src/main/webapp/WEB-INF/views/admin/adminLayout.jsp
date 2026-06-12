@@ -290,7 +290,7 @@
         </div>
 
         <div class="header-user-area">
-            <div class="admin-profile">name</div>
+            <div class="admin-profile">${ sessionScope.loginUser.userName }</div>
             <span class="admin-name">관리자님</span>
             <button type="button" class="logout-btn" onclick="logoutAdmin()">
                 로그아웃

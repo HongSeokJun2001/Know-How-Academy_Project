@@ -100,7 +100,7 @@
 			function enrollPage() {
 				
 				// 회원가입페이지로 이동
-				location.href = "/know-how/myPage/enrollForm";
+				location.href = "/know-how/myPage/memberEnrollForm";
 				// GET 방식
 			}
 		

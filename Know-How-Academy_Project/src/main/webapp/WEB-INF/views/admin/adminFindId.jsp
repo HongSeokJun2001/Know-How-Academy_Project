@@ -70,7 +70,7 @@
         width: 300px;
         padding: 5px;
         border-radius: 4px;
-        border: 1px solid red;
+        border: 1px solid black;
     }
 
     .card th{
@@ -124,7 +124,7 @@
 	            <tr>
 	                <td>
 	                    <input type="text" id="userName" name="userName" required>
-	                    <p>이름을 입력해주세요.</p>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -133,7 +133,7 @@
 	            <tr>
 	                <td>
 	                    <input type="email" id="email" name="email" required>
-	                    <p>이메일을 입력해주세요.</p>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -149,6 +149,27 @@
 	</div>
 	<script>
 		$(function () {
+
+          $("#userName").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("이름을 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
+            $("#email").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("이메일을 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
 		  $("#findId").click(function () {
 		    
 			let userName = $("#userName").val();
