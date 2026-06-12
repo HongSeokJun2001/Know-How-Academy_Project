@@ -156,19 +156,20 @@ public class MemberController {
 						return "redirect:/";
 					}
 					
-				}else {
+				} else {
 					// result == 0, 초기화 update 문 오류
 					session.setAttribute("alertMsg", "서버가 혼잡합니다. 잠시 후 다시 시도해주세요.");
 					
 					return "redirect:/";
 				}
 				
-			}else {
+			} else {
 				// 비밀번호 오류가 몇번 있는 회원
 				int failCount = loginUserLock.getFailCount();
 				
 				failCount += 1;
-				int result = memberService.increaseFailCount(failCount);
+				loginUserLock.setFailCount(failCount);
+				int result = memberService.increaseFailCount(loginUserLock);
 				// 에러 문구를 담아서 에러페이지로 포워딩
 				session.setAttribute("alertMsg", "로그인에실패했습니다"
 						                         + "(" + result

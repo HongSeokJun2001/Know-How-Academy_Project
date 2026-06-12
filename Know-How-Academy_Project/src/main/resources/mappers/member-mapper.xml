@@ -23,6 +23,8 @@
 	 <!-- member_Lock 테이블 -->
 	 <resultMap id="memberLockResultSet" type="memberLock">
 	    <id column="USER_NO" property="userNo" />
+	     <result column="USER_NAME" property="userName" />
+	     <result column="ROLE_CODE" property="roleCode" />
 	     <result column="FAIL_COUNT" property="failCount" />
 	     <result column="IS_LOCKED" property="isLocked"/>
 	     <result column="LOCKED_AT" property="lockedAt"/>
@@ -114,6 +116,24 @@
 	       WHERE EMAIL = #{checkEmail}
 	</select>
 	
+	<!-- 계정 잠긴 유저들 조회용 쿼리문 -->
+	<select id="selectLockingMemberList" resultMap="memberLockResultSet">
+		SELECT USER_NAME
+			 , ROLE_CODE
+			 , FAIL_COUNT
+			 , LOCKED_AT
+			 , USER_NO
+		  FROM MEMBER M
+		  JOIN MEMBER_LOCK L USING (USER_NO)
+		 WHERE IS_LOCKED = 'Y'
+	</select>
+	
+	<!-- 계정 잠금 해제용 쿼리문 -->
+	<update id="updateMemberUnlock" parameterType="_int">
+		UPDATE MEMBER_LOCK
+		   SET IS_LOCKED = 'N'
+		 WHERE USER_NO = #{userNo}
+	</update>
 <!-- ___________________________________________________________ -->
 	
 	
@@ -133,21 +153,17 @@
 	 </select>
 
 	<!-- 회원가입시 잠금데이터용 쿼리문 -->
-	<insert  id="insertMemberLock" parameterType="memberLock">
+	<insert  id="insertMemberLock">
 	    INSERT INTO MEMBER_LOCK(USER_NO
-                              , FAIL_COUNT
-		                      , IS_LOCKED
 		                      , LOCKED_AT
 		                      , LAST_FAIL_AT)
-		                 VALUES(#{userNo}
-		                      , #{failCount}
-		                      , #{isLocked}
-		                      , #{lockedAt}
-		                      , #{lastFailAt})
+		                 VALUES(SEQ_USER_NO.CURRVAL
+		                      , NULL
+		                      , NULL)
 	</insert>
 	
 	<!-- 로그인실패시 실패횟수증가 쿼리문 -->
-	<update  id="increaseFailCount" parameterType="int">
+	<update  id="increaseFailCount" parameterType="memberLock">
 	    UPDATE MEMBER_LOCK
 		   SET FAIL_COUNT = #{failCount} 
 		     , LAST_FAIL_AT = SYSDATE
@@ -155,7 +171,7 @@
 	</update>
 	
 	<!-- 5회 이상이면 계점잠금 쿼리문 -->
-	<update id="lockAccount" parameterType="String">
+	<update id="lockAccount" parameterType="string">
 	    UPDATE MEMBER_LOCK
 	       SET IS_LOCKED = 'Y',
 	           LOCKED_AT = SYSDATE
@@ -163,10 +179,11 @@
     </update>
     
     <!-- 로그인성공시 실패횟수 초기화 -->
-    <update id="resetFailCount" parameterType="int">
+    <update id="resetFailCount" parameterType="_int">
 	    UPDATE MEMBER_LOCK
 	       SET FAIL_COUNT = 0,
 	           IS_LOCKED = 'N'
 	     WHERE USER_NO = #{userNo}
-</update>		   
+	</update>
+
 </mapper>

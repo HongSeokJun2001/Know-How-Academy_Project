@@ -19,4 +19,6 @@ public class MemberLock {
 	private String isLocked; // IS_LOCKED	VARCHAR2(1 BYTE) 계정잠금여부
 	private Date lockedAt;// LOCKED_AT	DATE 잠금발생시간
 	private Date lastFailAt;// LAST_FAIL_AT	DATE 마지막로그인실패시간
+	private String userName; // USER_NAME 사용자 이름 (JOIN)
+	private String roleCode; // ROLE_CODE 권한코드 (JOIN)
 }

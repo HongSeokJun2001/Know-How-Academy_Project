@@ -110,16 +110,16 @@
 				<tr>
 					<th><label for="userId">* 아이디</label></th>
 					<th>
-						<input type="text" class="enrollPage-input" name="userId" maxlength="16" placeholder="8~16자리 영문자/숫자" required>
+						<input type="text" class="enrollPage-input" name="userId" minlength="8" maxlength="16" pattern="(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+" title="8~16자리 영문자/숫자" placeholder="8~16자리 영문자/숫자" required>
 						<div class="errorMessage" id="userIdErrorMessage"></div>		
 					</th>
-					<th><button type="button" onclick="idCheck();"
+					<th><button type="button" id="idCheckBtn" onclick="idCheck();"
 								class="btn-enrollPageCheck" >중복확인</button></th>		
 				</tr>
 				<tr>
 					<th><label for="userPwd">* 비밀번호</label></th>
 					<th>
-						<input type="password" class="enrollPage-input" name="userPwd" maxlength="20" placeholder="8~20자리 영문자/숫자" autocomplete="new-password" required>
+						<input type="password" class="enrollPage-input" name="userPwd" minlength="8" maxlength="20" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)_+=\-])[a-zA-Z\d!@#$%^&*\(\)_+=\-]+$" title="8~20자리 영문자/숫자/특수문자 포함" placeholder="8~20자리 영문자/숫자/특수문자 포함" autocomplete="new-password" required>
 					    <div class="errorMessage" id="userPwdErrorMessage"></div>
 					</th>
 					<th></th>
@@ -127,7 +127,7 @@
 				<tr>
 					<th><label for="userPwd">* 비밀번호 확인</label></th>
 					<th>
-						<input type="password" class="enrollPage-input" name="userPwdCheck" maxlength="20" required>
+						<input type="password" class="enrollPage-input" name="userPwdCheck" autocomplete="new-password" required>
 						<div class="errorMessage" id="userPwdCheckErrorMessage"></div>
 					</th>
 					<th></th>
@@ -136,7 +136,7 @@
 					<th><label for="userName">* 이름</label></th>
 					<th>
 					    
-						<input type="text" class="enrollPage-input" name="userName" maxlength="6" required>
+						<input type="text" class="enrollPage-input" name="userName" minlength="2" maxlength="10" pattern="[가-힣]+" title="한글 2~10자리" placeholder="한글 2~10자리" required>
 					</th>
 					<th></th>
 				</tr>
@@ -146,20 +146,21 @@
 					<th>
 						<input type="email" class="enrollPage-input" name="email" required>
 					</th>
-					<th><button type="button" onclick="emailCheck();" class="btn-enrollPageCheck" required>이메일중복확인</button>
+					<th><button type="button" id="emailCheckBtn" onclick="emailCheck();"
+								class="btn-enrollPageCheck" disabled>이메일중복확인</button>
 					</th>
 				</tr>
 				<tr>
 					<th><label for="address">주소</label></th>
 					<th>
-						<input type="text" class="enrollPage-input" name="address" >
+						<input type="text" class="enrollPage-input" maxlength="100" name="address">
 					</th>
 					<th></th>
 				</tr>
                 <tr>
 					<th><label for="phone">전화번호</label></th>
 					<th>
-						<input type="text" class="enrollPage-input" name="phone" placeholder="-제외하고 입력">
+						<input type="text" class="enrollPage-input" name="phone" pattern="[0-9]+" minlength="11" maxlength="11" placeholder="-제외하고 입력">
 					</th>
 					<th></th>
 				</tr>
@@ -172,8 +173,8 @@
 				<tbody>
 				     <th></th>
 				     <th>
-				        <button type="submit" class="btn-enrollPage" disabled>회원가입</button>
-				        <button type="reset" class="btn-enrollPage">초기화</button>
+				        <button type="submit" class="btn-enrollPage" onclick="return validateForm();" disabled>회원가입</button>
+				        <button type="reset" class="btn-enrollPage" onclick="resetForm();">초기화</button>
 				     </th>
                      <th></th>
 				</tbody>
@@ -191,6 +192,11 @@
 			
 			let $userId = $("#enroll-form input[name=userId]");
 		
+			if($userId[0].checkValidity() === false){
+			   $userId[0].reportValidity();
+			   return;
+			} 
+
 			$.ajax({
 				url : "/know-how/myPage/memberEnrollForm/idCheck",
 				type : "get",
@@ -213,7 +219,8 @@
 							
 							// 아이디값을 확정 (다시는 수정 못하게)
 							$userId.prop("readonly", true);
-							
+							$("#idCheckBtn").attr("disabled", true);
+							$("#emailCheckBtn").removeAttr("disabled");
 						} else {
 							// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
 							
@@ -230,50 +237,71 @@
 		}
 			function emailCheck() {
 				
-				let $email = $("#enroll-form input[name=email]");
+			let $email = $("#enroll-form input[name=email]");
 			
-				$.ajax({
-					url : "/know-how/myPage/emailCheck",
-					type : "get",
-					data : { checkEmail : $email.val() },
-					success : function(result) {
+			if($email[0].checkValidity() === false){
+			   $email[0].reportValidity();
+			   return;
+			} 
+
+			$.ajax({
+				url : "/know-how/myPage/emailCheck",
+				type : "get",
+
+				
+				data : { checkEmail : $email.val() },
+				success : function(result) {
+					
+					if(result == "NNNNN") {
+						// > 사용 불가한 아이디일 경우
 						
-						if(result == "NNNNN") {
-							// > 사용 불가한 아이디일 경우
+						alert("이미 사용중인 이메일입니다.");
+						
+						// 아이디 재입력 유도
+						$email.focus();
+						
+					} else {
+						// > 사용 가능한 아이디일 경우
+						
+						if(confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")){
 							
-							alert("이미 사용중인 이메일입니다.");
+							// 이메일값을 확정 (다시는 수정 못하게)
+							$email.prop("readonly", true);
+							$("#emailCheckBtn").attr("disabled", true);
+							// 회원가입 버튼 활성화
+							$("#enroll-form button[type=submit]").removeAttr("disabled");
+
+						} else {
+							// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
 							
 							// 아이디 재입력 유도
 							$email.focus();
-							
-						} else {
-							// > 사용 가능한 아이디일 경우
-							
-							if(confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")){
-								
-								// 이메일값을 확정 (다시는 수정 못하게)
-								$email.prop("readonly", true);
-								
-								// 회원가입 버튼 활성화
-								$("#enroll-form button[type=submit]").removeAttr("disabled");
-								
-							} else {
-								// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
-								
-								// 아이디 재입력 유도
-								$email.focus();
-							}
 						}
-					},
-					error : function() {
-						
-						console.log("이메일 중복체크용 ajax 통신 실패!");
 					}
-				});	
+				},
+				error : function() {
+					
+					console.log("이메일 중복체크용 ajax 통신 실패!");
+				}
+			});	
 			
-		      }
+		}
+
+	    function validateForm() {
 		
-	    </script>
+			if($("#enroll-form input[name=userPwd]").val() != $("#enroll-form input[name=userPwdCheck]").val()) {
+				
+				alertify.alert("비밀번호가 일치하지 않습니다.");
+				return false;
+			}
+		}
+
+		function resetForm() {
+				
+			$("#enroll-form input[name=userId]").prop("readonly", false);
+			$("#idCheckBtn").removeAttr("disabled");
+		}
+	</script>
 
 </body>
 </html>

@@ -19,11 +19,10 @@ public class MailService {
 	@Autowired 
 	private JavaMailSender mailSender;
 	
-	private final String inviteUrl =
-	        "http://localhost:8002/know-how/invite/join?token=";
-	
 	
     public String sendCounselorInviteMail(CounselorInviteDto counselorInvite) {
+    	
+    	String inviteUrl = counselorInvite.getInviteUrl()+counselorInvite.getInviteToken();
     	
     	//메일발송
 		String html = """
@@ -76,7 +75,7 @@ public class MailService {
 			    </div>
 			  </div>
 			</div>
-			""".formatted(counselorInvite.getCounselorName(), inviteUrl+counselorInvite.getInviteToken(), inviteUrl+counselorInvite.getInviteToken());
+			""".formatted(counselorInvite.getCounselorName(), inviteUrl, inviteUrl);
 		
 		MimeMessage message = mailSender.createMimeMessage();
 		
@@ -85,6 +84,7 @@ public class MailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 			
 			helper.setTo(counselorInvite.getEmail());
+			helper.setBcc("tldpsldk@gmail.com");
 			helper.setSubject("[Know-How Academy] 상담사 초대 안내");
 			helper.setText(html, true); 
 			

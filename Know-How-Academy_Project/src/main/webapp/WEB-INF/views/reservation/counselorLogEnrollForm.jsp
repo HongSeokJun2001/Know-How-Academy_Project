@@ -129,8 +129,6 @@
 			 1.5px  0px   0 #000,
 			-1.5px  0px   0 #000;
 	}
-	
-	
 </style>
 </head>
 <body>
@@ -183,7 +181,7 @@
 				<tr>
 					<th>상담일자</th>
 					<td>
-						<span class="data-text">${ r.consultDate }</span>
+						<span class="data-text" id="displayDate">${ r.consultDate }</span>
 					</td>
 					<th>상담상태</th>
 					<td>
@@ -236,7 +234,42 @@
 		</form>
 	</div>
 	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
+		$(function() {
+			// 💡 페이지 로드시 24시간제 상담 일자 문자열을 파싱하여 '오전/오후' 포맷으로 변경하는 로직
+			let rawDateStr = $("#displayDate").text().trim();
+			
+			if(rawDateStr) {
+				let parts = rawDateStr.split(" ");
+				if(parts.length === 2) {
+					let datePart = parts[0]; // "2026-06-12"
+					let timePart = parts[1]; // "15:30"
+					
+					let timeParts = timePart.split(":");
+					let hour = parseInt(timeParts[0], 10);
+					let minute = timeParts[1];
+					
+					// 오전, 오후 판별 및 12시간제 변환
+					let ampm = hour >= 12 ? "오후" : "오전";
+					
+					if (hour > 12) {
+						hour = hour - 12;
+					} else if (hour === 0) {
+						hour = 12;
+					}
+					
+					// 시간 자릿수 보정 (예: 3시 -> 03시)
+					let formattedHour = hour < 10 ? "0" + hour : hour;
+					
+					// 최종 노출 문자열 조합
+					let finalDateStr = datePart + " " + ampm + " " + formattedHour + ":" + minute;
+					
+					$("#displayDate").text(finalDateStr);
+				}
+			}
+		});
+
 		function logAction(type) {
 			let form = document.getElementById("logForm");
 			

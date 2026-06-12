@@ -70,7 +70,7 @@
         width: 300px;
         padding: 5px;
         border-radius: 4px;
-        border: 1px solid red;
+        border: 1px solid black;
     }
 
     .card th{
@@ -128,7 +128,7 @@
 	            <tr>
 	                <td>
 	                    <input type="text" name="userId" id="userId" required>
-	                    <p>아이디를 입력해주세요.</p>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -136,10 +136,8 @@
 	            </tr>
 	            <tr>
 	                <td>
-	                	<div>
-	                		<input type="password" name="userPwd" id="userPwd" required>
-	                	</div>
-	                    <p>비밀번호를 입력해주세요.</p>
+	                	<input type="password" name="userPwd" id="userPwd" required>
+	                    <p></p>
 	                </td>
 	            </tr>
 	            <tr>
@@ -155,6 +153,26 @@
 	</div>
 	<script>
 		$(function () {
+            $("#userPwd").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("비밀번호를 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
+            $("#userId").on("blur", function() {
+                if ($(this).val().trim() === "") {
+                    $(this).css("border", "1px solid red");
+                    $(this).next("p").text("아이디를 입력해주세요.").show();
+                } else {
+                    $(this).css("border", "1px solid black");
+                    $(this).next("p").hide();
+                }
+            });
+
 		    $("#loginBtn").click(function () {
 				
 		    	if($("#loginForm")[0].checkValidity() === false){

@@ -59,6 +59,15 @@ public class ReservationService {
     	return reservationDao.selectOneCounselor(sqlSession, counselNo);
     }
     
+    
+    /**
+     * 특정 상담사에게 이미 예약 대기 또는 완료된 날짜 문자열 리스트 조회
+     * @param counselNo 선택한 상담사의 고유 번호
+     * @return 예약 불가 날짜 리스트
+     */
+    public ArrayList<String> selectReservedDates(int counselNo) {
+    	return reservationDao.selectReservedDates(sqlSession, counselNo);
+    }
     /**
      * [학생] 상담 카테고리 목록 조회
      * @return 상담 카테고리 리스트

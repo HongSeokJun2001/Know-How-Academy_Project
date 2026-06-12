@@ -86,10 +86,8 @@
         border: 1px solid #ff3c00;
     }
     
-    .btn-approve {
-        background-color: #4233C7;
-        color: white;
-        border: none;
+    .btn {
+    	border: none;
         padding: 8px 16px;
         border-radius: 6px;
         cursor: pointer;
@@ -97,19 +95,24 @@
         margin-right: 4px;
         transition: background 0.2s;
     }
-    .btn-approve:hover { background-color: #3225A3; }
     
-    .btn-rejected {
+    .btn.approve {
+        background-color: #4233C7;
+        color: white;
+    }
+    .btn.approve:hover { background-color: #3225A3; }
+    
+    .btn.rejected {
         background-color: #E84118;
         color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 700;
-        transition: background 0.2s;
     }
-    .btn-rejected:hover { background-color: #C23616; }
+    .btn.rejected:hover { background-color: #C23616; }
+    
+    .btn.delete {
+        background-color: #d3d3d3;
+        color: white;
+    }
+    .btn.delete:hover { background-color: #b0b0b0; }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
@@ -150,13 +153,13 @@
 			                    	<c:when test="${ s.status eq 'PENDING'}">
 			                    		<td><span class="status-pending">대기</span></td>
 			                    		<td>
-					                        <button type="button" class="btn-approve" onclick="approveStudent(${ s.userNo }, '${ s.studentName }')">승인</button>
-					                        <button type="button" class="btn-rejected" onclick="rejectStudent(${ s.userNo }, '${ s.studentName }')">거절</button>
+					                        <button type="button" class="btn approve" onclick="approveStudent(${ s.userNo }, '${ s.studentName }')">승인</button>
+					                        <button type="button" class="btn rejected" onclick="rejectStudent(${ s.userNo }, '${ s.studentName }')">거절</button>
 					                    </td>
 			                    	</c:when>
 			                  		<c:otherwise>
 			                  			<td><span class="status-rejected">거절</span></td>
-			                  			<td><td>
+			                  			<td><button type="button" class="btn delete" onclick="deleteStudent(${ s.userNo }, '${ s.studentName }')">삭제</button><td>
 			                  		</c:otherwise>
 			                    </c:choose>
 			                </tr>
@@ -211,7 +214,7 @@
         		},
         		success(result) {
         			if(result == "success") {
-        				alert('[거절 완료]\n학생이름: ' + studentName + '\n\n목록에서 제외 처리됩니다.');
+        				alert('[거절 완료]\n학생이름: ' + studentName + '\n\n목록에서 거절 처리됩니다.');
         				location.reload();
         			} else {
         				alert("가입 거절이 실패되었습니다.");
@@ -219,6 +222,30 @@
         		},
         		error() {
         			console.log("가입 거절용 ajax 통신 실패!!");
+        		}
+        	});
+            
+        }
+    }
+    
+    function deleteStudent(userNo, studentName) {
+        if(confirm(studentName + '학생의 가입 신청을 정말로 삭제하시겠습니까?')) {
+        	$.ajax({
+        		url : "/know-how/admin/student/delete",
+        		type : "post",
+        		data : {
+        			userNo : userNo
+        		},
+        		success(result) {
+        			if(result == "success") {
+        				alert('[삭제 완료]\n학생이름: ' + studentName + '\n\n목록에서 삭제 처리됩니다.');
+        				location.reload();
+        			} else {
+        				alert("가입 삭제가 실패되었습니다.");
+        			}
+        		},
+        		error() {
+        			console.log("가입 삭제용 ajax 통신 실패!!");
         		}
         	});
             

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -129,7 +130,7 @@
 					<a class="btn-custom btn-modify" onclick="postFormSubmit(1);">수정</a>
 					<a class="btn-custom btn-delete" onclick="postFormSubmit(2);">삭제</a>
 				</c:if>
-				<a class="btn-custom btn-list" onclick="location.href='${pageContext.request.contextPath}/reservation/list'">목록으로</a>
+				<a class="btn-custom btn-list" onclick="history.back();">목록으로</a>
 			</div>
 			
 			<%-- 버튼 노출 조건과 동일한 권한 체크 --%>
@@ -161,13 +162,26 @@
 	    	</tr>
 	    	<tr>
 	    		<th>전화번호</th>
-	    		<td><span class="data-text">${r.phone}</span></td>
+	    		<td>
+	    			<span class="data-text">
+			        	<c:choose>
+				            <%-- 휴대폰 번호(11자리)가 맞을 때만 하이픈 포맷팅 적용 --%>
+				            <c:when test="${not empty r.phone and fn:length(r.phone) eq 11}">
+				                ${fn:substring(r.phone, 0, 3)}-${fn:substring(r.phone, 3, 7)}-${fn:substring(r.phone, 7, 11)}
+				            </c:when>
+				            <%-- 누락되었거나 자리수가 다르면 있는 그대로 출력 --%>
+				            <c:otherwise>
+				                ${r.phone}
+				            </c:otherwise>
+			        </c:choose>
+    				</span>
+	    		</td>
 	    		<th>이메일</th>
 	    		<td><span class="data-text">${r.email}</span></td>
 	    	</tr>
 	    	<tr>
 	    		<th>상담일자</th>
-	    		<td><span class="data-text">${r.consultDate}</span></td>
+	    		<td><span class="data-text" id="displayDate">${r.consultDate}</span></td>
 	    		<th>상담상태</th>
 	    		<td>
 	    			<span class="data-text" style="font-weight: bold;">
@@ -217,6 +231,46 @@
 	</div>
 
 	<jsp:include page="../common/footer.jsp"/>
+	
+	<script>
+		$(function() {
+			// 1. 서버에서 넘어온 "2026-06-12 15:30" 형태의 문자열 읽기
+			let rawDateStr = $("#displayDate").text().trim();
+			
+			if(rawDateStr) {
+				// 공백을 기준으로 [날짜, 시간] 분리 (예: ["2026-06-12", "15:30"])
+				let parts = rawDateStr.split(" ");
+				
+				if(parts.length === 2) {
+					let datePart = parts[0]; // "2026-06-12"
+					let timePart = parts[1]; // "15:30"
+					
+					// 시, 분 분리
+					let timeParts = timePart.split(":");
+					let hour = parseInt(timeParts[0], 10);
+					let minute = timeParts[1];
+					
+					// 오전, 오후 판별 및 12시간제 변환
+					let ampm = hour >= 12 ? "오후" : "오전";
+					
+					if (hour > 12) {
+						hour = hour - 12;
+					} else if (hour === 0) {
+						hour = 12; // 00시는 오전 12시로 매핑
+					}
+					
+					// 시(Hour)가 한 자리 수일 때 앞에 0 붙여주기 (예: 3 -> 03)
+					let formattedHour = hour < 10 ? "0" + hour : hour;
+					
+					// 최종 포맷 조합 (예: 2026-06-12 오후 03:30)
+					let finalDateStr = datePart + " " + ampm + " " + formattedHour + ":" + minute;
+					
+					// 화면의 텍스트를 이쁘게 포맷팅된 문자열로 교체
+					$("#displayDate").text(finalDateStr);
+				}
+			}
+		});
+	</script>
 
 </body>
 </html>

@@ -73,9 +73,10 @@
 			        <c:otherwise>
 			            <c:forEach var="r" items="${list}" varStatus="status">
 			                <tr class="data-row" data-rno="${ r.reservationNo }">
-			                	<!-- 총 게시글 수 - ((현재페이지 - 1) * 페이징당 보여줄 개수) - 루프인덱스 수 -->
-			                    <td>${requestScope.pi.listCount - ((requestScope.pi.currentPage - 1) * requestScope.pi.reservationLimit) - status.index}</td>
-			                    <td>${r.consultDate}</td>
+			                	<td>${requestScope.pi.listCount - ((requestScope.pi.currentPage - 1) * requestScope.pi.reservationLimit) - status.index}</td>
+			                    
+			                    <td class="consult-date-cell">${r.consultDate}</td>
+			                    
 			                    <td>${r.counselorName}</td>
 			                    <td>${r.categoryName}</td>
 			                    <td>
@@ -90,18 +91,50 @@
         
         <script>
         	$(function() {
+        		// 1. 행 클릭 시 상세조회 이동 로직
         		$(".list-area>tbody>tr.data-row").click(function() {
-        			// 클릭한 행의 data-rno 속성에서 예약번호 추출 (.attr 을 통해 'data-rno' 속성의 값을 가져옴')
         			let rno = $(this).attr("data-rno");
-        			//해당 상담의 상세 페이지로 경로 이동
         			location.href = "${pageContext.request.contextPath}/reservation/detail/" + rno;
+        		});
+        		
+        		// 💡 2. 완료 상담일자 포맷을 '오전/오후' 형식으로 일괄 치환하는 로직 추가
+        		$(".consult-date-cell").each(function() {
+        			let rawDateStr = $(this).text().trim();
+        			
+        			if(rawDateStr) {
+        				let parts = rawDateStr.split(" ");
+        				if(parts.length === 2) {
+        					let datePart = parts[0]; // "2026-06-12"
+        					let timePart = parts[1]; // "15:30"
+        					
+        					let timeParts = timePart.split(":");
+        					let hour = parseInt(timeParts[0], 10);
+        					let minute = timeParts[1];
+        					
+        					// 오전, 오후 판별 및 12시간제 변환
+        					let ampm = hour >= 12 ? "오후" : "오전";
+        					
+        					if (hour > 12) {
+        						hour = hour - 12;
+        					} else if (hour === 0) {
+        						hour = 12;
+        					}
+        					
+        					// 시간 값이 한 자리일 경우 가독성을 위해 앞에 '0' 패딩 처리
+        					let formattedHour = hour < 10 ? "0" + hour : hour;
+        					
+        					// 예쁘게 조합된 최종 날짜 세팅 (예: 2026-06-12 오후 03:30)
+        					let finalDateStr = datePart + " " + ampm + " " + formattedHour + ":" + minute;
+        					
+        					$(this).text(finalDateStr);
+        				}
+        			}
         		});
         	});
         </script>
         
         <div class="paging-area">
         	<ul class="pagination justify-content-center">
-        		<!-- 이전 버튼 -->
         		<c:choose>
         			<c:when test="${ requestScope.pi.currentPage eq 1 }">
         				<li class="page-item disabled">
@@ -115,7 +148,6 @@
         			</c:otherwise>
         		</c:choose>
         		
-        		<!-- 페이지 번호 출력 -->
         		<c:forEach var="p" begin="${ requestScope.pi.startPage }" end="${ requestScope.pi.endPage }" step="1">
 	        		<c:choose>
 	        			<c:when test="${ requestScope.pi.currentPage eq p }">
@@ -131,7 +163,6 @@
 	        		</c:choose>       			
         		</c:forEach>
         		
-        		<!-- 다음 버튼 -->
         		<c:choose>
         			<c:when test="${ requestScope.pi.currentPage eq requestScope.pi.maxPage }">
         				<li class="page-item disabled">
@@ -139,9 +170,13 @@
         				</li>
         			</c:when>
         			<c:otherwise>
-        				<li class="page-item">
-        					<a class="page-link" href="/know-how/reservation/counselor/list?cpage=${ requestScope.pi.currentPage + 1 }">다음</a>
-        				</li>
+        				<c:choose>
+        					<c:when test="${ empty requestScope.condition }">
+		        				<li class="page-item">
+		        					<a class="page-link" href="/know-how/reservation/counselor/list?cpage=${ requestScope.pi.currentPage + 1 }">다음</a>
+		        				</li>
+        					</c:when>
+        				</c:choose>
         			</c:otherwise>
         		</c:choose>
         	</ul>
