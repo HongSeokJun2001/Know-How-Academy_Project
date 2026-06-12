@@ -137,13 +137,14 @@
 		 SELECT COUNT(*)
 	       FROM COUNSELOR_INVITE				CI 
 	       LEFT JOIN MEMBER 			    	CM  ON 	CM.USER_NO = CI.USER_NO
+	     WHERE CM.ROLE_CODE = 'COUNSELOR'
 	      <choose>
 	      	<when test="status == 'ACTIVE'">
-	     WHERE ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+	       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
 			OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 	       	</when>
 	       	<when test="status == 'INACTIVE'">
-	     WHERE CI.INVITE_STATUS = 'USED'
+	       AND CI.INVITE_STATUS = 'USED'
 	       AND CM.STATUS = 'INACTIVE' 
 	       	</when>
 	       </choose>
@@ -181,13 +182,14 @@
 		                  LEFT JOIN COUNSELOR_PROFILE 	C 	ON 	CM.USER_NO = C.USER_NO
 		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
 		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = C.CATEGORY_NO
+		                 WHERE CM.ROLE_CODE = 'COUNSELOR'
 		                  <choose>
 					      	<when test="status == 'ACTIVE'">
-					     WHERE ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+					       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
 					        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 					       	</when>
 					       	<when test="status == 'INACTIVE'">
-					     WHERE CI.INVITE_STATUS = 'USED'
+					       AND CI.INVITE_STATUS = 'USED'
 					       AND CM.STATUS = 'INACTIVE' 
 					       	</when>
 					       </choose>
