@@ -290,9 +290,13 @@ public class AdminService {
 		int profileResult = ad.insertCounselorProfile(sqlSession, profile);
 		int inviteResult = ad.updateCounselorInviteInfo(sqlSession, inviteInfoDto);
 		int imgResult = 1;
+		
+//		System.out.println(">>> [cp1] " + cp);
+		
 		if(cp != null) {
 			cp.setUserNo(member.getUserNo());
-			//xss 후 insert
+//			System.out.println(">>> [cp2] " + cp);
+			// 사용자의 화면에 노출 될 원본파일명만 xss 후 insert
 			cp.setOriginName(AdminXssDefencePolicy.defence(cp.getOriginName()));
 			imgResult = ad.insertCounselorProfileImg(sqlSession, cp);
 		}
