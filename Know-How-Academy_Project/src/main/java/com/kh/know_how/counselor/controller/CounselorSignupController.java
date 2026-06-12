@@ -67,9 +67,6 @@ public class CounselorSignupController {
     			String changeName = FileRenamePolicy.saveFile(file, session, 
 						"/resources/image/counselorProfile/");
     			profile.setProfileImgPath(changeName);
-    			if("1".equals(changeName)) {
-    				message = "imgFail";
-    			}
         		cp.setOriginName(file.getOriginalFilename());
         		cp.setSaveName(changeName);
         		cp.setFilePath("resources/image/counselorProfile/");
