@@ -27,7 +27,9 @@ public class FileRenamePolicy {
 		try {
 			upfile.transferTo(new File(savePath + saveName));
 		} catch(IOException e) {
+			System.out.println(">>> [첨부파일저장실패] ");
 			e.printStackTrace();
+			return "1";
 		}
 		
 		return saveName;	
