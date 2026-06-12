@@ -111,14 +111,13 @@
 				<th></th>
 				<th>
 					<button type="submit" class="btn-searchIdPage">아이디 찾기</button>
-		            <button type="button" class="btn-searchIdPage">확인</button>
-		            <%-- 이름 일치확인 + 이메일 인증 후 
-		               창에 아이디 값 띄워주고 확인 버튼 누르면 사라지게 해야됨 아직 기능 구현 x --%>
 		        </th>
 		        <th></th>
 		    </tr>
 		    <tr>
-				<th><td></td></th>
+				<th></th>
+				<td></td>
+				<th></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -134,9 +133,6 @@
 				</th>
 				<th></th> 
 			</tr>
-			<tr>
-				<th><br><br></th>
-			</tr>
 			</tbody>
 		</table>
 		
@@ -149,7 +145,7 @@
 		   function enrollPage() {
 				
 			 // 회원가입페이지로 이동
-			 location.href = "/know-how/myPage/enrollForm";
+			 location.href = "/know-how/myPage/memberEnrollForm";
 			 // GET 방식
 		   }
 	

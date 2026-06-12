@@ -24,6 +24,7 @@
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
            max-width: 700px;
+           max-heoght: 700px;
            margin: auto;
 	    }
 	.checkPasswordPage-title {
@@ -38,7 +39,7 @@
         text-align: center;
     }
 	.checkPasswordPage-table th {
-        padding: 5px;
+        padding: 10px;
         color: #6F6D80;
         font-weight: 500;
         font-size: 15px;
@@ -51,7 +52,7 @@
     }
 	/* 입력창 */
 	.checkPasswordPage-input {
-	    height: 30px;
+	    height: 50px;
 	    width: 300px;
 	    padding: 10px;
 	    margin-bottom: 10px;
@@ -67,24 +68,9 @@
         cursor: pointer;
         font-weight: 600;
         transition: background 0.2s;
-        height: 40px;
-        width: 120px;
+        height: 50px;
+        width: 150px;
         margin: auto;
-	}
-	.btn-checkPasswordPage {
-	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
-        color: white;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 400;
-        transition: background 0.1s;
-        height: 40px;
-        width: 140px;
-        margin: auto;
-        font-size: 15px;
-      
 	}
 	.btn-checkPassword:hover {
 	    background-color: #3225A3;
@@ -103,25 +89,38 @@
         <br><br>
         
       <table class="checkPasswordPage-table">
-        
+        <thead>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;아이디</th>
-           <td>
-               <b>${ sessionScope.loginUser.userId }</b>  
-               
-           </td>
+           <th></th>
+           <th>
+               <h4><label for="userId">아이디</label>
+               <b>${ sessionScope.loginUser.userId }</b></h4>
+           </th>
+           <th></th>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;비밀번호</th>
-           <td>
+           <th></th>
+           <th>
+              <h4><label for="password">비밀번호</label></h4>
               <input type="password" class="checkPasswordPage-input" name="userPwd" id="userPwd" maxlength="20" placeholder="8~20자리 영문자/숫자" required> 
-           </td>
+           </th>
+           <th></th>
         </tr>
+        </thead>
+        <tbody>
+        <tr>
+	        <th></th>
+	        <td></td>
+	        <th></th>
+        </tr>
+        <tr>
+           <th></th>
+           <th><button type="submit" class="btn-checkPasswordPage">확인</button><th>
+           <th></th>
+         </tr>
+        </tbody>
       </table>
       
-      <div align="center">
-         <button type="submit" class="btn-checkPasswordPage">확인</button>
-      </div>
    </form>
    
    </div>

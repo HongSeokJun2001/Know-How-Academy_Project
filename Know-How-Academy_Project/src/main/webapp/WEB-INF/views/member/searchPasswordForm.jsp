@@ -6,92 +6,154 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-   #searchPassword-form table {
-		margin : auto;
+   * {
+        margin: auto;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Pretendard', -apple-system, sans-serif;
+    }
+
+    body {
+        background-color: #F8F9FA;
+        padding: 32px;
+    }
+    .mypagesearchPassword-outer {
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 600px;
+           margin: auto;
+	    }
+	.searchPasswordPage-title {
+	    font-size: 36px;
+	    font-weight: bold;
+	    margin-bottom: 10px;
+	    color: #2C2A38;
 	}
-	#searchPassword-form input {
-         padding : 5px;
-		 margin : 5px;
-		 width : 250px;
+	.searchPasswordPage-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+    }
+	.searchPasswordPage-table th {
+        padding: 5px;
+        color: #6F6D80;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    .searchPasswordPage-table td {
+        border-bottom: 2px solid black;
+        vertical-align: middle;
+        color: #5C5B6E;
+        font-size: 15px;
+    }
+	/* 입력창 */
+	.searchPasswordPage-input {
+	    height: 40px;
+	    width: 300px;
+	    padding: 10px;
+	    margin-bottom: 10px;
 	}
-	#searchPassword-form button {
-		 padding : 5px;
-		 margin : 5px;
-		 width : 100px;
+	
+	/* 버튼 */
+	.btn-searchPasswordPage {
+	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+        height: 40px;
+        width: 140px;
+        margin: auto;
+	}
+	
+	.btn-searchPasswordPage:hover {
+	    background-color: #3225A3;
 	}
 </style>
 </head>
 <body>
 <jsp:include page="../common/menubar.jsp"/>
 
-   <div class="mypage-outer">
+   <br><br>
+   
+   <div class="mypagesearchPassword-outer">
      
        <div class="login-area"> 
-               <br><br>
                
            <form id="searchPassword-form" action="/know-how/myPage/searchPassword" method="post">
 			
 				<br><br>
+				<h2 align="center" class="searchPasswordPage-title">비밀번호 찾기</h2>
+				<br>
 				
-				<table align="center">
+				<table class="searchPasswordPage-table">
+				   <thead>
 					<tr>
-						<h2 align="center">비밀번호 찾기</h2>
+						<th></th>
+						<th>
+						    <label for="userId">아이디</label>
+							<input type="text" class="searchPasswordPage-input" name="userId" id="userId" required>
+						</th>
+						<th></th>
 					</tr>
 					<tr>
-						<th>아이디</th>
-						<td>
-							<input type="text" name="userId" id="userId" required>
-						</td>
+						<th></th>
+						<th>
+						    <label for="userName">이름</label>
+							<input type="text" class="searchPasswordPage-input" name="userName" id="userName" required>
+						</th>
+						<th></th>
 					</tr>
 					<tr>
-						<th>이름</th>
-						<td>
-							<input type="text" name="userName" id="userName" required>
-						</td>
+						<th></th>
+						<th>
+						    <label for="email">이메일</label>
+							<input type="email" class="searchPasswordPage-input" name="email" id="email" required>
+						</th>
+						<th></th>
 					</tr>
 					<tr>
-						<th>이메일</th>
-						<td>
-							<input type="email" name="email" id="email" required>
-						</td>
+						<th>
+						</th>
 					</tr>
+				    <tr>
+						<th></th>
+						<th>
+				            <button type="submit" class="btn-searchPasswordPage">비밀번호 찾기</button>
+				        </th>
+				        <th></th>
+				    </tr>
+				    </thead>
+				    <tbody>
+				    <tr>
+				        <th></th>
+				        <td></td>
+				        <th></th>
+				    </tr>
 					<tr>
 						<th>
 							<br>
 						</th>
 					</tr>
-				    <tr align="center">
-						
-						<th colspan="3">
-				            <button type="submit" class="btn btn-secondary btn-sm">비밀번호 찾기</button>
-				            <button type="button" class="btn btn-secondary btn-sm">확인</button>
-				            <%-- 이름 아이디 + 이메일 일치확인 후 창에 비밀번호 값 띄워주고 
-				                 확인 버튼 누르면 사라지게 해야됨 아직 기능 구현 x --%>
-				        </th>
-				    </tr>
-				    <tr align="center">
-				        <th colspan="3">
-				           ----------------------------------------------------------
-				        </th>
-				    </tr>
 					<tr>
+					    <th></th>
 						<th>
-							<br>
-						</th>
-					</tr>
-					<tr align="center">
-						<th colspan="3">
-							<button type="button" class="btn btn-secondary btn-sm"
+							<button type="button" class="btn-searchPasswordPage"
 												  onclick="enrollPage();">회원가입</button>
-							<button type="button" class="btn btn-secondary btn-sm"
+							<button type="button" class="btn-searchPasswordPage"
 							                      onclick="myPage();">로그인</button>
-							<button type="button" class="btn btn-secondary btn-sm"
+							<button type="button" class="btn-searchPasswordPage"
 							                      onclick="searchIdPage();">아이디 찾기</button>					  
 						</th>
+						<th></th>
 					</tr>
-					<tr>
-						<th><br><br></th>
-					</tr>
+					</tbody>
 				</table>
 		  </form>
 		

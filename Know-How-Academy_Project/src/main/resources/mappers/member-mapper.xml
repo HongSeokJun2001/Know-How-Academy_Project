@@ -140,11 +140,15 @@
 	<!--  로그인용 쿼리문 -->
 	 <select id="loginLockMember" parameterType="memberLock" 
 								  resultMap="memberLockResultSet">
-			
-		    SELECT *
-		      FROM MEMBER_LOCK
-		     WHERE USER_NO = #{userNo} 
-		       AND IS_LOCKED = 'N'
+		   SELECT USER_NO
+		    	 , FAIL_COUNT
+		    	 , CASE WHEN (IS_LOCKED = 'N' OR IS_LOCKED = 'Y' AND SYSDATE > LOCKED_AT + 10/(1*24*60))
+		    	        THEN 'N'
+		    	        ELSE 'Y' END AS IS_LOCKED
+		    	 , LOCKED_AT
+		    	 , LAST_FAIL_AT
+		      FROM MEMBER_LOCK
+		     WHERE USER_NO = #{userNo}
 		        
 	 </select>
 
