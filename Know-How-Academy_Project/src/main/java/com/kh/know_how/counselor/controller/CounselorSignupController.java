@@ -67,7 +67,9 @@ public class CounselorSignupController {
     			String changeName = FileRenamePolicy.saveFile(file, session, 
 						"/resources/image/counselorProfile/");
     			profile.setProfileImgPath(changeName);
-    			
+    			if("1".equals(changeName)) {
+    				message = "imgFail";
+    			}
         		cp.setOriginName(file.getOriginalFilename());
         		cp.setSaveName(changeName);
         		cp.setFilePath("resources/image/counselorProfile/");
@@ -85,11 +87,11 @@ public class CounselorSignupController {
         	
 		} catch (IllegalArgumentException e) {
 			
-			System.out.println(">>> [상담사 회원가입 오류] " + e.getMessage());
+			System.out.println(">>> [상담사 회원가입 오류1] " + e.getMessage());
 			//web 에서 빈 문자열 검사 후에도 들어온 null 값은 오류처리 
 			message = "올바르지 않은 접근입니다.";
 		} catch (RuntimeException e) {
-			System.out.println(">>> [상담사 회원가입 오류] " + e.getMessage());
+			System.out.println(">>> [상담사 회원가입 오류2] " + e.getMessage());
 			message = "imgFail";
 		}
     	return message;
