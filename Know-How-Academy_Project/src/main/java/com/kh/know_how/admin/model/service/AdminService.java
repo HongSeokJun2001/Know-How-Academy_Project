@@ -109,29 +109,45 @@ public class AdminService {
 		ArrayList<CounselorListResponseDto> counselorList = ad.selectcounselorList(sqlSession,counselorSearchRequestDto);
 		//지정 상담사가 없는 클래스 목록 조회
 		ArrayList<ClassListDto> classList = ad.selectClassList(sqlSession);
+		//카테고리 목록 조회
+		ArrayList<CounselCategoryDto> categoryList = ad.selectCounselCategory(sqlSession);
 		
-		
-		CounselorListPageDto counselorListPage = new CounselorListPageDto(counselorList, pageInfo,classList);
+		CounselorListPageDto counselorListPage = new CounselorListPageDto(counselorList, pageInfo,classList, categoryList);
 		return counselorListPage;
 	}
 	
 	@Transactional
-	public void updateCounselorClass(int userNo, Integer classNo) {
+	public int updateCounselorClass(int userNo, String changeType, Integer changeNo) {
 		
-		//1.상담사 클래스
 		Map<String, Integer> param = new HashMap<>();
 		param.put("userNo", userNo);
-		param.put("classNo", classNo);
-		int counselorClass = ad.updateCounselorClass(sqlSession, param);
+		param.put("changeNo", changeNo);
 		
-		//2.학생테이블 상담사번호 변경
-		//2-1 classNo NOT NULL - classNo가 같은 학생의 상담사번호 NULL로 UPDATE
-		ad.clearStudentCounselorNo(sqlSession, userNo);
-		//2-2 classNo가 같은 학생의 상담사번호 userNo로 UPDATE
-		if (classNo != null) {
-		    ad.updateStudentCounselorNoByClassNo(sqlSession, param);
-		}
+		int result;
 		
+	    if ("CATEGORY".equals(changeType)) {
+
+	    	result = ad.updateCounselorCategoryNo(sqlSession, param);
+
+	    } else if ("CLASS".equals(changeType)) {
+	    	
+	    	Integer currClassNo = ad.selectUserClassNo(sqlSession, userNo);
+	    	
+	    	if(currClassNo == null) {
+	    		ad.clearStudentCounselorNo(sqlSession, userNo);
+	    	}
+	        
+	        result = ad.updateCounselorClass(sqlSession, param);
+
+	        if (changeNo != null) {
+	            ad.updateStudentCounselorNoByClassNo(sqlSession, param);
+	        }
+
+	    } else {
+	    	
+	        throw new IllegalArgumentException("유효하지 않은 요청입니다.");
+	    }	
+	    return result;
 	}
 
 	@Transactional(readOnly = true)
@@ -156,12 +172,10 @@ public class AdminService {
 		int changeStatus = ad.updateCounselorStatus(sqlSession, param);
 		
 		//상담사의 변경 전 class에 지정된 학생의 상담사번호를 NULL로 UPDATE
-		int	clearNo = 1;
 		if("ACTIVE".equals(status)) {
-			clearNo = ad.clearStudentCounselorNo(sqlSession, userNo);
+			ad.clearStudentCounselorNo(sqlSession, userNo);
 		} // 담당 학생이 없으면 0
           // SQL 에러면 예외 터지고 트랜잭션 롤백.
-		
 		
 		return changeStatus;// 업무상 휴직 처리 성공
 	}

@@ -145,6 +145,19 @@ public class AdminDao {
 		return sqlSession.insert("adminMapper.insertCounselorProfileImg", cp);
 	}
 
+	public int updateCounselorCategoryNo(SqlSessionTemplate sqlSession, Map<String, Integer> param) {
+		
+		return sqlSession.update("adminMapper.updateCounselorCategoryNo", param);
+	}
+
+	public Integer selectUserClassNo(SqlSessionTemplate sqlSession, int userNo) {
+		
+		return sqlSession.selectOne("adminMapper.selectUserClassNo", userNo);
+	}
+
+
+
+
 
 
 

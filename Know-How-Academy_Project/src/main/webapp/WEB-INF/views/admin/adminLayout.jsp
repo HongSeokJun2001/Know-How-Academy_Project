@@ -273,21 +273,27 @@
 		overflow-x: auto;
 	}
 
+    a {
+        text-decoration: none; color: inherit;
+    }
+    
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- 
-        http://localhost:8002/know-how/admin/
+        http://localhost:8002/know-how/admin
     -->
 
     <div id="fake-header">
-        <div class="header-title">
-            <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
-                alt="know-how-academy 마크">
-            <span>KNOW-HOW ACADEMY</span>
-            <span>관리자 페이지</span>
-        </div>
+        <a href="${pageContext.request.contextPath}/admin" style="text-decoration: none; color: inherit;">
+            <div class="header-title">
+                <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
+                    alt="know-how-academy 마크">
+                <span>KNOW-HOW ACADEMY</span>
+                <span>관리자 페이지</span>
+            </div>
+        </a>
 
         <div class="header-user-area">
             <div class="admin-profile">${ sessionScope.loginUser.userName }</div>
