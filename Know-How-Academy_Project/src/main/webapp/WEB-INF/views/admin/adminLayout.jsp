@@ -318,7 +318,7 @@
                 학원생 관리
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor/list"
+            <div class="menu-item" data-path="/admin/counselorList"
                  onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>
