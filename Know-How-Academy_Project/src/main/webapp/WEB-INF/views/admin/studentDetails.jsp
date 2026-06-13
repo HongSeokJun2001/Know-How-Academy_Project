@@ -342,7 +342,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-<c:set var="isActive"     value="${'ATTENDING' eq requestScope.s.status}"/>
+<c:set var="isActive" value="${'ATTENDING' eq requestScope.studentDetail.studentStatus}"/>
     <section class="counselor-detail-section">
 
         <div class="detail-title-area">
@@ -359,18 +359,18 @@
             <div class="profile-left">
                 <img class="profile-img-box" src="/know-how/resources/image/Generated_Image.png" alt="프로필이미지">
                 <div class="profile-text">
-                    <h3>${ requestScope.s.studentName }</h3>
+                    <h3>${ requestScope.studentDetail.studentName }</h3>
                 </div>
             </div>
 			<c:choose>
-					<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
+					<c:when test="${ requestScope.studentDetail.studentStatus eq 'ATTENDING' }">
 			            <div class="profile-right">
-			                <button type="button" class="btn-danger" onclick="rest('${ requestScope.s.status }');">휴학 처리</button>
+			                <button type="button" class="btn-danger" onclick="rest('${ requestScope.studentDetail.studentStatus }');">휴학 처리</button>
 			            </div>
 			        </c:when>
 			        <c:otherwise>
 			        	<div class="profile-right">
-			                <button type="button" class="btn-active" onclick="rest('${ requestScope.s.status }');">재학 처리</button>
+			                <button type="button" class="btn-active" onclick="rest('${ requestScope.studentDetail.studentStatus }');">재학 처리</button>
 			            </div>
 			        </c:otherwise>
 			</c:choose>
@@ -385,22 +385,22 @@
 
                 <div class="info-row">
                     <span class="info-label">이름</span>
-                    <span class="info-value">${ requestScope.s.studentName }</span>
+                    <span class="info-value">${ requestScope.studentDetail.studentName }</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">연락처</span>
-                    <span class="info-value">${ requestScope.s.phone } </span>
+                    <span class="info-value">${ requestScope.studentDetail.phone } </span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">이메일</span>
-                    <span class="info-value"><a href="mailto:${ requestScope.s.email }">${ requestScope.s.email }</a></span>
+                    <span class="info-value"><a href="mailto:${ requestScope.studentDetail.email }">${ requestScope.studentDetail.email }</a></span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">가입일</span>
-                    <span class="info-value">${ requestScope.s.createdAt }</span>
+                    <span class="info-value">${ requestScope.studentDetail.createdAt }</span>
                 </div>
             </div>
 
@@ -411,16 +411,16 @@
 
                 <div class="info-row">
                     <span class="info-label">소속 클래스</span>
-                    <span class="info-value">${ requestScope.s.className }</span>
+                    <span class="info-value">${ requestScope.studentDetail.className }</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">담당 상담사</span>
-                    <span class="info-value">${ requestScope.s.counselorName }</span>
+                    <span class="info-value">${ requestScope.studentDetail.counselorName }</span>
                 </div>
                 
 				<c:choose>
-					<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
+					<c:when test="${ requestScope.studentDetail.studentStatus eq 'ATTENDING' }">
 		                <div class="info-row">
 		                    <span class="info-label">현재 상태</span>
 		                    <span class="status-badge active">재학</span>
@@ -436,7 +436,7 @@
 				
                 <div class="info-row">
                     <span class="info-label">최근 변경일</span>
-                    <span class="info-value">${ requestScope.s.updatedAt }</span>
+                    <span class="info-value">${ requestScope.studentDetail.updatedAt }</span>
                 </div>
             </div>
         </div>
@@ -454,7 +454,7 @@
 
             <div class="memo-input-area">
 				<c:choose>
-					<c:when test="${ requestScope.s.status eq 'ATTENDING' }">
+					<c:when test="${ requestScope.studentDetail.studentStatus eq 'ATTENDING' }">
 						<input type="text" class="memo-input" placeholder="메모를 입력하세요.">
 						<button type="button" class="btn-primary small" onclick="insertMemo();">등록</button>
 					</c:when>
@@ -478,13 +478,13 @@
 					url : "/know-how/admin/student/mlist",
 					type : "get",
 					data : {
-						userNo : ${ requestScope.s.userNo }
+						userNo : ${ requestScope.studentDetail.userNo }
 					},
 					success : function(result) {
 						
 						let resultStr = "";
 						
-						const status = "${ requestScope.s.status }";
+						const status = "${ requestScope.studentDetail.studentStatus }";
 
 						for(let i in result) {
 							
@@ -509,7 +509,7 @@
                         url : "/know-how/admin/student/minsert",
                         type : "post",
                         data : {
-                            userNo : ${ requestScope.s.userNo },
+                            userNo : ${ requestScope.studentDetail.userNo },
                             userMemo : userMemo
                         },
                         success : function(result) {
@@ -564,18 +564,18 @@
 				});	
 	
 			}
-			function rest(status) {
-				if(status == 'ABSENT') {
-					status = 'ATTENDING';
+			function rest(studentStatus) {
+				if(studentStatus == 'ABSENT') {
+					studentStatus = 'ATTENDING';
 				} else {
-					status = 'ABSENT';
+					studentStatus = 'ABSENT';
 				} 
 				$.ajax({
 					url : "/know-how/admin/student/rest",
 					type : "post",
 					data : {
-						studentNo : ${ requestScope.s.studentNo }, 
-						status : status
+						studentNo : ${ requestScope.studentDetail.studentNo }, 
+						studentStatus : studentStatus
 					},
 					success : function(result) {
 						

@@ -9,8 +9,9 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class MemoDto {
-	private int memoNo;
-	private int userNo;
-	private String userMemo;
+public class StudentSearchRequestDto {
+
+	private String studentStatus;
+	private String keyword;
+	
 }

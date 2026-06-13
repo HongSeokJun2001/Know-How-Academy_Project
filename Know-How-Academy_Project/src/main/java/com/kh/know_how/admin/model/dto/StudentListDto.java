@@ -7,23 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @NoArgsConstructor
 @Setter
 @Getter
 @ToString
-public class StudentDto {
+public class StudentListDto {
 
 	private int studentNo;
-	private int userNo;
 	private String studentName;
 	private String phone;
-	private String email;
 	private String counselorName;
 	private Date createdAt;
-	private Date updatedAt;
-	private String className;
-	private String status;
+	private String studentStatus;
 	
 }
