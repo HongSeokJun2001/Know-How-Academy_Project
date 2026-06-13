@@ -25,7 +25,7 @@ public class BoardService {
 	private BoardDao boardDao;
 
 	public ArrayList<Board> selectBoardList(PageInfo pi, String postType) {
-		
+
 		return boardDao.selectBoardList(sqlSession, pi, postType);
 	}
 
@@ -85,12 +85,10 @@ public class BoardService {
 
 			if (fa.getFileNo() != 0) {
 
-				result2 = boardDao.updateFileAttachment(sqlSession, fa);
+				result2 = boardDao.deleteFileAttachment(sqlSession, fa.getFileNo());
 
-			} else {
-
-				result2 = boardDao.insertNewFileAttachment(sqlSession, fa);
 			}
+			result2 = boardDao.insertNewFileAttachment(sqlSession, fa);
 		}
 
 		return result1 * result2;
@@ -112,7 +110,7 @@ public class BoardService {
 	}
 
 	public ArrayList<Board> selectNewsList(PageInfo pi) { // 학원소식의 상세정보를 불러오는 메소드
-		
+
 		return boardDao.selectNewsList(sqlSession, pi);
 	}
 

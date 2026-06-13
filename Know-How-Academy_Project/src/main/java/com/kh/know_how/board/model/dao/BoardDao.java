@@ -69,9 +69,9 @@ public class BoardDao {
 		return sqlSession.update("boardMapper.updateBoard", b);
 	}
 
-	public int updateFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
+	public int deleteFileAttachment(SqlSessionTemplate sqlSession, int fileNo) {
 
-		return sqlSession.update("boardMapper.updateFileAttachment", fa);
+		return sqlSession.update("boardMapper.deleteFileAttachment", fileNo);
 	}
 
 	public int insertNewFileAttachment(SqlSessionTemplate sqlSession, FileAttachment fa) {
@@ -137,5 +137,7 @@ public class BoardDao {
 
 		return sqlSession.insert("boardMapper.insertComment", pc);
 	}
+
+	
 
 }

@@ -124,8 +124,15 @@
                     // 새로 선택한 파일 이름 가져오기
                     var fileName = this.files[0].name;
 
-                    // 기존 영역의 내용을 새로 선택한 파일 이름으로 교체
-                    changeFileArea.innerHTML = '<span>' + fileName + '</span>';
+                    var fileLink = changeFileArea.querySelector('a');
+                    if (fileLink) {
+                        fileLink.textContent = fileName; // 링크 텍스트만 변경
+                        fileLink.removeAttribute('href'); // 기존 다운로드 링크 제거
+                    } else {
+                        // 기존 영역의 내용을 새로 선택한 파일 이름으로 교체
+                        changeFileArea.innerHTML = '<span>' + fileName + '</span>';
+                    }
+
                 });
             </script>
         </body>

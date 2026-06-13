@@ -93,6 +93,7 @@
 		SELECT COUNT(*)
 		FROM BOARD_POST
 		WHERE POST_TYPE = #{postType}
+		AND STATUS = 'Y'
 	</select>
 
 	<!-- 게시글 목록 조회리스트(검색시) -->
@@ -161,6 +162,7 @@
 			</if>	
 			</where>
 	</select>
+
 	<!-- 게시글 등록용 쿼리문 -->
 	<insert id="insertBoard" parameterType="board">
 		<selectKey keyProperty="postNo" resultType="_int"
@@ -256,14 +258,10 @@
 		AND STATUS = 'Y'
 	</update>
 
-	<update id="updateFileAttachment" parameterType="fileAttachment">
-		UPDATE
-		FILE_ATTACHMENT
-		SET ORIGIN_NAME = #{originName},
-		SAVE_NAME =
-		#{saveName},
-		UPDATED_AT = SYSDATE
-		WHERE FILE_NO = #{fileNo}
+	<update id="deleteFileAttachment" parameterType="_int">
+		UPDATE FILE_ATTACHMENT
+    SET STATUS = 'N'
+    WHERE FILE_NO = #{fileNo}
 	</update>
 	<insert id="insertNewFileAttachment"
 		parameterType="fileAttachment">
@@ -287,9 +285,10 @@
 
 	<update id="deleteBoard" parameterType="_int">
 		UPDATE BOARD_POST
-		   SET STATUS = #{status}
-		     , UPDATED_AT = SYSDATE
-		 WHERE POST_NO = #{postNo}
+		SET
+		STATUS = 'N'
+		WHERE POST_NO = #{postNo}
+		AND STATUS = 'Y'
 	</update>
 
 
@@ -298,17 +297,21 @@
 	<select id="selectFileAttachment" parameterType="_int"
 		resultMap="fileAttachmentResultSet">
 		SELECT * FROM (
-		SELECT FILE_NO
-		, ORIGIN_NAME
-		, SAVE_NAME
-		, FILE_PATH
-		FROM FILE_ATTACHMENT
+        SELECT FILE_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH
+        FROM FILE_ATTACHMENT
+        WHERE TARGET_NO = #{postNo}
+          AND STATUS = 'Y'
+        ORDER BY FILE_NO DESC  )
+    WHERE ROWNUM = 1
+	</select>
+
+	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
+	<delete id="admindeleteFileAttachment" parameterType="_int">
+		DELETE
+		FROM
+		FILE_ATTACHMENT
 		WHERE TARGET_NO = #{postNo}
-		ORDER BY
-		FILE_NO DESC
-		)
-		WHERE ROWNUM = 1
-	</select>	
+	</delete>
 
 	<select id="selectCommentList" parameterType="_int"
 		resultMap="commentResultSet">
@@ -346,19 +349,4 @@
 
 
 
-	
-	<!-- (관리자용)게시글 삭제용 쿼리문 -->
-	<delete id="adminDeleteBoard" parameterType="_int">
-		DELETE
-		  FROM BOARD_POST
-		 WHERE POST_NO = #{postNo}
-	</delete>
-	
-	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
-	<delete id="adminDeleteFileAttachment" parameterType="_int">
-		DELETE
-		  FROM FILE_ATTACHMENT
-		 WHERE TARGET_NO = #{postNo}
-	</delete>
-	
 </mapper>
