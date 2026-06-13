@@ -17,18 +17,18 @@
 	<select id="selectWaitingList" 
 			resultType="com.kh.know_how.admin.model.dto.AdminCounselWaitingDto">
 			
-		SELECT TO_CHAR(C.CREATED_AT, 'MM-DD') 	AS createdAt
+		SELECT TO_CHAR(C.CREATED_AT, 'MM-DD') 		AS createdAt
 		     , SM.USER_NAME 						AS studentName
 		     , CC.CATEGORY_NAME 					AS categoryName
-		     , CL.CLASS_NAME 					AS className
+		     , CL.CLASS_NAME 						AS className
 		     , CM.USER_NAME 						AS counselorName
-		     , TRUNC(SYSDATE - C.CREATED_AT) 	AS elapsedDays
+		     , TRUNC(SYSDATE - C.CREATED_AT) 		AS elapsedDays
 		     , C.CATEGORY_NO						AS categoryNo
 		     
 		  FROM COUNSEL_RESERVATION 	C
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
 		  JOIN MEMBER 				SM 		ON SD.USER_NO = SM.USER_NO
-		  JOIN COUNSEL_CATEGORY 		CC 		ON C.CATEGORY_NO = CC.CATEGORY_NO
+		  JOIN COUNSEL_CATEGORY 	CC 		ON C.CATEGORY_NO = CC.CATEGORY_NO
 		  JOIN CLASS 				CL 		ON SM.CLASS_NO = CL.CLASS_NO
 		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
 		  JOIN MEMBER 				CM 		ON CP.USER_NO = CM.USER_NO
@@ -66,7 +66,7 @@
 		     , C.CATEGORY_NO						AS categoryNo
 		     
 		  FROM COUNSEL_RESERVATION 	C
-		  JOIN COUNSEL_CATEGORY 		CC 		ON C.CATEGORY_NO = CC.CATEGORY_NO
+		  JOIN COUNSEL_CATEGORY 	CC 		ON C.CATEGORY_NO = CC.CATEGORY_NO
 		  JOIN STUDENT_DETAIL 		SD 		ON C.STUDENT_NO = SD.STUDENT_NO
 		  JOIN MEMBER 				SM 		ON SD.USER_NO = SM.USER_NO
 		  JOIN COUNSELOR_PROFILE 	CP 		ON C.COUNSEL_NO = CP.COUNSEL_NO
@@ -135,15 +135,16 @@
 	 <select id="selectlistCount" parameterType="com.kh.know_how.admin.model.dto.CounselorSearchRequestDto"
 	 							  resultType="_int">
 		 SELECT COUNT(*)
-	       FROM COUNSELOR_INVITE			CI 
+	       FROM COUNSELOR_INVITE				CI 
 	       LEFT JOIN MEMBER 			    	CM  ON 	CM.USER_NO = CI.USER_NO
+	     WHERE CM.ROLE_CODE = 'COUNSELOR'
 	      <choose>
 	      	<when test="status == 'ACTIVE'">
-	     WHERE (CI.INVITE_STATUS = 'PENDING'
-	        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
+	       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+			OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 	       	</when>
 	       	<when test="status == 'INACTIVE'">
-	     WHERE CI.INVITE_STATUS = 'USED'
+	       AND CI.INVITE_STATUS = 'USED'
 	       AND CM.STATUS = 'INACTIVE' 
 	       	</when>
 	       </choose>
@@ -151,12 +152,12 @@
 				AND (
 					NVL(CM.USER_NAME, CI.INVITE_NAME) LIKE '%' || #{keyword} || '%'
 					OR NVL(CM.EMAIL, CI.INVITE_EMAIL) LIKE '%' || #{keyword} || '%'
-					OR CM.PHONE     LIKE '%' || #{keyword} || '%'
+					OR CM.PHONE LIKE '%' || #{keyword} || '%'
 				)
 			</if>
 	 </select>
 	 
-	 <!-- 9.상담사리스트 조회  -->
+	<!-- 9.상담사리스트 조회  -->
 	<!-- 
 		계정 활성/비활성 기준은 MEMBER.STATUS 기준으로 조회
 		COUNSELOR.STATUS는 현재 가입/입력 로직에서 동일하게 관리된다는 전제로 사용하지 않음
@@ -170,24 +171,25 @@
 		          FROM (
 		                SELECT CI.USER_NO           AS userNo
 		                     , CI.INVITE_NO         AS inviteNo		                
-		                     , NVL(CM.USER_NAME, CI.INVITE_NAME)   AS userName
+		                     , NVL(CM.USER_NAME, CI.INVITE_NAME)   	AS userName
 		                     , NVL(CM.EMAIL, CI.INVITE_EMAIL)       AS email
 		                     , CL.CLASS_NAME        AS className
 		                     , NVL(CM.STATUS, CI.INVITE_STATUS)     AS status
 		                     , CC.CATEGORY_NAME     AS categoryName                    
 		                     
-		                  FROM COUNSELOR_INVITE          CI 
+		                  FROM COUNSELOR_INVITE         CI 
 		                  LEFT JOIN MEMBER 			    CM  ON 	CM.USER_NO = CI.USER_NO
 		                  LEFT JOIN COUNSELOR_PROFILE 	C 	ON 	CM.USER_NO = C.USER_NO
 		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
 		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = C.CATEGORY_NO
+		                 WHERE CM.ROLE_CODE = 'COUNSELOR'
 		                  <choose>
 					      	<when test="status == 'ACTIVE'">
-					     WHERE (CI.INVITE_STATUS = 'PENDING'
+					       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
 					        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 					       	</when>
 					       	<when test="status == 'INACTIVE'">
-					     WHERE CI.INVITE_STATUS = 'USED'
+					       AND CI.INVITE_STATUS = 'USED'
 					       AND CM.STATUS = 'INACTIVE' 
 					       	</when>
 					       </choose>
@@ -198,7 +200,9 @@
 									OR CM.PHONE     LIKE '%' || #{keyword} || '%'
 			               	)
 		                   </if>
-		                 ORDER BY CI.USER_NO NULLS FIRST, CM.USER_NAME
+		                 ORDER BY CI.USER_NO NULLS FIRST
+		                        , CASE WHEN CL.CLASS_NAME IS NULL THEN 0 ELSE 1 END
+		                        , CM.USER_NAME
 		                 )P
 		        )
 		 WHERE RNUM BETWEEN #{pageRequest.startRow} AND #{pageRequest.endRow}
@@ -239,14 +243,14 @@
  	 <!-- 12. 상담사 기본프로필을 조회하는 쿼리 -->
 	 <select id="selectCounselorProfile" parameterType="_int"
 	 		 resultType="com.kh.know_how.admin.model.dto.CounselorProfileDTO">
-		 SELECT M.USER_NO           AS userNo
-		      , M.USER_ID           AS userId
+		 SELECT M.USER_NO           		AS userNo
+		      , M.USER_ID           		AS userId
 		      , NVL(C.PROFILE_IMG_PATH, '/resources/image/default-profile.png')  AS imgPath
-		      , M.STATUS            AS status
-		      , NVL(CL.CLASS_NAME, '미지정')  AS className
-		      , M.USER_NAME           AS userName
-		      , M.PHONE               AS phone
-		      , M.EMAIL               AS email
+		      , M.STATUS            		AS status
+		      , NVL(CL.CLASS_NAME, '미지정')	AS className
+		      , M.USER_NAME           		AS userName
+		      , M.PHONE               		AS phone
+		      , M.EMAIL               		AS email
 		      , (
 		            SELECT COUNT(*)
 		              FROM MEMBER SM
@@ -284,6 +288,110 @@
 	 	 WHERE INVITE_NO = #{value} 
 	 	   AND INVITE_STATUS = 'PENDING' 
 	 </update>
+	 
+	 <!-- 15. 상담사 클래스 변경 시 기존 학생테이블의 상담사번호를 null 처리해주는 쿼리 -->
+	 <update id="clearStudentCounselorNo" parameterType="_int">
+	 	UPDATE STUDENT_DETAIL
+	 	   SET COUNSELOR_NO = NULL
+	 	 WHERE COUNSELOR_NO = (SELECT COUNSEL_NO 
+	 	 						 FROM COUNSELOR_PROFILE 
+	 	 						WHERE USER_NO = #{value})
+	 </update>
+	 
+	 <!-- 16. 상담사 클래스 변경 시 학생들의 정보에 상담사번호를 추가하는 쿼리 -->
+	 <update id="updateStudentCounselorNoByClassNo" parameterType="map">
+	 	UPDATE STUDENT_DETAIL SD 
+	 	   SET COUNSELOR_NO = (SELECT COUNSEL_NO 
+	 	   						 FROM COUNSELOR_PROFILE 
+	 	   						WHERE USER_NO = #{userNo})
+	 	 WHERE SD.USER_NO IN (SELECT M.USER_NO 
+	 	 					    FROM MEMBER M 
+	 	 					   WHERE ROLE_CODE = 'STUDENT' AND CLASS_NO = #{classNo})
+	 </update>
+	 
+	 <!-- 17. 초대메일 중복체크 -->
+	 <select id="existsByEmail" parameterType="string" resultType="_int">
+	 	SELECT COUNT(*)
+	 	  FROM DUAL
+	 	 WHERE EXISTS (SELECT 1 FROM MEMBER WHERE EMAIL = #{value})
+	 	    OR EXISTS (SELECT 1 
+	 	    			 FROM COUNSELOR_INVITE 
+	 	    			WHERE INVITE_EMAIL = #{value} 
+	 	    			  AND INVITE_STATUS = 'PENDING'
+	 	    			  AND INVITE_EXPIRED_AT > SYSDATE)
+	 </select>
+	 
+	 <!-- 18. 초대메일 발송 전 초대정보 DB 저장 -->
+	 <insert id="insertCounselorInvite" parameterType="com.kh.know_how.admin.model.dto.CounselorInviteDto">
+	 	INSERT INTO COUNSELOR_INVITE (INVITE_NO, INVITE_NAME, INVITE_EMAIL, INVITE_TOKEN) 
+    				VALUES(SEQ_INVITE_NO.NEXTVAL, #{counselorName}, #{email}, #{inviteToken})
+	 </insert>
+	 
+	 <!-- 19. 최근 2일간 초대내역 조회 -->
+	 <select id="selectInviteList" resultType="com.kh.know_how.admin.model.dto.CounselorInviteListDto">
+	 	SELECT CI.INVITE_NO			AS inviteNo
+	 		 , CI.INVITE_NAME		AS inviteName
+	 	     , CI.INVITE_EMAIL		AS inviteEmail
+	 	     , CI.INVITE_SENT_AT	AS inviteSentAt
+	 	     , CASE 
+			        WHEN CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT &lt; SYSDATE THEN 'EXPIRED'
+			        WHEN CI.INVITE_STATUS = 'USED' THEN M.STATUS
+			        ELSE CI.INVITE_STATUS
+			    END 				AS inviteStatus
+	 	     , CI.USER_NO			AS userNo
+	 	  FROM COUNSELOR_INVITE CI
+	 	  LEFT JOIN MEMBER M ON (CI.USER_NO = M.USER_NO)
+	 	 WHERE INVITE_SENT_AT > SYSDATE -2
+	 	 ORDER BY INVITE_SENT_AT DESC
+	 </select>
+	 
+	 
+	 <!-- 20. 상담사 회원가입 요청 시 토큰 확인 및 정보전달용 쿼리 -->
+	 <select id="getCounselorInfo" parameterType="string"
+	  		 resultType="com.kh.know_how.admin.model.dto.CounselorInviteCompleteDto">
+	 	SELECT INVITE_NO			AS inviteNo
+	 		 , INVITE_NAME			AS inviteName
+	 		 , INVITE_EMAIL			AS inviteEmail
+	 	  FROM COUNSELOR_INVITE
+	 	 WHERE INVITE_STATUS = 'PENDING'
+	 	   AND INVITE_EXPIRED_AT >= SYSDATE
+	 	   AND USER_NO IS NULL
+	 	   AND INVITE_TOKEN = #{value}
+	 </select>
+	 
+	 <!-- 21. 상담사 회원가입용 쿼리(member) -->
+	 <insert id="insertCounselorMember" parameterType="com.kh.know_how.member.model.vo.Member">
+	 
+	    <selectKey keyProperty="userNo" resultType="_int" order="BEFORE">
+	        SELECT SEQ_USER_NO.NEXTVAL
+	        FROM DUAL
+	    </selectKey>
+	
+	    INSERT INTO MEMBER(USER_NO, USER_ID, USER_PWD, USER_NAME, PHONE, EMAIL, ADDRESS, ROLE_CODE, STATUS)
+	    VALUES( #{userNo}, #{userId}, #{userPwd}, #{userName}, #{phone}, #{email}, #{address}, 'COUNSELOR', 'ACTIVE')
+	 </insert>
+	 
+	 <!-- 22. 상담사 회원가입용 쿼리(profile) -->
+	 <insert id="insertCounselorProfile" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfile">
+	 	INSERT INTO COUNSELOR_PROFILE(COUNSEL_NO, PROFILE_IMG_PATH, BIO, STATUS, USER_NO)
+	    VALUES( SEQ_COUNSEL_NO.NEXTVAL, #{profileImgPath}, #{bio}, 'ACTIVE', #{userNo})
+	 </insert>
+	 
+	 <!-- 23. 상담사 회원가입용 쿼리(invite) -->
+	 <update id="updateCounselorInviteInfo" parameterType="com.kh.know_how.admin.model.dto.CounselorInviteCompleteDto">
+	 	UPDATE COUNSELOR_INVITE
+	 	   SET INVITE_STATUS = 'USED'
+	 	     , USER_NO = #{userNo}
+	 	 WHERE INVITE_NO = #{inviteNo}
+	 	   AND INVITE_NAME = #{inviteName}
+	 	   AND INVITE_EMAIL = #{inviteEmail}
+	 </update>
+	 
+	 <!-- 24. 상담사 회원가입용 쿼리(CounselorProfilImg) -->
+	 <insert id="insertCounselorProfileImg" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfilImg">
+	 	INSERT INTO COUNSELOR_PROFIL_IMG(PROFILE_NO, USER_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH)
+	 				   VALUES(SEQ_PROFILE_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
+	 </insert>
 	 
 	 	  
 </mapper>

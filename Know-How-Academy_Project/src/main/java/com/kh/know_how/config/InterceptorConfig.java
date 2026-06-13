@@ -31,11 +31,22 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		        .addPathPatterns("/myPage/myInformationSelectForm")
 		        .addPathPatterns("/myPage/myInformationChangeForm")
 		        .addPathPatterns("/myPage/checkPasswordForm")
-		        .addPathPatterns("/myPage/memberDeleteForm");
+		        .addPathPatterns("/myPage/memberDeleteForm")
+		        .addPathPatterns("/reservation/list")
+		        .addPathPatterns("/reservation/counselor/list")
+		        .addPathPatterns("/reservation/counselorList");
+				
 		        
 		// 직원용
 		registry.addInterceptor(counselorInterceptor)
-		        .addPathPatterns("/myPageCounselor");
+		        .addPathPatterns("/myPageCounselor")
+		        .addPathPatterns("/myPageCounselor/counselorInformationSelectForm")
+		        .addPathPatterns("/myPageCounselor/counselorInformationChangeForm")
+		        .addPathPatterns("/myPageCounselor/myStudentClassList")
+				//상담사회원가입용페이지 예외처리
+				.excludePathPatterns(
+		                "/myPageCounselor/counselor/signup",
+		                "/myPageCounselor/counselor/signup/**");
 		
 		
 		
@@ -43,9 +54,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
 		registry.addInterceptor(adminInterceptor)
         .addPathPatterns("/admin/**")
         .excludePathPatterns(
-                "/admin/loginForm",  //*** 로그인관련페이지 생성되면 주소 확인 후 수정하기(-)
+                "/admin/loginForm", 
                 "/admin/login",
                 "/admin/logout",
+                "/admin/findIdForm",
+                "/admin/findId",
+                "/admin/extraPasswordForm",
+                "/admin/extraPassword",
                 "/resources/**",
                 "/css/**",
                 "/js/**",

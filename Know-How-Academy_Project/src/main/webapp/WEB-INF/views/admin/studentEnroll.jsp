@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-    /* 1. 기본 스타일 세팅 (기존 대시보드와 일치감 형성) */
     * {
         margin: 0;
         padding: 0;
@@ -16,11 +15,9 @@
 
     body {
         background-color: #F8F9FA;
-        padding: 32px;
     }
 
-    /* 2. 가입 승인 컨테이너 스타일 */
-    .approval-container {
+    .card {
         background-color: #ffffff;
         border-radius: 12px;
         padding: 30px;
@@ -29,31 +26,35 @@
         max-width: 1200px;
         margin: 0 auto;
     }
-    .approval-title {
+    
+    h2 {
         font-size: 20px;
         font-weight: bold;
         margin-bottom: 20px;
         color: #2C2A38;
     }
-    .approval-table {
+    
+    table {
         width: 100%;
         border-collapse: collapse;
         text-align: center;
     }
-    .approval-table th {
+    
+    table th {
         padding: 15px;
         border-bottom: 2px solid #F3F1FF;
         color: #6F6D80;
-        font-weight: 600;
         font-size: 15px;
     }
-    .approval-table td {
-        padding: 15px;
+    
+    table td {
+    	padding: 15px 0;
         border-bottom: 1px solid #EAE9F5;
-        vertical-align: middle;
+        text-align : center;
         color: #5C5B6E;
         font-size: 15px;
     }
+    
     .class-select {
         padding: 6px 12px;
         border-radius: 6px;
@@ -64,7 +65,8 @@
         background-color: #F8F7FF;
         cursor: pointer;
     }
-    .status-badge {
+    
+    .status-pending {
         background-color: #F8F9FA;
         color: #9291A5;
         padding: 5px 12px;
@@ -73,10 +75,19 @@
         font-weight: 700;
         border: 1px solid #EAE9F5;
     }
-    .btn-approve {
-        background-color: #4233C7; /* 팀 메인 테마색 매칭 */
-        color: white;
-        border: none;
+    
+    .status-rejected {
+        background-color: #ffc6af;
+        color: #ff3c00;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        border: 1px solid #ff3c00;
+    }
+    
+    .btn {
+    	border: none;
         padding: 8px 16px;
         border-radius: 6px;
         cursor: pointer;
@@ -84,30 +95,33 @@
         margin-right: 4px;
         transition: background 0.2s;
     }
-    .btn-approve:hover { background-color: #3225A3; }
     
-    .btn-reject {
+    .btn.approve {
+        background-color: #4233C7;
+        color: white;
+    }
+    .btn.approve:hover { background-color: #3225A3; }
+    
+    .btn.rejected {
         background-color: #E84118;
         color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 700;
-        transition: background 0.2s;
     }
-    .btn-reject:hover { background-color: #C23616; }
+    .btn.rejected:hover { background-color: #C23616; }
+    
+    .btn.delete {
+        background-color: #d3d3d3;
+        color: white;
+    }
+    .btn.delete:hover { background-color: #b0b0b0; }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
 
-<div class="content-area">
-
-    <div class="approval-container">
-        <h2 class="approval-title">신규 가입 신청 목록</h2>
+    <div class="card">
+        <h2>신규 가입 신청 목록</h2>
         
-        <table class="approval-table">
+        <table>
             <thead>
                 <tr>
                     <th>이름</th>
@@ -135,11 +149,19 @@
 			                        </select>
 			                    </td>
 			                    <td>${ s.createdAt }</td>
-				                <td><span class="status-badge">대기</span></td>
-			                    <td>
-			                        <button type="button" class="btn-approve" onclick="approveStudent(${ s.userNo }, '${ s.studentName }')">승인</button>
-			                        <button type="button" class="btn-reject" onclick="rejectStudent(${ s.userNo }, '${ s.studentName }')">거절</button>
-			                    </td>
+			                    <c:choose>
+			                    	<c:when test="${ s.status eq 'PENDING'}">
+			                    		<td><span class="status-pending">대기</span></td>
+			                    		<td>
+					                        <button type="button" class="btn approve" onclick="approveStudent(${ s.userNo }, '${ s.studentName }')">승인</button>
+					                        <button type="button" class="btn rejected" onclick="rejectStudent(${ s.userNo }, '${ s.studentName }')">거절</button>
+					                    </td>
+			                    	</c:when>
+			                  		<c:otherwise>
+			                  			<td><span class="status-rejected">거절</span></td>
+			                  			<td><button type="button" class="btn delete" onclick="deleteStudent(${ s.userNo }, '${ s.studentName }')">삭제</button><td>
+			                  		</c:otherwise>
+			                    </c:choose>
 			                </tr>
 		            	</c:forEach>
 	            	</c:when>
@@ -152,8 +174,6 @@
             </tbody>
         </table>
     </div>
-
-</div>
 
 <script>
     function approveStudent(userNo, studentName) {
@@ -194,7 +214,7 @@
         		},
         		success(result) {
         			if(result == "success") {
-        				alert('[거절 완료]\n학생이름: ' + studentName + '\n\n목록에서 제외 처리됩니다.');
+        				alert('[거절 완료]\n학생이름: ' + studentName + '\n\n목록에서 거절 처리됩니다.');
         				location.reload();
         			} else {
         				alert("가입 거절이 실패되었습니다.");
@@ -202,6 +222,30 @@
         		},
         		error() {
         			console.log("가입 거절용 ajax 통신 실패!!");
+        		}
+        	});
+            
+        }
+    }
+    
+    function deleteStudent(userNo, studentName) {
+        if(confirm(studentName + '학생의 가입 신청을 정말로 삭제하시겠습니까?')) {
+        	$.ajax({
+        		url : "/know-how/admin/student/delete",
+        		type : "post",
+        		data : {
+        			userNo : userNo
+        		},
+        		success(result) {
+        			if(result == "success") {
+        				alert('[삭제 완료]\n학생이름: ' + studentName + '\n\n목록에서 삭제 처리됩니다.');
+        				location.reload();
+        			} else {
+        				alert("가입 삭제가 실패되었습니다.");
+        			}
+        		},
+        		error() {
+        			console.log("가입 삭제용 ajax 통신 실패!!");
         		}
         	});
             

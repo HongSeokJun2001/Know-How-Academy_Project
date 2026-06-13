@@ -12,6 +12,7 @@ import com.kh.know_how.admin.model.dto.StudentDto;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
 import com.kh.know_how.common.model.vo.PageInfo;
+import com.kh.know_how.member.model.vo.MemberLock;
 
 @Repository
 public class AdminDao2 {
@@ -91,6 +92,11 @@ public class AdminDao2 {
 		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
 	}
 	
+	public int deleteStudent(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 삭제하는 메소드
+		
+		return sqlSession.delete("adminMapper2.deleteStudent", userNo);
+	}
+	
 	public int adminSelectBoardCount(SqlSessionTemplate sqlSession, String postType) { // 공지사항, 학원소식의 리스트의 개수를 불러오는 메소드
 		
 		return sqlSession.selectOne("boardMapper.adminSelectBoardCount", postType);
@@ -154,6 +160,16 @@ public class AdminDao2 {
 	public int deleteNewsFileAttachment(SqlSessionTemplate sqlSession, int fileNo) { // 학원소식 수정 시 이미지 제거할 때 쓰는 메소드
 		
 		return sqlSession.delete("boardMapper.deleteNewsFileAttachment", fileNo);
+	}
+
+	public ArrayList<MemberLock> selectLockingMemberList(SqlSessionTemplate sqlSession) { // 계정이 잠긴 유저 리스트를 불러오는 메소드
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectLockingMemberList");
+	}
+
+	public int updateMemberUnlock(SqlSessionTemplate sqlSession, int userNo) { // 계정을 잠금해제할 수 있는 메소드
+		
+		return sqlSession.update("memberMapper.updateMemberUnlock", userNo);
 	}
 
 } // 클래스 끝

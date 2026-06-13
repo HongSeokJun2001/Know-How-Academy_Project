@@ -6,119 +6,163 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-   #searchId-form table {
-		margin : auto;
+   * {
+        margin: auto;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Pretendard', -apple-system, sans-serif;
+    }
+
+    body {
+        background-color: #F8F9FA;
+        padding: 32px;
+    }
+    .mypagesearchPassword-outer {
+	       background-color: #ffffff;
+           border-radius: 12px;
+           padding: 30px;
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+           border: 1px solid black;
+           max-width: 600px;
+           margin: auto;
+	    }
+	.searchPasswordPage-title {
+	    font-size: 36px;
+	    font-weight: bold;
+	    margin-bottom: 10px;
+	    color: #2C2A38;
 	}
-	#searchId-form input {
-         padding : 5px;
-		 margin : 5px;
-		 width : 250px;
+	.searchPasswordPage-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+    }
+	.searchPasswordPage-table th {
+        padding: 5px;
+        color: #6F6D80;
+        font-weight: 600;
+        font-size: 15px;
+    }
+    .searchPasswordPage-table td {
+        border-bottom: 2px solid black;
+        vertical-align: middle;
+        color: #5C5B6E;
+        font-size: 15px;
+    }
+	/* 입력창 */
+	.searchPasswordPage-input {
+	    height: 40px;
+	    width: 300px;
+	    padding: 10px;
+	    margin-bottom: 10px;
 	}
-	#searchId-form button {
-		 padding : 5px;
-		 margin : 5px;
-		 width : 100px;
+	
+	/* 버튼 */
+	.btn-searchPasswordPage {
+	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+        height: 40px;
+        width: 140px;
+        margin: auto;
+	}
+	
+	.btn-searchPasswordPage:hover {
+	    background-color: #3225A3;
 	}
 </style>
 </head>
 <body>
 <jsp:include page="../common/menubar.jsp"/>
 
-   <div class="outer">
-    <div id="searchPassword-form"> 
-		            
-               <br><br>
+   <br><br>
+   
+   <div class="mypagesearchPassword-outer">
+     
+       <div class="login-area"> 
                
-			<table id="login-page" align="center">
-				<tr>
-					<h2 align="center">비밀번호 찾기</h2>
-				</tr>
-				<tr>
-					<th>아이디</th>
-					<td>
-						<input type="text" id="userId" >
-					</td>
-				</tr>
-				<tr>
-					<th>이름</th>
-					<td>
-						<input type="text" id="userName" >
-					</td>
-				</tr>
-				<tr>
-					<th>이메일</th>
-					<td>
-						<input type="email" id="email">
-					</td>
-					<td>
-                        <button type="button" id="sendMail"onclick="sendMail();"
-								class="btn btn-secondary btn-sm">인증번호발송</button>
-                    </td>
-				</tr>
-				<tr align="center">
-					<th>이메일인증확인</th>
-					<td>
-						<input type="text" id="checkNo" disabled>
-					</td>
-					<td>
-						<button type="button" id="validateMail"
-						        onclick="validateMail();"
-								class="btn btn-secondary btn-sm" disabled>인증확인</button>
-					</td>
-				</tr>
-				<tr>
-					<th>
-						<br>
-					</th>
-				</tr>
-			    <tr>
-					<th></th>
-					<td align="center">
-			            <button type="button" id="searchPassword" class="btn btn-secondary btn-sm">비밀번호 찾기</button>
-			            <button type="button" class="btn btn-secondary btn-sm">확인</button>
-			            <%-- 이름 아이디 + 이메일 일치확인 후 창에 비밀번호 값 띄워주고 
-			                 확인 버튼 누르면 사라지게 해야됨 아직 기능 구현 x --%>
-			        </td>
-			    </tr>
-			    <tr align="center">
-			        <th colspan="3">
-			           ----------------------------------------------------------
-			        </th>
-			    </tr>
-				<tr>
-					<th>
-						<br>
-					</th>
-				</tr>
-				<tr align="center">
-					<th colspan="3">
-						<button type="button" class="btn btn-secondary btn-sm"
-											  onclick="enrollPage();">회원가입</button>
-						<button type="button" class="btn btn-secondary btn-sm"
-						                      onclick="myPage();">로그인</button>
-						<button type="button" class="btn btn-secondary btn-sm"
-						                      onclick="searchIdPage();">아이디 찾기</button>					  
-					</th>
-				</tr>
-				<tr>
-					<th><br><br></th>
-				</tr>
-			</table>
+           <form id="searchPassword-form" action="/know-how/myPage/searchPassword" method="post">
 			
-		</div>	
+				<br><br>
+				<h2 align="center" class="searchPasswordPage-title">비밀번호 찾기</h2>
+				<br>
+				
+				<table class="searchPasswordPage-table">
+				   <thead>
+					<tr>
+						<th></th>
+						<th>
+						    <label for="userId">아이디</label>
+							<input type="text" class="searchPasswordPage-input" name="userId" id="userId" required>
+						</th>
+						<th></th>
+					</tr>
+					<tr>
+						<th></th>
+						<th>
+						    <label for="userName">이름</label>
+							<input type="text" class="searchPasswordPage-input" name="userName" id="userName" required>
+						</th>
+						<th></th>
+					</tr>
+					<tr>
+						<th></th>
+						<th>
+						    <label for="email">이메일</label>
+							<input type="email" class="searchPasswordPage-input" name="email" id="email" required>
+						</th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>
+						</th>
+					</tr>
+				    <tr>
+						<th></th>
+						<th>
+				            <button type="submit" class="btn-searchPasswordPage">비밀번호 찾기</button>
+				        </th>
+				        <th></th>
+				    </tr>
+				    </thead>
+				    <tbody>
+				    <tr>
+				        <th></th>
+				        <td></td>
+				        <th></th>
+				    </tr>
+					<tr>
+						<th>
+							<br>
+						</th>
+					</tr>
+					<tr>
+					    <th></th>
+						<th>
+							<button type="button" class="btn-searchPasswordPage"
+												  onclick="enrollPage();">회원가입</button>
+							<button type="button" class="btn-searchPasswordPage"
+							                      onclick="myPage();">로그인</button>
+							<button type="button" class="btn-searchPasswordPage"
+							                      onclick="searchIdPage();">아이디 찾기</button>					  
+						</th>
+						<th></th>
+					</tr>
+					</tbody>
+				</table>
+		  </form>
+		
 		
 		<script>
-			function searchPassword() {
-				
-				// 비밀번호찾기페이지로 이동
-				location.href = "/know-how/myPage/searchPassword";
-				// GET 방식
-			}
-		    
 			function enrollPage() {
 				
 				// 회원가입페이지로 이동
-				location.href = "/know-how/myPage/enrollForm";
+				location.href = "/know-how/myPage/memberEnrollForm";
 				// GET 방식
 			}
 		
@@ -136,81 +180,8 @@
 				// GET 방식
 			}
 			
-			function validateMail() {
-				
-				// 이메일주소와 인증 번호를 서버로 다시 보내서 대조 작업
-				$.ajax({
-					url : "/know-how/myPage/validateMail",
-					type : "post", 
-					data : {
-						email : $("#email").val(),
-						checkNo : $("#checkNo").val()
-					}, 
-					success : function(result) {
-						
-						if(result == "success") {
-							// > 대조 성공일 경우
-							
-							alert("본인 인증에 성공했습니다.");
-							
-							// 인증 관련 요소들도 다시 disabled (readonly) 상태로 되돌려놓기
-							$("#checkNo").prop("readonly", true);
-							$("#validateMail").prop("disabled", true);
-							
-						} else {
-							// > 대조 실패일 경우
-							
-							alert("본인 인증에 실패했습니다. 다시 진행해 주세요.");
-							
-							// 인증 관련 요소들도 다시 disabled 상태로 되돌려놓기
-							// > 특히, 이미 입력한 인증번호를 초기화까지 시켜줘야함
-							$("#checkNo").prop("disabled", true).val("");
-							$("#validateMail").prop("disabled", true);
-							
-							// 이메일 관련 요소들도 다시 활성화 상태로 되돌리기
-							// > 마찬가지로 이미 입력했던 이메일 주소도 초기화 해줘야함
-							$("#email").prop("disabled", false).val("");
-							$("#sendMail").prop("disabled", false);
-							
-						}
-						
-					},
-					error : function() {
-						
-						console.log("인증번호 대조용 ajax 통신 실패!");
-					}
-				});
-			}
-		
-			function sendMail() {
-				
-				// 인증 번호를 이메일로 전송할 수 있도록 요청
-				$.ajax({
-					url : "/know-how/myPage/sendMail",
-					type : "post",
-					data : {
-						email : $("#email").val()
-					},
-					success : function(result) {
-						
-						alert(result);
-						
-						// 인증번호 발급 후 이메일 관련 요소들은 비활성화
-						$("#email").prop("readonly", true);
-						$("#sendMail").prop("disabled", true);
-						
-						// 인증 관련 요소들은 활성화
-						$("#checkNo").prop("disabled", false);
-						$("#validateMail").prop("disabled", false);
-						
-					},
-					error : function() {
-						
-						console.log("인증메일 발송용 ajax 통신 실패!");
-					}
-				});
-			}
 		</script>
+	   </div>
 	 </div>	
 </body>
 </html>

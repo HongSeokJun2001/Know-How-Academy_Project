@@ -7,19 +7,26 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	.news-section {
+	.section {
 	    width : 100%;
 	    padding : 0px 40px 80px;
 	    box-sizing : border-box;
 	}
-	.news-title-area {
+	.title-area {
 		display : flex;
 		justify-content : space-between;
 		align-items: flex-end;
 		margin-bottom : 28px;
 	}
 	
-	.news-card {
+	.title-area h2 {
+	    margin: 0;
+	    font-size: 32px;
+	    font-weight: 800;
+	    color: #2c2f3f;
+	}
+	
+	.card {
 		padding : 28px;
 		background-color : #fff;
 		border : 1px solid #e5e7ed;
@@ -27,7 +34,7 @@
 		box-shadow : 0 4px 14px rgba(17, 12, 39, 0.06); 
 	}
 	
-	.news-table {
+	table {
 		width : 100%;
 		border-collapse : separate;
 		border-spacing : 0;
@@ -37,7 +44,7 @@
 		font-size : 18px;
 	}
 	
-	.news-table th {
+	table th {
 		width: 10%;
 		height : 54px;
 		background-color : #fafafa;
@@ -47,28 +54,28 @@
 		text-align: center;
 	}
 	
-	.news-table td {
+	table td {
 		width : 90%;
 		border-bottom : 1px solid #eef0f4;
 		text-align : center;
 	}
 	
-	.news-table tr:last-child * {
+	table tr:last-child>* {
     	border-bottom: none;
 	}
 	
-	.news-table tr:last-child td {
+	table tr:last-child td {
     	width : 30%;
 	}
 	
-	.news-table input, .news-table textarea {
+	table input, textarea {
 		padding : 9px;
 		margin : 7px;
 		width : 99%;
 		border : none;
 	}
 	
-	.news-table textarea {
+	textarea {
 		height : 300px;
 		resize : none;
 	}
@@ -93,11 +100,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-	<form class="news-session" id="updateForm" enctype="multipart/form-data">
+	<form class="section" id="updateForm" enctype="multipart/form-data">
 	
 		<input type="hidden" name="postNo" value="${ requestScope.n.postNo }">
 		
-		<div class="news-title-area">
+		<div class="title-area">
 			<h2>학원소식</h2>
 			
 			<button type="submit" class="btn-primary">
@@ -105,8 +112,8 @@
 			</button>
 		</div>
 		
-		<div class="news-card">
-			<table class="news-table">
+		<div class="card">
+			<table>
 				<tr>
 					<th>제목</th>
 					<td colspan="3">
@@ -141,10 +148,10 @@
 							<c:when test="${ not empty  requestScope.list[1] }">
 								<input type="hidden" name="originalFileNo2" value="${ requestScope.list[1].fileNo }">
 								<input type="hidden" name="originalFileSaveName2" value="${ requestScope.list[1].saveName }">
-								<img id="contentImg1" width="250" height="170" src="/know-how${ requestScope.list[1].filePath }${ requestScope.list[1].saveName }">
+								<img id="contentImg1" width="150" height="110" src="/know-how${ requestScope.list[1].filePath }${ requestScope.list[1].saveName }">
 							</c:when>
 							<c:otherwise>
-								<img id="contentImg1" width="250" height="170">
+								<img id="contentImg1" width="150" height="110">
 							</c:otherwise>
 						</c:choose>
 					</td>
@@ -153,10 +160,10 @@
 							<c:when test="${ not empty  requestScope.list[2] }">
 								<input type="hidden" name="originalFileNo3" value="${ requestScope.list[2].fileNo }">
 								<input type="hidden" name="originalFileSaveName3" value="${ requestScope.list[2].saveName }">
-								<img id="contentImg2" width="250" height="170" src="/know-how${ requestScope.list[2].filePath }${ requestScope.list[2].saveName }">
+								<img id="contentImg2" width="150" height="110" src="/know-how${ requestScope.list[2].filePath }${ requestScope.list[2].saveName }">
 							</c:when>
 							<c:otherwise>
-								<img id="contentImg2" width="250" height="170">
+								<img id="contentImg2" width="150" height="110">
 							</c:otherwise>
 						</c:choose>
 					</td>
@@ -165,10 +172,10 @@
 							<c:when test="${ not empty  requestScope.list[3] }">
 								<input type="hidden" name="originalFileNo4" value="${ requestScope.list[3].fileNo }">
 								<input type="hidden" name="originalFileSaveName4" value="${ requestScope.list[3].saveName }">
-								<img id="contentImg3" width="250" height="170" src="/know-how${ requestScope.list[3].filePath }${ requestScope.list[3].saveName }">
+								<img id="contentImg3" width="150" height="110" src="/know-how${ requestScope.list[3].filePath }${ requestScope.list[3].saveName }">
 							</c:when>
 							<c:otherwise>
-								<img id="contentImg3" width="250" height="170">
+								<img id="contentImg3" width="150" height="110">
 							</c:otherwise>
 						</c:choose>
 					</td>

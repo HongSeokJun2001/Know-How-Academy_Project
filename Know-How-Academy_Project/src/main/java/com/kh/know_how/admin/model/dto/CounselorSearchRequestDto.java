@@ -20,7 +20,6 @@ public class CounselorSearchRequestDto {
 	
 	//검색어
 	private String keyword;     // 검색어
-	private String searchType;  // 검색할 목록: 이름/이메일/전화번호
 	//페이징처리
 	private String status = "ACTIVE";      // 활성/비활성 탭 구분
 	private PageRequestDto pageRequest = new PageRequestDto(); // 현재페이지, 시작행, 끝행

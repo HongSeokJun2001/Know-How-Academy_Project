@@ -84,30 +84,28 @@ public class BoardDao {
 		return sqlSession.update("boardMapper.deleteBoard", postNo);
 	}
 
-	// =========================================================================
 	public ArrayList<Board> mainPageNoticeList(SqlSessionTemplate sqlSessison) {
 
-		return null; // (ArrayList) sqlSessison.selectList("boardMapper.mainPageNoticeList");
+		return (ArrayList) sqlSessison.selectList("boardMapper.mainPageNoticeList");
 	}
 
-	public int selectNewsListCount(SqlSessionTemplate sqlSession) {
+	public int selectNewsListCount(SqlSessionTemplate sqlSession) { // 학원소식의 갯수를 불러오는 리스트
 
-		return 0; // sqlSession.selectOne("boardMapper.selectNewsListCount");
+		return sqlSession.selectOne("boardMapper.selectNewsListCount");
 	}
 
-	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) {
+	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) { // 메인페이지에 나오는 학원소식 리스트를 불러오는 메소드
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
 
-		return null; // (ArrayList) sqlSession.selectList("boardMapper.selectNewsList", null,
-						// rowBounds);
+		return (ArrayList) sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
 	}
 
 	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
 
-		return null; // sqlSession.selectOne("boardMapper.selectNews", postNo);
+		return sqlSession.selectOne("boardMapper.selectNews", postNo);
 	}
 
 	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {

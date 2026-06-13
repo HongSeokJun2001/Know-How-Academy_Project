@@ -21,13 +21,20 @@ public class Reservation {
 	private int reservationNo;			//	  RESERVATION_NO NUMBER CONSTRAINT PK_RESERVATION_NO PRIMARY KEY,
 	private int studentNo;				//	  STUDENT_NO NUMBER NOT NULL,
 	private int categoryNo;				//	  CATEGORY_NO NUMBER NOT NULL,
-	private Date consultDate;			//	  CONSULT_DATE DATE DEFAULT SYSDATE NOT NULL,
+	private String consultDate;			//	  CONSULT_DATE DATE DEFAULT SYSDATE NOT NULL,
 	private String inquiryContent;		//	  INQUIRY_CONTENT CLOB NOT NULL,
 	private String reservationStatus;	//	  RESERVATION_STATUS VARCHAR2(20) DEFAULT 'RESERVED' CONSTRAINT CK_RESERVATION_STATUS CHECK(RESERVATION_STATUS IN ('APPLIED', 'CANCELED', 'RESERVED', 'COMPLETED')), 
 	private Date createdAt;				//	  CREATED_AT DATE DEFAULT SYSDATE NOT NULL,
 	private Date updatedAt;				//	  UPDATED_AT DATE DEFAULT SYSDATE,
 	private int counselNo;				//	  COUNSEL_NO NUMBER NOT NULL,
 	
+	private int userNo;
 	private String counselorName;
 	private String categoryName;
+	
+	private String phone;
+	private String email;
+	
+	private String studentName;
+	private String className;
 }
