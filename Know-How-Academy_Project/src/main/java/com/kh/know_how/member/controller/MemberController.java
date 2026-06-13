@@ -312,43 +312,34 @@ public class MemberController {
 	}
 	
 	@PostMapping("update")
-	public String updateMember(Member m, String userId, String userPwd, 
-			                         HttpSession session) {
-		 
-		// XSS 공격 방지
-		String replaceUserId 
-		= XssDefencePolicy.defence(m.getUserId());
+	public String updateMember(Member m,String userId, String userPwd, String userName,
+			String phone, String email, String address, HttpSession session) { 
 		
-		String replaceUserPwd 
-		= XssDefencePolicy.defence(m.getUserPwd());
-		
-		String replaceUserName 
-		= XssDefencePolicy.defence(m.getUserName());
-		
-		String replacePhone 
-		= XssDefencePolicy.defence(m.getPhone());
-		
-		String replaceEmail
-		= XssDefencePolicy.defence(m.getEmail());
-		
-		String replaceAddress 
-		= XssDefencePolicy.defence(m.getAddress());
-		
-		// 치환된 결과를 각 필드로 
-		m.setUserId(replaceUserId);
-		m.setUserPwd(replaceUserPwd);
-		m.setUserName(replaceUserName);
-		m.setPhone(replacePhone);
-		m.setEmail(replaceEmail);
-		m.setAddress(replaceAddress);
-		
-		String updateEncPwd = bCryptPasswordEncoder.encode(userPwd);
-		
-		// 아이디와 변경할 비밀번호의 암호문을 넘기면서 서비스 호출 및 결과 받기
-		// > 두 개 이상의 값을 한번에 넘길 경우에는 무조건 VO 등으로 가공해서 한번에 넘긴다!!
-		
-		m.setUserId(userId);
-		m.setUserPwd(updateEncPwd);
+		// XSS 공격 방지 
+    	userPwd
+		= XssDefencePolicy.defence(userPwd);
+    
+    	userName 
+		= XssDefencePolicy.defence(userName);
+	
+    	phone 
+		= XssDefencePolicy.defence(phone);
+
+    	email
+		= XssDefencePolicy.defence(email);
+    
+    	address 
+		= XssDefencePolicy.defence(address);
+	    
+    	String updateEncPwd = bCryptPasswordEncoder.encode(userPwd);
+	    // 치환된 결과를 각 필드로 
+	 		
+    	    m.setUserId(userId);
+	 		m.setUserPwd(updateEncPwd);
+	 		m.setUserName(userName);
+	 		m.setPhone(phone);
+	 		m.setEmail(email);
+	 		m.setAddress(address);
 		
 		int result = memberService.updateMember(m);
 		
@@ -362,7 +353,7 @@ public class MemberController {
 			
 			session.setAttribute("alertMsg","회원정보가 변경되었습니다.");
 			
-			return "redirect:/member/myInforMationChangeForm";
+			return "redirect:/member/myInformationChangeForm";
 		
 		} else {
 			// 회원 정보 변경 실패했을 경우
@@ -374,62 +365,6 @@ public class MemberController {
 		
 		
 		
-	}
-	
-	@PostMapping("updatePwd")
-	public String updatePwd(String userId, String userPwd, String updatePwd, HttpSession session) {
-	
-		// 우선 사용자가 입력한 평문 현재의 비밀번호와 
-		// 세션에 담겨있는 현재 로그인한 사용자의 암호화된 비밀번호가 맞아 떨어지는지 대조
-		Member loginUser = (Member)(session.getAttribute("loginUser"));
-		
-		if(bCryptPasswordEncoder.matches(userPwd, loginUser.getUserPwd())) {
-			// > 평문과 암호문 비밀번호가 맞아 떨어질 경우 
-			
-			// 비밀번호 변경 요청 서비스 호출 후 결과 받기
-			// > 변경할 비밀번호 또한 암호문 형태로 변경해야한다!!
-			String updateEncPwd = bCryptPasswordEncoder.encode(updatePwd);
-			
-			// 아이디와 변경할 비밀번호의 암호문을 넘기면서 서비스 호출 및 결과 받기
-			// > 두 개 이상의 값을 한번에 넘길 경우에는 무조건 VO 등으로 가공해서 한번에 넘긴다!!
-			Member m = new Member();
-			m.setUserId(userId);
-			m.setUserPwd(updateEncPwd);
-			
-			int result = memberService.updatePwd(m);
-			
-			// 처리된 결과에 따라 사용자가 보게 될 응답페이지를 지정
-			if(result > 0) { 
-				// > 비밀번호 변경 성공
-				
-				// 현재 로그인한 회원의 정보가 조금이라도 변경되었다면 
-				// 무조건 그 갱신된 정보를 다시 불러와서 세션에 덮어씌워야함!!
-				// > 기존의 로그인용 서비스 재활용하기
-				Member updateMem = memberService.loginMember(m.getUserId());
-				
-				session.setAttribute("loginUser", updateMem);
-				// > 동일한 키값으로 한번 더 추가를 하면 밸류가 덮어씌워짐!!
-				
-				// 비밀번호가 잘 변경되었음을 1회성 알림 문구로 담아줄 것
-				session.setAttribute("alertMsg", "성공적으로 비밀번호가 변경되었습니다.");
-				
-			} else {
-				// > 비밀번호 변경 실패
-				
-				// 1회성 알림문구를 담기
-				session.setAttribute("alertMsg", "비밀번호 변경에 실패했습니다.");
-			}
-			
-		} else {
-			// > 평문과 암호문 비밀번호가 맞아 떨어지지 않을 경우
-			//   (사용자가 현재 비밀번호를 잘못 입력한 경우)
-			
-			// 1회성 알림 문구로 잘못입력했다고 알려주기
-			session.setAttribute("alertMsg", "잘못된 비밀번호입니다. 다시 입력해주세요.");
-		}
-		
-		// 뭐가 되었든 간에 마이페이지로 url 재요청
-		return "redirect:/member/myPage";
 	}
 	
 	@PostMapping("memberDeleteForm") // 회원탈퇴 페이지로 이동
@@ -593,11 +528,10 @@ public class MemberController {
 	@GetMapping("sendMail")
 	public String sendCertNo(Member m,String email) {
 		// XSS 공격 방지
-		String replaceEmail
-		= XssDefencePolicy.defence(m.getEmail());
+		email= XssDefencePolicy.defence(email);
 		
         // 치환된 결과를 각 필드로 
-		m.setEmail(replaceEmail);
+		m.setEmail(email);
 		
 		// 6자리의 랜덤 1회성 인증번호 발급 (100000 ~ 999999)
 		// > OTP : One Time Password
@@ -629,18 +563,14 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("validateMail")
 	public String validateCertNo(Member m,String email, String checkNo) {
-		/*
-		// XSS 공격 방지
-		String replaceEmail
-		= XssDefencePolicy.defence(m.getEmail());
 		
-		String replaceCheckNo
-		= XssDefencePolicy.defence(m.getCheckNo());
+		// XSS 공격 방지
+		email
+		= XssDefencePolicy.defence(email);
 		
 		// 치환된 결과를 각 필드로 
-		m.setEmail(replaceEmail);
-		m.setCheckNo(replaceCheckNo);
-		*/
+		m.setEmail(email);
+	
 		String result = "";
 		
 		// email 과 checkNo 세트가 certNoList 에 있는지 대조 후 결과에 따른 응답데이터 넘기기

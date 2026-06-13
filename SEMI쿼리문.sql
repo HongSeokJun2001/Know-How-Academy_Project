@@ -111,19 +111,17 @@ UPDATE MEMBER_LOCK
  
  ---------------------------------------
  
- -- 반의 총갯수를 구하는 쿼리문
- SELECT *
-   FROM CLASS
-   WHERE CLASS_NO
-   AND STATUS = 'N'
-   
--- 페이징 처리가된 반의 목록을 조회하는 쿼리문 
-SELECT CLASS_NO
-     , CLASS_NAME
-     , STATUS
-  FROM CLASS
- WHERE CLASS_NO
-   AND STATUS = 'Y'
+-- 반학생 조회용 쿼리문 
+  SELECT 
+        C.CLASS_NAME,
+        M.USER_NAME ,
+        M.PHONE ,
+        M.STATUS
+    FROM CLASS C
+    JOIN MEMBER M ON M.CLASS_NO = C.CLASS_NO
+   WHERE C.STATUS = 'N'
+     AND M.ROLE_CODE = 'STUDENT'
+   ORDER BY C.CLASS_NAME ASC
  
  
  

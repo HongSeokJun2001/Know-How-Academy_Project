@@ -135,7 +135,15 @@
 					</th>
 					<th></th>
 				</tr>
-			
+			    <tr>
+					<th><label for="email">수정할 휴대전화 번호</label></th>
+					<th>
+						<input type="text" class="changePage-input" name="phone" 
+						       pattern="[0-9]+" minlength="11" maxlength="11"
+						       value="${ sessionScope.loginUser.phone }" placeholder="-제외하고 입력">
+					</th>
+					<th></th>
+				</tr>
 				<tr>
 					<th><label for="email">수정할 이메일</label></th>
 					<th>
@@ -154,15 +162,6 @@
 					</th>
 					<th></th>
 				</tr>
-                <tr>
-					<th><label for="email">수정할 휴대전화 번호</label></th>
-					<th>
-						<input type="text" class="changePage-input" name="phone" 
-						       pattern="[0-9]+" minlength="11" maxlength="11"
-						       value="${ sessionScope.loginUser.phone }" placeholder="-제외하고 입력">
-					</th>
-					<th></th>
-				</tr>
 				<tr>
 				   <th></th>
 				   <td></td>
@@ -172,7 +171,7 @@
 			  <tbody>
 			    <tr>
 				   <th></th>
-				   <th></th>
+				   <th><input type="hidden" name="userId" value="${ sessionScope.loginUser.userId }"></th>
 				   <th></th>
 				</tr>
 				<tr>
