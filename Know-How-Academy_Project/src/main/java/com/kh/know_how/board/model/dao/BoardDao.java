@@ -31,11 +31,22 @@ public class BoardDao {
 		return sqlSession.selectOne("boardMapper.selectBoard", postNo);
 	}
 
+	public ArrayList<Board> searchBoardList(SqlSessionTemplate sqlSession, HashMap<String, String> map, PageInfo pi,
+			String postType) {
+
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+
+		return (ArrayList) sqlSession.selectList("boardMapper.searchBoardList", map, rowBounds);
+	}
+
 	public int selectListCount(SqlSessionTemplate sqlSession, String postType) {
 		return sqlSession.selectOne("boardMapper.selectListCount", postType);
 	}
 
-	public int selectSearchCount(HashMap<String, String> map, SqlSessionTemplate sqlSession) {
+	public int selectSearchCount(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return sqlSession.selectOne("boardMapper.selectSearchCount", map);
 	}
 
@@ -120,8 +131,13 @@ public class BoardDao {
 	}
 
 	public ArrayList<PostComment> selectCommentList(SqlSessionTemplate sqlSession, int postNo) {
-		
-		return (ArrayList)sqlSession.selectList("boardMapper.selectCommentList", postNo);
+
+		return (ArrayList) sqlSession.selectList("boardMapper.selectCommentList", postNo);
+	}
+
+	public int insertComment(SqlSessionTemplate sqlSession, PostComment pc) {
+
+		return sqlSession.insert("boardMapper.insertComment", pc);
 	}
 
 }

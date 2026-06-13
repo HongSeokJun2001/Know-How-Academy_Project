@@ -12,13 +12,11 @@
 					border: none !important;
 				}
 
-				#search-area {}
-
 				.table tbody {
 					cursor: pointer;
 				}
 
-				#search-area {
+				#search-container {
 					display: flex !important;
 					justify-content: center;
 					/*가운데 정렬*/
@@ -33,17 +31,12 @@
 				#search-area select.form-control {
 					width: 110px !important;
 					display: inline-block;
-					background-color: #ffffff !important;
-					/* 무조건 깔끔한 흰색 바탕 */
-					border: 1px solid #ced4da;
-					/* 은은한 회색 테두리 */
 					border-radius: 4px;
-					/* 부드러운 모서리 곡률 */
 				}
 
 				/* 검색 텍스트창의 너비 따로 조절 */
 				#search-area input[type="search"] {
-					width: 200px !important;
+					width: 300px !important;
 				}
 
 				/* 글쓰기 버튼 영역 여백 */
@@ -89,27 +82,53 @@
 				<h2>공지사항</h2>
 				<br>
 				<hr>
+
+				<!--검색창-->
 				<div id="search-area">
 
-					<select name="condition1" class="form-control mr-sm-2">
-						<option value="writer">작성자</option>
-						<option value="title">제목</option>
-						<option value="content">내용</option>
-					</select>
+					<form id="search-container" action="/know-how/community/board/${type}/search" method="get">
 
-					<input type="search" name="keyword" class="form-control mr-sm-2" placeholder="검색어를 입력하세요">
-					<button type="submit" class="btn btn-outline-secondary btn-hover">검색</button>
-					<br> <br>
+						<select name="condition1" class="form-control mr-sm-2">
+							<option value="all" ${condition1 eq 'all' ? 'selected' : '' }>전체</option>
+							<option value="writer" ${condition1 eq 'writer' ? 'selected' : '' }>작성자</option>
+							<option value="title" ${condition1 eq 'title' ? 'selected' : '' }>제목</option>
+							<option value="content" ${condition1 eq 'content' ? 'selected' : '' }>내용</option>
+						</select>
+
+						<c:if test="${type eq 'student'}">
+							<select name="condition2" class="form-control mr-sm-2">
+								<option value="all" ${condition2 eq 'all' ? 'selected' : '' }>전체</option>
+								<option value="admission" ${condition2 eq 'admission' ? 'selected' : '' }>입학상담</option>
+								<option value="employment" ${condition2 eq 'employment' ? 'selected' : '' }>취업상담
+								</option>
+							</select>
+						</c:if>
+
+						<input type="search" name="keyword" value="${keyword}" class="form-control mr-sm-2"
+							placeholder="검색어를 입력하세요">
+						<button type="submit" class="btn btn-outline-secondary btn-hover">검색</button>
+						<br> <br>
+					</form>
+
+					<c:if test="${!empty condition1}">
+						<script>
+							$(function () {
+								$("#search-area option[value=${condition1}]").prop("selected", true);
+								$("#search-area option[value=${condition2}]").prop("selected", true);
+						
+							});
+						</script>
+					</c:if>
 				</div>
 
-				<c:if test="${(not empty loginUser) or (loginUser.userNo eq 1)}">
+				<c:if test="${(not empty loginUser) and (loginUser.userNo eq 1)}">
 					<div class="write-btn-area" align="right">
 						<a href="/know-how/community/board/${type}/enrollForm" type="button"
 							class="btn btn-outline-secondary btn-hover">글쓰기</a>
 					</div>
 				</c:if>
 
-
+				<!--게시글 목록-->
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -122,7 +141,7 @@
 					</thead>
 					<tbody>
 						<!--게시글 목록-->
-					<c:choose>
+						<c:choose>
 							<c:when test="${empty list}">
 								<tr>
 									<td colspan="6">조회된 게시글이 없습니다.</td>
@@ -141,7 +160,6 @@
 							</c:otherwise>
 						</c:choose>
 						<script>
-							
 							$(function () {
 								$(".table>tbody>tr").click(function () {
 									let postNo = $(this).children().eq(0).text();
@@ -152,11 +170,14 @@
 						</script>
 					</tbody>
 				</table>
+				<div style="background: yellow;">
+				</div>
+			
 				<div class="paging-area">
 					<ul class="pagination page-item ">
 						<c:choose>
 							<%--'<' 버튼의 페이징 및 이동--%>
-								<c:when test="${requestScope.pi.currentPage eq 1}">
+								<c:when test="${pi.currentPage eq 1}">
 									<li class="page-item disabled">
 										<a class="page-link">Prev</a>
 									</li>
@@ -167,7 +188,7 @@
 											<c:when test="${empty keyword}">
 												<li class="page-item">
 													<a class="page-link"
-														href="/know-how/community/board/notice?cpage=${requestScope.pi.currentPage - 1}">
+														href="/know-how/community/board/${type}?cpage=${pi.currentPage - 1}">
 														Prev</a>
 												</li>
 											</c:when>
@@ -175,7 +196,7 @@
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/search?cpage=${requestScope.pi.currentPage - 1}&condition1=${condition1}&keyword=${keyword}">
+															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage - 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">
 															Prev</a>
 													</li>
 												</c:otherwise>
@@ -195,13 +216,13 @@
 										<c:when test="${ empty keyword}">
 											<li class="page-item">
 												<a class="page-link"
-													href="/know-how/community/board/notice?cpage=${p}">${p}</a>
+													href="/know-how/community/board/${type}?cpage=${p}">${p}</a>
 											</li>
 										</c:when>
 										<c:otherwise>
 											<li class="page-item">
 												<a class="page-link"
-													href="/know-how/community/board/search?condition1=${condition1}&keyword=${keyword}&cpage=${p}">${p}</a>
+													href="/know-how/community/board/${type}/search?condition1=${condition1}&condition2=${condition2}&keyword=${keyword}&cpage=${p}">${p}</a>
 											</li>
 										</c:otherwise>
 									</c:choose>
@@ -222,14 +243,14 @@
 											<c:when test="${empty keyword}">
 												<li class="page-item">
 													<a class="page-link"
-														href="/know-how/community/board/notice?cpage=${pi.currentPage + 1}">Next</a>
+														href="/know-how/community/board/${type}?cpage=${pi.currentPage + 1}">Next</a>
 												</li>
 											</c:when>
 											<%--검색어 입력 조회 일경우--%>
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&keyword=${keyword}">Next</a>
+															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">Next</a>
 													</li>
 												</c:otherwise>
 									</c:choose>

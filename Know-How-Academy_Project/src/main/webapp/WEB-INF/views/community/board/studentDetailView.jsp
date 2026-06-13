@@ -108,17 +108,19 @@
                     color: white;
                 }
 
-                .comment-area{
+                .comment-area {
                     display: flex;
                     padding-top: 2px;
                     gap: 50px;
                 }
-                #cName, #cDate{
+
+                #cName,
+                #cDate {
                     font-size: 18px;
-                    font-weight: 500px ;
+                    font-weight: 500px;
                     margin-bottom: 10px;
                 }
-                
+
 
                 .fileName {
                     font-weight: bold;
@@ -137,7 +139,7 @@
 
             <!--수정/삭제/목록-->
             <div class="outer">
-                <h2 align="center">자유게시판</h2>
+                <h2 align="center">수강생 게시판</h2>
                 <div class="top-area">
                     <div id="leftBtn">
                         <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
@@ -165,7 +167,8 @@
                         </c:if>
                     </div>
                     <div class="rightBtn">
-                        <a href="/know-how/community/board/post" id="listBtn1" class="btn btn-outline-secondary">목록</a>
+                        <a href="/know-how/community/board/student" id="listBtn1"
+                            class="btn btn-outline-secondary">목록</a>
                     </div>
                 </div>
 
@@ -187,7 +190,7 @@
                     </tr>
                     <tr style="border-bottom: 1px solid #d8d8d8;">
                         <!-- 첨부파일의 있고없고의 따른 경우 -->
-                        <th>첨부파일</th>                     
+                        <th>첨부파일</th>
                         <td colspan="3">
                             <c:choose>
                                 <c:when test="${empty fa}">
@@ -204,9 +207,9 @@
 
                 <br>
                 <div class="bottom-area">
-                    <a href="/know-how/community/board/post" id="listBtn2" class="btn btn-outline-secondary">목록</a>
+                    <a href="/know-how/community/board/student" id="listBtn2" class="btn btn-outline-secondary">목록</a>
                 </div>
-              
+
                 <!--댓글-->
                 <div id="reply-area" style="border: none;">
                     <c:choose>
@@ -243,7 +246,7 @@
                             type: "get",
                             dataType: "json",
                             data: { postNo: "${ requestScope.b.postNo }" },
-                           
+
                             success: function (result) {
                                 let resultStr = "";
 
@@ -255,18 +258,18 @@
                                     let rawDate = result[i].createdAt;
                                     let formattedDate = "";
 
-                                    if(rawDate){
+                                    if (rawDate) {
                                         let datePart = rawDate.split("T")[0];
-                                        let timePart = rawDate.split("T")[1].substring(0,8);
+                                        let timePart = rawDate.split("T")[1].substring(0, 8);
                                         formattedDate = datePart + " " + timePart;
-                                        }
+                                    }
                                     resultStr += "<div class='comment-area'>"
-                                        + "<span id='cName'>작성자: " + name + "</span>"                                        
+                                        + "<span id='cName'>작성자: " + name + "</span>"
                                         + "<span id='cDate'>" + formattedDate + "</span>"
                                         + "</div>"
-                                        +"<div>"
-                                        + "<span id='cContent'> " + content + "</span><hr>" 
-                                        "</div>";
+                                        + "<div>"
+                                        + "<span id='cContent'> " + content + "</span><hr>"
+                                    "</div>";
                                 }
 
                                 // 데이터가 없으면 안내 문구 출력
@@ -321,7 +324,7 @@
                 </script>
 
             </div>
-
+            <br><br><br><br><br>
         </body>
 
 

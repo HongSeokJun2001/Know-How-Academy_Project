@@ -79,7 +79,7 @@
 			<jsp:include page="../../common/menubar.jsp" />
 
 			<div class="outer">
-				<h2>자유게시판</h2>
+				<h2>수강생 게시판</h2>
 				<br>
 				<hr>
 
@@ -89,6 +89,7 @@
 					<form id="search-container" action="/know-how/community/board/${type}/search" method="get">
 
 						<select name="condition1" class="form-control mr-sm-2">
+							<!-- 검색후에도 조건초기화X-->
 							<option value="all" ${condition1 eq 'all' ? 'selected' : '' }>전체</option>
 							<option value="writer" ${condition1 eq 'writer' ? 'selected' : '' }>작성자</option>
 							<option value="title" ${condition1 eq 'title' ? 'selected' : '' }>제목</option>
@@ -179,7 +180,6 @@
 							$(function () {
 								$(".table>tbody>tr").click(function () {
 									let postNo = $(this).children().eq(0).text();
-									console.log(postNo);
 									location.href = "/know-how/community/board/${type}/detail/" + postNo;
 								})
 							})

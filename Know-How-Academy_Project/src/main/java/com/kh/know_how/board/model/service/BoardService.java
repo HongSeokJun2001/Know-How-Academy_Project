@@ -24,12 +24,18 @@ public class BoardService {
 	@Autowired
 	private BoardDao boardDao;
 
-	public int selectListCount(String postType) {
-		return boardDao.selectListCount(sqlSession, postType);
+	public ArrayList<Board> selectBoardList(PageInfo pi, String postType) {
+		
+		return boardDao.selectBoardList(sqlSession, pi, postType);
 	}
 
-	public ArrayList<Board> selectBoardList(PageInfo pi, String postType) {
-		return boardDao.selectBoardList(sqlSession, pi, postType);
+	public ArrayList<Board> searchBoardList(HashMap<String, String> map, PageInfo pi, String postType) {
+
+		return boardDao.searchBoardList(sqlSession, map, pi, postType);
+	}
+
+	public int selectListCount(String postType) {
+		return boardDao.selectListCount(sqlSession, postType);
 	}
 
 	public Board selectBoard(int postNo) {
@@ -38,7 +44,8 @@ public class BoardService {
 	}
 
 	public int selectSearchCount(HashMap<String, String> map) {
-		return boardDao.selectSearchCount(map, sqlSession);
+
+		return boardDao.selectSearchCount(sqlSession, map);
 	}
 
 	@Transactional
@@ -131,8 +138,13 @@ public class BoardService {
 	}
 
 	public ArrayList<PostComment> selectCommentList(int postNo) {
-				
+
 		return boardDao.selectCommentList(sqlSession, postNo);
+	}
+
+	public int insertComment(PostComment pc) {
+
+		return boardDao.insertComment(sqlSession, pc);
 	}
 
 }

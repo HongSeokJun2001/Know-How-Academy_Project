@@ -71,12 +71,14 @@
             <div class="outer">
                 <h2 align="center">공지사항 수정</h2>
 
-                <form id="updateForm" action="/know-how/community/board/${type}/update" method="post" enctype="multipart/form-data">
+                <form id="updateForm" action="/know-how/community/board/${type}/update" method="post"
+                    enctype="multipart/form-data">
                     <input type="hidden" name="postNo" value="${b.postNo}">
-					<input type="hidden" name="postType" value="NOTICE">
+                    <input type="hidden" name="postType" value="POST">
 
                     <div class="btn-area">
-                        <a id="listBtn" href="/know-how/community/board/notice" class="btn btn-outline-secondary btn-hover">목록</a>
+                        <a id="listBtn" href="/know-how/community/board/post"
+                            class="btn btn-outline-secondary btn-hover">목록</a>
                         <button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
                     </div>
 
@@ -94,17 +96,19 @@
                             <th>첨부파일</th>
                             <td colspan="3">
                                 <!--기존의 파일이 이미 있을 경우-->
-                                <c:if test="${ not empty requestScope.at}">
-                                    <a download="${fa.originName}" href="/know-how/${fa.filePath}${fa.saveName}">
-                                        ${at.originName}
-                                    </a>
-                                    <!--DB의 어떤 데이터를 지울지 말지를 알아야하기에 기존 파일번호보내기-->
-                                    <input type="hidden" name="fileNo" value="${fa.fileNo}">
-                                    <!--DB 데이터 변경후 서버폴더에 남아있는 파일을 지우기 위해 저장파일명 보내기 -->
-                                    <input type="hidden" name="saveName" value="${fa.saveName}">
-                                </c:if>
-                                <input type="file" name="originalFile" class="btn-hover"
-                                    style="resize: none;">
+                                <span id="changeFileArea">
+                                    <c:if test="${ not empty requestScope.fa}">
+                                        <a download="${fa.originName}" href="/know-how/${fa.filePath}${fa.saveName}">
+                                            ${fa.originName}
+                                        </a>
+                                        <input type="hidden" name="originalFileNo" value="${fa.fileNo}">
+                                        <input type="hidden" name="originalFileSaveName" value="${fa.saveName}">
+                                    </c:if>
+                                </span>
+
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="document.getElementById('fileInput').click();">파일 선택</button>
+                                <input type="file" name="originalFile" id="fileInput" style="display:none;">
                             </td>
                         </tr>
                     </table>
@@ -112,6 +116,19 @@
                     <br>
                 </form>
             </div>
+            /<!--수정시 파일 업로드 후 변경된 파일명으로 변경-->
+            <script>
+                document.getElementById('fileInput').addEventListener('change', function () {
+                    // 기존 파일 정보 영역 선택
+                    var changeFileArea = document.getElementById('changeFileArea');
+
+                    // 새로 선택한 파일 이름 가져오기
+                    var fileName = this.files[0].name;
+
+                    // 기존 영역의 내용을 새로 선택한 파일 이름으로 교체
+                    changeFileArea.innerHTML = '<span>' + fileName + '</span>';
+                });
+            </script>
         </body>
 
         </html>

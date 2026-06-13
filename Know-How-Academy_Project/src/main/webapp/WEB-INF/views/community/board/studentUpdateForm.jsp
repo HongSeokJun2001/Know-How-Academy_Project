@@ -69,7 +69,7 @@
             <jsp:include page="../../common/menubar.jsp" />
 
             <div class="outer">
-                <h2 align="center">자유게시글 수정</h2>
+                <h2 align="center">수강생 게시글 수정</h2>
 
                 <form id="updateForm" action="/know-how/community/board/${type}/update" method="post"
                     enctype="multipart/form-data">

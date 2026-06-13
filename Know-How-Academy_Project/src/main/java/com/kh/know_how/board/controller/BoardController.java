@@ -25,6 +25,7 @@ import com.kh.know_how.board.model.vo.PostComment;
 import com.kh.know_how.common.model.vo.PageInfo;
 import com.kh.know_how.common.template.FileRenamePolicy;
 import com.kh.know_how.common.template.Pagination;
+import com.kh.know_how.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -45,7 +46,8 @@ public class BoardController {
 	 */
 	@GetMapping("{type:notice|post|student}")
 	public ModelAndView selectBoardList(@PathVariable String type,
-			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
+										@RequestParam(value = "cpage", defaultValue = "1") int currentPage, 
+										ModelAndView mv) {
 
 		String postType;
 		String viewName;
@@ -58,7 +60,7 @@ public class BoardController {
 			break;
 		case "student":
 			postType = "STUDENT";
-			viewName = "community/board/StudentListView";
+			viewName = "community/board/studentListView";
 			break;
 		case "post":
 		default:
@@ -66,19 +68,26 @@ public class BoardController {
 			viewName = "community/board/postListView";
 			break;
 		}
-
+		
 		int listCount = boardService.selectListCount(postType);
 		// 특정 게시글조회를 위한 매개변수 지정
+		
+		int pageLimit;
+		int boardLimit;
+		int maxPage;
+		int startPage;
+		int endPage;		
+		
 
-		int pageLimit = 10;
-		int boardLimit = 10;
-
+		pageLimit = 10;
+		boardLimit = 10;
+	
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		ArrayList<Board> list = boardService.selectBoardList(pi, postType);
 
 		mv.addObject("list", list);
 		mv.addObject("pi", pi);
-		mv.addObject("type", type);
+
 		mv.setViewName(viewName);// 위 설정된 페이지
 
 		return mv;
@@ -95,8 +104,12 @@ public class BoardController {
 	 * @return
 	 */
 	@GetMapping("{type:notice|post|student}/search")
-	public ModelAndView searchBoardList(@PathVariable String type, String condition1, String keyword,
-			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
+	public ModelAndView searchBoardList(@PathVariable String type, 
+										@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+										String condition1, 
+										String condition2,
+										String keyword, 
+										ModelAndView mv) {
 
 		String postType;
 		String viewName;
@@ -108,24 +121,40 @@ public class BoardController {
 			break;
 		case "student":
 			postType = "STUDENT";
-			viewName = "community/board/StudentListView";
+			viewName = "community/board/studentListView";
 			break;
 		case "post":
 		default:
 			postType = "POST";
-			viewName = "community/board/post/postListView";
+			viewName = "community/board/postListView";
 			break;
 		}
-
+		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("condition1", condition1);
+		map.put("condition2", condition2);
 		map.put("keyword", keyword);
+		map.put("postType", postType);
 
 		// 검색 결과에 따른 페이징 처리가 필요하다면 여기서 로직을 추가하세요.
 		// 현재는 서비스 호출 예시만 작성했습니다.
 		int searchCount = boardService.selectSearchCount(map);
-
-		mv.setViewName(viewName);
+		
+		int pageLimit = 10;
+		int boardLimit = 10;
+		
+		PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, 
+											pageLimit, boardLimit);
+		
+		ArrayList<Board> list = boardService.searchBoardList(map, pi, postType);
+		
+		mv.addObject("list", list)
+		.addObject("pi", pi)
+		.addObject("condition1", condition1)
+		.addObject("condition2", condition2)
+		.addObject("keyword", keyword)
+		.addObject("postType", type)
+		.setViewName(viewName);
 
 		return mv;
 	}
@@ -281,12 +310,15 @@ public class BoardController {
 	 */
 
 	@PostMapping("/{type}/updateForm")
-	public ModelAndView updateForm(@PathVariable String type, @RequestParam("postNo") int postNo, ModelAndView mv) {
+	public ModelAndView updateForm(@PathVariable String type, @RequestParam("postNo") int postNo, 
+									ModelAndView mv) {
 
 		ArrayList<Category> list = boardService.selectCategoryList();
 
 		Board b = boardService.selectBoard(postNo);
 
+		FileAttachment fa = boardService.selectFileAttachment(postNo);
+		
 		String postType;
 		String viewName;
 
@@ -305,7 +337,11 @@ public class BoardController {
 			viewName = "community/board/postUpdateForm";
 		}
 
-		mv.addObject("b", b).addObject("list", list).addObject("type", type).setViewName(viewName);
+		mv.addObject("b", b)
+		.addObject("fa", fa)
+		.addObject("list", list)
+		.addObject("type", type)
+		.setViewName(viewName);
 
 		return mv;
 	}
@@ -328,61 +364,55 @@ public class BoardController {
 
 		FileAttachment fa = null;
 
-		String postType;
-		String viewName;
+	    String postType;
+	    String viewName;
 
-		switch (type) {
-		case "notice":
-			postType = "NOTICE";
-			viewName = "community/board/noticeUpdate";
-			break;
-		case "student":
-			postType = "STUDENT";
-			viewName = "community/board/studentUpdate";
-			break;
-		case "post":
-		default:
-			postType = "POST";
-			viewName = "community/board/postUpdate";
-		}
+	    switch (type) {
+	    case "notice":
+	        postType = "NOTICE";
+	        viewName = "community/board/noticeUpdate";
+	        break;
+	    case "student":
+	        postType = "STUDENT";
+	        viewName = "community/board/studentUpdate";
+	        break;
+	    case "post":
+	    default:
+	        postType = "POST";
+	        viewName = "community/board/postUpdate";
+	    }
 
-		if (!originalFile.getOriginalFilename().equals("")) {
+	    if (!originalFile.getOriginalFilename().equals("")) {
 
-			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
+	        String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
 
-			fa = new FileAttachment();
-			fa.setOriginName(originalFile.getOriginalFilename());
-			fa.setSaveName(saveName);
-			fa.setTargetType(b.getPostType());
+	        fa = new FileAttachment();
+	        fa.setOriginName(originalFile.getOriginalFilename());
+	        fa.setSaveName(saveName);
+	        fa.setTargetType(b.getPostType());
+	        fa.setTargetNo(b.getPostNo()); 
+	        fa.setFilePath("/resources/board_upfiles/");
 
-			if (originalFileNo != 0) {
+	        if (originalFileNo != 0) {
+	            fa.setFileNo(originalFileNo);
+	            String savePath = session.getServletContext().getRealPath("/resources/board_upfiles/");
+	            new File(savePath + originalFileSaveName).delete();
+	        } 
+	        
+	    } 
 
-				fa.setFileNo(originalFileNo);
+	    b.setPostType(postType);
+	    model.addAttribute("type", type);
 
-				String savePath = session.getServletContext().getRealPath("/resources/board_upfiles/");
-				new File(savePath + originalFileSaveName).delete();
-			} else {
+	    int result = boardService.updateBoard(b, fa);
 
-				fa.setTargetNo(b.getPostNo());
-				fa.setFilePath("/resources/board_upfiles/");
-			}
-		}
-
-		b.setPostType(postType);
-		model.addAttribute("type", type);
-
-		int result = boardService.updateBoard(b, fa);
-
-		if (result > 0) {
-
-			session.setAttribute("alertMsg", "게시글  수정 성공");
-
-			return "redirect:/community/board/" + type + "/detail/" + b.getPostNo();
-		} else {
-
-			model.addAttribute("errorMsg", "게시글수정 실패");
-			return "common/errorPage";
-		}
+	    if (result > 0) {
+	        session.setAttribute("alertMsg", "게시글 수정 성공");
+	        return "redirect:/community/board/" + type + "/detail/" + b.getPostNo();
+	    } else {
+	        model.addAttribute("errorMsg", "게시글 수정 실패");
+	        return "common/errorPage";
+	    }
 
 	}
 
@@ -425,13 +455,28 @@ public class BoardController {
 	}
 	
 	@ResponseBody
-	@GetMapping("clist")
-	public ArrayList<PostComment> ajaxSelectCommentList(int postNo, Model model){
+	@GetMapping("pclist")
+	public ArrayList<PostComment> ajaxSelectCommentList(int postNo){
 		
 		ArrayList<PostComment> list = boardService.selectCommentList(postNo);			
-		
+	
 		return list;
 	}
+	
+	@ResponseBody
+	@PostMapping("pcinsert")
+	public String ajaxInsertComment(PostComment pc, HttpSession session) {
+		
+		int writerNo = ((Member)(session.getAttribute("loginUser"))).getUserNo();
+		
+		//PostComment VO 에서 String으로 변경
+		pc.setWriterNo(writerNo + "");
+		
+		int result = boardService.insertComment(pc);
+		
+		return (result > 0 ) ? "success" : "fail";
+		
+	}	
 
 	@ResponseBody
 	@GetMapping("news/list")

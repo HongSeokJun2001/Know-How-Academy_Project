@@ -58,16 +58,17 @@
 
 	<resultMap id="commentResultSet" type="postComment">
 		<result column="COMMENT_NO" property="commentNo" />
-    <result column="POST_NO" property="postNo" />
-    <result column="WRITER_NO" property="writerNo" />
-    <result column="CONTENT" property="content" />
-    <result column="CREATED_AT" property="createdAt" />
-    <result column="UPDATED_AT" property="updatedAt" />
-    <result column="STATUS" property="status" />
+		<result column="POST_NO" property="postNo" />
+		<result column="WRITER_NO" property="writerNo" />
+		<result column="CONTENT" property="content" />
+		<result column="CREATED_AT" property="createdAt" />
+		<result column="UPDATED_AT" property="updatedAt" />
+		<result column="STATUS" property="status" />
+		<result column="USER_NAME" property="userName" />
 	</resultMap>
 
 	<!-- 게시글 통합관리 -->
-	<!-- 게시글 노출갯수 -->
+	<!-- 게시글 목록 조회리스트 -->
 	<select id="selectBoardList" parameterType="string"
 		resultMap="boardResultSet">
 		SELECT * FROM(
@@ -86,14 +87,49 @@
 		ORDER BY B.POST_NO DESC
 		)
 	</select>
-
-	<!-- 게시글 총갯수 쿼리문 -->
+	
+		<!-- 게시글 총갯수 쿼리문 -->
 	<select id="selectListCount" resultType="_int">
 		SELECT COUNT(*)
-		FROM
-		BOARD_POST
+		FROM BOARD_POST
 		WHERE POST_TYPE = #{postType}
-		AND STATUS = 'Y'
+	</select>
+
+	<!-- 게시글 목록 조회리스트(검색시) -->
+	<select id="searchBoardList" parameterType="hashmap"
+								resultMap="boardResultSet">
+		SELECT B.POST_NO,
+				B.CATEGORY,
+				B.TITLE,
+				M.USER_NAME,
+				B.VIEW_COUNT,
+				B.CREATED_AT
+			FROM BOARD_POST B
+			JOIN MEMBER M ON (WRITER_NO = USER_NO)
+			<where>
+			B.POST_TYPE = #{postType}
+			AND B.STATUS = 'Y'
+			
+			<if test="condition1 != 'all' and keyword != null and keyword !=''">
+			AND
+			<choose>
+				<when test="condition1 == 'writer'">
+					M.USER_NAME
+				</when>
+				<when test="condition1 == 'title'">
+					B.TITLE
+				</when>
+				<when test="condition1 == 'content'">
+					B.CONTENT
+				</when>
+			</choose>
+				LIKE '%' || #{keyword} || '%'	
+			</if>				
+			<if test="condition2 != null and condition2 != '' and condition2 != 'all'">
+				AND B.CATEGORY = #{condition2}
+			</if>			
+			</where>
+			ORDER BY B.POST_NO DESC
 	</select>
 
 	<!-- 검색결과의 갯수를 세오는 쿼리문 -->
@@ -101,27 +137,30 @@
 		resultType="_int">
 		SELECT COUNT(*)
 		FROM BOARD_POST B
-		JOIN MEMBER M ON (B.WRITER_NO =
-		M.USER_NO)
-		WHERE POST_TYPE = 'POST'
-		AND B.STATUS = 'Y'
-		<if test="condition1 == 'writer'">
-			AND M.USER_NAME LIKE '%' || #{keyword} || '%'
-		</if>
-		<if test="condition1 == 'title'">
-			AND B.TITLE LIKE '%' || #{keyword} || '%'
-		</if>
-		<if test="condition1 == 'content'">
-			AND B.CONTENT LIKE '%' || #{keyword} || '%'
-		</if>
-		<if test="condition2 == 'admission'">
-			AND B.CATEGORY = '입학상담'
-		</if>
-		<if test="condition2 == 'employment'">
-			AND B.CATEGORY = '취업상담'
-		</if>
+		JOIN MEMBER M ON (B.WRITER_NO =	M.USER_NO)
+		<where>
+			B.POST_TYPE = #{postType}
+			AND B.STATUS = 'Y'
+			<if test="condition1 != 'all' and keyword != null and keyword !=''">
+			AND
+			<choose>
+				<when test="condition1 == 'writer'">
+				M.USER_NAME
+				</when>
+				<when test="condition1 == 'title'">
+					B.TITLE
+				</when>
+				<when test="condition1 == 'content'">
+					B.CONTENT
+				</when>
+			</choose>
+				LIKE '%' || #{keyword} || '%'	
+			</if>				
+			<if test="condition2 != null and condition2 != '' and condition2 != 'all'">
+				AND B.CATEGORY = #{condition2}
+			</if>	
+			</where>
 	</select>
-
 
 	<!-- 게시글 등록용 쿼리문 -->
 	<insert id="insertBoard" parameterType="board">
@@ -177,16 +216,15 @@
 
 	<!-- 첨부파일 등록용 쿼리문 -->
 	<insert id="insertFileAttachment" parameterType="fileAttachment">
-
-
-		INSERT INTO
-		FILE_ATTACHMENT(FILE_NO,
+		INSERT INTO	FILE_ATTACHMENT(
+		FILE_NO,
 		TARGET_NO,
 		TARGET_TYPE,
 		ORIGIN_NAME,
 		SAVE_NAME,
 		FILE_PATH)
-		VALUES(SEQ_POST_NO.NEXTVAL,
+	VALUES(
+		SEQ_POST_NO.NEXTVAL,
 		#{targetNo},
 		#{targetType},
 		#{originName},
@@ -284,13 +322,39 @@
 	</delete>
 
 	<select id="selectCommentList" parameterType="_int"
-			resultMap="commentResultSet">
-		SELECT COMMENT_NO,
-				WRITER_NO,
-				CONTENT,
-				CREATED_AT,
-				UPDATED_AT,	
-				STATUS
+		resultMap="commentResultSet">
+		SELECT PC.COMMENT_NO,
+		PC.POST_NO,
+		M.USER_NAME,
+		PC.CONTENT,
+		PC.CREATED_AT
+		FROM POST_COMMENT PC
+		JOIN MEMBER M ON (PC.WRITER_NO =
+		M.USER_NO)
+		WHERE
+		PC.POST_NO = #{postNo}
+		AND PC.STATUS = 'Y'
+		ORDER BY
+		PC.CREATED_AT DESC
 	</select>
+
+
+	<insert id="insertComment" parameterType="postComment">
+		INSERT INTO
+		POST_COMMENT(
+		COMMENT_NO,
+		POST_NO,
+		CONTENT,
+		WRITER_NO,
+		CREATED_AT)
+		VALUES(SEQ_COMMENT_NO.NEXTVAL,
+		#{postNo},
+		#{content},
+		#{writerNo},
+		SYSDATE)
+
+	</insert>
+
+
 
 </mapper>
