@@ -23,7 +23,7 @@
            padding: 30px;
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
-           max-width: 700px;
+           max-width: 600px;
            margin: auto;
 	    }
 	.selectPage-title {
@@ -93,10 +93,12 @@
 </head>
 <body>
     <jsp:include page="../common/menubar.jsp"/>
-   
+    
+    <br><br>
+    
     <div class="selectForm-outer">
-     <br><br>
-     <h2 align="left" class="selectPage-title">내정보</h2>
+     <br>
+     <h3 align="left" class="selectPage-title">내정보</h3>
      <br>
     <%-- 상담예약 페이지로 요청을 보냄--%>
     <div id="counselorInformationSelect-form">
@@ -113,18 +115,18 @@
         
         <tbody>
          <tr>
-           <th>&nbsp;&nbsp;&nbsp;아이디</th>
+           <th><label for="userId">아이디</label></th>
            <th>
                <b>${ sessionScope.loginUser.userId }</b>  
            </th>
-           <th>&nbsp;&nbsp;&nbsp;기간</th>
+           <th><label for="createdAt">기간</label></th>
            <th>
                <b>${ sessionScope.loginUser.createdAt }</b>
            </th>
            <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;이름</th>
+           <th><label for="name">이름</label></th>
            <th>
               <b>${ sessionScope.loginUser.userName }</b> 
            </th>
@@ -134,15 +136,15 @@
            </td>
         </tr>
         <tr>
-            <th>&nbsp;&nbsp;&nbsp;휴대폰번호</th>
+            <th><label for="phone">휴대전화 번호</label></th>
             <th>
               <b>${ sessionScope.loginUser.phone }</b>
             </th>
-            <th colspan="5">상담신청하고 싶다면?</th>
+            <th colspan="5">우리반학생들이 궁금하다면?</th>
             <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;이메일</th>
+           <th><label for="email">이메일</label></th>
            <th>
               <b>${ sessionScope.loginUser.email }</b>
            </th>
@@ -152,16 +154,16 @@
            <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;반</th>
+           <th><label for="class">반</label></th>
            <td>
-             <b>${ sessionScope.loginUser.email }</b>
+             <b>${ sessionScope.loginUser.classNo } 반</b>
            </td>
            <th></th>
            <th></th>
            <td></td>
         </tr>
         <tr>
-           <th>&nbsp;&nbsp;&nbsp;주소</th>
+           <th><label for="address">주소</label></th>
            <th>
              <b>${ sessionScope.loginUser.address }</b>
            </th>

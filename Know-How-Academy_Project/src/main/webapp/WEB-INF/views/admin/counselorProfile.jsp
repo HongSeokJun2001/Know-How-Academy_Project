@@ -406,7 +406,7 @@
 
                 <div class="info-row">
                     <span class="info-label">이메일</span>
-                    <span class="info-value">${requestScope.counselor.email}</span>
+                    <span class="info-value"><a href="mailto:${requestScope.counselor.email}">${requestScope.counselor.email}</a></span>
                 </div>
             </div>
 

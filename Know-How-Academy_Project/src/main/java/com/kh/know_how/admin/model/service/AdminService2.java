@@ -78,6 +78,12 @@ public class AdminService2 {
 	
 		return ad2.updateStudentStatus(sqlSession, s);
 	}
+	
+	@Transactional
+	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
+		
+		return ad2.deleteStudent(sqlSession, userNo);
+	}
 
 	public ArrayList<StudentDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
@@ -183,7 +189,7 @@ public class AdminService2 {
 		return result;
 	}
 
-	public ArrayList<MemberLock> selectLockingMemberList() {
+	public ArrayList<MemberLock> selectLockingMemberList() { // 계정이 잠긴 유저 리스트를 불러오는 메소드
 		
 		return ad2.selectLockingMemberList(sqlSession);
 	}
