@@ -158,7 +158,7 @@
 	    border: 1px solid #e5e7eb;
 	    border-radius: 10px;
 	    font-size: 15px;
-		min-width: 1100px;
+		min-width: 800px;
 	}
 	
 	.table thead th {
@@ -303,7 +303,7 @@
 
 				<div class="search-field small">
 					<label for="studentStatus">상태</label>
-					<select id="studentStatus" name="status" class="select">
+					<select id="studentStatus" name="studentStatus" class="select">
 						<option value="">전체</option>
 						<option value="ACTIVE">재학</option>
 						<option value="REST">휴학</option>
@@ -315,11 +315,19 @@
 				</button>
 			</div>
 		</form>
-
-		<c:if test="${ not empty requestScope.keyword }">
+		
+		<c:if test="${ not empty requestScope.studentSearchRequest.studentStatus }">
+			<script>
+				$(function() {
+					$("#studentStatus option[value=${ requestScope.studentSearchRequest.studentStatus }]").prop("selected", true);
+				});
+			</script>
+		</c:if>
+		
+		<c:if test="${ not empty requestScope.studentSearchRequest.keyword }">
 			<div class="search-keyword-area">
 				<span class="keyword-chip">
-					검색어: <strong>${ requestScope.keyword }</strong>
+					검색어: <strong>${ requestScope.studentSearchRequest.keyword }</strong>
 					<button type="button" onclick="go('/admin/studentList')">×</button>
 				</span>
 			</div>
@@ -393,7 +401,7 @@
 									<td>${ s.createdAt }</td>
 									<td>
 										<c:choose>
-											<c:when test="${ s.status eq 'ATTENDING' }">
+											<c:when test="${ s.studentStatus eq 'ATTENDING' }">
 												<span class="status active">재학</span>
 											</c:when>
 											<c:otherwise>
@@ -421,11 +429,11 @@
 				<c:otherwise>
 				
 					<c:choose>
-						<c:when test="${ empty requestScope.condition }">
+						<c:when test="${ empty requestScope.studentSearchRequest.studentStatus }">
 							<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 						</c:when>
 						<c:otherwise>
-							<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
+							<button type="button" onclick="go('/admin/studentList/search?keyword=${ requestScope.studentSearchRequest.keyword }&studentStatus=${ requestScope.studentSearchRequest.studentStatus }&cpage=${ requestScope.pi.currentPage - 1 }')">&lt;</button>
 						</c:otherwise>
 						
 					</c:choose>
@@ -441,11 +449,11 @@
 					<c:otherwise>
 					
 						<c:choose>
-							<c:when test="${ empty requestScope.status }">
+							<c:when test="${ empty requestScope.studentSearchRequest.studentStatus }">
 								<button type="button" onclick="go('/admin/studentList?cpage=${ p }')">${ p }</button>
 							</c:when>
 							<c:otherwise>
-								<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ p }')">${ p }</button>
+								<button type="button" onclick="go('/admin/studentList/search?keyword=${ requestScope.studentSearchRequest.keyword }&studentStatus=${ requestScope.studentSearchRequest.studentStatus }&cpage=${ p }')">${ p }</button>
 							</c:otherwise>
 						</c:choose>
 						
@@ -461,11 +469,11 @@
 				<c:otherwise>
 				
 					<c:choose>
-						<c:when test="${ empty requestScope.status }">
+						<c:when test="${ empty requestScope.studentSearchRequest.studentStatus }">
 							<button type="button" onclick="go('/admin/studentList?cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 						</c:when>
 						<c:otherwise>
-							<button type="button" onclick="go('/admin/studentList/search?status=${ requestScope.status }&keyword=${ requestScope.keyword }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
+							<button type="button" onclick="go('/admin/studentList/search?keyword=${ requestScope.studentSearchRequest.keyword }&studentStatus=${ requestScope.studentSearchRequest.studentStatus }&cpage=${ requestScope.pi.currentPage + 1 }')">&gt;</button>
 						</c:otherwise>
 					</c:choose>
 				</c:otherwise>

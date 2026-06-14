@@ -152,6 +152,17 @@
        <a>가입 문의하기</a> | <a href="/know-how/admin/findIdForm">아이디 찾기</a> | <a href="/know-how/admin/extraPasswordForm">임시 비밀번호 발급</a>
 	</div>
 	<script>
+
+        $(document).ajaxError(function(event, xhr, settings, thrownError) {
+            if (xhr.status === 401) {
+                alert("세션이 만료되어 로그인이 필요합니다.");
+                location.href = "cp/admin/login"; 
+            } else if (xhr.status === 403) {
+                alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
+                location.href = "cp/"; 
+            }
+        });
+
 		$(function () {
             $("#userPwd").on("blur", function() {
                 if ($(this).val().trim() === "") {

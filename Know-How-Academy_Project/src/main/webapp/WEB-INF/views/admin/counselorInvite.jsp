@@ -387,6 +387,11 @@
             background-color: #fff1f1;
         }
 
+        #inviteMailBtn:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
     </style>
     <!-- 상담사 등록 콘텐츠 시작 -->
      
@@ -440,7 +445,7 @@
                 </div>
 
                 <div class="form-button-area">
-                    <button type="button" class="btn-primary" onclick="sendMail();">
+                    <button type="button" class="btn-primary" id="inviteMailBtn" onclick="sendMail();">
                         초대메일 발송
                     </button>
                 </div>
@@ -455,7 +460,7 @@
                         <span class="process-number">1</span>
                         <div>
                             <strong>관리자 초대 등록</strong>
-                            <p>이름과 이메일을 입력한 후, 초대 메일 발송 버튼을 눌러 주세요.</p>
+                            <p>이름과 이메일 직무를 입력한 후, 초대 메일 발송 버튼을 눌러 주세요.</p>
                         </div>
                     </li>
 
@@ -512,111 +517,119 @@
         </div>
 
     </section>
-    <!-- 상담사 등록 콘텐츠 끝 -->
-     <script>
-        const ctx = "${pageContext.request.contextPath}";
+<!-- 상담사 등록 콘텐츠 끝 -->
+    <script>
+    const ctx = "${pageContext.request.contextPath}";
 
-        $(function(){
-            
-            // console.log("조회함수진입");
-            selectInviteList();
-            // http://www.localhost:8002/know-how/admin/invite/list
-
-        });
-
-        function selectInviteList(){
-            $.ajax({
-                url : ctx+"/admin/invite/list",
-                type : "get",
-                dataType : "html",
-                success : function(result){
-                    // console.log("조회결과도착");
-                    $('#inviteTableBody').html(result);
-                    
-                },
-                error : function(){
-                    console.log("목록 조회 시  ajax 통신 실패!");
-                    if (xhr.status !== 401 && xhr.status !== 403) {
-                        alert('목록을 불러오는데 실패했습니다.');
-                    }
-                }
-            });
-        }
-
-        function sendMail(){
-
-            const counselorName = $("#counselorName").val().trim();
-            const email = $("#counselorEmail").val().trim();
-
-            if(counselorName === ""){
-                alert("상담사 이름을 입력해주세요.");
-                $("#counselorName").focus();
-                return;
-            }
-
-            if(email === ""){
-                alert("이메일을 입력해주세요.");
-                $("#counselorEmail").focus();
-                return;
-            }      
-
-            $.ajax({
-                url : ctx+"/admin/invite/mail",
-                type : "post",
-                data : {
-                    counselorName : counselorName,
-                    email : email
-                },
-                success : function(result){
-                    alert(result.message);
-                    if(result.status === "SUCCESS"){
-                        $("#counselorName").val("");
-                        $("#counselorEmail").val("");
-                        
-                        //목록재조회
-                        selectInviteList();
-                    }
-                },
-                error : function(xhr){
-                    console.log("상담사 초대메일 발송 ajax 통신 실패!");
-                    console.log("ctx =", "${ctx}");
-                    console.log("ajax url =", "${ctx}/admin/invite/mail");
-                    console.log("에러코드 :", xhr.status);
-
-                    if (xhr.status !== 401 && xhr.status !== 403) {
-                        alert("초대 처리 중 문제가 발생했습니다. 문제가 지속될 경우 관리자에게 문의해주세요.");
-                    }
-                }
-            });
-        }
+    $(function(){
         
-        function cancelInvite(btn){
-            
-            const inviteNo = $(btn).closest('td').data('invite-no');
+        // console.log("조회함수진입");
+        selectInviteList();
+        // http://www.localhost:8002/know-how/admin/invite/list
 
-            console.log(inviteNo);
+    });
 
-            $.ajax({
-                url : ctx + "/admin/invite/delete",
-                type : "post",
-                data : { inviteNo : inviteNo },
-                success : function(){
-                    
-                    selectInviteList();
-                },
-                error : function(xhr){
-                    console.log("inviteNo : " + inviteNo);
-                    console.log("초대 취소 ajax 통신 실패! cancelInvite");
-                    console.log("에러코드 :", xhr.status);
-
-                    if (xhr.status !== 401 && xhr.status !== 403) {
-                        alert("초대링크 삭제 중 오류가 발생했습니다.");
-                    }
+    function selectInviteList(){
+        $.ajax({
+            url : ctx+"/admin/invite/list",
+            type : "get",
+            dataType : "html",
+            success : function(result){
+                // console.log("조회결과도착");
+                $('#inviteTableBody').html(result);
+                
+            },
+            error : function(){
+                console.log("목록 조회 시  ajax 통신 실패!");
+                if (xhr.status !== 401 && xhr.status !== 403) {
+                    alert('목록을 불러오는데 실패했습니다.');
                 }
-            });
+            }
+        });
+    }
+
+    function sendMail(){
+
+        const counselorName = $("#counselorName").val().trim();
+        const email = $("#counselorEmail").val().trim();
+        const $btn = $("#inviteMailBtn");
+
+        if(counselorName === ""){
+            alert("상담사 이름을 입력해주세요.");
+            $("#counselorName").focus();
+            return;
         }
 
+        if(email === ""){
+            alert("이메일을 입력해주세요.");
+            $("#counselorEmail").focus();
+            return;
+        }
+
+        if ($btn.prop("disabled")) {
+            return;
+        }
+
+        $btn.prop("disabled", true)
+            .text("메일 전송 중...");
+
+        $.ajax({
+            url : ctx+"/admin/invite/mail",
+            type : "post",
+            data : {
+                counselorName : counselorName,
+                email : email
+            },
+            success : function(result){
+                alert(result.message);
+                if(result.status === "SUCCESS"){
+                    $("#counselorName").val("");
+                    $("#counselorEmail").val("");
+                    $btn.prop("disabled", false) .text("초대 메일 보내기");
+                    //목록재조회
+                    selectInviteList();
+                }
+            },
+            error : function(xhr){
+                console.log("상담사 초대메일 발송 ajax 통신 실패!");
+                console.log("ctx =", "${ctx}");
+                console.log("ajax url =", "${ctx}/admin/invite/mail");
+                console.log("에러코드 :", xhr.status);
+                $btn.prop("disabled", false) .text("초대 메일 보내기");
+                if (xhr.status !== 401 && xhr.status !== 403) {
+                    alert("초대 처리 중 문제가 발생했습니다. 문제가 지속될 경우 관리자에게 문의해주세요.");
+                }
+            }
+        });
+    }
+    
+    function cancelInvite(btn){
+        
+        const inviteNo = $(btn).closest('td').data('invite-no');
+
+        console.log(inviteNo);
+
+        $.ajax({
+            url : ctx + "/admin/invite/delete",
+            type : "post",
+            data : { inviteNo : inviteNo },
+            success : function(){
+                
+                selectInviteList();
+            },
+            error : function(xhr){
+                console.log("inviteNo : " + inviteNo);
+                console.log("초대 취소 ajax 통신 실패! cancelInvite");
+                console.log("에러코드 :", xhr.status);
+
+                if (xhr.status !== 401 && xhr.status !== 403) {
+                    alert("초대링크 삭제 중 오류가 발생했습니다.");
+                }
+            }
+        });
+    }
 
 
+    
 
-     </script>
+    </script>
