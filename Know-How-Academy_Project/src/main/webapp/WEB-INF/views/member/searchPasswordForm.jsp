@@ -68,7 +68,7 @@
         font-weight: 600;
         transition: background 0.2s;
         height: 40px;
-        width: 140px;
+        width: 130px;
         margin: auto;
 	}
 	
@@ -97,7 +97,7 @@
 					<tr>
 						<th></th>
 						<th>
-						    <label for="userId">아이디</label>
+						    <label for="userId">&nbsp;아이디</label>
 							<input type="text" class="searchPasswordPage-input" name="userId" id="userId" required>
 						</th>
 						<th></th>
@@ -105,7 +105,7 @@
 					<tr>
 						<th></th>
 						<th>
-						    <label for="userName">이름</label>
+						    <label for="userName">&nbsp;&nbsp;이름&nbsp;&nbsp;&nbsp;</label>
 							<input type="text" class="searchPasswordPage-input" name="userName" id="userName" required>
 						</th>
 						<th></th>
@@ -113,7 +113,7 @@
 					<tr>
 						<th></th>
 						<th>
-						    <label for="email">이메일</label>
+						    <label for="email">&nbsp;이메일</label>
 							<input type="email" class="searchPasswordPage-input" name="email" id="email" required>
 						</th>
 						<th></th>
@@ -137,9 +137,9 @@
 				        <th></th>
 				    </tr>
 					<tr>
-						<th>
-							<br>
-						</th>
+						<th></th>
+						<th></th>
+						<th></th>
 					</tr>
 					<tr>
 					    <th></th>
