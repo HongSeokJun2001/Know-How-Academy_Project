@@ -174,16 +174,14 @@
 		                     , NVL(CM.USER_NAME, CI.INVITE_NAME)   	AS userName
 		                     , NVL(CM.EMAIL, CI.INVITE_EMAIL)       AS email
 		                     , CL.CLASS_NAME        AS className
-		                     , CM.CLASS_NO	        AS classNo
 		                     , NVL(CM.STATUS, CI.INVITE_STATUS)     AS status
-		                     , CC.CATEGORY_NAME     AS categoryName
-		                     , CP.CATEGORY_NO		AS categoryNo
+		                     , CC.CATEGORY_NAME     AS categoryName                    
 		                     
 		                  FROM COUNSELOR_INVITE         CI 
 		                  LEFT JOIN MEMBER 			    CM  ON 	CM.USER_NO = CI.USER_NO
-		                  LEFT JOIN COUNSELOR_PROFILE 	CP 	ON 	CM.USER_NO = CP.USER_NO
+		                  LEFT JOIN COUNSELOR_PROFILE 	C 	ON 	CM.USER_NO = C.USER_NO
 		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
-		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = CP.CATEGORY_NO
+		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = C.CATEGORY_NO
 		                 WHERE CM.ROLE_CODE = 'COUNSELOR'
 		                  <choose>
 					      	<when test="status == 'ACTIVE'">
@@ -228,7 +226,7 @@
  	<!-- 11.상담사 클래스 변경 쿼리 -->
 	 <update id="updateCounselorClass" parameterType="map">
 	    UPDATE MEMBER M
-	       SET M.CLASS_NO = #{changeNo}
+	       SET M.CLASS_NO = #{classNo}
 	         , M.UPDATED_AT = SYSDATE
 	     WHERE M.USER_NO = #{userNo}
 	       AND M.ROLE_CODE = 'COUNSELOR'
@@ -237,7 +235,7 @@
 				             FROM MEMBER M2
 				            WHERE M2.ROLE_CODE = 'COUNSELOR'
 				              AND M2.STATUS = 'ACTIVE'
-				              AND M2.CLASS_NO = #{changeNo}
+				              AND M2.CLASS_NO = #{classNo}
 				              AND M2.USER_NO != #{userNo}
 	      			 	)
 	 </update>
@@ -247,13 +245,12 @@
 	 		 resultType="com.kh.know_how.admin.model.dto.CounselorProfileDTO">
 		 SELECT M.USER_NO           		AS userNo
 		      , M.USER_ID           		AS userId
-		      , CP.PROFILE_IMG_PATH			AS imgPath
+		      , NVL(C.PROFILE_IMG_PATH, '/resources/image/default-profile.png')  AS imgPath
 		      , M.STATUS            		AS status
 		      , NVL(CL.CLASS_NAME, '미지정')	AS className
 		      , M.USER_NAME           		AS userName
 		      , M.PHONE               		AS phone
 		      , M.EMAIL               		AS email
-		      , CC.CATEGORY_NAME     		AS categoryName
 		      , (
 		            SELECT COUNT(*)
 		              FROM MEMBER SM
@@ -262,9 +259,8 @@
 		        ) AS studentCount
 		        
 		  FROM MEMBER M
-		  LEFT JOIN COUNSELOR_PROFILE CP ON M.USER_NO = CP.USER_NO
+		  LEFT JOIN COUNSELOR_PROFILE C ON M.USER_NO = C.USER_NO
 		  LEFT JOIN CLASS CL ON M.CLASS_NO = CL.CLASS_NO
-		  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = CP.CATEGORY_NO
 		 WHERE M.USER_NO = #{value}
 	 	  
 	 </select>
@@ -310,7 +306,7 @@
 	 	   						WHERE USER_NO = #{userNo})
 	 	 WHERE SD.USER_NO IN (SELECT M.USER_NO 
 	 	 					    FROM MEMBER M 
-	 	 					   WHERE ROLE_CODE = 'STUDENT' AND CLASS_NO = #{changeNo})
+	 	 					   WHERE ROLE_CODE = 'STUDENT' AND CLASS_NO = #{classNo})
 	 </update>
 	 
 	 <!-- 17. 초대메일 중복체크 -->
@@ -397,21 +393,6 @@
 	 				   VALUES(SEQ_PROFILE_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
 	 </insert>
 	 
-	 <!-- 25. 상담사 카테고리번호 변경 -->
-	 <update id="updateCounselorCategoryNo" parameterType="map">
-	 	UPDATE COUNSELOR_PROFILE
-	 	   SET CATEGORY_NO = #{changeNo}
-	 	 WHERE USER_NO = #{userNo}
-	 </update>
-	 
-	 <!-- 26. 재직중인 상담사의 현재 반번호 번호 조회 -->
-	 <select id="selectUserClassNo" parameterType="_int" resultType="Integer">
-	 	SELECT CLASS_NO
-	 	  FROM MEMBER
-	 	 WHERE STATUS = 'ACTIVE'
-	 	   AND ROLE_CODE = 'COUNSELOR'
-	 	   AND USER_NO = #{value}
-	 </select>
 	 	  
 </mapper>
 	
