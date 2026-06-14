@@ -14,7 +14,7 @@ public class AdminXssDefencePolicy {
 		}
 		
 		
-		String changeText = originText.trim();
+		String changeText = originText;
 		
 		changeText = changeText.replace("<", "&lt;");
 		changeText = changeText.replace(">", "&gt;");
