@@ -103,11 +103,6 @@ public class BoardDao {
 		return (ArrayList) sqlSession.selectList("boardMapper.selectNewsList", null, rowBounds);
 	}
 
-	public Board selectNews(SqlSessionTemplate sqlSession, int postNo) {
-
-		return sqlSession.selectOne("boardMapper.selectNews", postNo);
-	}
-
 	public ArrayList<FileAttachment> selectFileAttachmentList(SqlSessionTemplate sqlSession, int postNo) {
 
 		return (ArrayList) sqlSession.selectList("boardMapper.selectFileAttachmentList", postNo);
@@ -138,6 +133,9 @@ public class BoardDao {
 		return sqlSession.insert("boardMapper.insertComment", pc);
 	}
 
-	
+	public ArrayList<Board> mainNoticeList(SqlSessionTemplate sqlSession, String postType) {
+		
+		return (ArrayList)sqlSession.selectList("boardMapper.selectBoardList", postType);
+	}
 
 }

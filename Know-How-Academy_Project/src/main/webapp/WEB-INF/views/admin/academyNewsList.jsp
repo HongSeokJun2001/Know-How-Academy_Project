@@ -313,7 +313,7 @@
 								<tr>
 									<td>${ n.rowNum }</td>
 									<td><a href="/know-how/admin/academyNews/detail/${ n.postNo }">${ n.title }</a></td>
-									<td>${ n.postWriter }</td>
+									<td>${ n.userName }</td>
 									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>

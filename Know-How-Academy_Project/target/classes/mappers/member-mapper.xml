@@ -64,11 +64,11 @@
 	<!-- 회원 정보 변경용 쿼리문 -->
 	<update id="updateMember" parameterType="member">
 		UPDATE MEMBER
-		   SET USER_NAME = #{userName}
-		     , USER_PWD = #{userPwd}
-		     , PHONE = #{phone}
-		     , EMAIL = #{email}
-		     , ADDRESS = #{address}
+		   SET USER_PWD = NVL(#{userPwd}, USER_PWD)
+		     , USER_NAME = NVL(#{userName}, USER_NAME)
+		     , PHONE = NVL(#{phone}, PHONE)
+		     , EMAIL = NVL(#{email}, EMAIL)
+		     , ADDRESS = NVL(#{address}, ADDRESS)
 		     , UPDATED_AT = SYSDATE
 		 WHERE USER_ID = #{userId}
 		   AND STATUS = 'ACTIVE'
@@ -130,12 +130,6 @@
 		 WHERE IS_LOCKED = 'Y'
 	</select>
 	
-	<!-- 계정 잠금 해제용 쿼리문 -->
-	<update id="updateMemberUnlock" parameterType="_int">
-		UPDATE MEMBER_LOCK
-		   SET IS_LOCKED = 'N'
-		 WHERE USER_NO = #{userNo}
-	</update>
 <!-- ___________________________________________________________ -->
 	
 	
