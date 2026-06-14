@@ -8,7 +8,7 @@
     .counselor-table th:nth-child(1) { width: 8%; }
     .counselor-table th:nth-child(2) { width: 13%; } /* 이메일 칸 */
     .counselor-table th:nth-child(3) { width: 13%; }
-    .counselor-table th:nth-child(4) { width: 18%; }
+    .counselor-table th:nth-child(4) { width: 20%; }
     .counselor-table th:nth-child(5) { width: 8%; }
     .counselor-table th:nth-child(6) { width: 15%; }
 
