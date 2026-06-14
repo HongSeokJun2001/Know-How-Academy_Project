@@ -22,5 +22,6 @@ public class CounselorProfileDTO {
     private String phone;		
     private String email;	
     private int studentCount;		//담당반의 학생수
+    private String categoryName;    // 상담 카테고리 이름
     
 }

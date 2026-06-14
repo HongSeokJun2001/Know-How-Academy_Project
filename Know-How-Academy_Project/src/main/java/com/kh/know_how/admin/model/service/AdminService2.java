@@ -9,8 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.know_how.admin.model.dao.AdminDao2;
-import com.kh.know_how.admin.model.dto.MemoDto;
-import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.admin.model.dto.MemoInsertDto;
+import com.kh.know_how.admin.model.dto.MemoListDto;
+import com.kh.know_how.admin.model.dto.StudentApproveDto;
+import com.kh.know_how.admin.model.dto.StudentDetailDto;
+import com.kh.know_how.admin.model.dto.StudentListDto;
+import com.kh.know_how.admin.model.dto.StudentPendingListDto;
+import com.kh.know_how.admin.model.dto.StudentSearchListDto;
+import com.kh.know_how.admin.model.dto.StudentSearchRequestDto;
+import com.kh.know_how.admin.model.dto.StudentStatusDto;
 import com.kh.know_how.board.model.dao.BoardDao;
 import com.kh.know_how.board.model.vo.Board;
 import com.kh.know_how.board.model.vo.FileAttachment;
@@ -36,33 +43,33 @@ public class AdminService2 {
 		return ad2.selectStudentListCount(sqlSession);
 	}
 
-	public ArrayList<StudentDto> selectStudentList(PageInfo pi) { // 재학, 휴학중인 학원생의 리스트를 불러오는 메소드
+	public ArrayList<StudentListDto> selectStudentList(PageInfo pi) { // 재학, 휴학중인 학원생의 리스트를 불러오는 메소드
 	
 		return ad2.selectStudentList(sqlSession, pi);
 	}
 
-	public int searchStudentCount(HashMap<String, String> map) { // 학원생 검색 시 학원생의 수를 불러오는 메소드
+	public int searchStudentCount(StudentSearchRequestDto studentSearchRequest) { // 학원생 검색 시 학원생의 수를 불러오는 메소드
 		
-		return ad2.searchStudentCount(sqlSession, map);
+		return ad2.searchStudentCount(sqlSession, studentSearchRequest);
 	}
 
-	public ArrayList<StudentDto> searchStudentList(HashMap<String, String> map, PageInfo pi) { // 학원생 검색 시 리스트를 불러오는 메소드
+	public ArrayList<StudentSearchListDto> searchStudentList(StudentSearchRequestDto studentSearchRequest, PageInfo pi) { // 학원생 검색 시 리스트를 불러오는 메소드
 		
-		return ad2.searchStudentList(sqlSession, map, pi);
+		return ad2.searchStudentList(sqlSession, studentSearchRequest, pi);
 	}
 
-	public StudentDto selectStudent(int studentNo) { // 학원생의 정보를 불러오는 메소드
+	public StudentDetailDto selectStudent(int studentNo) { // 학원생의 정보를 불러오는 메소드
 		
 		return ad2.selectStudent(sqlSession, studentNo);
 	}
 	
 	@Transactional
-	public int insertStudentMemo(MemoDto m) { // 학원생의 메모를 추가하는 메소드
+	public int insertStudentMemo(MemoInsertDto memoInsert) { // 학원생의 메모를 추가하는 메소드
 		
-		return ad2.insertStudentMemo(sqlSession, m);
+		return ad2.insertStudentMemo(sqlSession, memoInsert);
 	}
 
-	public ArrayList<MemoDto> selectStudentMemoList(int userNo) { // 학원생의 메모 리스트를 불러오는 메소드
+	public ArrayList<MemoListDto> selectStudentMemoList(int userNo) { // 학원생의 메모 리스트를 불러오는 메소드
 		
 		return ad2.selectStudentMemoList(sqlSession, userNo);
 	}
@@ -74,9 +81,9 @@ public class AdminService2 {
 	}
 
 	@Transactional
-	public int updateStudentStatus(StudentDto s) { // 학원생의 휴학/재학 처리해주는 메소드
+	public int updateStudentStatus(StudentStatusDto studentStatus) { // 학원생의 휴학/재학 처리해주는 메소드
 	
-		return ad2.updateStudentStatus(sqlSession, s);
+		return ad2.updateStudentStatus(sqlSession, studentStatus);
 	}
 	
 	@Transactional
@@ -85,15 +92,15 @@ public class AdminService2 {
 		return ad2.deleteStudent(sqlSession, userNo);
 	}
 
-	public ArrayList<StudentDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
+	public ArrayList<StudentPendingListDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
 		return ad2.selectPendingStudentList(sqlSession);
 	}
 
 	@Transactional
-	public int updateStudentApprove(HashMap<String, Integer> map) { // 학원생의 가입을 승인하는 메소드
+	public int updateStudentApprove(StudentApproveDto studentApprove) { // 학원생의 가입을 승인하는 메소드
 
-		return ad2.updateStudentApprove(sqlSession, map) * ad2.insertStudent(sqlSession, map);
+		return ad2.updateStudentApprove(sqlSession, studentApprove) * ad2.insertStudent(sqlSession, studentApprove);
 	}
 	
 	@Transactional
@@ -161,7 +168,7 @@ public class AdminService2 {
 				
 				if(fa.getFileNo() != 0) {
 					
-					fileResult = bd.updateFileAttachment(sqlSession, fa);
+//					fileResult = bd.updateFileAttachment(sqlSession, fa);
 				
 				} else {
 					

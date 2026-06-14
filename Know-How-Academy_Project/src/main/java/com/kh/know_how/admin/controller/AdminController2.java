@@ -21,8 +21,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.kh.know_how.admin.model.dto.MemoDto;
-import com.kh.know_how.admin.model.dto.StudentDto;
+import com.kh.know_how.admin.model.dto.MemoInsertDto;
+import com.kh.know_how.admin.model.dto.MemoListDto;
+import com.kh.know_how.admin.model.dto.StudentApproveDto;
+import com.kh.know_how.admin.model.dto.StudentDetailDto;
+import com.kh.know_how.admin.model.dto.StudentListDto;
+import com.kh.know_how.admin.model.dto.StudentPendingListDto;
+import com.kh.know_how.admin.model.dto.StudentSearchListDto;
+import com.kh.know_how.admin.model.dto.StudentSearchRequestDto;
+import com.kh.know_how.admin.model.dto.StudentStatusDto;
 import com.kh.know_how.admin.model.service.AdminService2;
 import com.kh.know_how.board.model.service.BoardService;
 import com.kh.know_how.board.model.vo.Board;
@@ -69,7 +76,7 @@ public class AdminController2 {
     	
     	PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<StudentDto> list = as2.selectStudentList(pi);
+    	ArrayList<StudentListDto> list = as2.selectStudentList(pi);
     	mv.addObject("list", list)
     	  .addObject("pi", pi)
     	  .addObject("page", "studentList")
@@ -79,25 +86,21 @@ public class AdminController2 {
     }
     
     @GetMapping("/studentList/search")
-    public String searchBoardList(String status, String keyword, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) { // 학원생 검색 시 검색에 해당하는 학원생 리스트를 불러오는 메소드
+    public String searchBoardList(StudentSearchRequestDto studentSearchRequest, @RequestParam(value="cpage", defaultValue="1") int currentPage, Model model) { // 학원생 검색 시 검색에 해당하는 학원생 리스트를 불러오는 메소드
     	
-    	keyword = XssDefencePolicy.defence(keyword);
-    	HashMap<String, String> map = new HashMap<>();
-    	map.put("status", status);
-    	map.put("keyword", keyword);
+    	studentSearchRequest.setKeyword(XssDefencePolicy.defence(studentSearchRequest.getKeyword()));
     	
-    	int searchCount = as2.searchStudentCount(map);
+    	int searchCount = as2.searchStudentCount(studentSearchRequest);
     	int pageLimit = 4;
     	int boardLimit = 4;
     	
     	PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
     	
-    	ArrayList<StudentDto> list = as2.searchStudentList(map, pi);
+    	ArrayList<StudentSearchListDto> list = as2.searchStudentList(studentSearchRequest, pi);
     	
-    	model .addAttribute("list", list)
+    	model.addAttribute("list", list)
     	  .addAttribute("pi", pi)
-    	  .addAttribute("status", status)
-    	  .addAttribute("keyword", keyword)
+    	  .addAttribute("studentSearchRequest", studentSearchRequest)
     	  .addAttribute("page", "studentList");
     	  
     	
@@ -106,24 +109,24 @@ public class AdminController2 {
     
     @GetMapping("/studentDetails/{studentNo}")
     public String selectStudentDetails(@PathVariable int studentNo, Model model) { // 학원생의 상세정보를 불러오는 메소드
-    	StudentDto s = as2.selectStudent(studentNo);
-    	model.addAttribute("s", s);
+    	StudentDetailDto studentDetail = as2.selectStudent(studentNo);
+    	model.addAttribute("studentDetail", studentDetail);
     	model.addAttribute("page", "studentDetails");
     	return "admin/adminLayout";
     }
     
     @ResponseBody
     @PostMapping("/student/minsert")
-    public String insertStudentMemo(MemoDto m) { // 학원생의 메모를 추가하는 메소드
+    public String insertStudentMemo(MemoInsertDto memoInsert) { // 학원생의 메모를 추가하는 메소드
     	
-    	m.setUserMemo(XssDefencePolicy.defence(m.getUserMemo()));
+    	memoInsert.setUserMemo(XssDefencePolicy.defence(memoInsert.getUserMemo()));
 
-    	return (as2.insertStudentMemo(m) > 0) ? "success" : "fail"; 
+    	return (as2.insertStudentMemo(memoInsert) > 0) ? "success" : "fail"; 
     }
     
     @ResponseBody
     @GetMapping("/student/mlist")
-    public ArrayList<MemoDto> selectStudentMemo(int userNo) { // 학원생의 메모리스트를 불러오는 메소드
+    public ArrayList<MemoListDto> selectStudentMemo(int userNo) { // 학원생의 메모리스트를 불러오는 메소드
     	
     	return as2.selectStudentMemoList(userNo); 
     }
@@ -137,15 +140,15 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/rest")
-    public String updateStudentStatus(StudentDto s) { // 학원생의 휴학/재학 처리하는 메소드
+    public String updateStudentStatus(StudentStatusDto studentStatus) { // 학원생의 휴학/재학 처리하는 메소드
     	
-    	return (as2.updateStudentStatus(s) > 0) ? "success" : "fail"; 
+    	return (as2.updateStudentStatus(studentStatus) > 0) ? "success" : "fail"; 
     }
     
     @GetMapping("/student/enroll")
     public String selectPendingStudentList(Model model) { // 가입 대기중인 학원생 리스트를 불러오는 메소드
     	
-    	ArrayList<StudentDto> list = as2.selectPendingStudentList();
+    	ArrayList<StudentPendingListDto> list = as2.selectPendingStudentList();
     	model.addAttribute("list", list)
     		 .addAttribute("page", "studentEnroll");
     	
@@ -154,13 +157,9 @@ public class AdminController2 {
     
     @ResponseBody
     @PostMapping("/student/approve")
-    public String updateStudentApprove(int userNo, int classNo) { // 학원생의 가입을 승인해주는 메소드
-    	
-    	HashMap<String, Integer> map = new HashMap<>();
-		map.put("userNo", userNo);
-		map.put("classNo", classNo);
-    	
-    	return (as2.updateStudentApprove(map) > 0) ? "success" : "fail"; 
+    public String updateStudentApprove(StudentApproveDto studentApprove) { // 학원생의 가입을 승인해주는 메소드
+    
+    	return (as2.updateStudentApprove(studentApprove) > 0) ? "success" : "fail"; 
     }
 
     @ResponseBody

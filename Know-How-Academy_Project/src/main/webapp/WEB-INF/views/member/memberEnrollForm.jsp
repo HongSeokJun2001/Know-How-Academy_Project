@@ -41,7 +41,7 @@
     }
 	.enrollPage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 500;
         font-size: 15px;
     }
@@ -74,7 +74,7 @@
         margin: auto;
 	}
 	.btn-enrollPageCheck {
-	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+	    background-color: coral; 
         color: white;
         border: none;
         padding: 10px 18px;
@@ -110,7 +110,9 @@
 				<tr>
 					<th><label for="userId">* 아이디</label></th>
 					<th>
-						<input type="text" class="enrollPage-input" name="userId" minlength="8" maxlength="16" pattern="(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+" title="8~16자리 영문자/숫자" placeholder="8~16자리 영문자/숫자" required>
+						<input type="text" class="enrollPage-input" name="userId" 
+						minlength="8" maxlength="16" pattern="(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+" 
+						title="8~16자리 영문자/숫자" placeholder="8~16자리 영문자/숫자" required>
 						<div class="errorMessage" id="userIdErrorMessage"></div>		
 					</th>
 					<th><button type="button" id="idCheckBtn" onclick="idCheck();"
@@ -119,7 +121,9 @@
 				<tr>
 					<th><label for="userPwd">* 비밀번호</label></th>
 					<th>
-						<input type="password" class="enrollPage-input" name="userPwd" minlength="8" maxlength="20" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)_+=\-])[a-zA-Z\d!@#$%^&*\(\)_+=\-]+$" title="8~20자리 영문자/숫자/특수문자 포함" placeholder="8~20자리 영문자/숫자/특수문자 포함" autocomplete="new-password" required>
+						<input type="password" class="enrollPage-input" name="userPwd" 
+						minlength="8" maxlength="20" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)_+=\-])[a-zA-Z\d!@#$%^&*\(\)_+=\-]+$" 
+						title="8~20자리 영문자/숫자/특수문자 포함" placeholder="8~20자리 영문자/숫자/특수문자 포함" autocomplete="new-password" required>
 					    <div class="errorMessage" id="userPwdErrorMessage"></div>
 					</th>
 					<th></th>
@@ -136,7 +140,8 @@
 					<th><label for="userName">* 이름</label></th>
 					<th>
 					    
-						<input type="text" class="enrollPage-input" name="userName" minlength="2" maxlength="10" pattern="[가-힣]+" title="한글 2~10자리" placeholder="한글 2~10자리" required>
+						<input type="text" class="enrollPage-input" name="userName" 
+						minlength="2" maxlength="10" pattern="[가-힣]+" title="한글 2~10자리" placeholder="한글 2~10자리" required>
 					</th>
 					<th></th>
 				</tr>
@@ -153,14 +158,16 @@
 				<tr>
 					<th><label for="address">주소</label></th>
 					<th>
-						<input type="text" class="enrollPage-input" maxlength="100" name="address">
+						<input type="text" class="enrollPage-input" 
+						  maxlength="100" name="address">
 					</th>
 					<th></th>
 				</tr>
                 <tr>
 					<th><label for="phone">전화번호</label></th>
 					<th>
-						<input type="text" class="enrollPage-input" name="phone" pattern="[0-9]+" minlength="11" maxlength="11" placeholder="-제외하고 입력">
+						<input type="text" class="enrollPage-input" name="phone" 
+						pattern="[0-9]+" minlength="11" maxlength="11" placeholder="-제외하고 입력">
 					</th>
 					<th></th>
 				</tr>
@@ -253,15 +260,15 @@
 				success : function(result) {
 					
 					if(result == "NNNNN") {
-						// > 사용 불가한 아이디일 경우
+						// > 사용 불가한 이메일일 경우
 						
 						alert("이미 사용중인 이메일입니다.");
 						
-						// 아이디 재입력 유도
+						// 이메일 재입력 유도
 						$email.focus();
 						
 					} else {
-						// > 사용 가능한 아이디일 경우
+						// > 사용 가능한 이메일일 경우
 						
 						if(confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")){
 							
@@ -274,7 +281,7 @@
 						} else {
 							// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
 							
-							// 아이디 재입력 유도
+							// 이메일 재입력 유도
 							$email.focus();
 						}
 					}

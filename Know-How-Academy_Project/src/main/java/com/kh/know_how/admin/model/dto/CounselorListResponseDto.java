@@ -24,7 +24,9 @@ public class CounselorListResponseDto {
     private String userName;		// 상담사 이름
     private String email;			// 상담사 이메일
     private String className;       // 담당클래스명
+    private Integer classNo;    		
     private String status;          // 상태 : PENDING USED
     private String categoryName;    // 상담 카테고리 이름
+    private Integer categoryNo;    	
     
 }

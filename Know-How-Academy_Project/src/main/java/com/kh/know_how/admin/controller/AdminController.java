@@ -87,34 +87,58 @@ public class AdminController {
     public String counselorList(@RequestParam(value="cpage", defaultValue="1") int currentPage
     						      , CounselorSearchRequestDto counselorSearchRequestDto
     						      , Model model) {
-    		
+    	
+    	
 		counselorSearchRequestDto.getPageRequest().setCurrentPage(currentPage);
-    		
-	    //상담사 목록 조회
-		
-			
-    	CounselorListPageDto counselorList = as.selectcounselorList(counselorSearchRequestDto);
+    	
+		//상담사 목록 조회
+    	CounselorListPageDto list = as.selectcounselorList(counselorSearchRequestDto);
     	
     	model.addAttribute("status", counselorSearchRequestDto.getStatus());
     	model.addAttribute("keyword", counselorSearchRequestDto.getKeyword());
-    	model.addAttribute("pageInfo", counselorList.getPageInfo());
-    	model.addAttribute("classList", counselorList.getClassList());
-    	model.addAttribute("counselorList", counselorList.getCounselorList());
+    	model.addAttribute("list", list);
 		model.addAttribute("page", "counselorList");
 		
 		return "admin/adminLayout";
     } 
     
     
-    //----------- 상담사 직무(클래스) 변경 메소드
+    @GetMapping("/counselorList/fragment")
+    public String selectCounselorListFragment(
+    		CounselorSearchRequestDto counselorSearchRequestDto,
+            @RequestParam(defaultValue = "1") int cpage,
+            Model model) {
+
+        // 목록 및 페이징 조회
+    	counselorSearchRequestDto.getPageRequest().setCurrentPage(cpage);
+    	CounselorListPageDto list = as.selectcounselorList(counselorSearchRequestDto);
+    	
+    	
+    	model.addAttribute("list", list);
+
+        return "admin/counselorListFragment";
+    }
+    
+    
+    //----------- 상담사 직무 변경 메소드
     @ResponseBody
     @PostMapping("/class/update")
-    public String updateCounselorClass(int userNo, Integer classNo) {
-    	
-        // 상담사 담당 클래스 변경
-		int result = as.updateCounselorClass(userNo, classNo);
-		
-        return (result > 0) ? "success" : "fail";
+    public String updateCounselorClass(int userNo, String changeType, Integer changeNo) {
+    	    	
+    	try {
+    		// 상담사 담당 클래스 변경
+    		int result = as.updateCounselorClass(userNo, changeType, changeNo);
+    		
+    		if(result > 0) {
+    	        return "success";
+    		}else {
+    			return  "fail";
+    		}
+    		
+		} catch (IllegalArgumentException e) {
+			System.out.println("직무 변경중 Exception 발생"+ e.getMessage());
+			return  "error : " + e.getMessage();
+		}
     }
 
     
@@ -171,7 +195,11 @@ public class AdminController {
         return "admin/adminLayout";
     }
     
-    //----------- 상담사 초대메일 속 url을 작성하는 메소드
+    
+    /**상담사 초대메일 속 url을 생성하는 메소드
+     * @param request 서버 주소와 컨텍스트 경로를 조회하기 위한 요청 객체
+     * @return "?token="까지 포함된 상담사 가입 URL
+     */
     public String counselorInviteMailContent(HttpServletRequest request) {
     	
     	String baseUrl =
@@ -235,6 +263,8 @@ public class AdminController {
     	return message;
     }
     
+    
+    //----------- 상담사 초대 목록(거절, 만료포함) 조회 메소드
     @GetMapping("/invite/list")
     public String selectInviteList(Model model) {
     	
