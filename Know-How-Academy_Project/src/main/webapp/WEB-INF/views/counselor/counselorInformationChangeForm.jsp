@@ -25,7 +25,7 @@
            padding: 30px;
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
-           max-width: 600px;
+           max-width: 700px;
            margin: auto;
 	    }
 	.changePage-title {
@@ -41,7 +41,7 @@
     }
 	.changePage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 500;
         font-size: 15px;
     }
@@ -70,11 +70,12 @@
         font-weight: 600;
         transition: background 0.2s;
         height: 40px;
-        width: 120px;
+        width: 140px;
         margin: auto;
+  
 	}
 	.btn-changePageCheck {
-	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+	    background-color: coral; 
         color: white;
         border: none;
         padding: 10px 18px;
@@ -83,9 +84,9 @@
         font-weight: 400;
         transition: background 0.1s;
         height: 40px;
-        width: 140px;
+        width: 130px;
         margin: auto;
-        font-size: 15px;
+        font-size: 14px;
       
 	}
 	.btn-enroll:hover {
@@ -98,7 +99,7 @@
    
    <br><br>
    
-   <div class="mypage-outer">
+   <div class="changeForm-outer">
 	
 		<br>
 		<h2 align="center" class="changePage-title">내정보수정</h2>
@@ -106,112 +107,149 @@
 
 		<form id="counselorInformationChange-form" action="/know-how/myPage/update" method="post">
 			<table class="changePage-table">
-			  <thead>
+			  <thead> 
 				<tr>
-					<th></th>
+					<th><label for="password">수정할 비밀번호</label></th>
 					<th>
-					    <label for="password">수정할 비밀번호 </label>
-						<input type="password" class="changePage-input" name="userPwd" id="userPwd" maxlength="16" placeholder="8~20자리 영문자/숫자" >
+						<input type="password" class="changePage-input" name="userPwd"  
+						minlength="8" maxlength="20" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)_+=\-])[a-zA-Z\d!@#$%^&*\(\)_+=\-]+$" 
+						title="8~20자리 영문자/숫자/특수문자 포함" placeholder="8~20자리 영문자/숫자/특수문자 포함" autocomplete="new-password">
 					    <div class="errorMessage" id="newUserPwdErrorMessage"></div>
 					</th>
 					<th></th>
 				</tr>
 				<tr>
-					<th></th>
+					<th><label for="password">수정할 비밀번호 재확인</label></th>
 					<th>
-					    <label for="password">수정할 비밀번호 재확인</label>
-						<input type="password" class="changePage-input" id="userPwdCheck" name="userPwdCheck" maxlength="20" >
+						<input type="password" class="changePage-input" id="userPwdCheck" name="userPwdCheck" 
+						autocomplete="new-password" maxlength="20" >
 						<div class="errorMessage" id="newUserPwdCheckErrorMessage"></div>
 					</th>
 					<th></th>
 				</tr>
 				<tr>
-					<th></th>
+					<th><label for="userName">수정할 이름</label></th>
 					<th>
-					    <label for="userName">수정할 이름</label>
-						<input type="text" class="changePage-input" name="userName" id="userName" maxlength="6" >
+						<input type="text" class="changePage-input" name="userName" 
+						minlength="2" maxlength="10" pattern="[가-힣]+" title="한글 2~10자리" placeholder="한글 2~10자리" >
 					</th>
 					<th></th>
 				</tr>
-			
-				<tr>
-					<th></th>
+			    <tr>
+					<th><label for="email">수정할 휴대전화 번호</label></th>
 					<th>
-					    <label for="email">수정할 이메일</label>
-						<input type="email" class="changePage-input" name="email" id="email">
-						<button type="button" onclick="emailCheck();"
-								class="btn btn-secondary btn-sm">이메일 중복확인</button>
+						<input type="text" class="changePage-input" name="phone" 
+						       pattern="[0-9]+" minlength="11" maxlength="11"
+						       value="${ sessionScope.loginUser.phone }" placeholder="-제외하고 입력">
+					</th>
+					<th></th>
+				</tr>
+				<tr>
+					<th><label for="email">수정할 이메일</label></th>
+					<th>
+						<input type="email" class="changePage-input" name="email" >
 					</th>
 					<th>
-                        
+                        <button type="button" id="emailCheckBtn" onclick="emailCheck();"
+								class="btn-changePageCheck">이메일 중복확인</button>
                     </th>
 				</tr>
 				<tr>
-					<th></th>
+					<th><label for="address">수정할 주소</label></th>
 					<th>
-					    <label for="address">수정할 주소</label>
-						<input type="text" class="changePage-input" name="address" id="address">
-					</th>
-					<th></th>
-				</tr>
-                <tr>
-					<th></th>
-					<th>
-					    <label for="password">수정할 전화번호</label>
-						<input type="text" class="changePage-input" name="phone" id="phone" placeholder="-제외하고 입력">
+						<input type="text" class="changePage-input" name="address"  
+						value="${ sessionScope.loginUser.address }">
 					</th>
 					<th></th>
 				</tr>
 				<tr>
-				  <th></th>
-				  <td></td>
-				  <th></th>
+				   <th></th>
+				   <td></td>
+				   <th></th>
 				</tr>
-				 </thead>
-				 <tbody>
-				    <th></th>
-					<th>
-					  <button type="submit" onclick="return validateInformation();" class="btn-changePage">내 정보 수정</button>
-					  <button type="reset" class="btn-changePage">초기화</button>
-	                </th>
-	                <th></th>
-				 </tbody>
+			  </thead>
+			  <tbody>
+			    <tr>
+				   <th></th>
+				   <th><input type="hidden" name="userId" value="${ sessionScope.loginUser.userId }"></th>
+				   <th></th>
+				</tr>
+				<tr>
+				<th></th>
+				<th>
+				    <button type="submit" onclick="return validateInformation();" class="btn-changePage">내 정보 수정</button>
+				    <button type="reset" class="btn-changePage">초기화</button>
+				</th>
+                <th></th>
+				</tr>
+			  </tbody>
 			</table>
 
 			<br><br>
 
 		 </form>
 		 <script>
-		     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+]).{8,20}$/
-		     $(document).ready(function () {
+		 function emailCheck() {
+				
+				let $email = $("#counselorInformationChange-form input[name=email]");
+				
+				if($email[0].checkValidity() === false){
+				   $email[0].reportValidity();
+				   return;
+				}
+				$.ajax({
+					url : "/know-how/myPage/emailCheck",
+					type : "get",
+					data : { checkEmail : $email.val() },
+					success : function(result) {
+						
+						if(result == "NNNNN") {
+							// > 사용 불가한 이메일일 경우
+							
+							alert("이미 사용중인 이메일입니다.");
+							
+							// 이메일 재입력 유도
+							$email.focus();
+							
+						} else {
+							// > 사용 가능한 이메일일 경우
+							
+							if(confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")){
+								
+								// 이메일값을 확정 (다시는 수정 못하게)
+								$email.prop("readonly", true);
+								
+							} else {
+								// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
+								
+								// 이메일 재입력 유도
+								$email.focus();
+							}
+						}
+					},
+					error : function() {
+						
+						console.log("이메일 중복체크용 ajax 통신 실패!");
+					}
+				});	
 			
-		         $("#userPwd").on("blur", function () {
-		             $('#userPwdErrorMessage').text(!passwordRegex.test($(this).val()) ? "8~20자의 영문 대/소문자, 숫자, 특수문자를 사용해야합니다." : "");
-		         })
-		         $('#userPwdCheck').on("blur", function () {
-		             $('#userPwdCheckErrorMessage').text($(this).val() !== $("#userPwd").val() ? "비밀번호와 비밀번호 확인이 일치하지 않습니다" : "");
-		         })
-		         
-		     })
+		      }
+		    
+			  function validateForm() {
+					
+				if($("#counselorInformationChange-form input[name=userPwd]").val() != $("#counselorInformationChange-form input[name=userPwdCheck]").val()) {
+						
+					alertify.alert("비밀번호가 일치하지 않습니다.");
+					return false;
+				}
+			  }
+	
+			  function resetForm() {
+						
+				$("#counselorInformationChange-form input[name=userId]").prop("readonly", false);
+				$("#idCheckBtn").removeAttr("disabled");
+			  }
 		     
-		     function validateInformation() {
-	        		
-	        		// 우선 변경할 비밀번호와 변경할 비밀번호 재입력값을 변수에 담아오기
-	        		let userPwd = $("#counselorInformationChange-form input[name=userPwd]").val();
-	        		let userPwdCheck = $("#counselorInformationChange-form input[name=userPwdCheck]").val();
-	        		let email = $("#counselorInformationChange-form input[name=email]").val();
-	        		let emailCheck = $("#counselorInformationChange-form button[name=emailCheck]").val();
-	        		
-	        		// 두 값이 일치하면 기본이벤트를 살리고, 두 값이 일치하지 않으면 기본이벤트를 제거할 것
-	        		if(userPwd != userPwdCheck) {
-	        			
-	        			alertify.alert("비밀번호가 일치하지 않습니다.");
-	        			
-	        			return false;
-	        		} 
-	        		
-	        		return true;
-	        	}
 		  </script>
 	</div>
 </body>
