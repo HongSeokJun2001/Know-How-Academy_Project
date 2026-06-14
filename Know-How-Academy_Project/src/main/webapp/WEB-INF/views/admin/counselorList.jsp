@@ -222,12 +222,13 @@
 	
 	.counselor-table {
 		width: 100%;
+		table-layout: fixed; 
 		border-collapse: separate;
 		border-spacing: 0;
 		border: 1px solid #e5e7eb;
 		border-radius: 10px;
 		font-size: 15px;
-		min-width: 1100px;
+		min-width: 800px;
 	}
 
 	.counselor-table thead th {
@@ -256,6 +257,22 @@
 		background-color: #fafaff;
 	}
 
+	/* 이메일 감쌀 div 전용 CSS */
+    .email-ellipsis {
+        width: 100%; /* 부모(td) 너비만큼 꽉 채움 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block; /* 텍스트가 블록 영역 안에서 잘리게 함 */
+    }
+
+    .email-ellipsis.show-all {
+        white-space: normal;      /* 줄바꿈 허용 */
+        overflow: visible;        /* 숨김 해제 */
+        word-break: break-all;    /* 긴 이메일 주소 줄바꿈 */
+    }
+
+
 	.name-link {
 		color: #4233c7;
 		font-weight: 800;
@@ -269,7 +286,7 @@
 
 	/* 클래스 변경 select */
 	.class-select {
-		width: 170px;
+		width: 200px;
 		height: 40px;
 		padding: 0 12px;
 		border: 1px solid #d1d5db;

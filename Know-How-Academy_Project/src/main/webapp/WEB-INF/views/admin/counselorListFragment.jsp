@@ -2,36 +2,16 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <style>
-     /* 1. 테이블 뼈대 단단하게 고정 */
-    .counselor-table {
-        width: 100%;
-        table-layout: fixed; 
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+
 
     /* 3. 내 맘대로 가로 길이(비율) 조절 */
-    .counselor-table th:nth-child(1) { width: 12%; }
-    .counselor-table th:nth-child(2) { width: 15%; } /* 이메일 칸 */
-    .counselor-table th:nth-child(3) { width: 15%; }
-    .counselor-table th:nth-child(4) { width: 20%; }
-    .counselor-table th:nth-child(5) { width: 10%; }
+    .counselor-table th:nth-child(1) { width: 8%; }
+    .counselor-table th:nth-child(2) { width: 13%; } /* 이메일 칸 */
+    .counselor-table th:nth-child(3) { width: 13%; }
+    .counselor-table th:nth-child(4) { width: 18%; }
+    .counselor-table th:nth-child(5) { width: 8%; }
     .counselor-table th:nth-child(6) { width: 15%; }
 
-    /* 이메일 감쌀 div 전용 CSS */
-    .email-ellipsis {
-        width: 100%; /* 부모(td) 너비만큼 꽉 채움 */
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: block; /* 텍스트가 블록 영역 안에서 잘리게 함 */
-    }
-
-    .email-ellipsis.show-all {
-        white-space: normal;      /* 줄바꿈 허용 */
-        overflow: visible;        /* 숨김 해제 */
-        word-break: break-all;    /* 긴 이메일 주소 줄바꿈 */
-    }
 
 </style>
 
@@ -109,7 +89,7 @@
                                                                 ${c.className}
                                                             </c:when>
                                                             <c:when test="${3 eq c.categoryNo}">
-                                                                CLASS 미지정
+                                                                수강상담사 · CLASS 미지정
                                                             </c:when>
                                                             <c:when test="${not empty c.categoryName}">
                                                                 ${c.categoryName}상담사
