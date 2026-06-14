@@ -1,7 +1,5 @@
 package com.kh.know_how.member.controller;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,10 +67,8 @@ public class MemberController {
 		// 2. 아이디 저장 여부에 따른 쿠키 생성
 			if((saveId != null) && (saveId.equals("y"))) {
 				// > 아이디를 저장하고 싶은 경우
-				String encodedId =
-					    URLEncoder.encode(m.getUserId(), StandardCharsets.UTF_8);
-
-				Cookie cookie = new Cookie("saveId", encodedId);
+		
+				Cookie cookie = new Cookie("saveId", m.getUserId());
 				cookie.setMaxAge(1 * 24 * 60 * 60); // 1일 (초단위)
 				cookie.setPath("/know-how/"); // 이 쿠키를 우리 웹사이트 내부에서만 이용 가능하게끔
 				
