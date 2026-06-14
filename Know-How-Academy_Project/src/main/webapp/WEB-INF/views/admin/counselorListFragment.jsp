@@ -3,9 +3,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <style>
 
-    /* 3. 내 맘대로 가로 길이(비율) 조절 */
-
-   
+ 
     tr th:first-child, 
     tr td:first-child {
     padding-left: 24px; /* 원하는 여백 크기에 맞춰 숫자를 조절해 줘! */
