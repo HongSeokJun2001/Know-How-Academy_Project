@@ -1,2 +1,15 @@
 /.metadata/
+# 특정 폴더(디렉토리) 전체 제외
+node_modules/
+build/
+target/
+
+# 특정 확장자를 가진 모든 파일 제외
+*.log
+*.class
+
+# 보안 및 개인 설정 파일 등 특정 파일 제외
+.env
+secret.json
+.DS_Store
 

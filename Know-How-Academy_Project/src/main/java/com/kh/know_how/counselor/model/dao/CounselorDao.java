@@ -12,38 +12,11 @@ import com.kh.know_how.common.model.vo.ClassPageInfo;
 @Repository
 public class CounselorDao {
 
-	public int selectListCount(SqlSessionTemplate sqlSession) {
+	public ArrayList<Class> selectClassDetailList(SqlSessionTemplate sqlSession) {
 		
-		return sqlSession.selectOne("counselorMapper.selectListCount");
+		return (ArrayList)sqlSession.selectList("counselorMapper.selectClassDetailList");
 	}
+
 	
-	public ArrayList<Class> selectClassList(SqlSessionTemplate sqlSession, ClassPageInfo pi) {
-		
-		int limit = pi.getClassLimit();
-		int offset = (pi.getCurrentPage() - 1) * limit;
-		
-		RowBounds rowBounds = new RowBounds(offset, limit);
-		
-		
-		return (ArrayList)sqlSession.selectList("counselorMapper.selectClassList", null, rowBounds);
-	}
-
-	public int selectSearchCount(SqlSessionTemplate sqlSession, 
-			                     HashMap<String, String> map) {
-		
-		return sqlSession.selectOne("counselorMapper.selectSearchCount", map);
-	}
-
-	public ArrayList<Class> searchClassList(SqlSessionTemplate sqlSession, 
-			                                HashMap<String, String> map,
-			                                ClassPageInfo pi) {
-		
-		int limit = pi.getClassLimit();
-		int offset = (pi.getCurrentPage() - 1) * limit;
-		
-		RowBounds rowBounds = new RowBounds(offset, limit);
-		
-		return (ArrayList)sqlSession.selectList("counselorMapper.searchClassList", map, rowBounds);
-	}
 
 }

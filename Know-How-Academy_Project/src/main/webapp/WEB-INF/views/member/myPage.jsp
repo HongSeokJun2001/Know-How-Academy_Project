@@ -49,7 +49,7 @@
     }
 	.loginPage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 600;
         font-size: 15px;
     }
@@ -85,8 +85,8 @@
         cursor: pointer;
         font-weight: 600;
         transition: background 0.2s;
-        height: 50px;
-        width: 150px;
+        height: 40px;
+        width: 130px;
         margin: auto;
 	}
 	.btn-logoutPage {
@@ -99,7 +99,21 @@
         font-weight: 600;
         transition: background 0.2s;
         height: 50px;
-        width: 120px;
+        width: 150px;
+        margin: auto;
+	}
+	.btn-logoutPageInformation {
+	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        color: white;
+        font-size: 20px;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+        height: 50px;
+        width: 250px;
         margin: auto;
 	}
 	
@@ -138,12 +152,14 @@
 						<thead>
 					    <tr>
 					        <th></th>
-							<th>&nbsp;아이디&nbsp; <input type="text" name="userId" class="loginPage-input" required value="${ cookie.saveId.value }"></th>
+							<th><label for="userId">&nbsp;&nbsp;아이디&nbsp;</label>
+							<input type="text" name="userId" class="loginPage-input" required value="${ cookie.saveId.value }"></th>
 						    <th></th>
 						</tr>
 						<tr>  
 						    <th></th>
-						    <th>비밀번호<input type="password" name="userPwd" class="loginPage-input" required></th>
+						    <th><label for="userPwd">비밀번호</label>
+						    <input type="password" name="userPwd" class="loginPage-input" required></th>
 						    <th></th>
 						</tr>
 						<tr class="save-id" id="idcheck" >
@@ -205,8 +221,8 @@
 	        
 	        <!-- case2. 로그인 후 -->
 				<div id="userstudent-info">
-					    <br><br>
-					    <h2 align="center">마이페이지</h2>
+					    <br>
+					    <h2 align="center" class="loginPage-title">마이페이지</h2>
 					    <br>
 					  <table class="loginPage-table" >
 					     <thead>
@@ -227,7 +243,7 @@
 						  <tr>
 						    <th></th>
 						    <th>
-								<button type="button" class="btn-logoutPage"
+								<button type="button" class="btn-logoutPageInformation"
 													  onclick="myInformationSelectPage();">내정보 조회</button>					  
 						    </th>
 						    <th></th>
@@ -235,7 +251,7 @@
 						 <tr>
 						    <th></th>
 							<th>
-							    <button type="button" class="btn-logoutPage"
+							    <button type="button" class="btn-logoutPageInformation"
 									                  onclick="myInformationChangePage();">내정보 수정</button>
 						   </th>
 						   <th></th>
@@ -243,6 +259,11 @@
 						 <tr>
 							<th></th>
 							<td></td>
+							<th></th>
+						 </tr>
+						 <tr>
+							<th></th>
+							<th></th>
 							<th></th>
 						 </tr>
 						 <tr>

@@ -39,7 +39,7 @@
     }
 	.searchIdPage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 600;
         font-size: 15px;
     }
@@ -94,7 +94,7 @@
 			<tr>
 			    <th></th>
 				<th>
-				    <label for="userName">이름</label>
+				    <label for="userName">&nbsp;&nbsp;이름&nbsp;&nbsp;</label>
 					<input type="text" class="searchIdPage-input" name="userName" id="userId">
 				</th>
 				<th></th>
@@ -121,6 +121,11 @@
 			</tr>
 			</thead>
 			<tbody>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
 			<tr>
 			    <th></th>
 				<th>

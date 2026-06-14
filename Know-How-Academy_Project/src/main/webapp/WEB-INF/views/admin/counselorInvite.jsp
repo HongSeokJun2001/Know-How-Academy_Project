@@ -585,10 +585,10 @@
                 if(result.status === "SUCCESS"){
                     $("#counselorName").val("");
                     $("#counselorEmail").val("");
-                    $btn.prop("disabled", false) .text("초대 메일 보내기");
                     //목록재조회
                     selectInviteList();
                 }
+                $btn.prop("disabled", false) .text("초대 메일 보내기");
             },
             error : function(xhr){
                 console.log("상담사 초대메일 발송 ajax 통신 실패!");

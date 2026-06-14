@@ -20,4 +20,9 @@ public class Class {
 	private String status;        //STATUS	VARCHAR2(1 BYTE)         사용상태
 	private Date createdAt;       //CREATED_AT	DATE                 생성일
 	private Date updatedAt;       //UPDATED_AT	DATE                 수정일
+
+    private String userName;
+    private String phone;
+   
+
 }
