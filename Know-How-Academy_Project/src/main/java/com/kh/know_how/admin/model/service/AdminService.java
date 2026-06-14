@@ -138,7 +138,7 @@ public class AdminService {
 	    	// 클래스변경
 	    	Integer currClassNo = ad.selectUserClassNo(sqlSession, userNo);
 	    	
-	    	if(currClassNo == null) {
+	    	if(currClassNo != null) {
 	    		ad.clearStudentCounselorNo(sqlSession, userNo);
 	    	}
 	        

@@ -75,8 +75,8 @@
 		 WHERE C.RESERVATION_STATUS = 'RESERVED'
 		   AND SM.STATUS = 'ACTIVE'
 		   AND CM.STATUS = 'ACTIVE'
-		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
-		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
+		   AND C.CONSULT_DATE &gt;= TRUNC(SYSDATE)
+		   AND C.CONSULT_DATE &lt; TRUNC(SYSDATE) + 1
 		   
 		 ORDER BY C.CREATED_AT ASC
 		 
@@ -178,18 +178,25 @@
 		                     , CC.CATEGORY_NAME     AS categoryName                    
 		                     
 		                  FROM COUNSELOR_INVITE         CI 
+<<<<<<< HEAD
 		                  LEFT JOIN MEMBER 			    CM  ON 	CM.USER_NO = CI.USER_NO
 		                  LEFT JOIN COUNSELOR_PROFILE 	C 	ON 	CM.USER_NO = C.USER_NO
 		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
 		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = C.CATEGORY_NO
 		                 WHERE CM.ROLE_CODE = 'COUNSELOR'
+=======
+		                  LEFT JOIN MEMBER 			    CM  ON 	CM.USER_NO = CI.USER_NO AND CM.ROLE_CODE = 'COUNSELOR'
+		                  LEFT JOIN COUNSELOR_PROFILE 	CP 	ON 	CM.USER_NO = CP.USER_NO
+		                  LEFT JOIN CLASS 				CL 	ON 	CL.CLASS_NO = CM.CLASS_NO
+		                  LEFT JOIN COUNSEL_CATEGORY	CC	ON	CC.CATEGORY_NO = CP.CATEGORY_NO 
+>>>>>>> e382de3a801b73ba848192ea645d77690f71641e
 		                  <choose>
 					      	<when test="status == 'ACTIVE'">
-					       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+					     WHERE ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
 					        OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 					       	</when>
 					       	<when test="status == 'INACTIVE'">
-					       AND CI.INVITE_STATUS = 'USED'
+					     WHERE CI.INVITE_STATUS = 'USED'
 					       AND CM.STATUS = 'INACTIVE' 
 					       	</when>
 					       </choose>
@@ -200,8 +207,8 @@
 									OR CM.PHONE     LIKE '%' || #{keyword} || '%'
 			               	)
 		                   </if>
-		                 ORDER BY CI.USER_NO NULLS FIRST
-		                        , CASE WHEN CL.CLASS_NAME IS NULL THEN 0 ELSE 1 END
+		                 ORDER BY CASE WHEN CI.USER_NO IS NULL THEN 0 ELSE 1 END
+		                        , CASE WHEN CP.CATEGORY_NO = 3 AND CL.CLASS_NAME IS NULL THEN 0 ELSE 1 END
 		                        , CM.USER_NAME
 		                 )P
 		        )

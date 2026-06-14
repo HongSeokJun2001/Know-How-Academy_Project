@@ -304,7 +304,14 @@
         ORDER BY FILE_NO DESC  )
     WHERE ROWNUM = 1
 	</select>
-
+	
+	<!-- (관리자용)게시글 삭제용 쿼리문 -->
+	<delete id="adminDeleteBoard" parameterType="_int">
+		DELETE
+		  FROM BOARD_POST
+		 WHERE POST_NO = #{postNo}
+	</delete>
+	
 	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
 	<delete id="admindeleteFileAttachment" parameterType="_int">
 		DELETE
@@ -346,6 +353,9 @@
 		SYSDATE)
 
 	</insert>
+	
+
+
 
 
 

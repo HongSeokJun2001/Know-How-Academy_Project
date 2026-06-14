@@ -17,33 +17,34 @@
         background-color: #F8F9FA;
         padding: 32px;
     }
-    .mypagelogin-outer {
+    .mypagelogout-outer {
 	       background-color: #ffffff;
            border-radius: 12px;
            padding: 30px;
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
            max-width: 600px;
+           max-height: 700px;
            margin: auto;
 	    }
-	.loginPage-title {
+	.logoutPage-title {
 	    font-size: 36px;
 	    font-weight: bold;
 	    margin-bottom: 10px;
 	    color: #2C2A38;
 	}
-	.loginPage-table {
+	.logoutPage-table {
         width: 100%;
         border-collapse: collapse;
         text-align: center;
     }
-	.loginPage-table th {
+	.logoutPage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 600;
         font-size: 15px;
     }
-    .loginPage-table td {
+    .logoutPage-table td {
         padding: 15px;
         border-bottom: 2px solid black;
         vertical-align: middle;
@@ -51,22 +52,15 @@
         font-size: 15px;
     }
 	/* 입력창 */
-	.loginPage-input {
+	.logoutPage-input {
 	    height: 40px;
 	    width: 300px;
 	    padding: 10px;
 	    margin-bottom: 10px;
 	}
 	
-	/* 아이디 저장 */
-	.save-id {
-	    font-size: 14px;
-	    height: 20px;
-	    width: 20px;
-	}
-	
 	/* 버튼 */
-	.btn-loginPage {
+	.btn-logoutPage {
 	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
         color: white;
         border: none;
@@ -79,8 +73,22 @@
         width: 150px;
         margin: auto;
 	}
+	.btn-logoutPageInformation {
+	    background-color: #4233C7; /* 팀 메인 테마색 매칭 */
+        color: white;
+        font-size: 20px;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+        height: 50px;
+        width: 250px;
+        margin: auto;
+	}
 	
-	.btn-loginPage:hover {
+	.btn-logoutPage:hover {
 	    background-color: #3225A3;
 	}
 </style>
@@ -89,14 +97,14 @@
     <jsp:include page="../common/menubar.jsp"/>
     
     <br><br>
-     <h2 align="center">마이페이지</h2>
-     <br>
-     
-    <div class="mypagelogin-outer">
-	 <!-- 직원계정 로그인 시 -->	
-       
-       <div id="user-info">	    
-		 <table class="loginPage-table">
+    
+    <div class="mypagelogout-outer">
+	 <!-- 직원계정 로그인 시 -->
+	   <br>
+       <h2 align="center" class="loginPage-title">마이페이지</h2>
+        <br>
+        <div id="user-info">	
+		 <table class="logoutPage-table">
 		    <thead>
 		      <tr>
 		          <th></th>
@@ -115,7 +123,7 @@
 			  <tr>
 			   <th></th>
 			    <th>
-					<button type="button" class="btn-loginPage"
+					<button type="button" class="btn-logoutPageInformation"
 							onclick="counselorInformationSelectPage();">내 정보 조회</button>					  
 			    </th>
 			    <th></th>
@@ -123,7 +131,7 @@
 			 <tr>
 			    <th></th>
 				<th>
-				    <button type="button" class="btn-loginPage"
+				    <button type="button" class="btn-logoutPageInformation"
 						    onclick="counselorInformationChangePage();">내 정보 수정</button>
 			    </th>
 			    <th></th>
@@ -134,9 +142,14 @@
 				<th></th>
 			 </tr>
 			 <tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			 </tr>
+			 <tr>
 			   <th></th>
 			   <th>
-			       <button type="button" class="btn-loginPage" 
+			       <button type="button" class="btn-logoutPage" 
 			               onclick="logout();">로그아웃</button>             
 			   </th>
 			   <th></th>
