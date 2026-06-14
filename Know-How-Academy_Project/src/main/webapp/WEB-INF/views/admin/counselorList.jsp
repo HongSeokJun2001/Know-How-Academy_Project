@@ -286,7 +286,7 @@
 
 	/* 클래스 변경 select */
 	.class-select {
-		width: 200px;
+		width: 170px;
 		height: 40px;
 		padding: 0 12px;
 		border: 1px solid #d1d5db;

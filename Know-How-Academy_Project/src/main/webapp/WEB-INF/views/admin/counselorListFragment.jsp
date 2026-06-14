@@ -3,12 +3,11 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <style>
 
-
     /* 3. 내 맘대로 가로 길이(비율) 조절 */
-    .counselor-table th:nth-child(1) { width: 8%; }
+    .counselor-table th:nth-child(1) { width: 10%; }
     .counselor-table th:nth-child(2) { width: 13%; } /* 이메일 칸 */
-    .counselor-table th:nth-child(3) { width: 13%; }
-    .counselor-table th:nth-child(4) { width: 20%; }
+    .counselor-table th:nth-child(3) { width: 10%; }
+    .counselor-table th:nth-child(4) { width: 16%; }
     .counselor-table th:nth-child(5) { width: 8%; }
     .counselor-table th:nth-child(6) { width: 15%; }
 
@@ -89,7 +88,7 @@
                                                                 ${c.className}
                                                             </c:when>
                                                             <c:when test="${3 eq c.categoryNo}">
-                                                                수강상담사 · CLASS 미지정
+                                                                CLASS 미지정
                                                             </c:when>
                                                             <c:when test="${not empty c.categoryName}">
                                                                 ${c.categoryName}상담사
