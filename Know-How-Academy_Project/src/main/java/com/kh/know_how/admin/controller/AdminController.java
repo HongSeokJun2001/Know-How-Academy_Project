@@ -119,7 +119,7 @@ public class AdminController {
     }
     
     
-    //----------- 상담사 직무(클래스) 변경 메소드
+    //----------- 상담사 직무 변경 메소드
     @ResponseBody
     @PostMapping("/class/update")
     public String updateCounselorClass(int userNo, String changeType, Integer changeNo) {
@@ -262,6 +262,8 @@ public class AdminController {
     	return message;
     }
     
+    
+    //----------- 상담사 초대 목록(거절, 만료포함) 조회 메소드
     @GetMapping("/invite/list")
     public String selectInviteList(Model model) {
     	
