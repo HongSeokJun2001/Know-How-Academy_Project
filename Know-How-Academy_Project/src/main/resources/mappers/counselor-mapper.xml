@@ -5,7 +5,7 @@
 <mapper namespace="counselorMapper">
 
 <!-- class 테이블 -->
-    <resultMap id="classResultSet" type="class">
+    <resultMap id="classResultSet" type="Class">
 	     <id column="CLASS_NO" property="classNo" />
 	     <result column="CLASS_NAME" property="className" />
 	     <result column="DESCRIPTION" property="description" />
@@ -24,12 +24,12 @@
 	    SELECT 
 	        C.CLASS_NAME,
 	        M.USER_NAME,
-	        M.PHONE ,
+	        M.PHONE,
 	        M.STATUS
 	    FROM CLASS C
 	    JOIN MEMBER M ON C.CLASS_NO = M.CLASS_NO
 	   WHERE C.STATUS = 'Y'
 	     AND M.ROLE_CODE = 'STUDENT'
-	    ORDER BY C.CLASS_NAME ASC
+    ORDER BY C.CLASS_NAME ASC
 	</select>
 </mapper>

@@ -65,14 +65,14 @@
             <tbody>
 			    <c:choose>
 			    	<%--Case1. 조회된 반학생이 아무도 없을 때 --%>
-			        <c:when test="${empty classList}">
+			        <c:when test="${empty ClassList}">
 			            <tr>
 			                <td colspan="4" class="empty-cell">현재 학생이 없습니다</td>
 			            </tr>
 			        </c:when>
 			        <%--Case. 반학생이 존재할 떄 --%>
 			        <c:otherwise>
-			            <c:forEach var="c" items="${classList}">
+			            <c:forEach var="c" items="${ClassList}">
 			                <tr>
 			                    <td>${c.className}</td>
 			                    

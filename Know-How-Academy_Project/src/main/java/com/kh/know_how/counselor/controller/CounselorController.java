@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.counselor.model.service.CounselorService;
+import com.kh.know_how.counselor.model.vo.Class;
 
 @Controller
 @RequestMapping("myPageCounselor")
@@ -49,9 +50,9 @@ public class CounselorController {
 	
     @GetMapping("myStudentClassListForm") // 학생 리스트
     public ModelAndView myStudentClassList(ModelAndView mv) {
-    	ArrayList<Class> classList = counselorService.selectClassDetailList();
-    	
-    	mv.addObject("classList", classList);
+    	ArrayList<Class> ClassList = counselorService.selectClassDetailList();
+        
+    	mv.addObject("ClassList", ClassList);
     	mv.setViewName("counselor/myStudentClassListForm");
     	return mv;
     }
