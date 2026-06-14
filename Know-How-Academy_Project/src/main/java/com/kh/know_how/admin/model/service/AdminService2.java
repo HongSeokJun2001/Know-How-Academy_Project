@@ -168,7 +168,7 @@ public class AdminService2 {
 				
 				if(fa.getFileNo() != 0) {
 					
-					fileResult = bd.updateFileAttachment(sqlSession, fa);
+//					fileResult = bd.updateFileAttachment(sqlSession, fa);
 				
 				} else {
 					
