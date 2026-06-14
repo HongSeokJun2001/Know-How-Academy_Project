@@ -4,9 +4,20 @@
 <style>
 
     /* 3. 내 맘대로 가로 길이(비율) 조절 */
+
+   
+    tr th:first-child, 
+    tr td:first-child {
+    padding-left: 24px; /* 원하는 여백 크기에 맞춰 숫자를 조절해 줘! */
+    }
+
+    .counselor-table th:nth-child(5) { text-align: center; }
+    .counselor-table td:nth-child(5) { text-align: center; }
+    .counselor-table th:nth-child(6) { text-align: center; }
+
     .counselor-table th:nth-child(1) { width: 10%; }
     .counselor-table th:nth-child(2) { width: 13%; } /* 이메일 칸 */
-    .counselor-table th:nth-child(3) { width: 10%; }
+    .counselor-table th:nth-child(3) { width: 14%; }
     .counselor-table th:nth-child(4) { width: 16%; }
     .counselor-table th:nth-child(5) { width: 8%; }
     .counselor-table th:nth-child(6) { width: 15%; }
@@ -28,7 +39,7 @@
                         <th>상담사명</th>
                         <th>이메일</th>
                         <th>현재 담당</th>
-                        <th>담당 직무 변경</th>
+                        <th>&emsp; 담당 직무 변경</th>
                         <th>상태</th>
                         <th>관리</th>
                     </tr>
