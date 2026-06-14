@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.know_how.admin.common.AdminPagination;
 import com.kh.know_how.admin.common.AdminXssDefencePolicy;
 import com.kh.know_how.admin.common.PageResponseDto;
-import com.kh.know_how.admin.mail.MailService;
 import com.kh.know_how.admin.model.dao.AdminDao;
 import com.kh.know_how.admin.model.dto.AdminCounselWaitingDto;
 import com.kh.know_how.admin.model.dto.AdminDashboardStatsDto;
@@ -46,6 +45,9 @@ public class AdminService {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	//메소드부
+	
+	
+	//----------- 메인페이지
 	@Transactional(readOnly = true)
 	public int selectAlarmCount() {
 		
@@ -93,6 +95,7 @@ public class AdminService {
 		return ad.selectDashboardStats(sqlSession);
 	}
 
+	//----------- 상담사목록페이지조회메소드
 	@Transactional(readOnly = true)
 	public CounselorListPageDto selectcounselorList(
 		   CounselorSearchRequestDto counselorSearchRequestDto) {
@@ -110,39 +113,49 @@ public class AdminService {
 		ArrayList<CounselorListResponseDto> counselorList = ad.selectcounselorList(sqlSession,counselorSearchRequestDto);
 		//지정 상담사가 없는 클래스 목록 조회
 		ArrayList<ClassListDto> classList = ad.selectClassList(sqlSession);
+		//카테고리 목록 조회
+		ArrayList<CounselCategoryDto> categoryList = ad.selectCounselCategory(sqlSession);
 		
-		
-		CounselorListPageDto counselorListPage = new CounselorListPageDto(counselorList, pageInfo,classList);
+		CounselorListPageDto counselorListPage = new CounselorListPageDto(counselorList, pageInfo,classList, categoryList);
 		return counselorListPage;
 	}
 	
+	//----------- 상담사 직무 변경 메소드
 	@Transactional
-	public int updateCounselorClass(int userNo, Integer classNo) {
+	public int updateCounselorClass(int userNo, String changeType, Integer changeNo) {
 		
-		//1.상담사 클래스
 		Map<String, Integer> param = new HashMap<>();
 		param.put("userNo", userNo);
-		param.put("classNo", classNo);
-		int counselorClass = ad.updateCounselorClass(sqlSession, param);
+		param.put("changeNo", changeNo);
 		
-		//2.학생테이블 상담사번호 변경
-		//2-1 classNo NOT NULL - classNo가 같은 학생의 상담사번호 NULL로 UPDATE
-		int clearNo = 1;
-		int updateStudent =1;
-		if(classNo != null) {
-			clearNo = ad.clearStudentCounselorNo(sqlSession, userNo);
-			//2-2 classNo가 같은 학생의 상담사번호 userNo로 UPDATE
-			updateStudent = ad.updateStudentCounselorNoByClassNo(sqlSession, param);
-		}
+		int result;
 		
-		
-		
-//		System.out.println(">>> [클래스변경] "+ counselorClass + clearNo + updateStudent);
-		
-		//결과가 모두 참인지 확인 후 리턴
-		return counselorClass * clearNo * updateStudent;
-	}
+	    if ("CATEGORY".equals(changeType)) {
+	    	// 직무변경
+	    	result = ad.updateCounselorCategoryNo(sqlSession, param);
 
+	    } else if ("CLASS".equals(changeType)) {
+	    	// 클래스변경
+	    	Integer currClassNo = ad.selectUserClassNo(sqlSession, userNo);
+	    	
+	    	if(currClassNo == null) {
+	    		ad.clearStudentCounselorNo(sqlSession, userNo);
+	    	}
+	        
+	        result = ad.updateCounselorClass(sqlSession, param);
+
+	        if (changeNo != null) {
+	            ad.updateStudentCounselorNoByClassNo(sqlSession, param);
+	        }
+
+	    } else {
+	    	
+	        throw new IllegalArgumentException("유효하지 않은 요청입니다.");
+	    }	
+	    return result;
+	}
+	
+	//----------- 상담사 상세조회용 메소드
 	@Transactional(readOnly = true)
 	public ArrayList<CounselCategoryDto> selectCounselCategory() {
 		
@@ -156,31 +169,33 @@ public class AdminService {
 		return ad.selectCounselorProfile(sqlSession, userNo);
 	}
 	
+	//----------- 상담사 (휴직/재직) 변경용 메소드
 	@Transactional
 	public int updateCounselorStatus(int userNo, String status) {
 		// 상담사 상태 변경
 		Map<String, Object> param = new HashMap<>();
 		param.put("userNo", userNo);
 		param.put("status", status);
+		
 		int changeStatus = ad.updateCounselorStatus(sqlSession, param);
 		
 		//상담사의 변경 전 class에 지정된 학생의 상담사번호를 NULL로 UPDATE
-		int	clearNo = 1;
 		if("ACTIVE".equals(status)) {
-			clearNo = ad.clearStudentCounselorNo(sqlSession, userNo);
-		} // 담당 학생이 없으면 0
-          // SQL 에러면 예외 터지고 트랜잭션 롤백.
-		
+			ad.clearStudentCounselorNo(sqlSession, userNo);
+		} 
+          
 		
 		return changeStatus;// 업무상 휴직 처리 성공
 	}
 	
+	//----------- 초대링크 비활성화 메소드
 	@Transactional
 	public int updateCounselorInvite(int inviteNo) {
 		
 		return ad.updateCounselorInvite(sqlSession, inviteNo);
 	}
-
+	
+	//----------- 상담사 초대메일 전송 메소드
 	@Transactional
 	public String inviteCounselor(CounselorInviteDto counselorInvite) {
 		
@@ -189,14 +204,13 @@ public class AdminService {
 		
 		String resultValidate = validateEmail(keyword);
 		if("INVALID_EMAIL".equals(resultValidate)) {
-			System.out.println(">>> INVALID_EMAIL");
+//			System.out.println(">>> INVALID_EMAIL : 잘못된 형식의 이메일 입니다");
 			return resultValidate;
 		}
-		
 		counselorInvite.setCounselorName(AdminXssDefencePolicy.defence(counselorInvite.getCounselorName()));
 		counselorInvite.setEmail(AdminXssDefencePolicy.defence(keyword));
 		
-		//이메일중복검사
+		//이메일중복검사 (resultEmail = 중복메일 갯수)
 		int resultEmail = ad.existsByEmail(sqlSession, keyword);
 		if(resultEmail > 0) {
 			System.out.println(">>> DUPLICATE_EMAIL");
@@ -249,18 +263,21 @@ public class AdminService {
 		return "SUCCESS";
 	}
 	
+	//----------- 상담사 초대 목록(거절, 만료포함) 조회 메소드
 	@Transactional(readOnly = true)
 	public ArrayList<CounselorInviteListDto> selectInviteList() {
 		
 		return ad.selectInviteList(sqlSession);
 	}
 
+	//----------- 상담사 가입 페이지 메소드 (토큰확인 후 email 주소 전달)
 	@Transactional(readOnly = true)
 	public CounselorInviteCompleteDto getCounselorInfo(String token) {
 		
 		return ad.getCounselorInfo(sqlSession,token);
 	}
 
+	//----------- 상담사 회원가입 메소드 
 	@Transactional
 	public int signupCounselor(Member member, CounselorInviteCompleteDto inviteInfoDto, CounselorProfile profile, CounselorProfilImg cp) {
 		
@@ -296,6 +313,7 @@ public class AdminService {
 		if(cp != null) {
 			cp.setUserNo(member.getUserNo());
 //			System.out.println(">>> [cp2] " + cp);
+			
 			// 사용자의 화면에 노출 될 원본파일명만 xss 후 insert
 			cp.setOriginName(AdminXssDefencePolicy.defence(cp.getOriginName()));
 			imgResult = ad.insertCounselorProfileImg(sqlSession, cp);

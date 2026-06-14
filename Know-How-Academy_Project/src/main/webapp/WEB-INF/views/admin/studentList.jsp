@@ -158,7 +158,7 @@
 	    border: 1px solid #e5e7eb;
 	    border-radius: 10px;
 	    font-size: 15px;
-		min-width: 1100px;
+		min-width: 800px;
 	}
 	
 	.table thead th {

@@ -1,4 +1,4 @@
-package com.kh.know_how.admin.mail;
+package com.kh.know_how.admin.model.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
