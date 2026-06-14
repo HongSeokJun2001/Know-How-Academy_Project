@@ -205,13 +205,14 @@
 
             <!-- 다음 버튼 -->
             <c:choose>
-                <c:when test="${requestScope.list.pageInfo.currentPage eq requestScope.list.pageInfo.maxPage or empty requestScopelist.list.counselorList}">
+                <c:when test="${requestScope.list.pageInfo.currentPage eq requestScope.list.pageInfo.maxPage 
+                                or empty requestScope.list.counselorList}">
                     <button type="button" disabled>&gt;</button>
                 </c:when>
 
                 <c:otherwise>
                     <button type="button"
-                        onclick="reloadCounselorList(${requestScope.list.pageInfo.currentPage + 1})">
+                            onclick="reloadCounselorList(${requestScope.list.pageInfo.currentPage + 1})">
                         &gt;
                     </button>
                 </c:otherwise>
