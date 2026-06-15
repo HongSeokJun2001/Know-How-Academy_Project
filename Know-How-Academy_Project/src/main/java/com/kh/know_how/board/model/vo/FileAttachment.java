@@ -23,10 +23,6 @@ public class FileAttachment {
     private Date createdAt;       // 업로드 일
     private Date updatedAt;       // 수정 일자
     private String status;        // 삭제 여부 (Y/N)
-    private String fileLevel;     // 파일 구분 (1:썸네일, 2:일반)
-	public void setFileLevel(int i) { // 커밋할 때는 지우면 됩니다.
-		// TODO Auto-generated method stub
-		
-	}
+    private int fileLevel;     // 파일 구분 (1:썸네일, 2:일반)
 
 }
