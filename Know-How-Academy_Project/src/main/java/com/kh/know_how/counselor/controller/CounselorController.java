@@ -1,24 +1,27 @@
 package com.kh.know_how.counselor.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.know_how.counselor.model.service.CounselorService;
+import com.kh.know_how.member.model.vo.Member;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import com.kh.know_how.counselor.model.vo.Class;
 
 @Controller
 @RequestMapping("myPageCounselor")
 public class CounselorController {
     
-
-	private Map<String, String> certNoList = Collections.synchronizedMap(new HashMap<>());
 	
 	@Autowired
 	private CounselorService counselorService;
@@ -47,13 +50,19 @@ public class CounselorController {
 		return mv;
 	}
 	
-    @GetMapping("myStudentClassListForm") // 학생 리스트
-    public ModelAndView myStudentClassList(ModelAndView mv) {
-    	ArrayList<Class> classList = counselorService.selectClassDetailList();
+    @PostMapping("myStudentClassListForm") // 학생 리스트
+    public String myStudentClassList(HttpSession session, HttpServletResponse response, Model model, Member m) {
     	
-    	mv.addObject("classList", classList);
-    	mv.setViewName("counselor/myStudentClassListForm");
-    	return mv;
+    	ArrayList<Class> classList = counselorService.selectClassDetailList(m);
+    	System.out.println("리스트 : " + classList);
+        if(classList != null) {
+    	model.addAttribute("classList", classList);
+    	return ("counselor/myStudentClassListForm");
+        } else {
+        	model.addAttribute("errorMsg", "담당받은 반이없습니다.");
+        	return ("counselor/counselorInformationSelectForm");
+        }
+    	
     }
 	
 }

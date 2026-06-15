@@ -72,9 +72,9 @@
 			        </c:when>
 			        <%--Case. 반학생이 존재할 떄 --%>
 			        <c:otherwise>
-			            <c:forEach var="c" items="${classList}">
+			            <c:forEach var="m" items="${classList}">
 			                <tr>
-			                    <td>${c.className}</td>
+			                    <td>${m.className}</td>
 			                    
 			                    <td class="user-name">${m.userName}</td>
 			                    
