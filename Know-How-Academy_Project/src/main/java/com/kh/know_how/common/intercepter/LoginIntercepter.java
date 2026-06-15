@@ -35,7 +35,8 @@ public class LoginIntercepter implements HandlerInterceptor {
 	        }
 	        
 	        // 회원/학생(student), 상담사/강사 권한 검사
-	        if (!"STUDENT".equals(loginUser.getRoleCode()) && !"COUNSELOR".equals(loginUser.getRoleCode())) {
+	        if (!"STUDENT".equals(loginUser.getRoleCode()) && !"COUNSELOR".equals(loginUser.getRoleCode()) 
+	        		                                       && !"INSTRUCTOR".equals(loginUser.getRoleCode())) {
 	        	// redirect 후 보여줄 메시지
 	            request.getSession().setAttribute("alertMsg", "로그인 후 이용 가능한 서비스입니다.");
 	           
