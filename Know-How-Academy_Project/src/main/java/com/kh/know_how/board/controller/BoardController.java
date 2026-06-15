@@ -477,11 +477,19 @@ public class BoardController {
 		return (result > 0 ) ? "success" : "fail";
 		
 	}	
+	
+	@ResponseBody
+	@GetMapping("/main")
+	public ArrayList<Board> mainNoticeList() { // 메인페이지에 나오는 공지사항 리스트를 불러오는 메소드
+		
+		return boardService.mainNoticeList("NOTICE");
+		
+	}
 
 	@ResponseBody
 	@GetMapping("news/list")
 	public Map<String, Object> selectNewsList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage) {
-		int listCount = boardService.selectNewsListCount();
+		int listCount = boardService.selectListCount("NEWS");
 		int boardLimit = 4;
 		int pageLimit = 1;
 
@@ -501,7 +509,7 @@ public class BoardController {
 	 */
 	@GetMapping("news/detail/{postNo}")
 	public ModelAndView academyNews(@PathVariable int postNo, ModelAndView mv) {
-		Board b = boardService.selectNews(postNo);
+		Board b = boardService.selectBoard(postNo);
 
 		ArrayList<FileAttachment> list = boardService.selectFileAttachmentList(postNo);
 

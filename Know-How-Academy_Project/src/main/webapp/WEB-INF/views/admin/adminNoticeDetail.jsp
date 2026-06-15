@@ -145,7 +145,7 @@
 				</tr>
 				<tr>
 					<th>작성자</th>
-					<td>${ requestScope.n.postWriter }</td>
+					<td>${ requestScope.n.userName }</td>
 					<th>날짜</th>
 					<td>${ requestScope.n.createdAt }</td>
 				</tr>

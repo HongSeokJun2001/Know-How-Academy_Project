@@ -187,6 +187,88 @@
 		 WHERE USER_NO = #{userNo}
 		   AND STATUS = 'REJECTED'
 	</delete>
+	
+	<!-- 15. 가입거절 되어있는 학생을 삭제할 때, MemberLock도 삭제하는 쿼리문 -->
+	<delete id="deleteMemberLock" parameterType="_int">
+		DELETE
+		  FROM MEMBER_LOCK
+		 WHERE USER_NO = #{userNo}
+	</delete>
+	
+	<!-- 16. 공지사항, 학원소식 상태 변경용 쿼리문 -->
+	<update id="adminUpdateBoardStatus" parameterType="board">
+		UPDATE BOARD_POST
+		   SET STATUS = #{status}
+		 WHERE POST_NO = #{postNo}
+	</update>
+	
+	<!-- 17. 게시글 삭제용 쿼리문 -->
+	<delete id="adminDeleteBoard" parameterType="_int">
+		DELETE
+		  FROM BOARD_POST
+		 WHERE POST_NO = #{postNo}
+	</delete>
+	
+	<!-- 18. 첨부파일 삭제용 쿼리문 -->
+	<delete id="adminDeleteFileAttachment" parameterType="_int">
+		DELETE
+		FROM
+		FILE_ATTACHMENT
+		WHERE TARGET_NO = #{postNo}
+	</delete>
+	
+	<!-- 19. 학원소식 대표이미지와 상세이미지 추가용 쿼리문 -->
+	<insert id="insertFileAttachmentList" parameterType="FileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH
+								  , FILE_LEVEL)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , SEQ_POST_NO.CURRVAL
+								 , 'NEWS'
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath}
+								 , #{fileLevel})
+	</insert>
+	
+	<!-- 20. 학원소식 수정 시 이미지 교체용 쿼리문-->
+	<update id="updateFileAttachment" parameterType="fileAttachment">
+		UPDATE
+		FILE_ATTACHMENT
+		SET ORIGIN_NAME = #{originName},
+		SAVE_NAME =
+		#{saveName},
+		UPDATED_AT = SYSDATE
+		WHERE FILE_NO = #{fileNo}
+	</update>
+	
+	<!-- 21. 학원소식 수정 시 새로운 이미지를 등록하는 쿼리문 -->
+	<insert id="insertNewsFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH
+								  , FILE_LEVEL)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , #{targetNo}
+								 , #{targetType}
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath}
+								 , #{fileLevel})
+	</insert>
+	
+	<!-- 23. 계정 잠금 해제용 쿼리문 -->
+	<update id="updateMemberUnlock" parameterType="_int">
+		UPDATE MEMBER_LOCK
+		   SET IS_LOCKED = 'N'
+		     , FAIL_COUNT = 0
+		 WHERE USER_NO = #{userNo}
+	</update>
 </mapper>
-	
-	
