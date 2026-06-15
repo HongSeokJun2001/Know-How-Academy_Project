@@ -22,7 +22,7 @@
            border-radius: 12px;
            padding: 30px;
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-           border: 1px solid black;
+           border: 1px solid red;
            max-width: 1200px;
            max-height: 1200px;
            margin: auto;
@@ -42,7 +42,7 @@
     }
 	.memberDeletePage-table th {
         padding: 5px;
-        color: #6F6D80;
+        color: black;
         font-weight: 500;
        
     }
@@ -66,7 +66,7 @@
         font-weight: 600;
         transition: background 0.2s;
         height: 40px;
-        width: 150px;
+        width: 200px;
         margin: auto;
 	}
 	
@@ -91,10 +91,10 @@
       <table class="memberDeletePage-table" >
        <thead>
         <tr>
-          <th>회원탈퇴를 신청하기 전에 안내사항을 꼭 확인해주세요.<th>
+          <th><h3>회원탈퇴를 신청하기 전에 안내사항을 꼭 확인해주세요.</h3><th>
         </tr>
         <tr>
-           <th><h4><label>사용하고 계신 아이디${ sessionScope.loginUser.userId }는 탈퇴할 경우 재사용 및 복구가 불가능합니다.</label></h4></th>
+           <th><h4><label>사용하고 계신 아이디 : ${ sessionScope.loginUser.userId } 는 탈퇴할 경우 재사용 및 복구가 불가능합니다.</label></h4></th>
         </tr>
         <tr>
              <th>
@@ -102,13 +102,16 @@
              </th>
         </tr>
         <tr>
-           <th><h4><label>부정 가입/ 이용이 의심되는 아이디는 탈퇴 후 6개월까지 동일 실명정보로 재가입할 수 없습니다.</label></h4></th>
+           <th><h4><label class="Deletelabel">부정 가입/ 이용이 의심되는 아이디는 탈퇴 후 6개월까지 동일 실명정보로 재가입할 수 없습니다.</label></h4></th>
         </tr>
         <tr>
             <td></td>
         </tr>
         <tr>
-           <th><h4><label>탈퇴 후 회원정보 및 개인형 서비스 이용기록 모두 삭제됩니다.</label></h4></th>
+            <th></th>
+        </tr>
+        <tr>
+           <th><h4><label class="Deletelabel">탈퇴 후 회원정보 및 개인형 서비스 이용기록 모두 삭제됩니다.</label></h4></th>
         </tr>
         <tr>
            <th><h4><label class="Deletelabel"> 회원정보, 메일 등 개인형 서비스 이용기록이 모두 삭제되며, 이후 복구할 수 없습니다.</label></h4></th>
@@ -117,6 +120,9 @@
        <tbody>
         <tr>
             <td></td>
+        </tr>
+        <tr>
+            <th></th>
         </tr>
         <tr>
            

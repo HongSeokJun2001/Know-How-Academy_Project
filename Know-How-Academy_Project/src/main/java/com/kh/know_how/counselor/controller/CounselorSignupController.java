@@ -33,15 +33,19 @@ public class CounselorSignupController {
     @GetMapping("/counselor/signup")
     public String getCounselorInfo(@RequestParam("token") String token, Model model, HttpSession session) {
     	
+    	
     	CounselorInviteCompleteDto inviteInfoDto = as.getCounselorInfo(token);
     	
-    	if(inviteInfoDto != null) {
-	    	session.setAttribute("inviteInfoDto",inviteInfoDto);
-	    	model.addAttribute("inviteInfoDto",inviteInfoDto);
-    	}else {
+    	
+    	if(inviteInfoDto == null) {
     		model.addAttribute("errorMsg", "사용되거나 만료된 링크입니다.");
     		return "common/errorPage";
+    	}else {
+    		
+    		session.setAttribute("inviteInfoDto",inviteInfoDto);
+	    	model.addAttribute("inviteInfoDto",inviteInfoDto);
     	}
+    	
     	
     	return "counselor/counselorEnrollForm";
     }
@@ -50,9 +54,8 @@ public class CounselorSignupController {
     //----------- 상담사 회원가입 메소드 
     @ResponseBody
     @PostMapping("/counselor/signup/process")
-    public String signupCounselor(Member member, CounselorProfile profile, HttpSession session) {
-    	
-    	
+    public String signupCounselor(@RequestParam("profileImg") MultipartFile profileImg, Member member, CounselorProfile profile, HttpSession session) {
+    	    	
     	String message = "";
     	
     	try {
@@ -63,22 +66,27 @@ public class CounselorSignupController {
         	}
         	
         	//프로필 사진 입력시 저장
-        	MultipartFile file = profile.getProfileImg();
         	CounselorProfilImg cp = null;
         	
-    		if (file != null && !file.isEmpty()) {
+    		if (profileImg != null && !profileImg.isEmpty()) {
+    			
     			cp = new CounselorProfilImg();
     			
-    			String changeName = FileRenamePolicy.saveFile(file, session, 
-						"/resources/image/counselorProfile/");
-    			profile.setProfileImgPath(changeName);
+    			//프로필 이미지 저장
+    			String path = "/resources/image/counselorProfile/";
+    			String changeName = FileRenamePolicy.saveFile(profileImg, session, path);
+    			
+    			//프로필 이미지 저장 중 실패시 1 반환
     			if("1".equals(changeName)) {
     				message = "imgFail";
     				return message;
     			}
-        		cp.setOriginName(file.getOriginalFilename());
+    			
+    			//서비스로 보낼 자료 담기
+    			profile.setProfileImgPath(path+changeName);
+        		cp.setOriginName(profileImg.getOriginalFilename());
         		cp.setSaveName(changeName);
-        		cp.setFilePath("resources/image/counselorProfile/");
+        		cp.setFilePath(path);
     		}
     		
     		//서비스호출
@@ -93,10 +101,12 @@ public class CounselorSignupController {
         	
 		} catch (IllegalArgumentException e) {
 			
-			System.out.println(">>> [상담사 회원가입 오류1] " + e.getMessage());
 			//web 에서 빈 문자열 검사 후에도 들어온 null 값은 오류처리 
+			System.out.println(">>> [상담사 회원가입 오류1] " + e.getMessage());
 			message = "올바르지 않은 접근입니다.";
+			
 		} catch (RuntimeException e) {
+			
 			System.out.println(">>> [상담사 회원가입 오류2] " + e.getMessage());
 			message = "RuntimeException";
 		}

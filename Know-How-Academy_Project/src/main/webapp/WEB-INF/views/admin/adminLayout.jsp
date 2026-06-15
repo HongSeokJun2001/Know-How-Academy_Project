@@ -273,21 +273,27 @@
 		overflow-x: auto;
 	}
 
+    a {
+        text-decoration: none; color: inherit;
+    }
+    
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
     <!-- 
-        http://localhost:8002/know-how/admin/
+        http://localhost:8002/know-how/admin
     -->
 
     <div id="fake-header">
-        <div class="header-title">
-            <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
-                alt="know-how-academy 마크">
-            <span>KNOW-HOW ACADEMY</span>
-            <span>관리자 페이지</span>
-        </div>
+        <a href="${pageContext.request.contextPath}/admin" style="text-decoration: none; color: inherit;">
+            <div class="header-title">
+                <img src="${pageContext.request.contextPath}/resources/image/로고색반전1.png"
+                    alt="know-how-academy 마크">
+                <span>KNOW-HOW ACADEMY</span>
+                <span>관리자 페이지</span>
+            </div>
+        </a>
 
         <div class="header-user-area">
             <div class="admin-profile">${ sessionScope.loginUser.userName }</div>
@@ -318,7 +324,7 @@
                 학원생 관리
             </div>
 
-            <div class="menu-item" data-path="/admin/counselor/list"
+            <div class="menu-item" data-path="/admin/counselorList"
                  onclick="go('/admin/counselorList')">
                 상담사 관리
             </div>
@@ -373,6 +379,17 @@
 
     const cp = "${pageContext.request.contextPath}";
 
+    $(document).ajaxError(function(event, xhr, settings, thrownError) {
+        if (xhr.status === 401) {
+            alert("세션이 만료되어 로그인이 필요합니다.");
+            location.href = "cp/admin/login"; 
+        } else if (xhr.status === 403) {
+            alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
+            location.href = "cp/"; 
+        }
+    });
+    
+
     function logoutAdmin() {
         if(confirm("로그아웃 하시겠습니까?")) {
             location.href = cp + "/admin/logout";
@@ -397,15 +414,7 @@
 
     };
 
-    $(document).ajaxError(function(event, xhr, settings, thrownError) {
-        if (xhr.status === 401) {
-            alert("세션이 만료되어 로그인이 필요합니다.");
-            location.href = "cp/admin/login"; 
-        } else if (xhr.status === 403) {
-            alert("관리자 권한이 없습니다. 정상적인 경로로 이용해주세요.");
-            location.href = "cp/"; 
-        }
-    });
+    
 
 </script>
 </body>

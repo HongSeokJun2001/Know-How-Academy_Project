@@ -421,10 +421,15 @@
                     <span class="info-value">${requestScope.counselor.className}</span>
                 </div>
 
-                <div class="info-row">
+				<div class="info-row">
+                    <span class="info-label">담당 직무</span>
+                    <span class="info-value">${requestScope.counselor.categoryName} 상담사</span>
+                </div>
+
+                <!-- <div class="info-row">
                     <span class="info-label">상태</span>
                     <span class="status-badge ${statusClass}">${statusText}</span>
-                </div>
+                </div> -->
 
                 <div class="info-row">
                     <span class="info-label">담당 학생수</span>

@@ -34,11 +34,13 @@
 	 <!--  로그인용 쿼리문 -->
 	 <select id="loginMember" parameterType="string" 
 								  resultMap="memberResultSet">
+
 			<!-- 암호화 작업 후 : 아이디로만 조회 -->
 			SELECT *
 		      FROM MEMBER 
 		     WHERE USER_ID = #{userId}
 		       AND STATUS = 'ACTIVE'   
+
 	 </select>
 	 
 	 <!-- 회원가입용 쿼리문 -->
@@ -62,11 +64,11 @@
 	<!-- 회원 정보 변경용 쿼리문 -->
 	<update id="updateMember" parameterType="member">
 		UPDATE MEMBER
-		   SET USER_NAME = #{userName}
-		     , USER_PWD = #{userPwd}
-		     , PHONE = #{phone}
-		     , EMAIL = #{email}
-		     , ADDRESS = #{address}
+		   SET USER_PWD = NVL(#{userPwd}, USER_PWD)
+		     , USER_NAME = NVL(#{userName}, USER_NAME)
+		     , PHONE = NVL(#{phone}, PHONE)
+		     , EMAIL = NVL(#{email}, EMAIL)
+		     , ADDRESS = NVL(#{address}, ADDRESS)
 		     , UPDATED_AT = SYSDATE
 		 WHERE USER_ID = #{userId}
 		   AND STATUS = 'ACTIVE'
