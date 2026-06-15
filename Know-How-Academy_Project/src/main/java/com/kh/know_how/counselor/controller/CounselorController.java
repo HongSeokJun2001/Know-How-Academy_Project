@@ -54,7 +54,7 @@ public class CounselorController {
     public String myStudentClassList(HttpSession session, HttpServletResponse response, Model model, Member m) {
     	
     	ArrayList<Class> classList = counselorService.selectClassDetailList(m);
-    	System.out.println("리스트 : " + classList);
+    	
         if(classList != null) {
     	model.addAttribute("classList", classList);
     	return ("counselor/myStudentClassListForm");
