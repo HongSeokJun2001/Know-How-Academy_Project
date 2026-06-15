@@ -16,6 +16,7 @@
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
            max-width: 1000px;
+           max-height : 95%;
            margin: auto;
 	    }
 	

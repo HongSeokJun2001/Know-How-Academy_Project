@@ -178,6 +178,11 @@
 					        <td><button type="submit" class="btn-loginPage">로그인</button></td>
 					        <th></th>
 					      </tr>
+					      <tr>
+							 <th></th>
+							 <th></th>
+							 <th></th>
+						  </tr>
 					      <tr>   
 					        <th></th>
 					        <th>
