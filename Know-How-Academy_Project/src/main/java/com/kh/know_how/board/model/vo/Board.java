@@ -1,6 +1,9 @@
 package com.kh.know_how.board.model.vo;
 
 import java.sql.Date;
+
+import com.kh.know_how.counselor.model.vo.CounselCategory;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +33,6 @@ public class Board {
     private String userName; //USER_NAME 
     
     private FileAttachment fileAttachment;
+    private CounselCategory counselCategory;
 
 }

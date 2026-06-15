@@ -77,7 +77,7 @@
                     <input type="hidden" name="postType" value="POST">
 
                     <div class="btn-area">
-                        <a id="listBtn" href="/know-how/community/board/post"
+                        <a id="listBtn" href="/know-how/community/board/student"
                             class="btn btn-outline-secondary btn-hover">목록</a>
                         <button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
                     </div>
@@ -86,7 +86,16 @@
                         <tr>
                             <th>제목</th>
                             <td colspan="3"><input type="text" name="title" value="${b.title}" required></td>
+                            <!--<th>카테고리</th>추후 기능추가
+							<td colspan="1">
+								<select name="condition2" class="form-control mr-sm-2">
+								<option value="admission">입학상담</option>
+								<option value="employment">취업상담
+								</option>
+							</select>
+							</td>-->
                         </tr>
+                        	
                         <tr>
                             <th>내용</th>
                             <td colspan="3"><textarea name="content" required>${b.content}</textarea>

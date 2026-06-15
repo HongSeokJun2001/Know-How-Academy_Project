@@ -122,7 +122,7 @@
 					</c:if>
 				</div>
 
-				<c:if test="${not empty loginUser}">
+				<c:if test="${not empty loginUser }">
 					<div class="write-btn-area" align="right">
 						<a href="/know-how/community/board/${type}/enrollForm" type="button"
 							class="btn btn-outline-secondary btn-hover">글쓰기</a>
@@ -133,7 +133,8 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th>글번호</th>
+							<th>글번호</th>	
+							<!--<th>카테고리</th>추후 기능추가-->											
 							<th>제목</th>
 							<th>작성자</th>
 							<th>조회수</th>
@@ -152,6 +153,7 @@
 								<c:forEach var="b" items="${list}">
 									<tr class="post-row">
 										<td>${b.postNo}</td>
+										<!--<td>${b.category}</td>추후 기능추가-->										
 										<td>${b.title}</td>
 										<td>${b.userName}</td>
 										<td>${b.viewCount}</td>

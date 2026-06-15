@@ -125,7 +125,7 @@
                 .fileName {
                     font-weight: bold;
                     color: blueviolet;
-                    padding-bottom: 560px;
+                    
                 }
 
                 hr {
@@ -177,7 +177,10 @@
                     <tr>
                         <th>제목</th>
                         <td colspan="3">${b.title}</td>
+                       <!--<th>카테고리</th>
+                        <td colspan="3">${b.category}</td>추후 기능추가-->
                     </tr>
+
                     <tr>
                         <th>작성자</th>
                         <td>${b.userName}</td>

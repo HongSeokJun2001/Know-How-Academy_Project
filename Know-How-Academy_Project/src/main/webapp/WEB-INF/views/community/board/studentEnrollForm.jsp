@@ -15,19 +15,20 @@
 				table {
 					width: 940px !important;
 					margin: 10px auto;
-					border-collapse: collapse;			
-			
+					border-collapse: collapse;
+
 				}
 
 				/* 헤더(th) 및 데이터(td) 공통 설정 */
 				table th,
 				table td {
 					padding: 5px 10px;
-					height: 40px; /* 높이를 통일하여 정렬 문제 해결 */
+					height: 40px;
+					/* 높이를 통일하여 정렬 문제 해결 */
 					vertical-align: middle;
 					box-sizing: border-box;
 				}
-				
+
 				table th {
 					width: 100px;
 					font-weight: 450;
@@ -80,37 +81,47 @@
 			<div class="outer">
 				<h2 align="center">수강생 게시판</h2>
 
-				<form id="enrollForm" action="/know-how/community/board/${type}/insert" 
-						method="post" enctype="multipart/form-data">
+				<form id="enrollForm" action="/know-how/community/board/${type}/insert" method="post"
+					enctype="multipart/form-data">
 
-					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">					
+					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">
 					<input type="hidden" name="postType" value="${type}"">
 				
-					<div class="btn-area">
-						<a id="listBtn" href="/know-how/community/board/post" class="btn btn-outline-secondary btn-hover">목록</a>
-						<button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
-					</div>
+					<div class=" btn-area">
+					<a id="listBtn" href="/know-how/community/board/student"
+						class="btn btn-outline-secondary btn-hover">목록</a>
+					<button type="submit" class="btn btn-outline-secondary btn-hover">등록</button>
+			</div>
 
-					<!--카테고리/ 제목/ 내용/ 첨부파일-->
-					<table class="table">
-						<tr>
-							<th>제목</th>
-							<td colspan="3"><input type="text" id="title" name="title" required></td>
-						</tr>
-						<tr>
-							<th>내용</th>
-							<td colspan="3"><textarea id="boardContent" name="content" required></textarea>
-							</td>
-						</tr>
-						<tr>
-							<th>첨부파일</th>
-							<td><input type="file" name="originalFile" class="btn btn-outline-secondary btn-hover"
-									style="border: none !important;"></td>
-						</tr>
-					</table>
-					<br>
-					<br>
-				</form>
+			<!--카테고리/ 제목/ 내용/ 첨부파일-->
+			<table class="table">
+				<tr>
+					<th>제목</th>
+					<td colspan="3"><input type="text" id="title" name="title" required></td>
+					<!--<th>카테고리</th> 추후 기능추가
+					<td colspan="3">
+						<select name="condition2" class="form-control mr-sm-2">
+							<option value="admission">입학상담</option>
+							<option value="employment">취업상담
+							</option>
+						</select>
+					</td>-->
+				</tr>
+
+				<tr>
+					<th>내용</th>
+					<td colspan="3"><textarea id="boardContent" name="content" required></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>첨부파일</th>
+					<td><input type="file" name="originalFile" class="btn btn-outline-secondary btn-hover"
+							style="border: none !important;"></td>
+				</tr>
+			</table>
+			<br>
+			<br>
+			</form>
 			</div>
 		</body>
 
