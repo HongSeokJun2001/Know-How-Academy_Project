@@ -395,6 +395,9 @@
             cursor: wait;
             opacity: 0.65;
         }
+        .invite-history-table tbody tr:hover {
+            background-color: #fafaff;
+        }
 
     </style>
     <!-- 상담사 등록 콘텐츠 시작 -->
