@@ -101,7 +101,7 @@
      <h3 align="center" class="selectPage-title">내정보 조회</h3>
      <br>
     <%-- 상담예약 페이지로 요청을 보냄--%>
-    <div id="counselorInformationSelect-form">
+    <form id="counselorInformationSelect-form" action="/know-how/myPageCounselor/myStudentClassListForm" method="post">
                                               
       <table class="selectPage-table" >
         <thead>
@@ -160,7 +160,7 @@
               <label>${ sessionScope.loginUser.email }</label>
            </td>
            <th colspan="5">
-               <button type="button" onclick="myStudentClassListPage();" class="btn-selectPageCheck">우리반학생목록</button>
+               <button type="submit" class="btn-selectPageCheck">우리반학생목록</button>
            </th>
            <td></td>
         </tr>
@@ -179,21 +179,13 @@
              <label>${ sessionScope.loginUser.address }</label>
            </td>
            <th></th>
-           <td></td>
+           <td><input type="hidden" name="classNo" value="${ sessionScope.loginUser.classNo }"></td>
            <td></td>
         </tr>
         </tbody>
       </table>
-     </div>
+     </form>
     </div>
     
-    <script>
-		function myStudentClassListPage() {
-			
-		    // 상담예약 페이지로 이동
-		    location.href = "/know-how/myPageCounselor/myStudentClassListForm";
-		    // GET 방식
-		}
-	</script>
 </body>
 </html>

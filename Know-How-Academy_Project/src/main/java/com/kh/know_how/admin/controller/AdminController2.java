@@ -269,7 +269,6 @@ public class AdminController2 {
     	}
     	
     	n.setPostType("NOTICE");
-    	n.setCategory("NOTICE");
     	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
     	n.setContent(XssDefencePolicy.defence(n.getContent()));
     	
@@ -294,7 +293,7 @@ public class AdminController2 {
     
     @GetMapping("/notice/detail/{postNo}")
     public String selectNoticeDetail(@PathVariable int postNo, Model model) { // 공지사항의 상세정보를 불러오는 메소드
-    	Board n = bs.selectBoard(postNo);
+    	Board n = as2.adminSelectBoard(postNo);
     	
     	FileAttachment fa = bs.selectFileAttachment(postNo);
     	model.addAttribute("n", n)
@@ -306,7 +305,7 @@ public class AdminController2 {
     @PostMapping("/notice/updateForm")
     public String noticeUpdateForm(int postNo, Model model) { // 공지사항 수정 페이지를 호출하는 메소드
     	
-    	Board n = bs.selectBoard(postNo);
+    	Board n = as2.adminSelectBoard(postNo);
     	FileAttachment fa = bs.selectFileAttachment(postNo);
     	
     	model.addAttribute("n", n)
@@ -335,7 +334,9 @@ public class AdminController2 {
     		fa.setTargetType("NOTICE");
     		fa.setOriginName(reUpfile.getOriginalFilename());
     		fa.setSaveName(saveName);
-    		
+    		fa.setTargetNo(n.getPostNo());
+			fa.setFilePath("/resources/upload/notice/");
+			
     		if(originalFileNo != 0 ) {
     			
     			fa.setFileNo(originalFileNo);
@@ -344,19 +345,15 @@ public class AdminController2 {
     									 .getRealPath("/resources/upload/notice/");
     			new File(savePath + originalFileSaveName).delete();
     			
-    		} else {
-    			
-    			fa.setTargetNo(n.getPostNo());
-    			fa.setFilePath("/resources/upload/notice/");
-    			
     		}
     		
     	}
     	
     	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
     	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	n.setPostType("NOTICE");
     	
-    	return (bs.updateBoard(n, fa) > 0) ? "success" : "fail";
+    	return (as2.updateNotice(n, fa) > 0) ? "success" : "fail";
     	
     }
     
@@ -470,7 +467,6 @@ public class AdminController2 {
     	}
     	
     	n.setPostType("NEWS");
-    	n.setCategory("NEWS");
     	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
     	n.setContent(XssDefencePolicy.defence(n.getContent()));
     	
@@ -481,7 +477,7 @@ public class AdminController2 {
     
     @GetMapping("academyNews/detail/{postNo}")
 	public String selectNewsDetail(@PathVariable int postNo, Model model) { // 학원소식의 상세정보를 불러오는 메소드
-		Board n = bs.selectBoard(postNo);
+		Board n = as2.adminSelectBoard(postNo);
 		
 		ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
 
@@ -495,7 +491,7 @@ public class AdminController2 {
     @PostMapping("/academyNews/updateForm")
     public String NewsUpdateForm(int postNo, Model model) { // 학원소식 수정 페이지를 불러오는 메소드
     	
-    	Board n = bs.selectBoard(postNo);
+    	Board n = as2.adminSelectBoard(postNo);
     	ArrayList<FileAttachment> list = bs.selectFileAttachmentList(postNo);
     	
     	model.addAttribute("n", n)
@@ -514,13 +510,6 @@ public class AdminController2 {
                              @RequestParam(value="deleteSaveName", required=false) String[] deleteSaveName,
     						 HttpSession session,
     						 Model model) { // 학원소식 수정하는 메소드
-    	
-    	if (deleteSaveName != null) {
-            String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
-            for (String saveName : deleteSaveName) {
-            	new File(savePath + saveName).delete();
-            }
-        }
 
     	ArrayList<FileAttachment> list = new ArrayList<>();
     	if (reFiles != null) {
@@ -540,21 +529,12 @@ public class AdminController2 {
         			fa.setFileLevel(i == 0 ? 1 : 2);
         			
         			String originalFileNo = paramMap.get("originalFileNo" + (i + 1));
-        			String originalFileSaveName = paramMap.get("originalFileSaveName" + (i + 1));
         			
 	        		if(originalFileNo != null && !originalFileNo.equals("0") && !originalFileNo.isEmpty()) {
 	        			
 	        			int fileNo = Integer.parseInt(originalFileNo);
 	        			fa.setFileNo(fileNo);
-	        			
-	        			String savePath = session.getServletContext().getRealPath("/resources/upload/news/");
-	        			if(originalFileSaveName != null && !originalFileSaveName.isEmpty()) {
-	        				File deleteFile = new File(savePath + originalFileSaveName);
-	        				if (deleteFile.exists()) {
-	        					deleteFile.delete();
-	        				}
-	        			}
-	        						
+	        							
 	        		}
 	        		
 	        		list.add(fa);
@@ -564,6 +544,7 @@ public class AdminController2 {
     	
     	n.setTitle(XssDefencePolicy.defence(n.getTitle()));
     	n.setContent(XssDefencePolicy.defence(n.getContent()));
+    	n.setPostType("NEWS");
     	
     	int result = as2.updateNews(n, list, deleteFileNo);
     	

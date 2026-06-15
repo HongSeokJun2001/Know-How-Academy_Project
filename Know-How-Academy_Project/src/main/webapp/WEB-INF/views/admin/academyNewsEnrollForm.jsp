@@ -99,7 +99,7 @@
 <body>
 	<form class="section" id="enrollForm" enctype="multipart/form-data">
 	
-		<input type="hidden" name="postWriter" value="1"<%--value="${ sessionScope.loginUser.userNo }"--%>>
+		<input type="hidden" name="writerNo" value="${ sessionScope.loginUser.userNo }">
 		
 		<div class="title-area">
 			<h2>학원소식</h2>

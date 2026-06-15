@@ -89,8 +89,9 @@ public class AdminService2 {
 	@Transactional
 	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
 		
-		return ad2.deleteStudent(sqlSession, userNo);
+		return ad2.deleteMemberLock(sqlSession, userNo)*ad2.deleteStudent(sqlSession, userNo);
 	}
+
 
 	public ArrayList<StudentPendingListDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
@@ -142,9 +143,22 @@ public class AdminService2 {
 	}
 	
 	@Transactional
-	public int adminUpdateBoardStatus(Board b) { // 공지사항, 학원소식의 노출/숨김 처리해주는 메소드
-		
-		return ad2.adminUpdateBoardStatus(sqlSession, b);
+	public int updateNotice(Board b, FileAttachment fa) { // 공지사항을 업데이트하는 메소드
+
+		int result1 = bd.updateBoard(sqlSession, b);
+		int result2 = 1;
+
+		if (fa != null) {
+
+			if (fa.getFileNo() != 0) {
+
+				result2 = ad2.adminDeleteFileAttachment(sqlSession, fa.getFileNo());
+
+			}
+			result2 = bd.insertNewFileAttachment(sqlSession, fa);
+		}
+
+		return result1 * result2;
 	}
 
 	@Transactional
@@ -168,7 +182,7 @@ public class AdminService2 {
 				
 				if(fa.getFileNo() != 0) {
 					
-					fileResult = bd.updateFileAttachment(sqlSession, fa);
+					fileResult = ad2.updateFileAttachment(sqlSession, fa);
 				
 				} else {
 					
@@ -185,7 +199,7 @@ public class AdminService2 {
 	        for (String dfno : deleteFileNo) {
 	            int fileNo = Integer.parseInt(dfno);
 	            
-	            int delResult = ad2.deleteNewsFileAttachment(sqlSession, fileNo); 
+	            int delResult =  bd.deleteFileAttachment(sqlSession, fileNo); 
 	            
 	            if (delResult <= 0) {
 	                return 0;
@@ -195,13 +209,25 @@ public class AdminService2 {
 		
 		return result;
 	}
+	
+	public Board adminSelectBoard(int postNo) { // 관리자 페이지의 공지사항, 학원소식의 상세내용을 표시해주는 메소드
+		
+		return ad2.adminSelectBoard(sqlSession, postNo);
+	}
+	
+	@Transactional
+	public int adminUpdateBoardStatus(Board b) { // 공지사항, 학원소식의 노출/숨김 처리해주는 메소드
+		
+		return ad2.adminUpdateBoardStatus(sqlSession, b);
+	}
 
 	public ArrayList<MemberLock> selectLockingMemberList() { // 계정이 잠긴 유저 리스트를 불러오는 메소드
 		
 		return ad2.selectLockingMemberList(sqlSession);
 	}
 
-	public int updateMemberUnlock(int userNo) {
+	@Transactional
+	public int updateMemberUnlock(int userNo) { // 계정이 잠긴 유저를 잠금해제 해주는 메소드
 		
 		return ad2.updateMemberUnlock(sqlSession, userNo);
 	}

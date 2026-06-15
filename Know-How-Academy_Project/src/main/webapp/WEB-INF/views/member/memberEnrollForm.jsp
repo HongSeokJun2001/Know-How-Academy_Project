@@ -228,6 +228,7 @@
 							$userId.prop("readonly", true);
 							$("#idCheckBtn").attr("disabled", true);
 							$("#emailCheckBtn").removeAttr("disabled");
+							alertify.alert("이메일인증버튼이 활성화되었습니다.");
 						} else {
 							// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
 							
@@ -277,7 +278,7 @@
 							$("#emailCheckBtn").attr("disabled", true);
 							// 회원가입 버튼 활성화
 							$("#enroll-form button[type=submit]").removeAttr("disabled");
-
+							alertify.alert("회원가입버튼이 활성화되었습니다.");
 						} else {
 							// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
 							
