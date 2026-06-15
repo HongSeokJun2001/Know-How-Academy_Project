@@ -121,8 +121,12 @@
                     </script>
                     <c:remove var="alertMsg" scope="session" />
                 </c:if>
-                <script>
+                <script> 
                     alertify.defaults.glossary.title = '시스템';
+                    
+                    let errorMsg = "${ requestScope.errorMsg }";
+                    
+                    alertify.alert(alertMsg)
                 </script>
                 <br>
                 <header>
