@@ -112,7 +112,8 @@
             <%-- - 1회성 alert 기능 - script 태그 내에서는 JSP Action Tag 들이 사용 불가함!! (자바스크립트 영역이기 때문) --%>
                 <c:if test="${ not empty sessionScope.alertMsg }">
                     <script>
-
+                    	alertify.defaults.glossary.title = '시스템';	
+                    
                         let alertMsg = "${ sessionScope.alertMsg }";
 
                         // alert(alertMsg);
