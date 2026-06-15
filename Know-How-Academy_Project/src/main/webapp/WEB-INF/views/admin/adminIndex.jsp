@@ -75,6 +75,7 @@
     .admin-table {
         width: 100%;
         border-collapse: collapse;
+        
     }
 
     .admin-table th {
@@ -334,6 +335,14 @@
         font-weight:700;
     }
 
+    .table-scroll {
+        max-height: 350px;
+        overflow-y: auto;
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: #fafaff;
+    }
 </style>
 
 <div class="admin-main">
@@ -351,42 +360,44 @@
                 </div>
             </div>
 
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>신청일</th>
-                        <th>이름</th>
-                        <th>상담 종류</th>
-                        <th>클래스</th>
-                        <th>상담사</th>
-                    </tr>
-                </thead>
+            <div class="table-scroll">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>신청일</th>
+                            <th>이름</th>
+                            <th>상담 종류</th>
+                            <th>클래스</th>
+                            <th>상담사</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <c:if test="${empty requestScope.waitingList}">
-                        <tr>
-                            <td colspan="5">
-                                <span>조회된 정보가 없습니다.</span>
-                            </td>
-                        </tr>
-                    </c:if>
-                    <c:forEach var="w" items="${requestScope.waitingList}">
-                        <tr>
-                            <td class="${w.elapsedDays gt 3 ? 'text-danger' : ''}">
-                                ${w.createdAt}
-                            </td>
-                            <td>${w.studentName}</td>
-                            <td>
-                                <span class="type-badge category-${w.categoryNo}">
-                                    ${w.categoryName}상담
-                                </span>
-                            </td>
-                            <td>${w.className}</td>
-                            <td>${w.counselorName}</td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
+                    <tbody>
+                        <c:if test="${empty requestScope.waitingList}">
+                            <tr>
+                                <td colspan="5">
+                                    <span>조회된 정보가 없습니다.</span>
+                                </td>
+                            </tr>
+                        </c:if>
+                        <c:forEach var="w" items="${requestScope.waitingList}">
+                            <tr>
+                                <td class="${w.elapsedDays gt 3 ? 'text-danger' : ''}">
+                                    ${w.createdAt}
+                                </td>
+                                <td>${w.studentName}</td>
+                                <td>
+                                    <span class="type-badge category-${w.categoryNo}">
+                                        ${w.categoryName}상담
+                                    </span>
+                                </td>
+                                <td>${w.className}</td>
+                                <td>${w.counselorName}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
 
@@ -400,38 +411,40 @@
                 </div>
             </div>
 
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>시간</th>
-                        <th>상담 종류</th>
-                        <th>이름</th>
-                        <th>상담사</th>
-                    </tr>
-                </thead>
+            <div class="table-scroll">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>시간</th>
+                            <th>상담 종류</th>
+                            <th>이름</th>
+                            <th>상담사</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <c:if test="${empty requestScope.reservationList}">
-                        <tr>
-                            <td colspan="4">
-                                <span>조회된 정보가 없습니다.</span>
-                            </td>
-                        </tr>
-                    </c:if>
-                    <c:forEach var="t" items="${requestScope.reservationList}">
-                        <tr>
-                            <td>${t.reservationTime}</td>
-                            <td>
-                                <span class="type-badge category-${t.categoryNo}">
-                                    ${t.categoryName}상담
-                                </span>
-                            </td>
-                            <td>${t.studentName}</td>
-                            <td>${t.counselorName}</td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
+                    <tbody>
+                        <c:if test="${empty requestScope.reservationList}">
+                            <tr>
+                                <td colspan="4">
+                                    <span>조회된 정보가 없습니다.</span>
+                                </td>
+                            </tr>
+                        </c:if>
+                        <c:forEach var="t" items="${requestScope.reservationList}">
+                            <tr>
+                                <td>${t.reservationTime}</td>
+                                <td>
+                                    <span class="type-badge category-${t.categoryNo}">
+                                        ${t.categoryName}상담
+                                    </span>
+                                </td>
+                                <td>${t.studentName}</td>
+                                <td>${t.counselorName}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </section>
