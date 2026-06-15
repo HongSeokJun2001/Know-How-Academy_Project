@@ -151,7 +151,7 @@
 	    INSERT INTO MEMBER_LOCK(USER_NO
 		                      , LOCKED_AT
 		                      , LAST_FAIL_AT)
-		                 VALUES(SEQ_USER_NO.CURRVAL
+		                 VALUES(#{userNo}
 		                      , NULL
 		                      , NULL)
 	</insert>

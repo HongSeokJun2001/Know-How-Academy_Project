@@ -26,7 +26,7 @@ public class MemberService {
 	@Transactional
 	public int insertMember(Member m) {
 		
-		return memberDao.insertMember(sqlSession, m) * memberDao.insertMemberLock(sqlSession);
+		return memberDao.insertMember(sqlSession, m) * memberDao.insertMemberLock(sqlSession, m.getUserNo());
 	}
 	
 	@Transactional
@@ -88,6 +88,12 @@ public class MemberService {
 	public int resetFailCount(MemberLock ml) {
 		
 		return memberDao.resetFailCount(sqlSession, ml);
+	}
+
+	@Transactional
+	public int insertMemberLock(int userNo) {
+		
+		return memberDao.insertMemberLock(sqlSession, userNo);
 	}
     
    
