@@ -319,6 +319,10 @@
             background-color: #f1f3f5;
             color: #6c757d;
         }
+        .invite-status.inactive {
+            background-color: #f1f3f5;
+            color: #6c757d;
+        }
 
         /* 만료 */
         .invite-status.expired {

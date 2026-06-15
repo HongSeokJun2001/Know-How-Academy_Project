@@ -203,6 +203,7 @@
 		                   </if>
 		                 ORDER BY CASE WHEN CI.USER_NO IS NULL THEN 0 ELSE 1 END
 		                        , CASE WHEN CP.CATEGORY_NO = 3 AND CL.CLASS_NAME IS NULL THEN 0 ELSE 1 END
+		                        , CASE WHEN CP.CATEGORY_NO IS NULL THEN 0 ELSE 1 END
 		                        , CM.USER_NAME
 		                 )P
 		        )
@@ -244,15 +245,16 @@
  	 <!-- 12. 상담사 기본프로필을 조회하는 쿼리 -->
 	 <select id="selectCounselorProfile" parameterType="_int"
 	 		 resultType="com.kh.know_how.admin.model.dto.CounselorProfileDTO">
-		 SELECT M.USER_NO           		AS userNo
-		      , M.USER_ID           		AS userId
-		      , CP.PROFILE_IMG_PATH			AS imgPath
-		      , M.STATUS            		AS status
-		      , NVL(CL.CLASS_NAME, '미지정')	AS className
-		      , M.USER_NAME           		AS userName
-		      , M.PHONE               		AS phone
-		      , M.EMAIL               		AS email
-		      , CC.CATEGORY_NAME     		AS categoryName
+		 SELECT M.USER_NO           			AS userNo
+		      , M.USER_ID           			AS userId
+		      , NVL(CP.PROFILE_IMG_PATH, 
+		            '/resources/image/counselorProfile/default_profile.png')	AS imgPath
+		      , M.STATUS            			AS status
+		      , NVL(CL.CLASS_NAME, '미지정')		AS className
+		      , M.USER_NAME           			AS userName
+		      , M.PHONE               			AS phone
+		      , M.EMAIL               			AS email
+		      , CC.CATEGORY_NAME     			AS categoryName
 		      , (
 		            SELECT COUNT(*)
 		              FROM MEMBER SM
@@ -393,7 +395,7 @@
 	 <!-- 24. 상담사 회원가입용 쿼리(CounselorProfilImg) -->
 	 <insert id="insertCounselorProfileImg" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfilImg">
 	 	INSERT INTO COUNSELOR_PROFIL_IMG(PROFILE_NO, USER_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH)
-	 				   VALUES(SEQ_PROFILE_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
+	 				   VALUES(SEQ_PROFILE_IMG_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
 	 </insert>
 	 
 	 <!-- 25. 상담사 카테고리번호 변경 -->

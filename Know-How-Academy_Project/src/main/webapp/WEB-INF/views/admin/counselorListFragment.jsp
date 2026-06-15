@@ -6,7 +6,7 @@
  
     tr th:first-child, 
     tr td:first-child {
-    padding-left: 24px; /* 원하는 여백 크기에 맞춰 숫자를 조절해 줘! */
+    padding-left: 24px; 
     }
 
     .counselor-table th:nth-child(5) { text-align: center; }
