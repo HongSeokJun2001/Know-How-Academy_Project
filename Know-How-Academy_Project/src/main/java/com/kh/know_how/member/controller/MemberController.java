@@ -94,7 +94,7 @@ public class MemberController {
 			if(loginUser == null) {
 				model.addAttribute("errorMsg", "아이디가 존재하지 않습니다.");
 					
-				return "common/errorPage";
+				return "redirect:/";
 			}
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
@@ -117,7 +117,7 @@ public class MemberController {
 				// [결과 확인용 로그]
 				System.out.println("계정락 케이스");
 				
-				return "common/errorPage";
+				return "redirect:/";
 				
 			} else if((loginUser != null) &&
 					   (bCryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd()))){
@@ -178,6 +178,9 @@ public class MemberController {
 						model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
 						return "common/errorPage";
 					}
+					model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
+					
+					return "redirect:/";
 				}
 				int failCount = loginUserLock.getFailCount();
 				
@@ -196,13 +199,13 @@ public class MemberController {
 						return "redirect:/myPage";
 					} else {
 						
-						return "common/errorPage";
+						return "redirect:/";
 					}
 					
 				} else {
 					model.addAttribute("errorMsg", "로그인 실패 횟수가 기록되지 않습니다. 관리자에게 문의해주세요.");
 					
-					return "common/errorPage";
+					return "redirect:/";
 				}
 			} 
 
@@ -316,7 +319,7 @@ public class MemberController {
 				// 에러 문구를 담아서 에러페이지로 포워딩
 				model.addAttribute("errorMsg", "회원가입에 실패했습니다.");
 				
-				return "common/errorPage";
+				return "redirect:/";
 			}
 	}
 	
@@ -362,14 +365,14 @@ public class MemberController {
 			
 			session.setAttribute("alertMsg","회원정보가 변경되었습니다.");
 			
-			return "redirect:/member/myInformationChangeForm";
+			return "redirect:/myPage/myInformationChangeForm";
 		
 		} else {
 			// 회원 정보 변경 실패했을 경우
 			
 			session.setAttribute("errorMsg","회원정보 변경에 실패했습니다.");
 			
-			return "common/errorPage";
+			return "redirect:/";
 		}
 		
 		
@@ -400,7 +403,7 @@ public class MemberController {
 			// 1회성 알림 문구로 잘못입력했다고 알려주기
 			session.setAttribute("alertMsg", "잘못된 비밀번호입니다. 다시 입력해주세요.");
 			
-			return "redirect:/member/checkPasswordForm";
+			return "redirect:/myPage/checkPasswordForm";
 		}
 		
 	}
@@ -430,7 +433,7 @@ public class MemberController {
 					// 에러문구를 담아서 에러페이지로 포워딩
 					model.addAttribute("errorMsg", "회원 탈퇴에 실패했습니다.");
 					
-					return "common/errorPage";
+					return "redirect:/";
 				}
 		
 	}
@@ -464,14 +467,14 @@ public class MemberController {
 			// 이름,이메일이 일치하지않을 경우
 			
 			session.setAttribute("alertMsg", "이름,이메일이 일치하지 않습니다.");
-			return "common/errorPage";
+			return "redirect:/";
 		}
 		
 	}
 	
+	@ResponseBody
 	@PostMapping("searchPassword")
-	public String searchPassword(Member m, String userId, String userName, 
-			                     String email, HttpSession session) {
+	public String searchPassword(Member m, String userId, String userName, String email, HttpSession session) {
 		// XSS 공격 방지
 		String replaceUserId 
 			= XssDefencePolicy.defence(m.getUserId());
@@ -492,19 +495,40 @@ public class MemberController {
 		if(passwordSearch != null) {
 			// 이름,이메일이 일치할 경우
 			
-			session.setAttribute("alertMsg", "요청하신 회원님의 비밀번호는 "
-		                         + passwordSearch.getUserPwd()
-		                         + " 입니다.");
-			return "redirect:/myPage/searchPasswordForm";
-			
+            if(!"ADMIN".equals(passwordSearch.getRoleCode())) {
+    			
+    			int random = (int)(Math.random() * 90000000 + 10000000);
+    			
+    			String encPwd = bCryptPasswordEncoder.encode(String.valueOf(random));
+    			passwordSearch.setUserPwd(encPwd);
+    			
+    			int result = memberService.updateMember(passwordSearch);
+    			
+    			if(result > 0) {
+    				SimpleMailMessage message = new SimpleMailMessage();
+        			
+        			// 메세지 정보 담기 : 제목, 내용, 받는사람
+        			message.setSubject("know-how academy 임시 비밀번호입니다.");
+        			message.setText("임시 비밀번호 : " + random + "\n임시 비밀번호로 로그인 후 비밀번호 변경을 권장드립니다.");
+        			message.setTo(m.getEmail());
+        			
+        			System.out.println(random + ", " + encPwd);
+        			
+        			mailSender.send(message);
+        			
+        			return m.getUserName() + "님의 이메일에 임시 비밀번호를 보냈습니다.\n로그인 후 비밀번호 변경을 권장드립니다.";
+    			} else {
+    				return "임시 비밀번호를 보내지 못했습니다.";
+    			}
 		} else {
 			// 이름,이메일이 일치하지않을 경우
 			
 			session.setAttribute("alertMsg", "아이디,이름,이메일이 일치하지 않습니다.");
-			return "common/errorPage";
+			return "redirect:/myPage";
 		}
 	}
-	
+		return "redirect:/myPage";
+	}
 	//-------------------------------------------------------
 	@ResponseBody
 	@GetMapping("memberEnrollForm/idCheck")
