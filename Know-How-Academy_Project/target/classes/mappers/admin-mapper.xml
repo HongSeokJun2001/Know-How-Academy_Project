@@ -91,8 +91,8 @@
 		 WHERE C.RESERVATION_STATUS = 'RESERVED'
 		   AND SD.STUDENT_STATUS = 'ATTENDING'
 		   AND CP.STATUS = 'ACTIVE'	
-		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
-		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
+		   AND C.CONSULT_DATE &gt;= TRUNC(SYSDATE)
+		   AND C.CONSULT_DATE &lt; TRUNC(SYSDATE) + 1
  	</select>
  	
  	<!-- 6. 관리자 대시보드 쿼리, 합계 101% 막기(-)  -->
@@ -136,16 +136,15 @@
 	 							  resultType="_int">
 		 SELECT COUNT(*)
 	       FROM COUNSELOR_INVITE				CI 
-	       LEFT JOIN MEMBER 			    	CM  ON 	CM.USER_NO = CI.USER_NO
-	     WHERE CM.ROLE_CODE = 'COUNSELOR'
+	       LEFT JOIN MEMBER 			    	CM  ON 	(CM.USER_NO = CI.USER_NO AND CM.ROLE_CODE = 'COUNSELOR')
 	      <choose>
 	      	<when test="status == 'ACTIVE'">
-	       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
-			OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
+	      WHERE ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+			 OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 	       	</when>
 	       	<when test="status == 'INACTIVE'">
-	       AND CI.INVITE_STATUS = 'USED'
-	       AND CM.STATUS = 'INACTIVE' 
+	      WHERE CI.INVITE_STATUS = 'USED'
+	        AND CM.STATUS = 'INACTIVE' 
 	       	</when>
 	       </choose>
 			<if test="keyword != null and keyword != ''">
