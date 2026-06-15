@@ -149,6 +149,11 @@ public class MemberController {
 						session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
 						
 						return "redirect:/myPageCounselor";
+					} else if("INSTRUCTOR".equals(roleCode)) {
+						// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+						session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+						
+						return "redirect:/myPageCounselor";
 					} else {
 						// > 관리자 계정일때
 						session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
@@ -166,9 +171,13 @@ public class MemberController {
 			} else {
 				// 비밀번호 오류가 몇번 있는 회원
 				if(loginUserLock == null) {
-					model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
-					
-					return "common/errorPage";
+					int num = memberService.insertMemberLock(loginUser.getUserNo());
+					if(num > 0) {
+						loginUserLock = memberService.loginLockMember(loginUser.getUserNo());
+					} else {
+						model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
+						return "common/errorPage";
+					}
 				}
 				int failCount = loginUserLock.getFailCount();
 				

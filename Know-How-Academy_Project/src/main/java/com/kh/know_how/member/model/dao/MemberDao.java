@@ -19,9 +19,9 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.insertMember", m);
 	}
 	
-	public int insertMemberLock(SqlSessionTemplate sqlSession) {
+	public int insertMemberLock(SqlSessionTemplate sqlSession, int userNo) {
 		
-		return sqlSession.update("memberMapper.insertMemberLock");
+		return sqlSession.update("memberMapper.insertMemberLock", userNo);
 	}
 	
     public int updateMember(SqlSessionTemplate sqlSession, Member m) {
