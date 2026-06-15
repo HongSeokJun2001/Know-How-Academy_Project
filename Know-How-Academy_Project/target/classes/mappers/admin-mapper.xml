@@ -295,7 +295,6 @@
 		 	</when>
 		 	<when test="status == 'ACTIVE'">
 		    SET STATUS = 'ON_LEAVE'
-		      , CLASS_NO = NULL
 		    </when>
 		 </choose>
 		  WHERE USER_NO = #{userNo}

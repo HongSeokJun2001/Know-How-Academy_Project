@@ -159,20 +159,21 @@ public class AdminController {
     @PostMapping("/counselor/updateStatus")
     public String updateCounselorStatus(int userNo, String status, Model model) {
     		
-    	System.out.println(">>> [updateCounselorStatus] " +userNo+status );
-		int result = as.updateCounselorStatus(userNo, status);
-		
-		if(result > 0) {
-			System.out.println(result);
-			return "redirect:/admin/counselorProfile/" + userNo;
-		}else {
-			System.out.println(result);
+    	
+    	try {
+    		
+    		as.updateCounselorStatus(userNo, status);
+    		return "redirect:/admin/counselorProfile/" + userNo;
+    		
+		} catch (IllegalStateException e) {
+			System.out.println(">>> [IllegalStateException] " + e.getMessage() );
 			model.addAttribute("errorMsg", "변경 실패. 다시 시도해주세요.");
 			model.addAttribute("redirectUrl", "/admin/counselorProfile/"+userNo);
 			model.addAttribute("page", "adminAlert");
 
 			return "admin/adminLayout";
 		}
+		
     }
     
     
