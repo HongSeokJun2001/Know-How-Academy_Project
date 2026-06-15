@@ -85,6 +85,11 @@ public class AdminDao {
 		return sqlSession.selectOne("adminMapper.selectCounselorProfile",userNo);
 	}
 
+	public int updateMemberStatus(SqlSessionTemplate sqlSession, Map<String, Object> param) {
+		
+		return sqlSession.update("adminMapper.updateMemberStatus",param);
+	}
+
 	public int updateCounselorStatus(SqlSessionTemplate sqlSession, Map<String, Object> param) {
 		
 		return sqlSession.update("adminMapper.updateCounselorStatus",param);
@@ -154,6 +159,8 @@ public class AdminDao {
 		
 		return sqlSession.selectOne("adminMapper.selectUserClassNo", userNo);
 	}
+
+	
 
 
 

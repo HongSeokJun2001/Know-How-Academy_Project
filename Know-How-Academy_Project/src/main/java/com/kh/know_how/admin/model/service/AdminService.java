@@ -177,7 +177,8 @@ public class AdminService {
 		param.put("userNo", userNo);
 		param.put("status", status);
 		
-		int changeStatus = ad.updateCounselorStatus(sqlSession, param);
+		int changeStatus = ad.updateMemberStatus(sqlSession, param)
+						 * ad.updateCounselorStatus(sqlSession, param);
 		
 		//상담사의 변경 전 class에 지정된 학생의 상담사번호를 NULL로 UPDATE
 		if("ACTIVE".equals(status)) {
