@@ -323,8 +323,8 @@
 				}
 				
 				
-		        $('input[name="originalFileNo' + num + '"]').attr("name", "deleteFileNo");
-		        $('input[name="originalFileSaveName' + num + '"]').attr("name", "deleteSaveName");
+	        $('input[name="originalFileNo' + num + '"]').attr("name", "deleteFileNo");
+	        $('input[name="originalFileSaveName' + num + '"]').attr("name", "deleteSaveName");
 		         
 			}
 			

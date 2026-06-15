@@ -16,12 +16,12 @@
 	
 	<!-- 2. 학생 리스트를 출력하는 쿼리 -->
 	<select id="selectStudentList" parameterType="hashmap" 
-			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+			resultType="com.kh.know_how.admin.model.dto.StudentListDto">
 		SELECT SM.USER_NAME AS studentName
 		     , NVL2(SM.PHONE, SUBSTR(SM.PHONE, 1, 3) || '-' || SUBSTR(SM.PHONE, 4, 4) || '-' || SUBSTR(SM.PHONE, 8, 4), '미등록') AS phone
 		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
-		     , S.STUDENT_STATUS AS status
+		     , S.STUDENT_STATUS AS studentStatus
 		     , S.STUDENT_NO AS studentNo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
@@ -34,7 +34,8 @@
 	</select>
 	
 	<!-- 3. 검색 결과의 갯수를 세오는 쿼리 -->
-	<select id="searchStudentCount" parameterType="hashmap" resultType="_int">
+	<select id="searchStudentCount" parameterType="com.kh.know_how.admin.model.dto.StudentSearchRequestDto"
+			resultType="_int">
 		SELECT COUNT(*)
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER M USING(USER_NO)
@@ -42,25 +43,25 @@
 		    OR M.PHONE LIKE '%' || #{keyword} || '%')
 		   AND M.ROLE_CODE = 'STUDENT'
 		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
-		    <if test="status == 'ACTIVE'">
+		    <if test="studentStatus == 'ACTIVE'">
 		    	AND S.STUDENT_STATUS = 'ATTENDING'
 		    </if> 
-		    <if test="status == 'REST'">
+		    <if test="studentStatus == 'REST'">
 		    	AND S.STUDENT_STATUS = 'ABSENT'
 		    </if>
-		    <if test="status == ''">
+		    <if test="studentStatus == ''">
 		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		    </if>
 	</select>
 	
 	<!-- 4. 검색 결과의 학생 리스트를 출력하는 쿼리  -->
-	<select id="searchStudentList" parameterType="hashmap" 
-			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+	<select id="searchStudentList" parameterType="com.kh.know_how.admin.model.dto.StudentSearchRequestDto" 
+			resultType="com.kh.know_how.admin.model.dto.StudentSearchListDto">
 		SELECT SM.USER_NAME AS studentName
 		     , NVL2(SM.PHONE, SUBSTR(SM.PHONE, 1, 3) || '-' || SUBSTR(SM.PHONE, 4, 4) || '-' || SUBSTR(SM.PHONE, 8, 4), '미등록') AS phone
 		     , NVL(CM.USER_NAME, '미배정') AS counselorName
 		     , S.CREATED_AT AS createdAt
-		     , S.STUDENT_STATUS AS status
+		     , S.STUDENT_STATUS AS studentStatus
 		     , S.STUDENT_NO AS studentNo
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (SM.USER_NO = S.USER_NO)
@@ -70,13 +71,13 @@
 		    OR SM.PHONE LIKE '%' || #{keyword} || '%')
 		   AND SM.ROLE_CODE = 'STUDENT'
 		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
-		    <if test="status == 'ACTIVE'">
+		    <if test="studentStatus == 'ACTIVE'">
 		    	AND S.STUDENT_STATUS = 'ATTENDING'
 		    </if> 
-		    <if test="status == 'REST'">
+		    <if test="studentStatus == 'REST'">
 		    	AND S.STUDENT_STATUS = 'ABSENT'
 		    </if>
-		    <if test="status == ''">
+		    <if test="studentStatus == ''">
 		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		    </if>
 		  ORDER BY STUDENT_NO DESC
@@ -84,7 +85,7 @@
 	
 	<!-- 5. 학생 상세정보 조회하는 쿼리문 -->
 	<select id="selectStudent" parameterType="_int" 
-			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+			resultType="com.kh.know_how.admin.model.dto.StudentDetailDto">
 		SELECT S.STUDENT_NO AS studentNo 
 			 , SM.USER_NO AS userNo
 			 , SM.USER_NAME AS studentName
@@ -93,7 +94,7 @@
 			 , SM.CREATED_AT AS createdAt
 			 , CLASS_NAME AS className
 			 , NVL(CM.USER_NAME, '미배정') AS counselorName
-			 , S.STUDENT_STATUS AS status
+			 , S.STUDENT_STATUS AS studentStatus
 			 , S.UPDATED_AT AS updatedAt
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER SM ON (S.USER_NO = SM.USER_NO)
@@ -104,7 +105,7 @@
 	</select>
 	
 	<!-- 6. 메모를 추가하는 쿼리문 -->
-	<insert id="insertStudentMemo" parameterType="com.kh.know_how.admin.model.dto.MemoDto">
+	<insert id="insertStudentMemo" parameterType="com.kh.know_how.admin.model.dto.MemoInsertDto">
 		INSERT INTO MEMBER_MEMO(MEMO_NO
 							  , USER_NO
 							  , USER_MEMO)
@@ -115,7 +116,7 @@
 	
 	<!-- 7. 메모 리스트를 조회하는 쿼리문 -->
 	<select id="selectStudentMemoList" parameterType="_int" 
-			resultType="com.kh.know_how.admin.model.dto.MemoDto">
+			resultType="com.kh.know_how.admin.model.dto.MemoListDto">
 		SELECT USER_MEMO AS userMemo
 		     , MEMO_NO AS memoNo
 		  FROM MEMBER_MEMO
@@ -130,16 +131,16 @@
 	</insert>
 	
 	<!-- 9. 휴학 처리/휴학 취소해주는 쿼리문 -->
-	<update id="updateStudentStatus" parameterType="com.kh.know_how.admin.model.dto.StudentDto">
+	<update id="updateStudentStatus" parameterType="com.kh.know_how.admin.model.dto.StudentStatusDto">
 		UPDATE STUDENT_DETAIL
-		   SET STUDENT_STATUS = #{status}
+		   SET STUDENT_STATUS = #{studentStatus}
 		     , UPDATED_AT = SYSDATE
 		 WHERE STUDENT_NO = #{studentNo}
 	</update>
 	
 	<!-- 10. 학생 가입신청 대기, 거절을 조회하는 쿼리문 -->
 	<select id="selectPendingStudentList"
-			resultType="com.kh.know_how.admin.model.dto.StudentDto">
+			resultType="com.kh.know_how.admin.model.dto.StudentPendingListDto">
 		SELECT USER_NO AS userNo
 			 , USER_NAME AS studentName
 			 , CREATED_AT AS createdAt
@@ -151,7 +152,7 @@
 	</select>
 	
 	<!-- 11. 학생 가입신청 승인 쿼리문 -->
-	<update id="updateStudentApprove" parameterType="hashmap">
+	<update id="updateStudentApprove" parameterType="com.kh.know_how.admin.model.dto.StudentApproveDto">
 		UPDATE MEMBER
 		   SET STATUS = 'ACTIVE'
 			 , CLASS_NO = #{classNo}
@@ -160,7 +161,7 @@
 	</update>
 	
 	<!-- 12. 학생 가입신청 승인 시 학생 생성 쿼리문 -->
-	<insert id="insertStudent" parameterType="hashmap">
+	<insert id="insertStudent" parameterType="com.kh.know_how.admin.model.dto.StudentApproveDto">
 		INSERT INTO STUDENT_DETAIL(STUDENT_NO
 								 , COUNSELOR_NO
 								 , STUDENT_STATUS
@@ -186,6 +187,88 @@
 		 WHERE USER_NO = #{userNo}
 		   AND STATUS = 'REJECTED'
 	</delete>
+	
+	<!-- 15. 가입거절 되어있는 학생을 삭제할 때, MemberLock도 삭제하는 쿼리문 -->
+	<delete id="deleteMemberLock" parameterType="_int">
+		DELETE
+		  FROM MEMBER_LOCK
+		 WHERE USER_NO = #{userNo}
+	</delete>
+	
+	<!-- 16. 공지사항, 학원소식 상태 변경용 쿼리문 -->
+	<update id="adminUpdateBoardStatus" parameterType="board">
+		UPDATE BOARD_POST
+		   SET STATUS = #{status}
+		 WHERE POST_NO = #{postNo}
+	</update>
+	
+	<!-- 17. 게시글 삭제용 쿼리문 -->
+	<delete id="adminDeleteBoard" parameterType="_int">
+		DELETE
+		  FROM BOARD_POST
+		 WHERE POST_NO = #{postNo}
+	</delete>
+	
+	<!-- 18. 첨부파일 삭제용 쿼리문 -->
+	<delete id="adminDeleteFileAttachment" parameterType="_int">
+		DELETE
+		FROM
+		FILE_ATTACHMENT
+		WHERE TARGET_NO = #{postNo}
+	</delete>
+	
+	<!-- 19. 학원소식 대표이미지와 상세이미지 추가용 쿼리문 -->
+	<insert id="insertFileAttachmentList" parameterType="FileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH
+								  , FILE_LEVEL)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , SEQ_POST_NO.CURRVAL
+								 , 'NEWS'
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath}
+								 , #{fileLevel})
+	</insert>
+	
+	<!-- 20. 학원소식 수정 시 이미지 교체용 쿼리문-->
+	<update id="updateFileAttachment" parameterType="fileAttachment">
+		UPDATE
+		FILE_ATTACHMENT
+		SET ORIGIN_NAME = #{originName},
+		SAVE_NAME =
+		#{saveName},
+		UPDATED_AT = SYSDATE
+		WHERE FILE_NO = #{fileNo}
+	</update>
+	
+	<!-- 21. 학원소식 수정 시 새로운 이미지를 등록하는 쿼리문 -->
+	<insert id="insertNewsFileAttachment" parameterType="fileAttachment">
+		INSERT INTO FILE_ATTACHMENT(FILE_NO
+								  , TARGET_NO
+								  , TARGET_TYPE
+								  , ORIGIN_NAME
+								  , SAVE_NAME
+								  , FILE_PATH
+								  , FILE_LEVEL)
+							VALUES(SEQ_FILE_NO.NEXTVAL
+								 , #{targetNo}
+								 , #{targetType}
+								 , #{originName}
+								 , #{saveName}
+								 , #{filePath}
+								 , #{fileLevel})
+	</insert>
+	
+	<!-- 23. 계정 잠금 해제용 쿼리문 -->
+	<update id="updateMemberUnlock" parameterType="_int">
+		UPDATE MEMBER_LOCK
+		   SET IS_LOCKED = 'N'
+		     , FAIL_COUNT = 0
+		 WHERE USER_NO = #{userNo}
+	</update>
 </mapper>
-	
-	

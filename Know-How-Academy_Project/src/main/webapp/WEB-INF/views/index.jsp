@@ -80,7 +80,7 @@
 			<div id="content">
 				<div id="content_1">
 					<h4 align="center"><b>공지사항</b></h1>
-					<a href="/know-how/community/notice/list">더보기&gt;</a>
+					<a href="/know-how/community/board/notice">더보기&gt;</a>
 					<table class="table table-hover"></table>
 				</div>
 				<div id="content_2">
@@ -101,7 +101,7 @@
 		$(function() {
 			// 메인페이지 공지사항 목록 ajax
 			$.ajax({
-				url : "/know-how/community/notice/mainnoticelist",
+				url : "/know-how/community/board/main",
 				type : "get",
 				success : function(result) {
 
@@ -109,11 +109,12 @@
 						let resultStr = "";
 						
 						for(let i in result) {
-							
-							resultStr += "<tr>"
-									   +		"<td>" + result[i].title + "<input type='hidden' name='noticeNo' value='"+ result[i].postNo +"'></td>"
-									   +		"<td>" + result[i].viewCount + "</td>"
-									   + "</tr>";
+							if(i < 8) {
+								resultStr += "<tr>"
+										   +		"<td>" + result[i].title + "<input type='hidden' name='noticeNo' value='"+ result[i].postNo +"'></td>"
+										   +		"<td>" + result[i].viewCount + "</td>"
+										   + "</tr>";
+							}
 						}
 						
 						$("#content_1>table").html(resultStr);
@@ -133,7 +134,7 @@
 				
 				let nno = $(this).find("input[name='noticeNo']").val();
 				
-				location.href = "/know-how/community/notice/detail/" + nno;
+				location.href = "/know-how/community/board/notice/detail/" + nno;
 				
 			});
 			// 메인페이지 학원 소식 목록 currentPage 가 1로 시작 

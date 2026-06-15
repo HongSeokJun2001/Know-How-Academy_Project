@@ -18,6 +18,8 @@
 		<result column="STATUS" property="status" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="USER_NAME" property="userName" />
+		<result column="TITLEIMG" property="titleImg" />
+		<result column="ROWNUM" property="rowNum"></result>
 
 		<association property="fileAttachment"
 			javaType="fileAttachment">
@@ -255,7 +257,6 @@
 		WHERE POST_NO = #{postNo}
 		AND
 		POST_TYPE = #{postType}
-		AND STATUS = 'Y'
 	</update>
 
 	<update id="deleteFileAttachment" parameterType="_int">
@@ -273,7 +274,7 @@
 		FILE_PATH,
 		CREATED_AT,
 		STATUS)
-		VALUES(SEQ_FNO.NEXTVAL,
+		VALUES(SEQ_FILE_NO.NEXTVAL,
 		#{targetNo},
 		#{targetType},
 		#{originName},
@@ -304,21 +305,6 @@
         ORDER BY FILE_NO DESC  )
     WHERE ROWNUM = 1
 	</select>
-	
-	<!-- (관리자용)게시글 삭제용 쿼리문 -->
-	<delete id="adminDeleteBoard" parameterType="_int">
-		DELETE
-		  FROM BOARD_POST
-		 WHERE POST_NO = #{postNo}
-	</delete>
-	
-	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
-	<delete id="admindeleteFileAttachment" parameterType="_int">
-		DELETE
-		FROM
-		FILE_ATTACHMENT
-		WHERE TARGET_NO = #{postNo}
-	</delete>
 
 	<select id="selectCommentList" parameterType="_int"
 		resultMap="commentResultSet">
@@ -354,9 +340,103 @@
 
 	</insert>
 	
+	<!-- 학원 소식 목록 조회용 쿼리문 -->
+	<select id="selectNewsList" resultMap="boardResultSet">
+		SELECT POST_NO
+			 , TITLE
+			 , VIEW_COUNT
+			 , FILE_PATH || SAVE_NAME AS "TITLEIMG"
+			 , B.CREATED_AT
+		  FROM BOARD_POST B
+		  JOIN FILE_ATTACHMENT ON (POST_NO = TARGET_NO)
+		 WHERE POST_TYPE = 'NEWS'
+		   AND B.STATUS = 'Y'
+		   AND FILE_LEVEL = 1
+		 ORDER BY POST_NO DESC
+	</select>
+	
+	<!-- 첨부파일을 조회하는 쿼리문 -->
+	<select id="selectFileAttachmentList" parameterType="_int" resultMap="fileAttachmentResultSet">
+		SELECT FILE_NO
+		     , ORIGIN_NAME
+		     , SAVE_NAME
+		     , FILE_PATH
+		  FROM FILE_ATTACHMENT
+		 WHERE TARGET_NO = #{postNo}
+		   AND STATUS = 'Y'
+		 ORDER BY FILE_NO ASC
+	</select>
+	
+	<!-- (관리자용)공지사항, 학원소식 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSelectBoardCount" parameterType="string" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = #{postType}
+	</select>
+	
+	<!-- (관리자용)공지사항, 학원소식 목록 조회용 쿼리문 -->
+	<select id="adminSelectBoardList" parameterType="string" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+					     , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = #{postType}
+					 ORDER BY POST_NO
+					) A
+				 )
+		 ORDER BY ROWNUM DESC 
+	</select>
 
+	<!-- (관리자용)공지사항, 학원소식 키워드 검색시 총 갯수를 구하는 쿼리문 -->
+	<select id="adminSearchBoardCount" parameterType="hashmap" resultType="_int">
+		SELECT COUNT(*)
+		  FROM BOARD_POST
+		 WHERE POST_TYPE = #{postType}
+		   AND TITLE LIKE '%' || #{keyword} || '%'
+	</select>
 
-
-
-
+	<!-- (관리자용)공지사항, 학원소식 키워드 검색시 목록 조회용 쿼리문 -->
+	<select id="adminSearchBoardList" parameterType="hashmap" resultMap="boardResultSet">
+		SELECT *
+		  FROM (
+			SELECT A.*, ROWNUM
+			  FROM (
+					SELECT POST_NO
+						 , TITLE
+						 , USER_NAME
+						 , B.CREATED_AT
+						 , B.STATUS
+					  FROM BOARD_POST B
+					  JOIN MEMBER ON (WRITER_NO = USER_NO)
+					 WHERE POST_TYPE = #{postType}
+					   AND TITLE LIKE '%' || #{keyword} || '%'
+					 ORDER BY POST_NO
+					 ) A
+			      )
+		 ORDER BY ROWNUM DESC
+	</select>
+	
+	<!-- (관리자용)관리자 페이지에서 공지사항, 학원소식 상세조회용 쿼리문-->
+	<select id="adminSelectBoard" parameterType="_int"
+		resultMap="boardResultSet">
+		SELECT B.POST_NO,
+		B.TITLE,
+		B.POST_TYPE,
+		B.WRITER_NO,
+		M.USER_NAME,
+		B.CREATED_AT,
+		B.CONTENT
+		FROM BOARD_POST B
+		JOIN MEMBER M ON
+		(B.WRITER_NO = M.USER_NO)
+		WHERE POST_NO = #{postNo}
+	</select>
+	
 </mapper>

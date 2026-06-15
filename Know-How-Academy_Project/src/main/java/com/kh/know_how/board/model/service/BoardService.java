@@ -114,17 +114,6 @@ public class BoardService {
 		return boardDao.selectNewsList(sqlSession, pi);
 	}
 
-	public Board selectNews(int postNo) {
-
-		return boardDao.selectNews(sqlSession, postNo);
-	}
-
-	@Transactional
-	public int admindeleteFileAttachment(int postNo) {
-		return boardDao.admindeleteFileAttachment(sqlSession, postNo);
-
-	}
-
 	public FileAttachment selectFileAttachment(int postNo) {
 
 		return boardDao.selectFileAttachment(sqlSession, postNo);
@@ -143,6 +132,11 @@ public class BoardService {
 	public int insertComment(PostComment pc) {
 
 		return boardDao.insertComment(sqlSession, pc);
+	}
+
+	public ArrayList<Board> mainNoticeList(String postType) {
+		
+		return boardDao.mainNoticeList(sqlSession, postType);
 	}
 
 }

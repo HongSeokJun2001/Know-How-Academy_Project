@@ -170,7 +170,7 @@
 	    color: #22c55e;
 	}
 	
-	.notice-status.hide {
+	.status.hide {
 	    border: 1px solid #a1a1aa;
 	    color: #a1a1aa;
 	}
@@ -313,7 +313,7 @@
 								<tr>
 									<td>${ n.rowNum }</td>
 									<td><a href="/know-how/admin/notice/detail/${ n.postNo }">${ n.title }</a></td>
-									<td>${ n.postWriter }</td>
+									<td>${ n.userName }</td>
 									<td>${ n.createdAt }</td>
 									<td>
 										<c:choose>
