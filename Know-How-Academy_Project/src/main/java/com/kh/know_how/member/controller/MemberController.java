@@ -149,6 +149,11 @@ public class MemberController {
 						session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
 						
 						return "redirect:/myPageCounselor";
+					} else if("INSTRUCTOR".equals(roleCode)) {
+						// 세션에 1회성 알림 문구를 담아 메인페이지로 url 재요청
+						session.setAttribute("alertMsg", "성공적으로 로그인이 되었습니다.");
+						
+						return "redirect:/myPageCounselor";
 					} else {
 						// > 관리자 계정일때
 						session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
@@ -462,7 +467,8 @@ public class MemberController {
 	
 	@ResponseBody
 	@PostMapping("searchPassword")
-	public String searchPassword(Member m, String userId, String userName, String email, HttpSession session) {
+	public String searchPassword(Member m, String userId, 
+			                     String userName, String email, HttpSession session) {
 		// XSS 공격 방지
 		String replaceUserId 
 			= XssDefencePolicy.defence(m.getUserId());
@@ -508,14 +514,18 @@ public class MemberController {
     			} else {
     				return "임시 비밀번호를 보내지 못했습니다.";
     			}
-		} else {
+    			
+		    } else {
 			// 이름,이메일이 일치하지않을 경우
 			
-			session.setAttribute("alertMsg", "아이디,이름,이메일이 일치하지 않습니다.");
-			return "redirect:/myPage";
+			return "관리자 페이지에서 찾아야합니다.";
 		}
-	}
-		return "redirect:/myPage";
+       } else {
+    	// 이름,이메일이 일치하지않을 경우
+    	   
+			return "아이디,이름,이메일이 일치하지 않습니다.";
+       }
+		
 	}
 	//-------------------------------------------------------
 	@ResponseBody
