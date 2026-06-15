@@ -393,7 +393,7 @@
 	 <!-- 24. 상담사 회원가입용 쿼리(CounselorProfilImg) -->
 	 <insert id="insertCounselorProfileImg" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfilImg">
 	 	INSERT INTO COUNSELOR_PROFIL_IMG(PROFILE_NO, USER_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH)
-	 				   VALUES(SEQ_PROFILE_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
+	 				   VALUES(SEQ_PROFILE_IMG_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
 	 </insert>
 	 
 	 <!-- 25. 상담사 카테고리번호 변경 -->

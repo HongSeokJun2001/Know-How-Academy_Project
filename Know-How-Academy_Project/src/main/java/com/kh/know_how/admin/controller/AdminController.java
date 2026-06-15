@@ -63,7 +63,7 @@ public class AdminController {
     	ArrayList<TodayReservationDto> reservationList = as.selectTodayReservationList();
     	int todayReservationCount = as.todayReservationCount();
     	
-    	// 통계 및 상담 카테고리 조회	: %를 합친 값이 101%일 경우 처리(-)
+    	// 통계 및 상담 카테고리 조회	
     	ArrayList<AdminDashboardStatsDto> dashboard = as.selectDashboardStats();
     	ArrayList<CounselCategoryDto> counselCategory = as.selectCounselCategory();
     	
