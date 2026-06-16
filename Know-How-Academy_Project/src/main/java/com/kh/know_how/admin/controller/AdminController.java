@@ -205,7 +205,7 @@ public class AdminController {
     	
     	String baseUrl =
     	        request.getScheme() + "://" +
-    	        request.getServerName() +
+    	        "192.168.20.26" +
     	        ":" +
     	        request.getServerPort() +
     	        request.getContextPath();
