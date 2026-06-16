@@ -321,8 +321,8 @@ public class AdminController2 {
     public String updateNotice(Board n ,MultipartFile reUpfile,
     						   @RequestParam(defaultValue="0") int originalFileNo,
     						   String originalFileSaveName,
-    						   HttpSession session,
-    						   Model model) { // 공지사항 수정하는 메소드
+    						   HttpSession session
+    						   ) { // 공지사항 수정하는 메소드
     	
     	FileAttachment fa = null;
     	
