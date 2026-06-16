@@ -94,7 +94,7 @@ public class MemberController {
 			if(loginUser == null) {
 				model.addAttribute("errorMsg", "아이디가 존재하지 않습니다.");
 					
-				return "redirect:/";
+				return "redirect:/myPage";
 			}
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
@@ -165,7 +165,7 @@ public class MemberController {
 					// result == 0, 초기화 update 문 오류
 					session.setAttribute("alertMsg", "서버가 혼잡합니다. 잠시 후 다시 시도해주세요.");
 					
-					return "redirect:/";
+					return "redirect:/myPage";
 				}
 				
 			} else {
@@ -180,7 +180,7 @@ public class MemberController {
 					}
 					model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
 					
-					return "redirect:/";
+					return "redirect:/myPage";
 				}
 				int failCount = loginUserLock.getFailCount();
 				
@@ -205,7 +205,7 @@ public class MemberController {
 				} else {
 					model.addAttribute("errorMsg", "로그인 실패 횟수가 기록되지 않습니다. 관리자에게 문의해주세요.");
 					
-					return "redirect:/";
+					return "redirect:/myPage";
 				}
 			} 
 

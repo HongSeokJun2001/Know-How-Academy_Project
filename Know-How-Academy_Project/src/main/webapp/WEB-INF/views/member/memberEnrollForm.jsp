@@ -88,8 +88,15 @@
         font-size: 15px;
       
 	}
-	.btn-enroll:hover {
+	.btn-enrollPage:hover {
 	    background-color: #3225A3;
+	}
+	.btn-enrollPageCheck:hover {
+	    background-color: lightcoral;
+	}
+	button:disabled {
+	     opacity : 0.6;
+	     
 	}
 </style>
 </head>
@@ -113,7 +120,7 @@
 						<input type="text" class="enrollPage-input" name="userId" 
 						minlength="8" maxlength="16" pattern="(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+" 
 						title="8~16자리 영문자/숫자" placeholder="8~16자리 영문자/숫자" required>
-						<div class="errorMessage" id="userIdErrorMessage"></div>		
+								
 					</th>
 					<th><button type="button" id="idCheckBtn" onclick="idCheck();"
 								class="btn-enrollPageCheck" >중복확인</button></th>		
@@ -124,7 +131,7 @@
 						<input type="password" class="enrollPage-input" name="userPwd" 
 						minlength="8" maxlength="20" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)_+=\-])[a-zA-Z\d!@#$%^&*\(\)_+=\-]+$" 
 						title="8~20자리 영문자/숫자/특수문자 포함" placeholder="8~20자리 영문자/숫자/특수문자 포함" autocomplete="new-password" required>
-					    <div class="errorMessage" id="userPwdErrorMessage"></div>
+					    
 					</th>
 					<th></th>
 				</tr>
@@ -132,7 +139,7 @@
 					<th><label for="userPwd">* 비밀번호 확인</label></th>
 					<th>
 						<input type="password" class="enrollPage-input" name="userPwdCheck" autocomplete="new-password" required>
-						<div class="errorMessage" id="userPwdCheckErrorMessage"></div>
+						
 					</th>
 					<th></th>
 				</tr>
@@ -152,7 +159,7 @@
 						<input type="email" class="enrollPage-input" name="email" required>
 					</th>
 					<th><button type="button" id="emailCheckBtn" onclick="emailCheck();"
-								class="btn-enrollPageCheck" disabled>이메일중복확인</button>
+								class="btn-enrollPageCheck" hover disabled>이메일중복확인</button>
 					</th>
 				</tr>
 				<tr>
@@ -178,12 +185,19 @@
 				</tr>
 				<thead>
 				<tbody>
+				  <tr>
+				   <th></th>
+				   <th></th>
+				   <th></th>
+				  </tr>
+				   <tr>
 				     <th></th>
 				     <th>
 				        <button type="submit" class="btn-enrollPage" onclick="return validateForm();" disabled>회원가입</button>
 				        <button type="reset" class="btn-enrollPage" onclick="resetForm();">초기화</button>
 				     </th>
                      <th></th>
+                   <tr>
 				</tbody>
 			</table>
 
