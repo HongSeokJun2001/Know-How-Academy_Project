@@ -44,7 +44,7 @@
 		   AND M.ROLE_CODE = 'STUDENT'
 		    <if test="studentStatus == 'ATTENDING'">
 		    	AND S.STUDENT_STATUS = #{studentStatus}
-		    	AND M.STATUS 'ACTIVE'
+		    	AND M.STATUS = 'ACTIVE'
 		    </if> 
 		    <if test="studentStatus == 'ABSENT'">
 		    	AND S.STUDENT_STATUS = #{studentStatus}
@@ -71,18 +71,18 @@
 		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		  WHERE (SM.USER_NAME LIKE '%' || #{keyword} || '%' 
 		    OR SM.PHONE LIKE '%' || #{keyword} || '%')
-		   AND M.ROLE_CODE = 'STUDENT'
+		   AND SM.ROLE_CODE = 'STUDENT'
 		    <if test="studentStatus == 'ATTENDING'">
 		    	AND S.STUDENT_STATUS = #{studentStatus}
-		    	AND M.STATUS 'ACTIVE'
+		    	AND SM.STATUS = 'ACTIVE'
 		    </if> 
 		    <if test="studentStatus == 'ABSENT'">
 		    	AND S.STUDENT_STATUS = #{studentStatus}
-		    	AND M.STATUS = 'WITHDRAWN'
+		    	AND SM.STATUS = 'WITHDRAWN'
 		    </if>
 		    <if test="studentStatus == ''">
 		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
-		    	AND M.STATUS IN('ACTIVE', 'WITHDRAWN')
+		    	AND SM.STATUS IN('ACTIVE', 'WITHDRAWN')
 		    </if>
 		  ORDER BY STUDENT_NO DESC
 	</select>
