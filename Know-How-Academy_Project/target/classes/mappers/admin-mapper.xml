@@ -91,8 +91,8 @@
 		 WHERE C.RESERVATION_STATUS = 'RESERVED'
 		   AND SD.STUDENT_STATUS = 'ATTENDING'
 		   AND CP.STATUS = 'ACTIVE'	
-		   AND C.CREATED_AT &gt;= TRUNC(SYSDATE)
-		   AND C.CREATED_AT &lt; TRUNC(SYSDATE) + 1
+		   AND C.CONSULT_DATE &gt;= TRUNC(SYSDATE)
+		   AND C.CONSULT_DATE &lt; TRUNC(SYSDATE) + 1
  	</select>
  	
  	<!-- 6. 관리자 대시보드 쿼리, 합계 101% 막기(-)  -->
@@ -136,16 +136,15 @@
 	 							  resultType="_int">
 		 SELECT COUNT(*)
 	       FROM COUNSELOR_INVITE				CI 
-	       LEFT JOIN MEMBER 			    	CM  ON 	CM.USER_NO = CI.USER_NO
-	     WHERE CM.ROLE_CODE = 'COUNSELOR'
+	       LEFT JOIN MEMBER 			    	CM  ON 	(CM.USER_NO = CI.USER_NO AND CM.ROLE_CODE = 'COUNSELOR')
 	      <choose>
 	      	<when test="status == 'ACTIVE'">
-	       AND ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
-			OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
+	      WHERE ((CI.INVITE_STATUS = 'PENDING' AND INVITE_EXPIRED_AT > SYSDATE)
+			 OR (CI.INVITE_STATUS = 'USED' AND CM.STATUS = 'ACTIVE'))
 	       	</when>
 	       	<when test="status == 'INACTIVE'">
-	       AND CI.INVITE_STATUS = 'USED'
-	       AND CM.STATUS = 'INACTIVE' 
+	      WHERE CI.INVITE_STATUS = 'USED'
+	        AND CM.STATUS = 'INACTIVE' 
 	       	</when>
 	       </choose>
 			<if test="keyword != null and keyword != ''">
@@ -270,8 +269,8 @@
 	 	  
 	 </select>
 	 
- 	 <!-- 13. 휴직/재직상태 변경을 하는 쿼리 -->
-	 <update id="updateCounselorStatus" parameterType="map">
+ 	 <!-- 13. 휴직/재직상태 변경을 하는 쿼리(MEMBER) -->
+	 <update id="updateMemberStatus" parameterType="map">
 		 UPDATE MEMBER
 		 	SET UPDATED_AT = SYSDATE
 		 <choose>
@@ -286,7 +285,21 @@
 		  WHERE USER_NO = #{userNo}
 	 </update>
 	 
-	 <!-- 14. 상담사 초대링크를 비활성화하는 쿼리 -->
+	 <!-- 14. 휴직/재직상태 변경을 하는 쿼리(COUNSELOR_PROFILE) -->
+	 <update id="updateCounselorStatus" parameterType="map">
+		 UPDATE COUNSELOR_PROFILE
+		 <choose>
+		 	<when test="status == 'INACTIVE'">
+		    SET STATUS = 'ACTIVE'
+		 	</when>
+		 	<when test="status == 'ACTIVE'">
+		    SET STATUS = 'ON_LEAVE'
+		    </when>
+		 </choose>
+		  WHERE USER_NO = #{userNo}
+	 </update>
+	 
+	 <!-- 15. 상담사 초대링크를 비활성화하는 쿼리 -->
 	 <update id="deleteCounselorInvite" parameterType="_int">
 	 	UPDATE COUNSELOR_INVITE
 	 	   SET INVITE_STATUS = 'CANCELED'
@@ -294,7 +307,7 @@
 	 	   AND INVITE_STATUS = 'PENDING' 
 	 </update>
 	 
-	 <!-- 15. 상담사 클래스 변경 시 기존 학생테이블의 상담사번호를 null 처리해주는 쿼리 -->
+	 <!-- 16. 상담사 클래스 변경 시 기존 학생테이블의 상담사번호를 null 처리해주는 쿼리 -->
 	 <update id="clearStudentCounselorNo" parameterType="_int">
 	 	UPDATE STUDENT_DETAIL
 	 	   SET COUNSELOR_NO = NULL
@@ -303,7 +316,7 @@
 	 	 						WHERE USER_NO = #{value})
 	 </update>
 	 
-	 <!-- 16. 상담사 클래스 변경 시 학생들의 정보에 상담사번호를 추가하는 쿼리 -->
+	 <!-- 17. 상담사 클래스 변경 시 학생들의 정보에 상담사번호를 추가하는 쿼리 -->
 	 <update id="updateStudentCounselorNoByClassNo" parameterType="map">
 	 	UPDATE STUDENT_DETAIL SD 
 	 	   SET COUNSELOR_NO = (SELECT COUNSEL_NO 
@@ -314,7 +327,7 @@
 	 	 					   WHERE ROLE_CODE = 'STUDENT' AND CLASS_NO = #{changeNo})
 	 </update>
 	 
-	 <!-- 17. 초대메일 중복체크 -->
+	 <!-- 18. 초대메일 중복체크 -->
 	 <select id="existsByEmail" parameterType="string" resultType="_int">
 	 	SELECT COUNT(*)
 	 	  FROM DUAL
@@ -326,13 +339,13 @@
 	 	    			  AND INVITE_EXPIRED_AT > SYSDATE)
 	 </select>
 	 
-	 <!-- 18. 초대메일 발송 전 초대정보 DB 저장 -->
+	 <!-- 19. 초대메일 발송 전 초대정보 DB 저장 -->
 	 <insert id="insertCounselorInvite" parameterType="com.kh.know_how.admin.model.dto.CounselorInviteDto">
 	 	INSERT INTO COUNSELOR_INVITE (INVITE_NO, INVITE_NAME, INVITE_EMAIL, INVITE_TOKEN) 
     				VALUES(SEQ_INVITE_NO.NEXTVAL, #{counselorName}, #{email}, #{inviteToken})
 	 </insert>
 	 
-	 <!-- 19. 최근 2일간 초대내역 조회 -->
+	 <!-- 20. 최근 2일간 초대내역 조회 -->
 	 <select id="selectInviteList" resultType="com.kh.know_how.admin.model.dto.CounselorInviteListDto">
 	 	SELECT CI.INVITE_NO			AS inviteNo
 	 		 , CI.INVITE_NAME		AS inviteName
@@ -351,7 +364,7 @@
 	 </select>
 	 
 	 
-	 <!-- 20. 상담사 회원가입 요청 시 토큰 확인 및 정보전달용 쿼리 -->
+	 <!-- 21. 상담사 회원가입 요청 시 토큰 확인 및 정보전달용 쿼리 -->
 	 <select id="getCounselorInfo" parameterType="string"
 	  		 resultType="com.kh.know_how.admin.model.dto.CounselorInviteCompleteDto">
 	 	SELECT INVITE_NO			AS inviteNo
@@ -364,7 +377,7 @@
 	 	   AND INVITE_TOKEN = #{value}
 	 </select>
 	 
-	 <!-- 21. 상담사 회원가입용 쿼리(member) -->
+	 <!-- 22. 상담사 회원가입용 쿼리(member) -->
 	 <insert id="insertCounselorMember" parameterType="com.kh.know_how.member.model.vo.Member">
 	 
 	    <selectKey keyProperty="userNo" resultType="_int" order="BEFORE">
@@ -376,13 +389,13 @@
 	    VALUES( #{userNo}, #{userId}, #{userPwd}, #{userName}, #{phone}, #{email}, #{address}, 'COUNSELOR', 'ACTIVE')
 	 </insert>
 	 
-	 <!-- 22. 상담사 회원가입용 쿼리(profile) -->
+	 <!-- 23. 상담사 회원가입용 쿼리(profile) -->
 	 <insert id="insertCounselorProfile" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfile">
 	 	INSERT INTO COUNSELOR_PROFILE(COUNSEL_NO, PROFILE_IMG_PATH, BIO, STATUS, USER_NO)
 	    VALUES( SEQ_COUNSEL_NO.NEXTVAL, #{profileImgPath}, #{bio}, 'ACTIVE', #{userNo})
 	 </insert>
 	 
-	 <!-- 23. 상담사 회원가입용 쿼리(invite) -->
+	 <!-- 24. 상담사 회원가입용 쿼리(invite) -->
 	 <update id="updateCounselorInviteInfo" parameterType="com.kh.know_how.admin.model.dto.CounselorInviteCompleteDto">
 	 	UPDATE COUNSELOR_INVITE
 	 	   SET INVITE_STATUS = 'USED'
@@ -392,20 +405,20 @@
 	 	   AND INVITE_EMAIL = #{inviteEmail}
 	 </update>
 	 
-	 <!-- 24. 상담사 회원가입용 쿼리(CounselorProfilImg) -->
+	 <!-- 25. 상담사 회원가입용 쿼리(CounselorProfilImg) -->
 	 <insert id="insertCounselorProfileImg" parameterType="com.kh.know_how.counselor.model.vo.CounselorProfilImg">
 	 	INSERT INTO COUNSELOR_PROFIL_IMG(PROFILE_NO, USER_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH)
 	 				   VALUES(SEQ_PROFILE_IMG_NO.NEXTVAL, #{userNo}, #{originName}, #{saveName}, #{filePath})
 	 </insert>
 	 
-	 <!-- 25. 상담사 카테고리번호 변경 -->
+	 <!-- 26. 상담사 카테고리번호 변경 -->
 	 <update id="updateCounselorCategoryNo" parameterType="map">
 	 	UPDATE COUNSELOR_PROFILE
 	 	   SET CATEGORY_NO = #{changeNo}
 	 	 WHERE USER_NO = #{userNo}
 	 </update>
 	 
-	 <!-- 26. 재직중인 상담사의 현재 반번호 번호 조회 -->
+	 <!-- 27. 재직중인 상담사의 현재 반번호 번호 조회 -->
 	 <select id="selectUserClassNo" parameterType="_int" resultType="Integer">
 	 	SELECT CLASS_NO
 	 	  FROM MEMBER
