@@ -668,8 +668,6 @@ public class AdminController2 {
         			message.setText("임시 비밀번호 : " + random + "\n임시 비밀번호로 로그인 후 비밀번호 변경을 권장드립니다.");
         			message.setTo(m.getEmail());
         			
-        			System.out.println(random + ", " + encPwd);
-        			
         			mailSender.send(message);
         			
         			return m.getUserName() + "님의 이메일에 임시 비밀번호를 보냈습니다.\n로그인 후 비밀번호 변경을 권장드립니다.";

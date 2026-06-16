@@ -218,7 +218,7 @@
 	</delete>
 	
 	<!-- 19. 학원소식 대표이미지와 상세이미지 추가용 쿼리문 -->
-	<insert id="insertFileAttachmentList" parameterType="FileAttachment">
+	<insert id="insertFileAttachmentList" parameterType="fileAttachment">
 		INSERT INTO FILE_ATTACHMENT(FILE_NO
 								  , TARGET_NO
 								  , TARGET_TYPE
