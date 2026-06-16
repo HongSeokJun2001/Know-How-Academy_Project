@@ -94,7 +94,7 @@ public class MemberController {
 			if(loginUser == null) {
 				session.setAttribute("alertMsg", "아이디가 존재하지 않습니다.");
 					
-				return "redirect:/";
+				return "redirect:/myPage";
 			}
 			if(loginUser.getStatus().equals("PENDING")) {
 				session.setAttribute("alertMsg", "가입승인 대기중입니다.");
@@ -178,7 +178,7 @@ public class MemberController {
 					// result == 0, 초기화 update 문 오류
 					session.setAttribute("alertMsg", "서버가 혼잡합니다. 잠시 후 다시 시도해주세요.");
 					
-					return "redirect:/";
+					return "redirect:/myPage";
 				}
 				
 			} else {
@@ -216,7 +216,7 @@ public class MemberController {
 				} else {
 					session.setAttribute("alertMsg", "로그인 실패 횟수가 기록되지 않습니다. 관리자에게 문의해주세요.");
 					
-					return "redirect:/";
+					return "redirect:/myPage";
 				}
 			} 
 
