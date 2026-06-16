@@ -83,13 +83,13 @@ public class AdminService2 {
 	@Transactional
 	public int updateStudentStatus(StudentStatusDto studentStatus) { // 학원생의 휴학/재학 처리해주는 메소드
 	
-		return ad2.updateStudentStatus(sqlSession, studentStatus);
+		return ad2.updateStudentStatus(sqlSession, studentStatus)*ad2.updateStudentMemberStatus(sqlSession, studentStatus);
 	}
 	
 	@Transactional
 	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
 		
-		return ad2.deleteMemberLock(sqlSession, userNo)*ad2.deleteStudent(sqlSession, userNo);
+		return ad2.deleteMemberLock(sqlSession, userNo);
 	}
 
 
