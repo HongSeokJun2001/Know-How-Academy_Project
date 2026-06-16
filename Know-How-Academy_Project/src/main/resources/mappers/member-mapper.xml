@@ -34,13 +34,10 @@
 	 <!--  로그인용 쿼리문 -->
 	 <select id="loginMember" parameterType="string" 
 								  resultMap="memberResultSet">
-
-			<!-- 암호화 작업 후 : 아이디로만 조회 -->
-			SELECT *
-		      FROM MEMBER 
-		     WHERE USER_ID = #{userId}
-		       AND STATUS = 'ACTIVE'   
-
+		<!-- 암호화 작업 후 : 아이디로만 조회 -->
+		SELECT *
+	      FROM MEMBER 
+	     WHERE USER_ID = #{userId}
 	 </select>
 	 
 	 <!-- 회원가입용 쿼리문 -->
@@ -145,16 +142,6 @@
 	      FROM MEMBER_LOCK
 	     WHERE USER_NO = #{userNo}
 	</select>
-
-	<!-- 회원가입시 잠금데이터용 쿼리문 -->
-	<insert  id="insertMemberLock">
-	    INSERT INTO MEMBER_LOCK(USER_NO
-		                      , LOCKED_AT
-		                      , LAST_FAIL_AT)
-		                 VALUES(#{userNo}
-		                      , NULL
-		                      , NULL)
-	</insert>
 	
 	<!-- 로그인실패시 실패횟수증가 쿼리문 -->
 	<update  id="increaseFailCount" parameterType="memberLock">
@@ -179,5 +166,15 @@
 	           IS_LOCKED = 'N'
 	     WHERE USER_NO = #{userNo}
 	</update>
+
+	<!-- 로그인실패 시 잠금데이터 생성용 쿼리문 -->
+	<insert id="insertMemberLock" parameterType="_int">
+	    INSERT INTO MEMBER_LOCK(USER_NO
+		                      , LOCKED_AT
+		                      , LAST_FAIL_AT)
+		                 VALUES(#{userNo}
+		                      , NULL
+		                      , NULL)
+	</insert>
 
 </mapper>

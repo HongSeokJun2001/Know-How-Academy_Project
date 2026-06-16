@@ -92,10 +92,23 @@ public class MemberController {
 			Member loginUser = memberService.loginMember(m.getUserId());
 			// 암호화 작업 후 비밀알아내기
 			if(loginUser == null) {
-				model.addAttribute("errorMsg", "아이디가 존재하지 않습니다.");
+				session.setAttribute("alertMsg", "아이디가 존재하지 않습니다.");
 					
 				return "redirect:/";
 			}
+			if(loginUser.getStatus().equals("PENDING")) {
+				session.setAttribute("alertMsg", "가입승인 대기중입니다.");
+				
+				return "redirect:/";
+			} else if(loginUser.getStatus().equals("REJECTED")) {
+				session.setAttribute("alertMsg", "가입이 거절되어있습니다.");
+				
+				return "redirect:/";
+			} else if(loginUser.getStatus().equals("INACTIVE")) {
+				session.setAttribute("alertMsg", "이미 탈퇴한 계정입니다.");
+				
+				return "redirect:/";
+			} 
 			String encPwd = bCryptPasswordEncoder.encode(m.getUserPwd());
 			System.out.println("암호문 : " + encPwd);
 			
@@ -156,8 +169,8 @@ public class MemberController {
 						return "redirect:/myPageCounselor";
 					} else {
 						// > 관리자 계정일때
-						session.setAttribute("errorMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
-						
+						session.setAttribute("alertMsg", "관리자계정입니다.관리자페이지로 이동하세요.");
+						session.removeAttribute("loginUser");
 						return "redirect:/";
 					}
 					
@@ -175,12 +188,10 @@ public class MemberController {
 					if(num > 0) {
 						loginUserLock = memberService.loginLockMember(loginUser.getUserNo());
 					} else {
-						model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
-						return "common/errorPage";
+						session.setAttribute("alertMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
+						return "redirect:/";
 					}
-					model.addAttribute("errorMsg", "계정 잠금 기능이 없는 아이디입니다. 관리자에게 문의하세요.");
 					
-					return "redirect:/";
 				}
 				int failCount = loginUserLock.getFailCount();
 				
@@ -203,7 +214,7 @@ public class MemberController {
 					}
 					
 				} else {
-					model.addAttribute("errorMsg", "로그인 실패 횟수가 기록되지 않습니다. 관리자에게 문의해주세요.");
+					session.setAttribute("alertMsg", "로그인 실패 횟수가 기록되지 않습니다. 관리자에게 문의해주세요.");
 					
 					return "redirect:/";
 				}
