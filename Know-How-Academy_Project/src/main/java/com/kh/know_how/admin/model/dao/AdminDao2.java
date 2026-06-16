@@ -104,11 +104,6 @@ public class AdminDao2 {
 		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
 	}
 	
-	public int deleteMemberLock(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 삭제 시 MemberLock도 삭제
-		
-		return sqlSession.delete("adminMapper2.deleteMemberLock", userNo);
-	}
-	
 	public int deleteStudent(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 삭제하는 메소드
 		
 		return sqlSession.delete("adminMapper2.deleteStudent", userNo);
