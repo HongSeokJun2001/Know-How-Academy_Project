@@ -85,13 +85,6 @@ public class AdminService2 {
 	
 		return ad2.updateStudentStatus(sqlSession, studentStatus)*ad2.updateStudentMemberStatus(sqlSession, studentStatus);
 	}
-	
-	@Transactional
-	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
-		
-		return ad2.deleteMemberLock(sqlSession, userNo);
-	}
-
 
 	public ArrayList<StudentPendingListDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
@@ -108,6 +101,12 @@ public class AdminService2 {
 	public int updateStudentReject(int userNo) { // 학원생의 가입을 거절하는 메소드
 		
 		return ad2.updateStudentReject(sqlSession, userNo);
+	}
+	
+	@Transactional
+	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
+		
+		return ad2.deleteStudent(sqlSession, userNo);
 	}
 	
 	public int adminSelectBoardCount(String postType) { // 공지사항, 학원소식의 개수를 불러오는 메소드
