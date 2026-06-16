@@ -89,8 +89,15 @@
         font-size: 14px;
       
 	}
-	.btn-enroll:hover {
+	.btn-changePage:hover {
 	    background-color: #3225A3;
+	}
+	.btn-changePage:hover {
+	    background-color: light coral;
+	}
+	button:disabled {
+	     opacity : 0.6;
+	     
 	}
 </style>
 </head>
@@ -114,7 +121,7 @@
 						<input type="password" class="changePage-input" name="userPwd"  
 						minlength="8" maxlength="20" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)_+=\-])[a-zA-Z\d!@#$%^&*\(\)_+=\-]+$" 
 						title="8~20자리 영문자/숫자/특수문자 포함" placeholder="8~20자리 영문자/숫자/특수문자 포함" autocomplete="new-password">
-					    <div class="errorMessage" id="newUserPwdErrorMessage"></div>
+				
 					</th>
 					<th></th>
 				</tr>
@@ -123,7 +130,7 @@
 					<th>
 						<input type="password" class="changePage-input" id="userPwdCheck" name="userPwdCheck" 
 						autocomplete="new-password" maxlength="20" >
-						<div class="errorMessage" id="newUserPwdCheckErrorMessage"></div>
+					
 					</th>
 					<th></th>
 				</tr>
@@ -147,7 +154,8 @@
 				<tr>
 					<th><label for="email">수정할 이메일</label></th>
 					<th>
-						<input type="email" class="changePage-input" name="email" >
+						<input type="email" class="changePage-input"  
+						       oninput="toggleEmailButton()" name="email" id="email">
 					</th>
 					<th>
                         <button type="button" id="emailCheckBtn" onclick="emailCheck();"
@@ -178,7 +186,7 @@
 				<th></th>
 				<th>
 				    <button type="submit" onclick="return validateInformation();" class="btn-changePage">내 정보 수정</button>
-				    <button type="reset" class="btn-changePage">초기화</button>
+				    <button type="reset" onclick="resetForm();" class="btn-changePage">초기화</button>
 				</th>
                 <th></th>
 				</tr>
@@ -189,6 +197,19 @@
 
 		 </form>
 		 <script>
+		 let isEmailChecked = false;
+		 
+		 function toggleEmailButton() {
+			    const email = document.getElementById('email');
+			    const Button = document.getElementById('emailCheckBtn');
+			    
+			    // 단순 텍스트가 입력되었는지 확인하는 경우 (공백 제외)
+			    if (email.value.trim() !== "") {
+			        Button.disabled = false; // 버튼 활성화
+			    } else {
+			        Button.disabled = true;  // 버튼 비활성화
+			    }
+		}
 		 function emailCheck() {
 				
 				let $email = $("#counselorInformationChange-form input[name=email]");
@@ -218,6 +239,7 @@
 								
 								// 이메일값을 확정 (다시는 수정 못하게)
 								$email.prop("readonly", true);
+								isEmailChecked = true; // ★ 중복 체크 완료
 								
 							} else {
 								// > 사용하지 않겠다고 의사를 밝힌 경우 (취소 버튼 클릭 시)
@@ -235,19 +257,28 @@
 			
 		      }
 		    
-			  function validateForm() {
+			  function validateInformation() {
 					
 				if($("#counselorInformationChange-form input[name=userPwd]").val() != $("#counselorInformationChange-form input[name=userPwdCheck]").val()) {
 						
 					alertify.alert("비밀번호가 일치하지 않습니다.");
 					return false;
 				}
+				
+                const emailVal = $("#myInformationChange-form input[name=email]").val().trim();
+			    
+			    // [조건] 빈칸이 '아니고' 이메일 중복체크를 '안 했다면'
+			    if (emailVal !== "" && !isEmailChecked) {
+			        alertify.alert("이메일 중복확인을 진행해주세요.");
+			        return false; // form 제출 막기
+			    }
 			  }
 	
 			  function resetForm() {
 						
-				$("#counselorInformationChange-form input[name=userId]").prop("readonly", false);
-				$("#idCheckBtn").removeAttr("disabled");
+				$("#counselorInformationChange-form input[name=email]").prop("readonly", false);
+				$("#emailCheckBtn").removeAttr("disabled");
+				isEmailChecked = false;
 			  }
 		     
 		  </script>
