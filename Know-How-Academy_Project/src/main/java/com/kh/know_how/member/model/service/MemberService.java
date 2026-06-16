@@ -26,7 +26,7 @@ public class MemberService {
 	@Transactional
 	public int insertMember(Member m) {
 		
-		return memberDao.insertMember(sqlSession, m) * memberDao.insertMemberLock(sqlSession, m.getUserNo());
+		return memberDao.insertMember(sqlSession, m);
 	}
 	
 	@Transactional
