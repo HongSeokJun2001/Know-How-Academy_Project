@@ -182,7 +182,7 @@
 
         <!-- 아이디 -->
         <div class="form-group">
-            <label for="userId">아이디</label>
+            <label for="userId">아이디*</label>
             <div class="input-row">
                 <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" required>
                 <button type="button" class="sub-btn" onclick="idCheck();">중복검사</button>
@@ -192,14 +192,14 @@
 
         <!-- 비밀번호 -->
         <div class="form-group">
-            <label for="userPwd">비밀번호</label>
+            <label for="userPwd">비밀번호*</label>
             <input type="password" id="userPwd" name="userPwd" placeholder="비밀번호를 입력하세요" required>
             <div class="helper-text">8~20자의 영문 대소문자, 숫자, 특수문자를 조합하여 입력해 주세요.</div>
         </div>
 
         <!-- 비밀번호 확인 -->
         <div class="form-group">
-            <label for="userPwdCheck">비밀번호 확인</label>
+            <label for="userPwdCheck">비밀번호 확인*</label>
             <input type="password" id="userPwdCheck" placeholder="비밀번호를 다시 입력하세요" required>
             <div class="helper-text">비밀번호를 한 번 더 입력해 주세요.</div>
         </div>
