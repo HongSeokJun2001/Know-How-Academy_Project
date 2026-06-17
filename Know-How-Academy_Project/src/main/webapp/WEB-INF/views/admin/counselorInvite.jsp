@@ -319,6 +319,10 @@
             background-color: #f1f3f5;
             color: #6c757d;
         }
+        .invite-status.inactive {
+            background-color: #f1f3f5;
+            color: #6c757d;
+        }
 
         /* 만료 */
         .invite-status.expired {
@@ -390,6 +394,9 @@
         #inviteMailBtn:disabled {
             cursor: wait;
             opacity: 0.65;
+        }
+        .invite-history-table tbody tr:hover {
+            background-color: #fafaff;
         }
 
     </style>

@@ -40,7 +40,7 @@
     }
 	.checkPasswordPage-table th {
         padding: 10px;
-        color: #6F6D80;
+        color: black;
         font-weight: 500;
         font-size: 15px;
     }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -98,102 +99,189 @@
     
     <div class="selectForm-outer">
      <br>
-     <h3 align="center" class="selectPage-title">내정보 조회</h3>
-     <br>
-    <%-- 상담예약 페이지로 요청을 보냄--%>
-    <div id="counselorInformationSelect-form">
-                                              
-      <table class="selectPage-table" >
-        <thead>
-        <tr>
-          <th></th>
-          <td></td>
-          <th></th>
-          <th></th>
-          <td></td>
-        </tr>
-        <tr>
-           <th><br></th>
-        </tr>
-        <tr>
-            <td class="selectPage-tableTd"></td>
-            <td class="selectPage-tableTd"></td>
-            <td class="selectPage-tableTd"></td>
-            <td class="selectPage-tableTd"></td>
-            <td class="selectPage-tableTd"></td>
-        </tr>
-        </thead>
-        
-        <tbody>
-         <tr>
-           <th class="selectPage-tableTh"><label for="userId">아이디</label></th>
-           <td class="selectPage-tableTd">
-               <label>${ sessionScope.loginUser.userId }</label>  
-           </td>
-           <th class="selectPage-tableTh"><label for="createdAt">기간</label></th>
-           <td class="selectPage-tableTd">
-               <label>${ sessionScope.loginUser.createdAt }</label>
-           </th>
-           <td></td>
-        </tr>
-        <tr>
-           <th class="selectPage-tableTh"><label for="name">이름</label></th>
-           <td class="selectPage-tableTd">
-              <label>${ sessionScope.loginUser.userName }</label> 
-           </td>
-           <th></th>
-           <td></td>
-           <td>   
-           </td>
-        </tr>
-        <tr>
-            <th class="selectPage-tableTh"><label for="phone">휴대전화 번호</label></th>
-            <td class="selectPage-tableTd">
-              <label>${ sessionScope.loginUser.phone }</label>
-            </td>
-            <th colspan="5">우리반학생들이 궁금하다면?</th>
-            <td></td>
-        </tr>
-        <tr>
-           <th class="selectPage-tableTh"><label for="email">이메일</label></th>
-           <td class="selectPage-tableTd">
-              <label>${ sessionScope.loginUser.email }</label>
-           </td>
-           <th colspan="5">
-               <button type="button" onclick="myStudentClassListPage();" class="btn-selectPageCheck">우리반학생목록</button>
-           </th>
-           <td></td>
-        </tr>
-        <tr>
-           <th class="selectPage-tableTh"><label for="class">반</label></th>
-           <td class="selectPage-tableTd">
-             <label>${ sessionScope.loginUser.classNo } 반</label>
-           </td>
-           <th></th>
-           <td></td>
-           <td></td>
-        </tr>
-        <tr>
-           <th class="selectPage-tableTh"><label for="address">주소</label></th>
-           <td class="selectPage-tableTd">
-             <label>${ sessionScope.loginUser.address }</label>
-           </td>
-           <th></th>
-           <td></td>
-           <td></td>
-        </tr>
-        </tbody>
-      </table>
-     </div>
+     <div class="login-area"> 
+      
+    <c:choose>
+	    <c:when test= "${ sessionScope.loginUser.roleCode eq 'INSTRUCTOR'}" >
+	     <h3 align="center" class="selectPage-title">(강사)내정보 조회</h3>
+	     <br>
+	    <%-- 상담예약 페이지로 요청을 보냄--%>
+	    <form id="counselorInformationSelect-form" action="/know-how/myPageCounselor/myStudentClassListForm" method="post">
+	                                              
+	      <table class="selectPage-table" >
+	        <thead>
+	        <tr>
+	          <th></th>
+	          <td></td>
+	          <th></th>
+	          <th></th>
+	          <td></td>
+	        </tr>
+	        <tr>
+	           <th><br></th>
+	        </tr>
+	        <tr>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	        </tr>
+	        </thead>
+	        
+	        <tbody>
+	         <tr>
+	           <th class="selectPage-tableTh"><label for="userId">아이디</label></th>
+	           <td class="selectPage-tableTd">
+	               <label>${ sessionScope.loginUser.userId }</label>  
+	           </td>
+	           <th class="selectPage-tableTh"><label for="createdAt">기간</label></th>
+	           <td class="selectPage-tableTd">
+	               <label>${ sessionScope.loginUser.createdAt }</label>
+	           </td>
+	           <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="name">이름</label></th>
+	           <td class="selectPage-tableTd">
+	              <label>${ sessionScope.loginUser.userName }</label> 
+	           </td>
+	           <th></th>
+	           <td></td>
+	           <td>   
+	           </td>
+	        </tr>
+	        <tr>
+	            <th class="selectPage-tableTh"><label for="phone">휴대전화 번호</label></th>
+	            <td class="selectPage-tableTd">
+	              <label>${ sessionScope.loginUser.phone }</label>
+	            </td>
+	            <th colspan="5">우리반학생들이 궁금하다면?</th>
+	            <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="email">이메일</label></th>
+	           <td class="selectPage-tableTd">
+	              <label>${ sessionScope.loginUser.email }</label>
+	           </td>
+	           <th colspan="5">
+	               <button type="submit" class="btn-selectPageCheck">우리반학생목록</button>
+	           </th>
+	           <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="class">반</label></th>
+	           <td class="selectPage-tableTd">
+	             <label>${ sessionScope.loginUser.classNo } 반</label>
+	           </td>
+	           <th></th>
+	           <td></td>
+	           <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="address">주소</label></th>
+	           <td class="selectPage-tableTd">
+	             <label>${ sessionScope.loginUser.address }</label>
+	           </td>
+	           <th></th>
+	           <td><input type="hidden" name="classNo" value="${ sessionScope.loginUser.classNo }"></td>
+	           <td></td>
+	        </tr>
+	        </tbody>
+	      </table>
+	       </form>
+	      </c:when>
+	      
+	      <c:otherwise>
+	      
+	       <h3 align="center" class="selectPage-title">(상담사)내정보 조회</h3>
+	        <br>
+	       <table class="selectPage-table" >
+	        <thead>
+	        <tr>
+	          <th></th>
+	          <td></td>
+	          <th></th>
+	          <th></th>
+	          <td></td>
+	        </tr>
+	        <tr>
+	           <th><br></th>
+	        </tr>
+	        <tr>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	            <td class="selectPage-tableTd"></td>
+	        </tr>
+	        </thead>
+	        
+	        <tbody>
+	         <tr>
+	           <th class="selectPage-tableTh"><label for="userId">아이디</label></th>
+	           <td class="selectPage-tableTd">
+	               <label>${ sessionScope.loginUser.userId }</label>  
+	           </td>
+	           <th class="selectPage-tableTh"><label for="createdAt">기간</label></th>
+	           <td class="selectPage-tableTd">
+	               <label>${ sessionScope.loginUser.createdAt }</label>
+	           </td>
+	           <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="name">이름</label></th>
+	           <td class="selectPage-tableTd">
+	              <label>${ sessionScope.loginUser.userName }</label> 
+	           </td>
+	           <th></th>
+	           <td></td>
+	           <td>   
+	           </td>
+	        </tr>
+	        <tr>
+	            <th class="selectPage-tableTh"><label for="phone">휴대전화 번호</label></th>
+	            <td class="selectPage-tableTd">
+	              <label>${ sessionScope.loginUser.phone }</label>
+	            </td>
+	            <td></td>
+	            <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="email">이메일</label></th>
+	           <td class="selectPage-tableTd">
+	              <label>${ sessionScope.loginUser.email }</label>
+	           </td>
+	           <td>
+	           </td>
+	           <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="class">반</label></th>
+	           <td class="selectPage-tableTd">
+	             <label>${ sessionScope.loginUser.classNo } 반</label>
+	           </td>
+	           <th></th>
+	           <td></td>
+	           <td></td>
+	        </tr>
+	        <tr>
+	           <th class="selectPage-tableTh"><label for="address">주소</label></th>
+	           <td class="selectPage-tableTd">
+	             <label>${ sessionScope.loginUser.address }</label>
+	           </td>
+	           <th></th>
+	           <td><input type="hidden" name="classNo" value="${ sessionScope.loginUser.classNo }"></td>
+	           <td></td>
+	        </tr>
+	        </tbody>
+	        </table>
+	 
+	    </c:otherwise>
+	</c:choose>
+	   
     </div>
+   </div>
     
-    <script>
-		function myStudentClassListPage() {
-			
-		    // 상담예약 페이지로 이동
-		    location.href = "/know-how/myPageCounselor/myStudentClassListForm";
-		    // GET 방식
-		}
-	</script>
 </body>
 </html>

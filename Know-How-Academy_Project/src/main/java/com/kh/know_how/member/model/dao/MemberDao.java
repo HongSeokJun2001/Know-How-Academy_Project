@@ -19,11 +19,6 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.insertMember", m);
 	}
 	
-	public int insertMemberLock(SqlSessionTemplate sqlSession) {
-		
-		return sqlSession.update("memberMapper.insertMemberLock");
-	}
-	
     public int updateMember(SqlSessionTemplate sqlSession, Member m) {
 		
 		return sqlSession.update("memberMapper.updateMember", m);
@@ -77,6 +72,11 @@ public class MemberDao {
 	public int resetFailCount(SqlSessionTemplate sqlSession, MemberLock ml) {
 		
 		return sqlSession.update("memberMapper.resetFailCount", ml);
+	}
+
+	public int insertMemberLock(SqlSessionTemplate sqlSession, int userNo) {
+		
+		return sqlSession.insert("memberMapper.insertMemberLock", userNo);
 	}
 
 }

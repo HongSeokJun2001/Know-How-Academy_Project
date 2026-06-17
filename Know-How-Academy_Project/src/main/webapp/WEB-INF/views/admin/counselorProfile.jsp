@@ -359,7 +359,6 @@
                 <div class="profile-img-box">
                     <span>
                         <img src="${ctx}${requestScope.counselor.imgPath}" alt="프로필사진">
-                        <!-- /know-how/resources/image/default-profile.png  -->
                     </span>
                 </div>
 

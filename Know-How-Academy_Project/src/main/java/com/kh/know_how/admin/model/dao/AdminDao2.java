@@ -78,6 +78,11 @@ public class AdminDao2 {
 		
 		return sqlSession.update("adminMapper2.updateStudentStatus", studentStatus);
 	}
+	
+	public int updateStudentMemberStatus(SqlSessionTemplate sqlSession, StudentStatusDto studentStatus) {// 학원생의 재학/휴학 처리 할 때 Member 테이블도 수정하는 메소드
+		
+		return sqlSession.update("adminMapper2.updateStudentMemberStatus", studentStatus);
+	}
 
 	public ArrayList<StudentPendingListDto> selectPendingStudentList(SqlSessionTemplate sqlSession) { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
@@ -97,11 +102,6 @@ public class AdminDao2 {
 	public int updateStudentReject(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 거절하는 메소드
 		
 		return sqlSession.update("adminMapper2.updateStudentReject", userNo);
-	}
-	
-	public int deleteMemberLock(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 삭제 시 MemberLock도 삭제
-		
-		return sqlSession.delete("adminMapper2.deleteMemberLock", userNo);
 	}
 	
 	public int deleteStudent(SqlSessionTemplate sqlSession, int userNo) { // 학원생의 가입을 삭제하는 메소드

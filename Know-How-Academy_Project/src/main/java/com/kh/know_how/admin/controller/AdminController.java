@@ -63,7 +63,7 @@ public class AdminController {
     	ArrayList<TodayReservationDto> reservationList = as.selectTodayReservationList();
     	int todayReservationCount = as.todayReservationCount();
     	
-    	// 통계 및 상담 카테고리 조회	: %를 합친 값이 101%일 경우 처리(-)
+    	// 통계 및 상담 카테고리 조회	
     	ArrayList<AdminDashboardStatsDto> dashboard = as.selectDashboardStats();
     	ArrayList<CounselCategoryDto> counselCategory = as.selectCounselCategory();
     	
@@ -159,20 +159,21 @@ public class AdminController {
     @PostMapping("/counselor/updateStatus")
     public String updateCounselorStatus(int userNo, String status, Model model) {
     		
-    	System.out.println(">>> [updateCounselorStatus] " +userNo+status );
-		int result = as.updateCounselorStatus(userNo, status);
-		
-		if(result > 0) {
-			System.out.println(result);
-			return "redirect:/admin/counselorProfile/" + userNo;
-		}else {
-			System.out.println(result);
+    	
+    	try {
+    		
+    		as.updateCounselorStatus(userNo, status);
+    		return "redirect:/admin/counselorProfile/" + userNo;
+    		
+		} catch (IllegalStateException e) {
+			System.out.println(">>> [IllegalStateException] " + e.getMessage() );
 			model.addAttribute("errorMsg", "변경 실패. 다시 시도해주세요.");
 			model.addAttribute("redirectUrl", "/admin/counselorProfile/"+userNo);
 			model.addAttribute("page", "adminAlert");
 
 			return "admin/adminLayout";
 		}
+		
     }
     
     
@@ -204,7 +205,7 @@ public class AdminController {
     	
     	String baseUrl =
     	        request.getScheme() + "://" +
-    	        request.getServerName() +
+    	        "192.168.20.26" +
     	        ":" +
     	        request.getServerPort() +
     	        request.getContextPath();

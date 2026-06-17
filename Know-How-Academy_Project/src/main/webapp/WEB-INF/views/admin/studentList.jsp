@@ -305,8 +305,8 @@
 					<label for="studentStatus">상태</label>
 					<select id="studentStatus" name="studentStatus" class="select">
 						<option value="">전체</option>
-						<option value="ACTIVE">재학</option>
-						<option value="REST">휴학</option>
+						<option value="ATTENDING">재학</option>
+						<option value="ABSENT">휴학</option>
 					</select>
 				</div>
 

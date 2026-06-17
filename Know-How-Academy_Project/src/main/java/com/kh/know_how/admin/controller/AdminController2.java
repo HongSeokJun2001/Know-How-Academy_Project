@@ -321,8 +321,8 @@ public class AdminController2 {
     public String updateNotice(Board n ,MultipartFile reUpfile,
     						   @RequestParam(defaultValue="0") int originalFileNo,
     						   String originalFileSaveName,
-    						   HttpSession session,
-    						   Model model) { // 공지사항 수정하는 메소드
+    						   HttpSession session
+    						   ) { // 공지사항 수정하는 메소드
     	
     	FileAttachment fa = null;
     	
@@ -667,8 +667,6 @@ public class AdminController2 {
         			message.setSubject("know-how academy 임시 비밀번호입니다.");
         			message.setText("임시 비밀번호 : " + random + "\n임시 비밀번호로 로그인 후 비밀번호 변경을 권장드립니다.");
         			message.setTo(m.getEmail());
-        			
-        			System.out.println(random + ", " + encPwd);
         			
         			mailSender.send(message);
         			

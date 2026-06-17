@@ -10,7 +10,7 @@
 		  FROM STUDENT_DETAIL S
 		  JOIN MEMBER M USING(USER_NO)
 		 WHERE M.ROLE_CODE = 'STUDENT'
-		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
+		   AND M.STATUS IN('ACTIVE', 'WITHDRAWN')
 		   AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 	</select>
 	
@@ -28,7 +28,7 @@
 		  LEFT JOIN COUNSELOR_PROFILE C ON(S.COUNSELOR_NO = C.COUNSEL_NO)
 		  LEFT JOIN MEMBER CM ON (CM.USER_NO = C.USER_NO)
 		 WHERE SM.ROLE_CODE = 'STUDENT'
-		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
+		   AND SM.STATUS IN('ACTIVE', 'WITHDRAWN')
 		   AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
 		 ORDER BY STUDENT_NO DESC
 	</select>
@@ -42,15 +42,17 @@
 		 WHERE (M.USER_NAME LIKE '%' || #{keyword} || '%' 
 		    OR M.PHONE LIKE '%' || #{keyword} || '%')
 		   AND M.ROLE_CODE = 'STUDENT'
-		   AND M.STATUS IN('ACTIVE', 'INACTIVE')
-		    <if test="studentStatus == 'ACTIVE'">
-		    	AND S.STUDENT_STATUS = 'ATTENDING'
+		    <if test="studentStatus == 'ATTENDING'">
+		    	AND S.STUDENT_STATUS = #{studentStatus}
+		    	AND M.STATUS = 'ACTIVE'
 		    </if> 
-		    <if test="studentStatus == 'REST'">
-		    	AND S.STUDENT_STATUS = 'ABSENT'
+		    <if test="studentStatus == 'ABSENT'">
+		    	AND S.STUDENT_STATUS = #{studentStatus}
+		    	AND M.STATUS = 'WITHDRAWN'
 		    </if>
 		    <if test="studentStatus == ''">
 		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
+		    	AND M.STATUS IN('ACTIVE', 'WITHDRAWN')
 		    </if>
 	</select>
 	
@@ -70,15 +72,17 @@
 		  WHERE (SM.USER_NAME LIKE '%' || #{keyword} || '%' 
 		    OR SM.PHONE LIKE '%' || #{keyword} || '%')
 		   AND SM.ROLE_CODE = 'STUDENT'
-		   AND SM.STATUS IN('ACTIVE', 'INACTIVE')
-		    <if test="studentStatus == 'ACTIVE'">
-		    	AND S.STUDENT_STATUS = 'ATTENDING'
+		    <if test="studentStatus == 'ATTENDING'">
+		    	AND S.STUDENT_STATUS = #{studentStatus}
+		    	AND SM.STATUS = 'ACTIVE'
 		    </if> 
-		    <if test="studentStatus == 'REST'">
-		    	AND S.STUDENT_STATUS = 'ABSENT'
+		    <if test="studentStatus == 'ABSENT'">
+		    	AND S.STUDENT_STATUS = #{studentStatus}
+		    	AND SM.STATUS = 'WITHDRAWN'
 		    </if>
 		    <if test="studentStatus == ''">
 		    	AND S.STUDENT_STATUS IN ('ABSENT', 'ATTENDING')
+		    	AND SM.STATUS IN('ACTIVE', 'WITHDRAWN')
 		    </if>
 		  ORDER BY STUDENT_NO DESC
 	</select>
@@ -138,7 +142,23 @@
 		 WHERE STUDENT_NO = #{studentNo}
 	</update>
 	
-	<!-- 10. 학생 가입신청 대기, 거절을 조회하는 쿼리문 -->
+	<!-- 10. 휴학 처리/휴학 취소해줄때 member 테이블도 수정하는 쿼리문 -->
+	<update id="updateStudentMemberStatus" parameterType="com.kh.know_how.admin.model.dto.StudentStatusDto">
+		UPDATE MEMBER
+		   <if test="studentStatus == 'ABSENT'">
+		    	SET STATUS = 'WITHDRAWN'
+		    </if> 
+		    <if test="studentStatus == 'ATTENDING'">
+		    	SET STATUS = 'ACTIVE'
+		    </if>
+		     , UPDATED_AT = SYSDATE
+		 WHERE USER_NO = (SELECT USER_NO 
+		 					FROM MEMBER 
+		 				    JOIN STUDENT_DETAIL USING(USER_NO) 
+		 				   WHERE STUDENT_NO = #{studentNo})
+	</update>
+	
+	<!-- 11. 학생 가입신청 대기, 거절을 조회하는 쿼리문 -->
 	<select id="selectPendingStudentList"
 			resultType="com.kh.know_how.admin.model.dto.StudentPendingListDto">
 		SELECT USER_NO AS userNo
@@ -151,7 +171,7 @@
 		 ORDER BY 4
 	</select>
 	
-	<!-- 11. 학생 가입신청 승인 쿼리문 -->
+	<!-- 12. 학생 가입신청 승인 쿼리문 -->
 	<update id="updateStudentApprove" parameterType="com.kh.know_how.admin.model.dto.StudentApproveDto">
 		UPDATE MEMBER
 		   SET STATUS = 'ACTIVE'
@@ -160,19 +180,19 @@
 		 WHERE USER_NO = #{userNo}
 	</update>
 	
-	<!-- 12. 학생 가입신청 승인 시 학생 생성 쿼리문 -->
+	<!-- 13. 학생 가입신청 승인 시 학생 생성 쿼리문 -->
 	<insert id="insertStudent" parameterType="com.kh.know_how.admin.model.dto.StudentApproveDto">
 		INSERT INTO STUDENT_DETAIL(STUDENT_NO
 								 , COUNSELOR_NO
 								 , STUDENT_STATUS
 								 , USER_NO)
 							VALUES(SEQ_STUDENT_NO.NEXTVAL
-								 , (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE JOIN MEMBER USING(USER_NO) WHERE CLASS_NO = #{classNo} AND CATEGORY_NO = 3)
+								 , (SELECT COUNSEL_NO FROM COUNSELOR_PROFILE JOIN MEMBER USING(USER_NO) WHERE CLASS_NO = #{classNo})
 								 , 'ATTENDING'
 								 , #{userNo})
 	</insert>
 	
-	<!-- 13. 학생 가입신청 거절 쿼리문 -->
+	<!-- 14. 학생 가입신청 거절 쿼리문 -->
 	<update id="updateStudentReject" parameterType="_int">
 		UPDATE MEMBER
 		   SET STATUS = 'REJECTED'
@@ -180,19 +200,12 @@
 		 WHERE USER_NO = #{userNo}
 	</update>
 	
-	<!-- 14. 가입거절 되어있는 학생을 삭제하는 쿼리문 -->
+	<!-- 15. 가입거절 되어있는 학생을 삭제하는 쿼리문 -->
 	<delete id="deleteStudent" parameterType="_int">
 		DELETE
 		  FROM MEMBER
 		 WHERE USER_NO = #{userNo}
 		   AND STATUS = 'REJECTED'
-	</delete>
-	
-	<!-- 15. 가입거절 되어있는 학생을 삭제할 때, MemberLock도 삭제하는 쿼리문 -->
-	<delete id="deleteMemberLock" parameterType="_int">
-		DELETE
-		  FROM MEMBER_LOCK
-		 WHERE USER_NO = #{userNo}
 	</delete>
 	
 	<!-- 16. 공지사항, 학원소식 상태 변경용 쿼리문 -->
@@ -218,7 +231,7 @@
 	</delete>
 	
 	<!-- 19. 학원소식 대표이미지와 상세이미지 추가용 쿼리문 -->
-	<insert id="insertFileAttachmentList" parameterType="FileAttachment">
+	<insert id="insertFileAttachmentList" parameterType="fileAttachment">
 		INSERT INTO FILE_ATTACHMENT(FILE_NO
 								  , TARGET_NO
 								  , TARGET_TYPE

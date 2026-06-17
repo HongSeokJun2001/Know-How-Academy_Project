@@ -89,11 +89,6 @@ public class BoardDao {
 		return (ArrayList) sqlSessison.selectList("boardMapper.mainPageNoticeList");
 	}
 
-	public int selectNewsListCount(SqlSessionTemplate sqlSession) { // 학원소식의 갯수를 불러오는 리스트
-
-		return sqlSession.selectOne("boardMapper.selectNewsListCount");
-	}
-
 	public ArrayList<Board> selectNewsList(SqlSessionTemplate sqlSession, PageInfo pi) { // 메인페이지에 나오는 학원소식 리스트를 불러오는 메소드
 		int limit = pi.getBoardLimit();
 		int offset = (pi.getCurrentPage() - 1) * limit;

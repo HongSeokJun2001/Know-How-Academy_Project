@@ -110,18 +110,19 @@
 
         <body>
             <%-- - 1회성 alert 기능 - script 태그 내에서는 JSP Action Tag 들이 사용 불가함!! (자바스크립트 영역이기 때문) --%>
-                <c:if test="${ not empty sessionScope.alertMsg }">
-                    <script>
-
-                        let alertMsg = "${ sessionScope.alertMsg }";
-
-                        // alert(alertMsg);
-                        alertify.alert(alertMsg);
-
-                    </script>
+                	<c:if test="${ not empty sessionScope.alertMsg }">
+	                    <script>
+	                    	alertify.defaults.glossary.title = '시스템';	
+	                    
+	                        let alertMsg = "${ sessionScope.alertMsg }";
+	
+	                        // alert(alertMsg);
+	                        alertify.alert(alertMsg);
+	
+	                    </script>
                     <c:remove var="alertMsg" scope="session" />
-                </c:if>
-                <script>
+               	 	</c:if>
+                <script> 
                     alertify.defaults.glossary.title = '시스템';
                 </script>
                 <br>
@@ -133,7 +134,7 @@
                 <br>
                 <c:choose>
 
-                    <c:when test="${empty sessionScope.loginUser}">
+                    <c:when test="${ empty sessionScope.loginUser}">
                         <div class="nav-area" align="center">
                             <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
                             <div class="menu">
@@ -175,7 +176,7 @@
                             <div class="menu"><a href="/know-how/myPage">마이페이지</a></div>
                         </div>
                     </c:when>
-                    <c:otherwise>
+                    <c:when test="${ sessionScope.loginUser.roleCode eq 'INSTRUCTOR' }">
                         <div class="nav-area" align="center">
                             <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
                             <div class="menu">
@@ -188,14 +189,36 @@
                             <div class="menu">
                                 <a href="#">커뮤니티</a>
                                 <ul>
-                                   <li><a href="/know-how/community/board/notice">공지사항</a></li>
+                                     <li><a href="/know-how/community/board/notice">공지사항</a></li>
                                     <li><a href="/know-how/community/board/post">자유게시판</a></li>
                                     <li><a href="/know-how/community/board/student">수강생게시판</a></li>
                                 </ul>
                             </div>
                             <div class="menu"><a href="/know-how/myPageCounselor">마이페이지</a></div>
                         </div>
-                    </c:otherwise>
+                    </c:when>
+                     <c:when test="${ sessionScope.loginUser.roleCode eq 'COUNSELOR' }">
+                        <div class="nav-area" align="center">
+                            <div class="menu"><a href="/know-how/introduce">교육원 소개</a></div>
+                            <div class="menu">
+                                <a href="#">상담</a>
+                                <ul>
+                                    <li><a href="/know-how/reservation/list">예약리스트</a></li>
+                                    <li><a href="/know-how/reservation/counselor/list">상담목록</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu">
+                                <a href="#">커뮤니티</a>
+                                <ul>
+                                     <li><a href="/know-how/community/board/notice">공지사항</a></li>
+                                    <li><a href="/know-how/community/board/post">자유게시판</a></li>
+                                    <li><a href="/know-how/community/board/student">수강생게시판</a></li>
+                                </ul>
+                            </div>
+                            <div class="menu"><a href="/know-how/myPageCounselor">마이페이지</a></div>
+                        </div>
+                    </c:when>
+                    
                 </c:choose>
                 <script>
                     $(document).ready(function () {

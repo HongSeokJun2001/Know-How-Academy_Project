@@ -16,6 +16,7 @@
            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
            border: 1px solid black;
            max-width: 1000px;
+           max-height : 95%;
            margin: auto;
 	    }
 	
@@ -72,9 +73,9 @@
 			        </c:when>
 			        <%--Case. 반학생이 존재할 떄 --%>
 			        <c:otherwise>
-			            <c:forEach var="c" items="${classList}">
+			            <c:forEach var="m" items="${classList}">
 			                <tr>
-			                    <td>${c.className}</td>
+			                    <td>${m.className}</td>
 			                    
 			                    <td class="user-name">${m.userName}</td>
 			                    

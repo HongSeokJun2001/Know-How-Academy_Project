@@ -171,21 +171,24 @@ public class AdminService {
 	
 	//----------- 상담사 (휴직/재직) 변경용 메소드
 	@Transactional
-	public int updateCounselorStatus(int userNo, String status) {
+	public void updateCounselorStatus(int userNo, String status) {
 		// 상담사 상태 변경
 		Map<String, Object> param = new HashMap<>();
 		param.put("userNo", userNo);
 		param.put("status", status);
 		
-		int changeStatus = ad.updateCounselorStatus(sqlSession, param);
+		int memberResult = ad.updateMemberStatus(sqlSession, param);
+		int profileResult = ad.updateCounselorStatus(sqlSession, param);
+
+		if (memberResult != 1 || profileResult != 1) {
+		    throw new IllegalStateException("상담사 휴직/재직 상태 변경 실패");
+		}
 		
 		//상담사의 변경 전 class에 지정된 학생의 상담사번호를 NULL로 UPDATE
 		if("ACTIVE".equals(status)) {
 			ad.clearStudentCounselorNo(sqlSession, userNo);
 		} 
           
-		
-		return changeStatus;// 업무상 휴직 처리 성공
 	}
 	
 	//----------- 초대링크 비활성화 메소드

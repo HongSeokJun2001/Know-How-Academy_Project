@@ -83,15 +83,8 @@ public class AdminService2 {
 	@Transactional
 	public int updateStudentStatus(StudentStatusDto studentStatus) { // 학원생의 휴학/재학 처리해주는 메소드
 	
-		return ad2.updateStudentStatus(sqlSession, studentStatus);
+		return ad2.updateStudentStatus(sqlSession, studentStatus)*ad2.updateStudentMemberStatus(sqlSession, studentStatus);
 	}
-	
-	@Transactional
-	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
-		
-		return ad2.deleteMemberLock(sqlSession, userNo)*ad2.deleteStudent(sqlSession, userNo);
-	}
-
 
 	public ArrayList<StudentPendingListDto> selectPendingStudentList() { // 학원생의 가입 대기 리스트를 불러오는 메소드
 		
@@ -108,6 +101,12 @@ public class AdminService2 {
 	public int updateStudentReject(int userNo) { // 학원생의 가입을 거절하는 메소드
 		
 		return ad2.updateStudentReject(sqlSession, userNo);
+	}
+	
+	@Transactional
+	public int deleteStudent(int userNo) { // 학원생의 가입을 삭제하는 메소드
+		
+		return ad2.deleteStudent(sqlSession, userNo);
 	}
 	
 	public int adminSelectBoardCount(String postType) { // 공지사항, 학원소식의 개수를 불러오는 메소드
@@ -143,16 +142,16 @@ public class AdminService2 {
 	}
 	
 	@Transactional
-	public int updateNotice(Board b, FileAttachment fa) { // 공지사항을 업데이트하는 메소드
+	public int updateNotice(Board n, FileAttachment fa) { // 공지사항을 업데이트하는 메소드
 
-		int result1 = bd.updateBoard(sqlSession, b);
+		int result1 = bd.updateBoard(sqlSession, n);
 		int result2 = 1;
 
 		if (fa != null) {
 
 			if (fa.getFileNo() != 0) {
 
-				result2 = ad2.adminDeleteFileAttachment(sqlSession, fa.getFileNo());
+				result2 = ad2.adminDeleteFileAttachment(sqlSession, n.getPostNo());
 
 			}
 			result2 = bd.insertNewFileAttachment(sqlSession, fa);

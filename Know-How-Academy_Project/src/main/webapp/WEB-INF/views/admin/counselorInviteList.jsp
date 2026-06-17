@@ -42,7 +42,7 @@
                     </c:when>
                     <c:otherwise>
                         <td colspan="2">
-                            <span class="invite-status ${lowerStatus}">${'expired' eq lowerStatus ? '만료' : '삭제완료'}</span>
+                            <span class="invite-status ${lowerStatus}">${'expired' eq lowerStatus ? '만료' : 'canceled'  eq lowerStatus ? '삭제완료' : '휴직'}</span>
                         </td>
                     </c:otherwise>
                 </c:choose>
