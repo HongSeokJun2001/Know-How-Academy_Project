@@ -142,16 +142,16 @@ public class AdminService2 {
 	}
 	
 	@Transactional
-	public int updateNotice(Board b, FileAttachment fa) { // 공지사항을 업데이트하는 메소드
+	public int updateNotice(Board n, FileAttachment fa) { // 공지사항을 업데이트하는 메소드
 
-		int result1 = bd.updateBoard(sqlSession, b);
+		int result1 = bd.updateBoard(sqlSession, n);
 		int result2 = 1;
 
 		if (fa != null) {
 
 			if (fa.getFileNo() != 0) {
 
-				result2 = ad2.adminDeleteFileAttachment(sqlSession, fa.getFileNo());
+				result2 = ad2.adminDeleteFileAttachment(sqlSession, n.getPostNo());
 
 			}
 			result2 = bd.insertNewFileAttachment(sqlSession, fa);

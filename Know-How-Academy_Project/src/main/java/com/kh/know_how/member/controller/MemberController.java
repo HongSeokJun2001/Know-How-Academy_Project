@@ -49,7 +49,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("login")
-	public String loginMember(Member m, Model model, String saveId,
+	public String loginMember(Member m, String saveId,
 			                  HttpSession session, HttpServletResponse response) {
 		
 		// XSS 공격 방지
@@ -125,7 +125,7 @@ public class MemberController {
 				
 				// 계정이 잠겨있을때
 				// 에러 문구를 담아서 에러페이지로 포워딩
-				model.addAttribute("errorMsg", "로그인5회이상실패로 계정이 잠겼습니다."
+				session.setAttribute("alertMsg", "로그인5회이상실패로 계정이 잠겼습니다."
 						               + "관리자에게문의하세요.");
 				// [결과 확인용 로그]
 				System.out.println("계정락 케이스");
