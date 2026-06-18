@@ -3,7 +3,6 @@ package com.kh.know_how.board.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale.Category;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +48,16 @@ public class BoardController {
 	//예)여러 글 목록, 글 작성 페이지, 키워드검색 
 	
 	@GetMapping("{type:notice|post|student}")
-	//COntrolle에서 정한 type : ~~~ 으로 브라우저요청을 받는다.
+	//Controlle에서 정한 type : ~~~ 으로 브라우저요청을 받는다.
+	//.jsp에서 a href 링크와 연결되기위한 type
 	public ModelAndView selectBoardList(@PathVariable String type,
 			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
-
+		//  public  ModelAndView  selectBoardList
+		//(접근제어자)	   (반환타입)   (임의로 정한 메서드명)
+		//ModelAndView
+		//Model == 
+		
+		
 		String postType;
 		String viewName;
 
@@ -164,7 +169,8 @@ public class BoardController {
 	 * @return
 	 */
 	@GetMapping("{type:notice|post|student}/detail/{postNo}")
-	public String selectBoard(@PathVariable String type, @PathVariable int postNo, Model model, HttpSession session) {
+	public String selectBoard(@PathVariable String type, @PathVariable int postNo, 
+								String condition1, String condition2, Model model, HttpSession session) {
 
 		String postType;
 		String viewName;
@@ -190,10 +196,13 @@ public class BoardController {
 
 			Board b = boardService.selectBoard(postNo);
 
-			FileAttachment fa = boardService.selectFileAttachment(postNo);
+			FileAttachment fa = boardService.selectFileAttachment(postNo);	
+		
 
 			model.addAttribute("b", b);
 			model.addAttribute("type", type);
+			model.addAttribute("condition1", condition1);
+			model.addAttribute("condition2", condition2);
 			model.addAttribute("fa", fa);
 			return viewName;
 		} else {
@@ -229,7 +238,7 @@ public class BoardController {
 			viewName = "community/board/postEnrollForm";
 		}
 
-		ArrayList<Category> list = boardService.selectCategoryList();
+		ArrayList<Board> list = boardService.selectCategoryList();
 
 		model.addAttribute("list", list);
 		model.addAttribute("postType", postType);
@@ -248,12 +257,15 @@ public class BoardController {
 	 * @return
 	 */
 	@PostMapping("/{type}/insert")
-	public String insertBoard(@PathVariable String type, Board b, HttpSession session, Model model,
-			MultipartFile originalFile) {
-
+	public String insertBoard(@PathVariable String type, 
+								Board b, HttpSession session, 
+								Model model,
+								MultipartFile originalFile) {
+		System.out.println("컨트롤러 진입 직후 카테고리: " + b.getCategory());
+		
 		String postType;
 		String viewName;
-
+		
 		switch (type) {
 		case "notice":
 			postType = "NOTICE";
@@ -267,7 +279,8 @@ public class BoardController {
 			break;
 		}
 
-		FileAttachment fa = null;
+		FileAttachment fa = null;		
+		
 
 		if (originalFile != null && !originalFile.isEmpty()) {
 
@@ -307,7 +320,7 @@ public class BoardController {
 	@PostMapping("/{type}/updateForm")
 	public ModelAndView updateForm(@PathVariable String type, @RequestParam("postNo") int postNo, ModelAndView mv) {
 
-		ArrayList<Category> list = boardService.selectCategoryList();
+		ArrayList<Board> list = boardService.selectCategoryList();
 
 		Board b = boardService.selectBoard(postNo);
 
@@ -467,6 +480,17 @@ public class BoardController {
 		return (result > 0) ? "success" : "fail";
 
 	}
+	
+	@ResponseBody
+	@PostMapping("pcdelete")
+	public String ajaxDeleteComment(@RequestParam ("commentNo") int commentNo, HttpSession session) {
+		
+		int result = boardService.deleteComment(commentNo);
+		
+		return (result > 0) ? "success" : "fail"; 
+		
+	}
+	
 
 	@ResponseBody
 	@GetMapping("news/list")

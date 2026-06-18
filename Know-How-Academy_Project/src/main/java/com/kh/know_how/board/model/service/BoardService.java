@@ -2,7 +2,7 @@ package com.kh.know_how.board.model.service;
 
 import java.util.ArrayList; // 필요에 따라 추가
 import java.util.HashMap;
-import java.util.Locale.Category;
+
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class BoardService {
 		return result1 * result2;
 	}
 
-	public ArrayList<Category> selectCategoryList() {
+	public ArrayList<Board> selectCategoryList() {
 
 		return boardDao.selectCategoryList(sqlSession);
 	}
@@ -143,6 +143,12 @@ public class BoardService {
 	public int insertComment(PostComment pc) {
 
 		return boardDao.insertComment(sqlSession, pc);
+	}
+	
+	@Transactional
+	public int deleteComment(int commentNo) {
+		
+		return boardDao.deleteComment(sqlSession, commentNo);
 	}
 
 }

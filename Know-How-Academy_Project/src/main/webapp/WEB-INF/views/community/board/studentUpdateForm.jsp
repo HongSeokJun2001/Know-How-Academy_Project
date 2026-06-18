@@ -86,14 +86,14 @@
                         <tr>
                             <th>제목</th>
                             <td colspan="3"><input type="text" name="title" value="${b.title}" required></td>
-                            <!--<th>카테고리</th>추후 기능추가
+                           <th>카테고리</th>
 							<td colspan="1">
 								<select name="condition2" class="form-control mr-sm-2">
 								<option value="admission">입학상담</option>
 								<option value="employment">취업상담
 								</option>
 							</select>
-							</td>-->
+							</td>
                         </tr>
                         	
                         <tr>

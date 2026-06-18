@@ -85,7 +85,7 @@
 					enctype="multipart/form-data">
 
 					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">
-					<input type="hidden" name="postType" value="${type}"">
+					<input type="hidden" name="postType" value="${type}">
 				
 					<div class=" btn-area">
 					<a id="listBtn" href="/know-how/community/board/student"
@@ -97,15 +97,14 @@
 			<table class="table">
 				<tr>
 					<th>제목</th>
-					<td colspan="3"><input type="text" id="title" name="title" required></td>
-					<!--<th>카테고리</th> 추후 기능추가
-					<td colspan="3">
-						<select name="condition2" class="form-control mr-sm-2">
+					<td colspan=""><input type="text" id="title" name="title" required></td>
+					<th>카테고리</th>
+					<td colspan="">
+						<select name="category" class="form-control mr-sm-2">
 							<option value="admission">입학상담</option>
-							<option value="employment">취업상담
-							</option>
+							<option value="employment">취업상담</option>
 						</select>
-					</td>-->
+					</td>
 				</tr>
 
 				<tr>

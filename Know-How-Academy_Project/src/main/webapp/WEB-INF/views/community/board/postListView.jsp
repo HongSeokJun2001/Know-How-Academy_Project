@@ -94,15 +94,7 @@
 							<option value="title" ${condition1 eq 'title' ? 'selected' : '' }>제목</option>
 							<option value="content" ${condition1 eq 'content' ? 'selected' : '' }>내용</option>
 						</select>
-
-						<c:if test="${type eq 'student'}">
-							<select name="condition2" class="form-control mr-sm-2">
-								<option value="all" ${condition2 eq 'all' ? 'selected' : '' }>전체</option>
-								<option value="admission" ${condition2 eq 'admission' ? 'selected' : '' }>입학상담</option>
-								<option value="employment" ${condition2 eq 'employment' ? 'selected' : '' }>취업상담
-								</option>
-							</select>
-						</c:if>
+						
 
 						<input type="search" name="keyword" value="${keyword}" class="form-control mr-sm-2"
 							placeholder="검색어를 입력하세요">
@@ -113,8 +105,7 @@
 					<c:if test="${!empty condition1}">
 						<script>
 							$(function () {
-								$("#search-area option[value=${condition1}]").prop("selected", true);
-								$("#search-area option[value=${condition2}]").prop("selected", true);
+								$("#search-area option[value=${condition1}]").prop("selected", true);							
 						
 							});
 						</script>
@@ -212,7 +203,7 @@
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage - 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">
+															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage - 1}&condition1=${condition1}&keyword=${keyword}">
 															Prev</a>
 													</li>
 												</c:otherwise>
@@ -238,7 +229,7 @@
 										<c:otherwise>
 											<li class="page-item">
 												<a class="page-link"
-													href="/know-how/community/board/${type}/search?condition1=${condition1}&condition2=${condition2}&keyword=${keyword}&cpage=${p}">${p}</a>
+													href="/know-how/community/board/${type}/search?condition1=${condition1}&keyword=${keyword}&cpage=${p}">${p}</a>
 											</li>
 										</c:otherwise>
 									</c:choose>
@@ -266,7 +257,7 @@
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">Next</a>
+															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&keyword=${keyword}">Next</a>
 													</li>
 												</c:otherwise>
 									</c:choose>

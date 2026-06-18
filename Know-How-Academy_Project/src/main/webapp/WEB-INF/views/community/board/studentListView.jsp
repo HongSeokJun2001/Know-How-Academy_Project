@@ -8,11 +8,12 @@
 			<title>Insert title here</title>
 			<style>
 				.outer {
+					width: 940px !important;
 					text-align: center;
 					border: none !important;
 				}
 
-				.table tbody tr.post-row{
+				.table tbody tr.post-row {
 					cursor: pointer;
 				}
 
@@ -87,20 +88,36 @@
 				<div id="search-area">
 
 					<form id="search-container" action="/know-how/community/board/${type}/search" method="get">
-
 						<select name="condition1" class="form-control mr-sm-2">
 							<!-- 검색후에도 조건초기화X-->
-							<option value="all" ${condition1 eq 'all' ? 'selected' : '' }>전체</option>
-							<option value="writer" ${condition1 eq 'writer' ? 'selected' : '' }>작성자</option>
-							<option value="title" ${condition1 eq 'title' ? 'selected' : '' }>제목</option>
-							<option value="content" ${condition1 eq 'content' ? 'selected' : '' }>내용</option>
+							<option value="all" ${condition1 eq 'all' ? 'selected' : '' }>
+								전체
+							</option>
+
+							<option value="writer" ${condition1 eq 'writer' ? 'selected' : '' }>
+								작성자
+							</option>
+
+							<option value="title" ${condition1 eq 'title' ? 'selected' : '' }>
+								제목
+							</option>
+
+							<option value="content" ${condition1 eq 'content' ? 'selected' : '' }>
+								내용
+							</option>
 						</select>
 
 						<c:if test="${type eq 'student'}">
-							<select name="condition2" class="form-control mr-sm-2">
-								<option value="all" ${condition2 eq 'all' ? 'selected' : '' }>전체</option>
-								<option value="admission" ${condition2 eq 'admission' ? 'selected' : '' }>입학상담</option>
-								<option value="employment" ${condition2 eq 'employment' ? 'selected' : '' }>취업상담
+							<select name="condition2" class="form-control mr-sm-2" onchange="this.form.submit">
+
+								<option value="all" ${condition2 eq 'all' ? 'selected' : '' }>
+									전체
+								</option>
+								<option value="admission" ${condition2 eq 'admission' ? 'selected' : '' }>
+									입학상담
+								</option>
+								<option value="employment" ${condition2 eq 'employment' ? 'selected' : '' }>
+									취업상담
 								</option>
 							</select>
 						</c:if>
@@ -108,7 +125,10 @@
 						<input type="search" name="keyword" value="${keyword}" class="form-control mr-sm-2"
 							placeholder="검색어를 입력하세요">
 						<button type="submit" class="btn btn-outline-secondary btn-hover">검색</button>
-						<br> <br>
+
+
+
+						<br><br>
 					</form>
 
 					<c:if test="${!empty condition1}">
@@ -116,13 +136,13 @@
 							$(function () {
 								$("#search-area option[value=${condition1}]").prop("selected", true);
 								$("#search-area option[value=${condition2}]").prop("selected", true);
-						
+
 							});
 						</script>
 					</c:if>
 				</div>
-
-				<c:if test="${not empty loginUser }">
+				<!-- 수강생만 글쓰기 가능-->
+				<c:if test="${(not empty loginUser) and (loginUser.userNo >= 7 ) and  (loginUser.userNo <= 11) }">
 					<div class="write-btn-area" align="right">
 						<a href="/know-how/community/board/${type}/enrollForm" type="button"
 							class="btn btn-outline-secondary btn-hover">글쓰기</a>
@@ -133,8 +153,8 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th>글번호</th>	
-							<!--<th>카테고리</th>추후 기능추가-->											
+							<th>글번호</th>
+							<th>카테고리</th>
 							<th>제목</th>
 							<th>작성자</th>
 							<th>조회수</th>
@@ -142,7 +162,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<!--게시글 목록-->				
+						<!--게시글 목록-->
 						<c:choose>
 							<c:when test="${empty list}">
 								<tr>
@@ -153,7 +173,12 @@
 								<c:forEach var="b" items="${list}">
 									<tr class="post-row">
 										<td>${b.postNo}</td>
-										<!--<td>${b.category}</td>추후 기능추가-->										
+										<td>
+											<c:choose>
+												<c:when test="${b.category == 'admission'}">입학상담</c:when>
+												<c:when test="${b.category == 'employment'}">취업상담</c:when>
+											</c:choose>
+										</td>
 										<td>${b.title}</td>
 										<td>${b.userName}</td>
 										<td>${b.viewCount}</td>
@@ -161,7 +186,6 @@
 									</tr>
 								</c:forEach>
 							</c:otherwise>
-
 						</c:choose>
 						<script>
 							$(function () {
@@ -175,7 +199,7 @@
 				</table>
 				<div style="background: yellow;">
 				</div>
-			
+
 				<div class="paging-area">
 					<ul class="pagination page-item ">
 						<c:choose>

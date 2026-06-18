@@ -2,7 +2,6 @@ package com.kh.know_how.board.model.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale.Category;
 
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -59,7 +58,7 @@ public class BoardDao {
 		return sqlSession.insert("boardMapper.insertFileAttachment", fa);
 	}
 
-	public ArrayList<Category> selectCategoryList(SqlSessionTemplate sqlSession) {
+	public ArrayList<Board> selectCategoryList(SqlSessionTemplate sqlSession) {
 
 		return (ArrayList) sqlSession.selectList("boardMapper.selectCategoryList");
 	}
@@ -137,7 +136,11 @@ public class BoardDao {
 
 		return sqlSession.insert("boardMapper.insertComment", pc);
 	}
-
+	
+	public int deleteComment(SqlSessionTemplate sqlSession, int commentNo) {
+		
+		return sqlSession.update("boardMapper.deleteComment", commentNo);
+	}
 	
 
 }

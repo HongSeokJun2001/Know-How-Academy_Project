@@ -125,7 +125,7 @@
                 .fileName {
                     font-weight: bold;
                     color: blueviolet;
-                    
+                    padding-bottom: 560px;
                 }
 
                 hr {
@@ -143,7 +143,7 @@
                 <div class="top-area">
                     <div id="leftBtn">
                         <!--수정과 삭제는 작성자 본인 만 볼수 있게 작업-->
-                        <c:if test="${(not empty sessionScope.loginUser) and 
+                        <c:if test="${(not empty loginUser) and 
                             (sessionScope.loginUser.userNo eq b.writerNo)}">
                             <!--로그인중이며, 사용자와 작성자명이 같을 경우에~~-->
 
@@ -176,9 +176,15 @@
                 <table class="table" id="content">
                     <tr>
                         <th>제목</th>
-                        <td colspan="3">${b.title}</td>
-                       <!--<th>카테고리</th>
-                        <td colspan="3">${b.category}</td>추후 기능추가-->
+                        <td>${b.title}</td>
+                        <th>카테고리</th>
+                        <td colspan="2">
+
+                            <c:choose>
+                                <c:when test="${b.category =='admission'}">입학상담</c:when>
+                                <c:when test="${b.category == 'employment'}">취업상담</c:when>
+                            </c:choose>
+                        </td>
                     </tr>
 
                     <tr>
@@ -236,7 +242,6 @@
                 </div>
                 <hr>
                 <div id="reply-list"></div>
-
                 <script>
                     //댓글목록 조회용
                     $(function () {
@@ -247,17 +252,18 @@
                         $.ajax({
                             url: "/know-how/community/board/pclist",
                             type: "get",
-                            dataType: "json",
                             data: { postNo: "${ requestScope.b.postNo }" },
 
                             success: function (result) {
                                 let resultStr = "";
 
                                 for (let i in result) {
+                                    let commentNo = result[i].commentNo;
+
                                     // 결과값을 변수에 담아 확인 (null일 경우 '익명' 등으로 표시)
                                     let name = result[i].userName || "";
                                     let content = result[i].content || "";
-
+                                    let wirterNo = result[i].userNo;
                                     let rawDate = result[i].createdAt;
                                     let formattedDate = "";
 
@@ -266,13 +272,22 @@
                                         let timePart = rawDate.split("T")[1].substring(0, 8);
                                         formattedDate = datePart + " " + timePart;
                                     }
-                                    resultStr += "<div class='comment-area'>"
+                                    resultStr
+                                        += "<div class='comment-area'>"
                                         + "<span id='cName'>작성자: " + name + "</span>"
                                         + "<span id='cDate'>" + formattedDate + "</span>"
-                                        + "</div>"
+
+                                    if ("${loginUser.userName}" === name) {
+                                        resultStr += "<button type='button' id = 'delBtn'"
+                                            + "class='btn btn-outline-secondary'"
+                                            + "onclick='deleteComment(" + commentNo + ")'>삭제</button>";
+                                    }
+
+                                    resultStr
+                                        += "</div>"
                                         + "<div>"
                                         + "<span id='cContent'> " + content + "</span><hr>"
-                                    "</div>";
+                                        + "</div>";
                                 }
 
                                 // 데이터가 없으면 안내 문구 출력
@@ -302,9 +317,8 @@
                         $.ajax({
                             url: "/know-how/community/board/pcinsert",
                             type: "post",
-                            dataType: "json",
                             data: {
-                                postNo: "${requestScope.b.postNo}",
+                                postNo: "${b.postNo}",
                                 content: commentContent
                             },
                             success: function (result) {
@@ -312,8 +326,8 @@
                                 if (result == "success") {
                                     //요청 성공, 목록 재조회 및 textarea초기화
                                     selectCommentList();
-
                                     $("#commentContent").val("");
+
                                 } else {
                                     alert("작성실패");
                                 }
@@ -323,6 +337,29 @@
                             }
                         })
 
+                    }
+
+                    //댓글 삭제
+                    function deleteComment(commentNo) {
+
+                        if (confirm("삭제 하시겠습니까?")) {
+                            $.ajax({
+                                url: "/know-how/community/board/pcdelete",
+                                type: "post",
+                                data: { commentNo: commentNo },
+                                success: function (result) {
+                                    if (result === "success") {
+                                        alert("삭제되었습니다.");
+                                        selectCommentList();
+                                    } else {
+                                        alert("삭제에 실패했습니다.");
+                                    }
+                                },
+                                error: function () {
+                                    console.log("댓글연결 실패");
+                                }
+                            })
+                        }
                     }
                 </script>
 

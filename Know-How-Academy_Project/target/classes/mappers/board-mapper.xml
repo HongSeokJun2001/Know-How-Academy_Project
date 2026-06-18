@@ -186,7 +186,7 @@
 		#{writerNo},
 		#{viewCount},
 		SYSDATE,
-		#{postType},
+		#{category},
 		'Y')
 	</insert>
 
@@ -195,6 +195,7 @@
 		SELECT B.POST_NO,
 		B.TITLE,
 		B.POST_TYPE,
+		B.CATEGORY,
 		B.WRITER_NO,
 		M.USER_NAME,
 		B.CREATED_AT,
@@ -350,10 +351,15 @@
 		#{postNo},
 		#{content},
 		#{writerNo},
-		SYSDATE)
-
+		SYSDATE)		
 	</insert>
 	
+<update id="deleteComment" parameterType="_int">
+	UPDATE POST_COMMENT
+	SET STATUS = 'N'
+	WHERE COMMENT_NO = #{commentNo}
+	AND STATUS = 'Y'
+</update>
 
 
 
