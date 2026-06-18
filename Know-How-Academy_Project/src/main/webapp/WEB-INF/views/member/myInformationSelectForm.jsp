@@ -167,9 +167,9 @@
            <td></td>
         </tr>
         <tr>
-           <th class="selectPage-tableTh"><label for="class">반</label></th>
+           <th class="selectPage-tableTh"><label for="class">반 번호</label></th>
            <td class="selectPage-tableTd">
-             <label>${ sessionScope.loginUser.classNo } 반</label>
+             <label>${ sessionScope.loginUser.classNo } 번</label>
            </td>
            <th></th>
            <td></td>
