@@ -128,7 +128,7 @@
 				</tr>
 				<tr>
 					<th>대표이미지</th>
-					<td colspan="3">
+					<td colspan="3" class="img-area" data-target="file1" data-num="1">
 						<c:choose>
 							<c:when test="${ not empty  requestScope.list[0] }">
 								<input type="hidden" name="originalFileNo1" value="${ requestScope.list[0].fileNo }">
@@ -143,7 +143,7 @@
 				</tr>
 				<tr>
 					<th>상세이미지</th>
-					<td>
+					<td class="img-area" data-target="file2" data-num="2">
 						<c:choose>
 							<c:when test="${ not empty  requestScope.list[1] }">
 								<input type="hidden" name="originalFileNo2" value="${ requestScope.list[1].fileNo }">
@@ -155,7 +155,7 @@
 							</c:otherwise>
 						</c:choose>
 					</td>
-					<td>
+					<td class="img-area" data-target="file3" data-num="3">
 						<c:choose>
 							<c:when test="${ not empty  requestScope.list[2] }">
 								<input type="hidden" name="originalFileNo3" value="${ requestScope.list[2].fileNo }">
@@ -167,7 +167,7 @@
 							</c:otherwise>
 						</c:choose>
 					</td>
-					<td>
+					<td class="img-area" data-target="file4" data-num="4">
 						<c:choose>
 							<c:when test="${ not empty  requestScope.list[3] }">
 								<input type="hidden" name="originalFileNo4" value="${ requestScope.list[3].fileNo }">
@@ -195,24 +195,8 @@
 		   
 			$("#file-area").hide();
 			
-			$("#titleImg").click(function() {
-				
-				$("#file1").click();
-			});
-			
-			$("#contentImg1").click(function() {
-				
-				$("#file2").click();
-			});
-			
-			$("#contentImg2").click(function() {
-				
-				$("#file3").click();
-			});
-			
-			$("#contentImg3").click(function() {
-				
-				$("#file4").click();
+			$(".img-area").on("click", function() {
+			    $("#" + $(this).data("target")).click();
 			});
 			
 			$("#file1").on("cancel", function() {
@@ -234,6 +218,35 @@
 		        $(this).val(null);
 		        loadImg(this, 4);
 		    });
+		    
+		    const $img = $(".img-area");
+
+			$img.on("dragenter dragover", function(e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+		    });
+			
+		    $img.on("drop", function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				let files = e.originalEvent.dataTransfer.files;
+				
+				if (files != null && files.length > 0) {
+					if (!files[0].type.startsWith("image/")) {
+						alert("이미지 파일만 첨부 가능합니다.");
+						return;
+					}
+
+					let targetId = $(this).data("target");
+					let $targetInput = $("#" + targetId);
+
+					$targetInput[0].files = files;
+
+					let num = $(this).data("num");
+					loadImg($targetInput[0], num);
+				}
+			});
 			
 			 $("#updateForm").on("submit", function(event) {
 			        event.preventDefault();
