@@ -125,19 +125,19 @@
 				</tr>
 				<tr>
 					<th>대표이미지</th>
-					<td colspan="3">
+					<td colspan="3" class="img-area" data-target="file1" data-num="1">
 						<img id="titleImg" width="250" height="170">
 					</td>
 				</tr>
 				<tr>
 					<th>상세이미지</th>
-					<td>
+					<td class="img-area" data-target="file2" data-num="2">
 						<img id="contentImg1" width="150" height="110">
 					</td>
-					<td>
+					<td class="img-area" data-target="file3" data-num="3">
 						<img id="contentImg2" width="150" height="110">
 					</td>
-					<td>
+					<td class="img-area" data-target="file4" data-num="4">
 						<img id="contentImg3" width="150" height="110">
 					</td>
 				</tr>
@@ -156,26 +156,38 @@
 		   
 			$("#file-area").hide();
 			
-			$("#titleImg").click(function() {
-				
-				$("#file1").click();
+			$(".img-area").on("click", function() {
+			    $("#" + $(this).data("target")).click();
 			});
 			
-			$("#contentImg1").click(function() {
-				
-				$("#file2").click();
-			});
+			const $img = $(".img-area");
+
+			$img.on("dragenter dragover", function(e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+		    });
 			
-			$("#contentImg2").click(function() {
+			$img.on("drop", function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				let files = e.originalEvent.dataTransfer.files;
 				
-				$("#file3").click();
+				if (files != null && files.length > 0) {
+					if (!files[0].type.startsWith("image/")) {
+						alert("이미지 파일만 첨부 가능합니다.");
+						return;
+					}
+
+					let targetId = $(this).data("target");
+					let $targetInput = $("#" + targetId);
+
+					$targetInput[0].files = files;
+
+					let num = $(this).data("num");
+					loadImg($targetInput[0], num);
+				}
 			});
-			
-			$("#contentImg3").click(function() {
-				
-				$("#file4").click();
-			});
-			
 		});
 		
 		function loadImg(inputFile, num) {
