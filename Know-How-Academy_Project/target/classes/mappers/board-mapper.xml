@@ -18,6 +18,7 @@
 		<result column="STATUS" property="status" />
 		<result column="VIEW_COUNT" property="viewCount" />
 		<result column="USER_NAME" property="userName" />
+		<result column="TITLE_IMG" property="titleImg" />
 
 		<association property="fileAttachment"
 			javaType="fileAttachment">
@@ -71,66 +72,91 @@
 	<!-- 게시글 목록 조회리스트 -->
 	<select id="selectBoardList" parameterType="string"
 		resultMap="boardResultSet">
-		SELECT * FROM(
-		SELECT
-		B.POST_NO,<!-- 게시글번호 -->
-		B.CATEGORY, <!-- 카테고리 -->
-		B.TITLE, <!-- 제목 -->
-		M.USER_NAME, <!-- 작성자명 -->
-		B.VIEW_COUNT, <!-- 조회수 -->
-		B.CREATED_AT <!-- 작성일 -->
-		FROM BOARD_POST B <!-- 약칭 -->
+		SELECT B.*,
+		M.USER_NAME,
+		FA.FILE_PATH || FA.SAVE_NAME AS
+		TITLE_IMG
+		FROM BOARD_POST B
 		JOIN MEMBER M ON (B.WRITER_NO = M.USER_NO)
-		<!-- 연관된 데이터 B와 (약칭)M과 조인하여 작성자명(USER_NAME) 가져오기 -->
-		WHERE B.STATUS = 'Y'<!-- Y=노출/N 숨김처리 -->
-		AND B.POST_TYPE = #{postType}
-		ORDER BY B.POST_NO DESC
-		)
+		LEFT JOIN(
+		SELECT TARGET_NO, FILE_PATH, SAVE_NAME
+		FROM FILE_ATTACHMENT
+		WHERE FILE_LEVEL = 1
+		AND STATUS = 'Y'
+		)FA ON (B.POST_NO = FA.TARGET_NO)
+		WHERE B.STATUS = 'Y'
+		AND B.POST_TYPE =
+		#{postType}
+		ORDER BY B.POST_NO
+		DESC
 	</select>
-	
-		<!-- 게시글 총갯수 쿼리문 -->
+
+	<!-- 게시글 총갯수 쿼리문 -->
 	<select id="selectListCount" resultType="_int">
 		SELECT COUNT(*)
-		FROM BOARD_POST
+		FROM
+		BOARD_POST
 		WHERE POST_TYPE = #{postType}
 		AND STATUS = 'Y'
 	</select>
 
 	<!-- 게시글 목록 조회리스트(검색시) -->
 	<select id="searchBoardList" parameterType="hashmap"
-								resultMap="boardResultSet">
+		resultMap="boardResultSet">
 		SELECT B.POST_NO,
-				B.CATEGORY,
-				B.TITLE,
-				M.USER_NAME,
-				B.VIEW_COUNT,
-				B.CREATED_AT
-			FROM BOARD_POST B
-			JOIN MEMBER M ON (WRITER_NO = USER_NO)
-			<where>
+		B.CATEGORY,
+		B.TITLE,
+		M.USER_NAME,
+		B.VIEW_COUNT,
+		B.CREATED_AT,
+		(FA.FILE_PATH || FA.SAVE_NAME) AS TITLE_IMG
+		FROM BOARD_POST B
+		JOIN MEMBER M
+		ON (WRITER_NO = USER_NO)
+		LEFT JOIN(
+		SELECT TARGET_NO, FILE_PATH,
+		SAVE_NAME
+		FROM FILE_ATTACHMENT
+		WHERE STATUS = 'Y'
+		)FA ON (B.POST_NO =
+		FA.TARGET_NO)
+		<where>
 			B.POST_TYPE = #{postType}
 			AND B.STATUS = 'Y'
-			
-			<if test="condition1 != 'all' and keyword != null and keyword !=''">
-			AND
-			<choose>
-				<when test="condition1 == 'writer'">
-					M.USER_NAME
-				</when>
-				<when test="condition1 == 'title'">
-					B.TITLE
-				</when>
-				<when test="condition1 == 'content'">
-					B.CONTENT
-				</when>
-			</choose>
-				LIKE '%' || #{keyword} || '%'	
-			</if>				
+
+			<if	test="condition1 != 'all' and keyword != null and keyword !=''">
+				AND
+				<choose>
+					<when test="condition1 == 'writer'">
+						M.USER_NAME
+					</when>
+					<when test="condition1 == 'title'">
+						B.TITLE
+					</when>
+					<when test="condition1 == 'content'">
+						B.CONTENT
+					</when>
+				</choose>
+				LIKE '%' || #{keyword} || '%'
+			</if>
+
 			<if test="condition2 != null and condition2 != '' and condition2 != 'all'">
-				AND B.CATEGORY = #{condition2}
-			</if>			
-			</where>
-			ORDER BY B.POST_NO DESC
+    			AND CATEGORY = #{condition2}
+			</if>
+
+			<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND B.CREATED_AT >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+				]]>
+			</if>
+
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND B.CREATED_AT < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+			]]>
+			</if>
+		</where>
+		ORDER BY B.POST_NO DESC
 	</select>
 
 	<!-- 검색결과의 갯수를 세오는 쿼리문 -->
@@ -138,29 +164,42 @@
 		resultType="_int">
 		SELECT COUNT(*)
 		FROM BOARD_POST B
-		JOIN MEMBER M ON (B.WRITER_NO =	M.USER_NO)
+		JOIN MEMBER M ON (B.WRITER_NO =
+		M.USER_NO)
 		<where>
 			B.POST_TYPE = #{postType}
 			AND B.STATUS = 'Y'
-			<if test="condition1 != 'all' and keyword != null and keyword !=''">
-			AND
-			<choose>
-				<when test="condition1 == 'writer'">
-				M.USER_NAME
-				</when>
-				<when test="condition1 == 'title'">
-					B.TITLE
-				</when>
-				<when test="condition1 == 'content'">
-					B.CONTENT
-				</when>
-			</choose>
-				LIKE '%' || #{keyword} || '%'	
-			</if>				
+			<if
+				test="condition1 != 'all' and keyword != null and keyword !=''">
+				AND
+				<choose>
+					<when test="condition1 == 'writer'">
+						M.USER_NAME
+					</when>
+					<when test="condition1 == 'title'">
+						B.TITLE
+					</when>
+					<when test="condition1 == 'content'">
+						B.CONTENT
+					</when>
+				</choose>
+				LIKE '%' || #{keyword} || '%'
+			</if>
 			<if test="condition2 != null and condition2 != '' and condition2 != 'all'">
-				AND B.CATEGORY = #{condition2}
-			</if>	
-			</where>
+			    AND CATEGORY = #{condition2}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				<![CDATA[
+				AND B.CREATED_AT >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+				]]>
+			</if>
+
+			<if test="endDate != null and endDate != ''">
+			<![CDATA[
+			AND B.CREATED_AT < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+			]]>
+			</if>
+		</where>
 	</select>
 
 	<!-- 게시글 등록용 쿼리문 -->
@@ -201,10 +240,12 @@
 		B.CREATED_AT,
 		B.CONTENT
 		FROM BOARD_POST B
-		JOIN MEMBER M ON
+		JOIN
+		MEMBER M ON
 		(B.WRITER_NO = M.USER_NO)
 		WHERE POST_NO = #{postNo}
-		AND B.STATUS = 'Y'
+		AND
+		B.STATUS = 'Y'
 	</select>
 
 
@@ -218,14 +259,15 @@
 
 	<!-- 첨부파일 등록용 쿼리문 -->
 	<insert id="insertFileAttachment" parameterType="fileAttachment">
-		INSERT INTO	FILE_ATTACHMENT(
+		INSERT INTO
+		FILE_ATTACHMENT(
 		FILE_NO,
 		TARGET_NO,
 		TARGET_TYPE,
 		ORIGIN_NAME,
 		SAVE_NAME,
 		FILE_PATH)
-	VALUES(
+		VALUES(
 		SEQ_POST_NO.NEXTVAL,
 		#{targetNo},
 		#{targetType},
@@ -260,9 +302,10 @@
 	</update>
 
 	<update id="deleteFileAttachment" parameterType="_int">
-		UPDATE FILE_ATTACHMENT
-    SET STATUS = 'N'
-    WHERE FILE_NO = #{fileNo}
+		UPDATE
+		FILE_ATTACHMENT
+		SET STATUS = 'N'
+		WHERE FILE_NO = #{fileNo}
 	</update>
 	<insert id="insertNewFileAttachment"
 		parameterType="fileAttachment">
@@ -298,21 +341,24 @@
 	<select id="selectFileAttachment" parameterType="_int"
 		resultMap="fileAttachmentResultSet">
 		SELECT * FROM (
-        SELECT FILE_NO, ORIGIN_NAME, SAVE_NAME, FILE_PATH
-        FROM FILE_ATTACHMENT
-        WHERE TARGET_NO = #{postNo}
-          AND STATUS = 'Y'
-        ORDER BY FILE_NO DESC  )
-    WHERE ROWNUM = 1
+		SELECT FILE_NO, ORIGIN_NAME, SAVE_NAME,
+		FILE_PATH
+		FROM FILE_ATTACHMENT
+		WHERE TARGET_NO = #{postNo}
+		AND STATUS =
+		'Y'
+		ORDER BY FILE_NO DESC )
+		WHERE ROWNUM = 1
 	</select>
-	
+
 	<!-- (관리자용)게시글 삭제용 쿼리문 -->
 	<delete id="adminDeleteBoard" parameterType="_int">
 		DELETE
-		  FROM BOARD_POST
-		 WHERE POST_NO = #{postNo}
+		FROM
+		BOARD_POST
+		WHERE POST_NO = #{postNo}
 	</delete>
-	
+
 	<!-- (관리자용)첨부파일 삭제용 쿼리문 -->
 	<delete id="admindeleteFileAttachment" parameterType="_int">
 		DELETE
@@ -351,15 +397,16 @@
 		#{postNo},
 		#{content},
 		#{writerNo},
-		SYSDATE)		
+		SYSDATE)
 	</insert>
-	
-<update id="deleteComment" parameterType="_int">
-	UPDATE POST_COMMENT
-	SET STATUS = 'N'
-	WHERE COMMENT_NO = #{commentNo}
-	AND STATUS = 'Y'
-</update>
+
+	<update id="deleteComment" parameterType="_int">
+		UPDATE POST_COMMENT
+		SET
+		STATUS = 'N'
+		WHERE COMMENT_NO = #{commentNo}
+		AND STATUS = 'Y'
+	</update>
 
 
 

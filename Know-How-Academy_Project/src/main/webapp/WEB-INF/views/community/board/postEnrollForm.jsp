@@ -85,6 +85,9 @@
 
 					<input type="hidden" name="writerNo" value="${sessionScope.loginUser.userNo}">					
 					<input type="hidden" name="postType" value="${type}"">
+					<input type="hidden" name="category" value="1">
+					<!--자유게시판은 카테고리가 없지만 공통 백엔드 처리를 위해 임의값을 보내고 화면출력은 하지않는다.-->
+					
 				
 					<div class="btn-area">
 						<a id="listBtn" href="/know-how/community/board/post" class="btn btn-outline-secondary btn-hover">목록</a>

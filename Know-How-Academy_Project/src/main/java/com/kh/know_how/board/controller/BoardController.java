@@ -35,29 +35,30 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
+	// @PostMapping 서버(DB)에 데이터를 생성, 변경, 삭제할 때
+	// 예)글작성, 이미지 등록, 삭제
+	// @GetMapping 서버(DB)에 데이터를 조회 할 때
+	// 예)여러 글 목록, 글 작성 페이지, 키워드검색
+
 	/**
-	 * 게시글 목록 조회
-	 * @param type 브라우저에서 접속요청된 게시판 타입
-	 * @param currentPage 브라우저 접속요청페이지
+	 * 
+	 * @param type
+	 * @param currentPage
+	 * @param viewType    list 인지 album인지 걸러줌
 	 * @param mv
 	 * @return
 	 */
-	//@PostMapping 서버(DB)에 데이터를 생성, 변경, 삭제할 때
-	//예)글작성, 이미지 등록, 삭제
-	//@GetMapping 서버(DB)에 데이터를 조회 할 때
-	//예)여러 글 목록, 글 작성 페이지, 키워드검색 
-	
 	@GetMapping("{type:notice|post|student}")
-	//Controlle에서 정한 type : ~~~ 으로 브라우저요청을 받는다.
-	//.jsp에서 a href 링크와 연결되기위한 type
+	// Controlle에서 정한 type : ~~~ 으로 브라우저요청을 받는다.
+	// .jsp에서 a href 링크와 연결되기위한 type
 	public ModelAndView selectBoardList(@PathVariable String type,
-			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, ModelAndView mv) {
-		//  public  ModelAndView  selectBoardList
-		//(접근제어자)	   (반환타입)   (임의로 정한 메서드명)
-		//ModelAndView
-		//Model == 
-		
-		
+			@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+			@RequestParam(value = "viewType", defaultValue = "list") String viewType, ModelAndView mv) {
+		// public ModelAndView selectBoardList
+		// (접근제어자) (반환타입) (임의로 정한 메서드명)
+		// ModelAndView
+		// Model ==
+
 		String postType;
 		String viewName;
 
@@ -81,6 +82,7 @@ public class BoardController {
 		int listCount = boardService.selectListCount(postType);
 		// 특정 게시글조회를 위한 매개변수 지정
 
+		// 변수선언
 		int pageLimit;
 		int boardLimit;
 		int maxPage;
@@ -88,76 +90,132 @@ public class BoardController {
 		int endPage;
 
 		pageLimit = 10;
-		boardLimit = 10;
+
+		// 게시글 목록 형태에 따른 페이징바 적용
+		// 삼항연산자 사용 viewType == album일 경우 참(9)
+		boardLimit = "album".equalsIgnoreCase(viewType) ? 9 : 10;
 
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		ArrayList<Board> list = boardService.selectBoardList(pi, postType);
 
 		mv.addObject("list", list);
 		mv.addObject("pi", pi);
-
+		mv.addObject("viewType", viewType);
 		mv.setViewName(viewName);// 위 설정된 페이지
 
 		return mv;
 	}
 
-	/**
-	 * 2. 검색 기능
-	 * 
-	 * @param type
-	 * @param condition1
-	 * @param keyword
-	 * @param currentPage
-	 * @param mv
-	 * @return
-	 */
-	@GetMapping("{type:notice|post|student}/search")
-	public ModelAndView searchBoardList(@PathVariable String type,
-			@RequestParam(value = "cpage", defaultValue = "1") int currentPage, String condition1, String condition2,
-			String keyword, ModelAndView mv) {
+	@ResponseBody
+	@GetMapping("/ajaxList")
+	public Map<String, Object> ajaxSelectBoardList(
+			@RequestParam(value = "type", defaultValue = "post") String type,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate,
+			@RequestParam(value = "cpage", defaultValue = "1") int currentPage,
+			//뷰타입을 받아 페이징바내용을 설정합니다.
+			@RequestParam(value = "viewType", defaultValue = "list") String viewType,
+			// 동기식과 비동기식의 충돌로 searchBoardList와 합치기
+			// 검색을 이요하지않을땐 null값
+			@RequestParam(value = "condition1", required = false) String condition1,
+			@RequestParam(value = "condition2", required = false) String condition2,
+			@RequestParam(value = "keyword", required = false) String keyword) {
 
-		String postType;
-		String viewName;
-
-		switch (type) {
-		case "notice":
-			postType = "NOTICE";
-			viewName = "community/board/noticeListView";
-			break;
-		case "student":
-			postType = "STUDENT";
-			viewName = "community/board/studentListView";
-			break;
-		case "post":
-		default:
-			postType = "POST";
-			viewName = "community/board/postListView";
-			break;
-		}
-
-		HashMap<String, String> map = new HashMap<>();
-		map.put("condition1", condition1);
-		map.put("condition2", condition2);
-		map.put("keyword", keyword);
-		map.put("postType", postType);
-
-		// 검색 결과에 따른 페이징 처리가 필요하다면 여기서 로직을 추가하세요.
-		// 현재는 서비스 호출 예시만 작성했습니다.
-		int searchCount = boardService.selectSearchCount(map);
-
+		// 요청온 게시판 타입이 다음과 같을때
+		String postType = type.equalsIgnoreCase("notice") ? "NOTICE"
+						: type.equalsIgnoreCase("student") ? "STUDENT" 
+															: "POST";
+		//앨범형이면 9개, 그외엔 10개
+		int boardLimit = "album".equalsIgnoreCase(viewType) ? 9 : 10;
 		int pageLimit = 10;
-		int boardLimit = 10;
+		
+		Map<String, Object>map = new HashMap<>();
 
-		PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
+		//참 또는 거짓만 담는 boolean으로 시작
+		boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+		//입력된 검색어 판별 문자(한글,숫자,특문)일시 참 공백("  ") 일시 거짓으로 판별하는 코드
+		
+	    boolean hasDateFilter = startDate != null && !startDate.trim().isEmpty();
+	    //입력된 시작일자가 존재할 시 참, 없을 경우 거짓	    
+	    
+	    boolean hasCategoryFilter 
+	    		= condition2 != null && !condition2.trim().isEmpty() && !"all".equalsIgnoreCase(condition2);
+	    	
+	    if (hasKeyword || hasDateFilter || hasCategoryFilter) {
+	    	//1.위에서 구한 값을 통해  
+	    	//참 	   || 거짓
+	    	//참		   || 참
+	    	//거짓	   || 참 일시 
+	    	//검색조건 실행	
+	    	
+	    	//2.거짓 	   || 거짓 일경우
+	    	//전체조회 실행
+		
+			HashMap<String, String> searchmap = new HashMap<>();
+			searchmap.put("condition1", condition1);
+			searchmap.put("condition2", condition2);
+			searchmap.put("keyword", keyword);
+			
+			searchmap.put("startDate", startDate);
+			searchmap.put("endDate", endDate);
+			
+			searchmap.put("postType", postType);
 
-		ArrayList<Board> list = boardService.searchBoardList(map, pi, postType);
+			int searchCount = boardService.selectSearchCount(searchmap);
+			PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
 
-		mv.addObject("list", list).addObject("pi", pi).addObject("condition1", condition1)
-				.addObject("condition2", condition2).addObject("keyword", keyword).addObject("postType", type)
-				.setViewName(viewName);
+			map.put("list", boardService.searchBoardList(searchmap, pi, postType));
+			map.put("pi", pi);
+			
+		
+		} else {
+			// 검색어 미입력시
+			int listCount = boardService.selectListCount(postType);
+			PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+			
+			map.put("list", boardService.selectBoardList(pi, postType));
+			map.put("pi", pi);
 
-		return mv;
+			
+		}
+		return map;//json 형태로 반환
 	}
+
+	/*
+	 * @GetMapping("{type:notice|post|student}/search") public ModelAndView
+	 * searchBoardList(@PathVariable String type,
+	 * 
+	 * @RequestParam(value = "cpage", defaultValue = "1") int currentPage, String
+	 * condition1, String condition2, String keyword, ModelAndView mv) {
+	 * 
+	 * String postType; String viewName;
+	 * 
+	 * switch (type) { case "notice": postType = "NOTICE"; viewName =
+	 * "community/board/noticeListView"; break; case "student": postType =
+	 * "STUDENT"; viewName = "community/board/studentListView"; break; case "post":
+	 * default: postType = "POST"; viewName = "community/board/postListView"; break;
+	 * }
+	 * 
+	 * HashMap<String, String> map = new HashMap<>(); map.put("condition1",
+	 * condition1); map.put("condition2", condition2); map.put("keyword", keyword);
+	 * map.put("postType", postType);
+	 * 
+	 * // 검색 결과에 따른 페이징 처리가 필요하다면 여기서 로직을 추가하세요. // 현재는 서비스 호출 예시만 작성했습니다. int
+	 * searchCount = boardService.selectSearchCount(map);
+	 * 
+	 * int pageLimit = 10; int boardLimit = 10;
+	 * 
+	 * PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, pageLimit,
+	 * boardLimit);
+	 * 
+	 * ArrayList<Board> list = boardService.searchBoardList(map, pi, postType);
+	 * 
+	 * mv.addObject("list", list).addObject("pi", pi).addObject("condition1",
+	 * condition1) .addObject("condition2", condition2).addObject("keyword",
+	 * keyword).addObject("postType", type) .setViewName(viewName);
+	 * 
+	 * return mv; }
+	 */
 
 	/**
 	 * 3. 게시글 상세 조회
@@ -169,8 +227,8 @@ public class BoardController {
 	 * @return
 	 */
 	@GetMapping("{type:notice|post|student}/detail/{postNo}")
-	public String selectBoard(@PathVariable String type, @PathVariable int postNo, 
-								String condition1, String condition2, Model model, HttpSession session) {
+	public String selectBoard(@PathVariable String type, @PathVariable int postNo, String condition1, String condition2,
+			Model model, HttpSession session) {
 
 		String postType;
 		String viewName;
@@ -196,8 +254,7 @@ public class BoardController {
 
 			Board b = boardService.selectBoard(postNo);
 
-			FileAttachment fa = boardService.selectFileAttachment(postNo);	
-		
+			FileAttachment fa = boardService.selectFileAttachment(postNo);
 
 			model.addAttribute("b", b);
 			model.addAttribute("type", type);
@@ -257,15 +314,13 @@ public class BoardController {
 	 * @return
 	 */
 	@PostMapping("/{type}/insert")
-	public String insertBoard(@PathVariable String type, 
-								Board b, HttpSession session, 
-								Model model,
-								MultipartFile originalFile) {
+	public String insertBoard(@PathVariable String type, Board b, HttpSession session, Model model,
+			MultipartFile originalFile) {
 		System.out.println("컨트롤러 진입 직후 카테고리: " + b.getCategory());
-		
+
 		String postType;
 		String viewName;
-		
+
 		switch (type) {
 		case "notice":
 			postType = "NOTICE";
@@ -279,12 +334,11 @@ public class BoardController {
 			break;
 		}
 
-		FileAttachment fa = null;		
-		
+		FileAttachment fa = null;
 
 		if (originalFile != null && !originalFile.isEmpty()) {
 
-			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
+			String saveName = FileRenamePolicy.saveFile(originalFile, session, "resources/board_upfiles/");
 
 			fa = new FileAttachment();
 			fa.setOriginName(originalFile.getOriginalFilename());
@@ -387,18 +441,18 @@ public class BoardController {
 
 		if (!originalFile.getOriginalFilename().equals("")) {
 
-			String saveName = FileRenamePolicy.saveFile(originalFile, session, "/resources/board_upfiles/");
+			String saveName = FileRenamePolicy.saveFile(originalFile, session, "resources/board_upfiles/");
 
 			fa = new FileAttachment();
 			fa.setOriginName(originalFile.getOriginalFilename());
 			fa.setSaveName(saveName);
 			fa.setTargetType(b.getPostType());
 			fa.setTargetNo(b.getPostNo());
-			fa.setFilePath("/resources/board_upfiles/");
+			fa.setFilePath("resources/board_upfiles/");
 
 			if (originalFileNo != 0) {
 				fa.setFileNo(originalFileNo);
-				String savePath = session.getServletContext().getRealPath("/resources/board_upfiles/");
+				String savePath = session.getServletContext().getRealPath("resources/board_upfiles/");
 				new File(savePath + originalFileSaveName).delete();
 			}
 
@@ -480,17 +534,16 @@ public class BoardController {
 		return (result > 0) ? "success" : "fail";
 
 	}
-	
+
 	@ResponseBody
 	@PostMapping("pcdelete")
-	public String ajaxDeleteComment(@RequestParam ("commentNo") int commentNo, HttpSession session) {
-		
+	public String ajaxDeleteComment(@RequestParam("commentNo") int commentNo, HttpSession session) {
+
 		int result = boardService.deleteComment(commentNo);
-		
-		return (result > 0) ? "success" : "fail"; 
-		
+
+		return (result > 0) ? "success" : "fail";
+
 	}
-	
 
 	@ResponseBody
 	@GetMapping("news/list")

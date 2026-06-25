@@ -167,8 +167,8 @@
                             <div class="menu">
                                 <a href="#">커뮤니티</a>
                                 <ul>
-                                     <li><a href="/know-how/community/board/notice">공지사항</a></li>
-                                    <li><a href="/know-how/community/board/post">자유게시판</a></li>
+                                     <li><a href="/know-how/community/board/notice" onclick="sessionStorage.removeItem('post_viewMode')">공지사항</a></li>
+                                    <li><a href="/know-how/community/board/post" onclick="sessionStorage.removeItem('post_viewMode')"">자유게시판</a></li>
                                     <li><a href="/know-how/community/board/student">수강생게시판</a></li>
                                 </ul>
                             </div>

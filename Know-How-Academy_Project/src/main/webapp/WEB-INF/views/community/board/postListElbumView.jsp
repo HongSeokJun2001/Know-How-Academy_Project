@@ -8,71 +8,12 @@
 			<title>Insert title here</title>
 			<style>
 				.outer {
-					width: 1440px !important;
-					text-align: center;
+					text-align: center; /*텍스트 중앙정렬*/
+					width: 1080px !important;
 					border: none !important;
 				}
 
-				.table tbody {
-					cursor: pointer;
-				}
 
-				#search-container {
-					display: flex !important;
-					justify-content: center;
-					/*가운데 정렬*/
-					align-items: center;
-					/*세로축 기준 중앙 정렬*/
-					gap: 6px;
-					/*박스간격*/
-					margin: 20px 0;
-				}
-
-				/* 선택창(select)과 검색창(input) 디자인 일체감 주기 */
-				#search-area select.form-control {
-					width: 110px !important;
-					display: inline-block;
-					border-radius: 4px;
-				}
-
-				/* 검색 텍스트창의 너비 따로 조절 */
-				#search-area input[type="search"] {
-					width: 300px !important;
-				}
-
-				/* 글쓰기 버튼 영역 여백 */
-				.write-btn-area {
-					margin-bottom: 15px;
-				}
-
-				#search-area .btn,
-				.outer .btn {
-					border-color: #ced4da;
-				}
-
-				.paging-area {
-					display: flex !important;
-					justify-content: center;
-					/* 가로축 기준 정중앙 정렬 */
-					align-items: center;
-					/* 세로축 기준 정중앙 정렬 */
-					margin: 30px 0;
-					/* 테이블과의 위아래 간격 */
-				}
-
-				.page-link {
-					color: #606163 !important;
-				}
-
-				.pagination .page-item.active .page-link {
-					background-color: #6f42c1 !important;
-					border-color: #6f42c1 !important;
-					color: white !important;
-				}
-
-				.btn-hover:hover {
-					background-color: blueviolet !important;
-				}
 			</style>
 		</head>
 
@@ -80,7 +21,7 @@
 			<jsp:include page="../../common/menubar.jsp" />
 
 			<div class="outer">
-				<h2>공지사항</h2>
+				<h2>자유게시판</h2>
 				<br>
 				<hr>
 
@@ -96,14 +37,6 @@
 							<option value="content" ${condition1 eq 'content' ? 'selected' : '' }>내용</option>
 						</select>
 
-						<c:if test="${type eq 'student'}">
-							<select name="condition2" class="form-control mr-sm-2">
-								<option value="all" ${condition2 eq 'all' ? 'selected' : '' }>전체</option>
-								<option value="admission" ${condition2 eq 'admission' ? 'selected' : '' }>입학상담</option>
-								<option value="employment" ${condition2 eq 'employment' ? 'selected' : '' }>취업상담
-								</option>
-							</select>
-						</c:if>
 
 						<input type="search" name="keyword" value="${keyword}" class="form-control mr-sm-2"
 							placeholder="검색어를 입력하세요">
@@ -115,14 +48,14 @@
 						<script>
 							$(function () {
 								$("#search-area option[value=${condition1}]").prop("selected", true);
-								$("#search-area option[value=${condition2}]").prop("selected", true);
-						
+
 							});
 						</script>
 					</c:if>
 				</div>
 
-				<c:if test="${(not empty loginUser) and (loginUser.userNo eq 1)}">
+				<!--글쓰기버튼 영역-->
+				<c:if test="${not empty loginUser}">
 					<div class="write-btn-area" align="right">
 						<a href="/know-how/community/board/${type}/enrollForm" type="button"
 							class="btn btn-outline-secondary btn-hover">글쓰기</a>
@@ -130,50 +63,48 @@
 				</c:if>
 
 				<!--게시글 목록-->
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>글번호</th>
-							<th>제목</th>
-							<th>작성자</th>
-							<th>조회수</th>
-							<th>작성일</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!--게시글 목록-->
+				<table>
+					<div class="row row-cols-1 row-cols-md-3 g-4">
 						<c:choose>
 							<c:when test="${empty list}">
-								<tr>
-									<td colspan="6">조회된 게시글이 없습니다.</td>
-								</tr>
+								<div class="col-12">조회된 글이 없습니다.</div>						
 							</c:when>
 							<c:otherwise>
-								<c:forEach var="b" items="${list}">
-									<tr>
-										<td>${b.postNo}</td>
-										<td>${b.title}</td>
-										<td>${b.userName}</td>
-										<td>${b.viewCount}</td>
-										<td>${b.createdAt}</td>
-									</tr>
-								</c:forEach>
+								<c:foreach var="b" items="${list}">
+									<div class="col">
+										<div class="card h-100 album-item" 
+												onclick="location.href
+													='/know-how/community/board/${type}/detail/${b.postNo}'">
+											<div class="img-wrapper">
+												<c:choose>
+													<c:when test="${not empty b.thumbnail}">
+														<img src="${b.thumbnail}" alt="썸네일">
+													</c:when>
+													<c:otherwise>
+														<img src="/know-how/resources/images/no-image.png" alt="이미지 없음">
+													</c:otherwise>
+												</c:choose>
+											</div>
+
+											<div class="card-body" style="text-align: left;">
+												<h5 class="card-title-custom">${b.title}</h5>
+												<p class="card-text-custom">${b.content}</p>
+											</div>
+
+											<div class="card-footer bg-transparent d-flex justify-content-between">
+												<small class="text-muted">${b.userName}</small>
+												<small calss="text-muted">${b.createdAt}</small>
+											</div>
+										</div>
+									</div>
+								</c:foreach>
 							</c:otherwise>
 						</c:choose>
-						<script>
-							$(function () {
-								$(".table>tbody>tr").click(function () {
-									let postNo = $(this).children().eq(0).text();
-									console.log(postNo);
-									location.href = "/know-how/community/board/${type}/detail/" + postNo;
-								})
-							})
-						</script>
-					</tbody>
+					</div>
 				</table>
-				<div style="background: yellow;">
-				</div>
-			
+				
+
+				<!--페이징바 영역-->
 				<div class="paging-area">
 					<ul class="pagination page-item ">
 						<c:choose>
@@ -197,7 +128,7 @@
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage - 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">
+															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage - 1}&condition1=${condition1}&keyword=${keyword}">
 															Prev</a>
 													</li>
 												</c:otherwise>
@@ -223,7 +154,7 @@
 										<c:otherwise>
 											<li class="page-item">
 												<a class="page-link"
-													href="/know-how/community/board/${type}/search?condition1=${condition1}&condition2=${condition2}&keyword=${keyword}&cpage=${p}">${p}</a>
+													href="/know-how/community/board/${type}/search?condition1=${condition1}&keyword=${keyword}&cpage=${p}">${p}</a>
 											</li>
 										</c:otherwise>
 									</c:choose>
@@ -251,7 +182,7 @@
 												<c:otherwise>
 													<li class="page-item">
 														<a class="page-link"
-															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&condition2=${condition2}&keyword=${keyword}">Next</a>
+															href="/know-how/community/board/${type}/search?cpage=${pi.currentPage + 1}&condition1=${condition1}&keyword=${keyword}">Next</a>
 													</li>
 												</c:otherwise>
 									</c:choose>

@@ -169,7 +169,7 @@
                         </c:if>
                     </div>
                     <div class="rightBtn">
-                        <a href="/know-how/community/board/post" id="listBtn1" class="btn btn-outline-secondary">목록</a>
+                        <a href="/know-how/community/board/${type}" id="listBtn1" class="btn btn-outline-secondary">목록</a>
                     </div>
                 </div>
 
@@ -208,7 +208,7 @@
 
                 <br>
                 <div class="bottom-area">
-                    <a href="/know-how/community/board/post" id="listBtn2" class="btn btn-outline-secondary">목록</a>
+                    <a href="/know-how/community/board/${type}" id="listBtn2" class="btn btn-outline-secondary">목록</a>
                 </div>
               
                 <!--댓글-->
